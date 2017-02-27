@@ -1,6 +1,5 @@
 from django.test import TestCase
 
-# Create your tests here.
 
 class TargetTest(TestCase):
     '''Dummy test case for Travis-CI integration'''
