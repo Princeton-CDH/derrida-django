@@ -7,7 +7,7 @@ install:
   - pip install -r requirements.txt
   - pip install -r dev-requirements.txt
   - pip install codecov
-  - cp ci/testsettings.py winthrop/local_settings.py
+  - cp ci/testsettings.py derrida/local_settings.py
   - python -c "import uuid; print('SECRET_KEY = \'%s\'' % uuid.uuid4())" >> derrida/local_settings.py
 
 script:
