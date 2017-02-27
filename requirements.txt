@@ -1,0 +1,8 @@
+django
+mysqlclient
+django-grappelli
+django-autocomplete-light
+requests
+rdflib
+# use develop branch of pucas until we have an initial release
+git+https://github.com/Princeton-CDH/django-pucas.git@develop#egg=pucas
