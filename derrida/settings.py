@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'pucas',
     # local apps
     'derrida.books',
+    'derrida.common',
 ]
 
 MIDDLEWARE = [
