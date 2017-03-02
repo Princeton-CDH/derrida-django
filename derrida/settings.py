@@ -20,15 +20,22 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 
 
-
 # Application definition
 INSTALLED_APPS = [
+    'dal',
+    'dal_select2',
+    # dal and dal_select2 must be added before grappelli
+    'grappelli',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_cas_ng',
+    'pucas',
+    # local apps
+    'derrida.books',
 ]
 
 MIDDLEWARE = [
@@ -41,12 +48,19 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'django_cas_ng.backends.CASBackend',
+)
+
 ROOT_URLCONF = 'derrida.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        "DIRS": [
+            os.path.join(BASE_DIR, "templates")
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -110,6 +124,25 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 STATIC_URL = '/static/'
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+# Additional locations of static files
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'sitemedia'),
+]
+
+# pucas configuration that is not expected to change across deploys
+# and does not reference local server configurations or fields
+PUCAS_LDAP = {
+    # basic user profile attributes
+    'ATTRIBUTES': ['givenName', 'sn', 'mail'],
+    'ATTRIBUTE_MAP': {
+        'first_name': 'givenName',
+        'last_name': 'sn',
+        'email': 'mail',
+    },
+}
 
 ##################
 # LOCAL SETTINGS #

@@ -1,0 +1,27 @@
+{% extends "admin/base.html" %}
+{% load i18n grp_tags static %}
+
+{% block title %}{{ title }} | {% get_site_title %}{% endblock %}
+
+{% block branding %}
+    {# Use the div#grp-branding for branding elements, e.g. a logo #}
+    {# <div id="grp-branding">CDH</div> #}
+{% endblock %}
+
+{% block nav-global %}
+    {# Use the div#grp-branding for branding elements, e.g. a logo #}
+    {# <div id="grp-branding">CDH</div> #}
+    {% include 'snippets/test_banner.html' %}
+    <div id="sw-version">v. {{ SW_VERSION }}</div>
+{% endblock %}
+
+{% block extrastyle %}
+    <link rel="stylesheet" type="text/css" href="{% static "css/local.css" %}" />
+    <link rel="stylesheet" type="text/css" href="{% static "css/test-banner.css" %}" />
+{% endblock %}
+
+{% block extrahead %}
+    {{ block.super }}
+    <script src="{% static 'js/local.js' %}"></script>
+{% endblock %}
+

@@ -13,9 +13,25 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
-from django.conf.urls import url
+from django.conf import settings
+from django.conf.urls import url, include
 from django.contrib import admin
+from django.views.generic.base import RedirectView
 
 urlpatterns = [
+    # for now, since there is not yet any public-facing site,
+    # redirect base url to admin index page
+    url(r'^$', RedirectView.as_view(pattern_name='admin:index')),
+    # # grappelli URLS for admin related lookups & autocompletes
+    url(r'^grappelli/', include('grappelli.urls')),
     url(r'^admin/', admin.site.urls),
+    url(r'^accounts/', include('pucas.cas_urls')),
 ]
+
+# NOTE: for some reason this isn't getting added automatically
+if settings.DEBUG:
+    try:
+        import debug_toolbar
+        urlpatterns += url(r'^__debug__/', include(debug_toolbar.urls)),
+    except ImportError:
+        pass
