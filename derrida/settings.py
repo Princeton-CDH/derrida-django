@@ -68,10 +68,14 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'derrida.context_extras',
+                'derrida.context_processors.template_settings',
             ],
         },
     },
 ]
+
+GRAPPELLI_ADMIN_TITLE = 'Derrida Admin'
 
 WSGI_APPLICATION = 'derrida.wsgi.application'
 
