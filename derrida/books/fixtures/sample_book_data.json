@@ -1,0 +1,174 @@
+[
+{
+  "model": "books.publisher",
+  "pk": 1,
+  "fields": {
+    "name": "E. van der Erve",
+    "notes": ""
+  }
+},
+{
+  "model": "books.publisher",
+  "pk": 2,
+  "fields": {
+    "name": "Sigismundus Latomus",
+    "notes": ""
+  }
+},
+{
+  "model": "books.book",
+  "pk": 1,
+  "fields": {
+    "notes": "Library copy from the Winthrop Collection.  Bound in parchment.  Autographs in ink on inside front cover and t.p.  No. 48 (crossed out ) and No. 47 in pencil in t.p. verso.",
+    "title": "De Christelicke Ordinancien der Nederlantscher Gemeynten Christi, getrouwelick tsamen gheuoecht ende wigestelt door Marten Mikron.",
+    "short_title": "De Christelicke ordinancien der Nederlantscher gemeynten Christi",
+    "original_pub_info": "[Emden : E. van der Erve], Anno 1563.",
+    "publisher": 1,
+    "pub_place": 1,
+    "pub_year": 1563,
+    "is_extant": true,
+    "is_annotated": false,
+    "is_digitized": false,
+    "red_catalog_number": "",
+    "ink_catalog_number": "",
+    "pencil_catalog_number": "",
+    "dimensions": "15cm"
+  }
+},
+{
+  "model": "books.book",
+  "pk": 2,
+  "fields": {
+    "notes": "",
+    "title": "Mercurii Gallobelgici M. Gothardo Arthiisio succenturiatii: sive rerum in Gallia et Belgio potissimum: Hispania quoqve, Italia, Anglia, Germania, Ungaria, Bohemia, vicinisque locis [...] historicae narrationis conuata. Tomi decimi noni, liber primus.",
+    "short_title": "Mercurii Gallobelgici M. Gothardo Arthiisio succenturiatii",
+    "original_pub_info": "Francofurti: Sumptibus & typis haredum Sigismundi Latomi, Anno 1632.",
+    "publisher": 2,
+    "pub_place": 2,
+    "pub_year": 1632,
+    "is_extant": true,
+    "is_annotated": true,
+    "is_digitized": false,
+    "red_catalog_number": "258",
+    "ink_catalog_number": "",
+    "pencil_catalog_number": "",
+    "dimensions": ""
+  }
+},
+{
+  "model": "books.creator",
+  "pk": 1,
+  "fields": {
+    "notes": "",
+    "creator_type": 1,
+    "person": 1,
+    "book": 1
+  }
+},
+{
+  "model": "books.creator",
+  "pk": 2,
+  "fields": {
+    "notes": "",
+    "creator_type": 1,
+    "person": 2,
+    "book": 2
+  }
+},
+{
+  "model": "places.place",
+  "pk": 1,
+  "fields": {
+    "name": "Emden",
+    "notes": "",
+    "geonames_id": "http://sws.geonames.org/2930597/",
+    "latitude": 53.36745,
+    "longitude": 7.20778
+  }
+},
+{
+  "model": "places.place",
+  "pk": 2,
+  "fields": {
+    "name": "Frankfurt",
+    "notes": "",
+    "geonames_id": "http://sws.geonames.org/2925533/",
+    "latitude": 50.11552,
+    "longitude": 8.68417
+  }
+},
+{
+  "model": "places.place",
+  "pk": 3,
+  "fields": {
+    "name": "New York City",
+    "notes": "",
+    "geonames_id": "http://sws.geonames.org/5128581/",
+    "latitude": 40.71427,
+    "longitude": -74.00597
+  }
+},
+{
+  "model": "people.person",
+  "pk": 1,
+  "fields": {
+    "notes": "",
+    "authorized_name": "\u0141aski, Jan",
+    "viaf_id": "",
+    "sort_name": "",
+    "family_group": ""
+  }
+},
+{
+  "model": "people.person",
+  "pk": 2,
+  "fields": {
+    "notes": "",
+    "authorized_name": "Abelin, Johann Philipp",
+    "viaf_id": "",
+    "sort_name": "",
+    "family_group": ""
+  }
+},
+{
+  "model": "books.owninginstitution",
+  "pk": 1,
+  "fields": {
+    "name": "New York Society Library",
+    "notes": "",
+    "short_name": "NYSL",
+    "contact_info": "...",
+    "place": 3
+  }
+},
+{
+  "model": "books.catalogue",
+  "pk": 1,
+  "fields": {
+    "notes": "",
+    "start_year": null,
+    "end_year": null,
+    "institution": 1,
+    "book": 1,
+    "is_current": true,
+    "call_number": "Win 60",
+    "is_sammelband": false,
+    "bound_order": null
+  }
+},
+{
+  "model": "books.catalogue",
+  "pk": 2,
+  "fields": {
+    "notes": "",
+    "start_year": null,
+    "end_year": null,
+    "institution": 1,
+    "book": 2,
+    "is_current": true,
+    "call_number": "Win 4",
+    "is_sammelband": false,
+    "bound_order": null
+  }
+}
+]

@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     # local apps
     'derrida.books',
     'derrida.common',
+    'derrida.people',
+    'derrida.places',
 ]
 
 MIDDLEWARE = [
