@@ -1,0 +1,50 @@
+[
+   {
+      "model":"footnotes.sourcetype",
+      "pk":1,
+      "fields":{
+         "name":"Letter Published",
+         "notes":""
+      }
+   },
+   {
+      "model":"footnotes.sourcetype",
+      "pk":2,
+      "fields":{
+         "name":"Letter Unpublished",
+         "notes":""
+      }
+   },
+   {
+      "model":"footnotes.sourcetype",
+      "pk":3,
+      "fields":{
+         "name":"Personal Narrative",
+         "notes":""
+      }
+   },
+   {
+      "model":"footnotes.sourcetype",
+      "pk":4,
+      "fields":{
+         "name":"Legal Document",
+         "notes":""
+      }
+   },
+   {
+      "model":"footnotes.sourcetype",
+      "pk":5,
+      "fields":{
+         "name":"Secondary Book",
+         "notes":""
+      }
+   },
+   {
+      "model":"footnotes.sourcetype",
+      "pk":6,
+      "fields":{
+         "name":"Secondary Article",
+         "notes":""
+      }
+   }
+]

@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     # local apps
     'derrida.books',
     'derrida.common',
+    'derrida.footnotes',
     'derrida.people',
     'derrida.places',
 ]
