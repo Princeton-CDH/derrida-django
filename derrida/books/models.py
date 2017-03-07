@@ -214,3 +214,27 @@ class PersonBook(Notable, DateRange):
         if self.dates:
             dates = ' (%s)' % self.dates
         return '%s - %s%s' % (self.person, self.book, dates)
+
+
+# New citationality model
+class DerridaWork(Notable):
+    '''This models the reference copy used to identify all citations, not
+    part of Derrida's library'''
+    #TODO: Check with team if they want this in Zotero
+    short_title = models.CharField(max_length=255)
+    full_citation = models.TextField()
+    is_primary = models.BooleanField()
+
+
+class ReferenceTypes(Notable):
+    '''Type of reference, i.e. citation, quotation, foonotes, epigraph, etc.'''
+    type = models.CharField(max_length=255)
+
+
+class References(models.Model):
+    '''References to Derrida's works from Zotero Tags collected by team'''
+    book = models.ForeignKey('books.Book')
+    derridawork = models.ForeignKey(DerridaWork)
+    # TODO: Check to see if int or varchar with project team
+    derridawork_page = models.IntegerField()
+    derridawork_pageloc = models.CharField(max_length=2)
