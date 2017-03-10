@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.contenttypes.fields import GenericRelation
+from django.core.validators import RegexValidator
 from django.urls import reverse
 from django.utils.safestring import mark_safe
 
@@ -56,8 +57,15 @@ class Book(Notable):
     '''An individual book or volume'''
     title = models.TextField()
     short_title = models.CharField(max_length=255)
-    zotero_id = models.CharField(max_length=255)
-    # do we want any limit on short titles?
+    zotero_id = models.CharField(
+        max_length=255,
+        # Add validator for any Zotero IDs entered manually by form.
+        validators=[RegexValidator(
+                        r'\W',
+                        inverse_match=True,
+                        message='Zotero IDs must be alphanumeric.'
+                    )]
+    )
     original_pub_info = models.TextField(
         verbose_name='Original Publication Information')
     publisher = models.ForeignKey(Publisher, blank=True, null=True)
@@ -88,9 +96,11 @@ class Book(Notable):
     class Meta:
         ordering = ['title']
 
-
     def __str__(self):
-        return '%s (%s)' % (self.short_title, self.pub_year)
+        if self.pub_year:
+            return '%s (%s)' % (self.short_title, self.pub_year)
+        else:
+            return '%s (n.d.)' % (self.short_title)
 
     def catalogue_call_numbers(self):
         'Convenience access to catalogue call numbers, for display in admin'
@@ -130,7 +140,7 @@ class Book(Notable):
 
 class Catalogue(Notable, DateRange):
     '''Location of a book in the real world, associating it with an
-    owning instutition and also handling books that are bound together.'''
+    owning instutition.'''
     institution = models.ForeignKey(OwningInstitution)
     book = models.ForeignKey(Book)
     is_current = models.BooleanField()
@@ -180,7 +190,7 @@ class BookLanguage(Notable):
 class CreatorType(Named, Notable):
     '''Type of creator role a person can have to a book - author,
     editor, translator, etc.'''
-    uri = models.URLField()
+    uri = models.URLField(blank=True, null=True)
     pass
 
 
@@ -195,7 +205,7 @@ class Creator(Notable):
 class PersonBookRelationshipType(Named, Notable):
     '''Type of non-annotation relationship assocating a person
     with a book.'''
-    uri = models.URLField()
+    uri = models.URLField(blank=True, null=True)
 
 
 class PersonBook(Notable, DateRange):
@@ -220,7 +230,6 @@ class PersonBook(Notable, DateRange):
 class DerridaWork(Notable):
     '''This models the reference copy used to identify all citations, not
     part of Derrida's library'''
-    #TODO: Check with team if they want this in Zotero
     short_title = models.CharField(max_length=255)
     full_citation = models.TextField()
     is_primary = models.BooleanField()
@@ -233,8 +242,7 @@ class ReferenceTypes(Notable):
 
 class References(models.Model):
     '''References to Derrida's works from Zotero Tags collected by team'''
-    book = models.ForeignKey('books.Book')
+    book = models.ForeignKey(Book)
     derridawork = models.ForeignKey(DerridaWork)
-    # TODO: Check to see if int or varchar with project team
-    derridawork_page = models.IntegerField()
+    derridawork_page = models.CharField(max_length=10)
     derridawork_pageloc = models.CharField(max_length=2)
