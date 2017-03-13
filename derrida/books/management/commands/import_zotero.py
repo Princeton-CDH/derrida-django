@@ -93,8 +93,8 @@ class Command(BaseCommand):
             'pub_year': 'Publication Year',
             'short_title': ' '.join(row['Title'].split()[0:2]),
             'original_pub_info': '%s %s' % (row['Publisher'], row['Place']),
-            'is_extant': True,
-            'is_annotated': True,
+            'is_extant': False,
+            'is_annotated': False,
         }
 
         # Start a newbook object
@@ -128,6 +128,17 @@ class Command(BaseCommand):
 
         for c_type in creator_types:
             if c_type in row:
+                # Check to see if this is a list that needs splitting on ;
+                if re.match(';', row[c_type]):
+                    # If yes, create entries for each (stripe edge whitespace)
+                    split_creators = row[c_type].split(';')
+                    for creator in split_cleators:
+                        person, created = Person.objects.get_or_create(
+                            authorized_name=creator.strip(),
+                            viaf_id=self.viaf_lookup(creator.strip())
+                        )
+                        newbook.add_creator(person, c_type)
+            else:
                 person, created = Person.objects.get_or_create(
                     authorized_name=row[c_type],
                     viaf_id=self.viaf_lookup(row[c_type])
@@ -146,7 +157,6 @@ class Command(BaseCommand):
         # Declare the book saved
         self.stats['book_count'] += 1
 
-
     def geonames_lookup(self, place_name):
         '''Function to wrap a GeoNames lookup and assign info.
         Returns a dict for Place generator or empty dict'''
@@ -164,7 +174,7 @@ class Command(BaseCommand):
 
     def viaf_lookup(self, name):
         viaf = ViafAPI()
-        viafid = {}
+        viafid = None
         results = viaf.suggest(name)
         # Handle no results
         if results:
