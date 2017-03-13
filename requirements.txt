@@ -2,6 +2,7 @@ django
 mysqlclient
 django-grappelli
 django-autocomplete-light
+pandas
 requests
 rdflib
 # use develop branch of pucas until we have an initial release

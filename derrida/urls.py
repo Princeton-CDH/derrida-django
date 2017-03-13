@@ -15,6 +15,7 @@ urlpatterns = [
     url(r'^grappelli/', include('grappelli.urls')),
     url(r'^admin/', admin.site.urls),
     url(r'^accounts/', include('pucas.cas_urls')),
+    url(r'^books/', include('derrida.books.urls', namespace='books')),
     url(r'^people/', include('derrida.people.urls', namespace='people')),
     url(r'^places/', include('derrida.places.urls', namespace='places')),
 ]

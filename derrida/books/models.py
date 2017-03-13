@@ -29,12 +29,12 @@ class BookCount(models.Model):
 
 class Subject(Named, Notable, BookCount):
     '''Subject categorization for books'''
-    uri = models.URLField
+    uri = models.URLField(blank=True, null=True)
 
 
 class Language(Named, Notable, BookCount):
     '''Language that a book is written in or a language included in a book'''
-    uri = models.URLField()
+    uri = models.URLField(blank=True, null=True)
 
 
 class Publisher(Named, Notable, BookCount):
