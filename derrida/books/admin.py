@@ -6,7 +6,8 @@ from derrida.common.admin import NamedNotableAdmin
 from derrida.footnotes.admin import FootnoteInline
 from .models import Subject, Language, Publisher, OwningInstitution, \
     Book, Catalogue, BookSubject, BookLanguage, CreatorType, Creator, \
-    PersonBook, PersonBookRelationshipType
+    PersonBook, PersonBookRelationshipType, \
+    DerridaWork, Reference, ReferenceType
 
 
 class NamedNotableBookCount(NamedNotableAdmin):
@@ -129,3 +130,8 @@ admin.site.register(Book, BookAdmin)
 admin.site.register(CreatorType, NamedNotableAdmin)
 admin.site.register(PersonBookRelationshipType, NamedNotableAdmin)
 admin.site.register(PersonBook, PersonBookAdmin)
+
+# Citationality sub module
+admin.site.register(DerridaWork)
+admin.site.register(ReferenceType)
+admin.site.register(Reference)

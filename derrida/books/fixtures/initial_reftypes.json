@@ -1,0 +1,34 @@
+[
+{
+    "model": "books.referencetype",
+    "pk": 1,
+    "fields": {
+        "name": "Citation",
+        "notes": ""
+    }
+},
+{
+    "model": "books.referencetype",
+    "pk": 2,
+    "fields": {
+        "name": "Quotation",
+        "notes": ""
+    }
+},
+{
+    "model": "books.referencetype",
+    "pk": 3,
+    "fields": {
+        "name": "Epigraph",
+        "notes": ""
+    }
+},
+{
+    "model": "books.referencetype",
+    "pk": 4,
+    "fields": {
+        "name": "Footnote",
+        "notes": ""
+    }
+}
+]

@@ -234,13 +234,16 @@ class DerridaWork(Notable):
     full_citation = models.TextField()
     is_primary = models.BooleanField()
 
+    def __str__(self):
+        return self.short_title
 
-class ReferenceTypes(Notable):
+
+class ReferenceType(Named, Notable):
     '''Type of reference, i.e. citation, quotation, foonotes, epigraph, etc.'''
-    type = models.CharField(max_length=255)
+    pass
 
 
-class References(models.Model):
+class Reference(models.Model):
     '''References to Derrida's works from Zotero Tags collected by team'''
     book = models.ForeignKey(Book)
     derridawork = models.ForeignKey(DerridaWork)
