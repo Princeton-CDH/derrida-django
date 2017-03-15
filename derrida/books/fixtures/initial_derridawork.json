@@ -1,0 +1,12 @@
+[
+{
+    "model": "books.derridawork",
+    "pk": 1,
+    "fields": {
+        "notes": "",
+        "short_title": "De la grammatologie",
+        "full_citation": "Placeholder citation",
+        "is_primary": false
+    }
+}
+]
