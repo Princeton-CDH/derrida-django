@@ -67,7 +67,7 @@ class Book(Notable):
     '''An individual book or volume, also journal articles and book sections'''
     primary_title = models.TextField()
     short_title = models.CharField(max_length=255)
-    larger_work_title = models.CharField(max_length=255, blank=True, null=True)
+    larger_work_title = models.TextField(blank=True, null=True)
     item_type = models.ForeignKey(ItemType)
     journal = models.ForeignKey(Journal, blank=True, null=True)
     page_range = models.CharField(max_length=20, blank=True, null=True)
@@ -89,8 +89,8 @@ class Book(Notable):
     # French copyright/printing practices.
     pub_date = models.DateField('Publication/Print Date',
         blank=True, null=True, help_text='Date in YYYY-MM-DD format. If either'
-        ' pub_month or pub_day are missing, will autoset to 01 to indicate this'
-        ' on save.')
+        ' pub_month or pub_day_missing are checked 01 for MM or DD indicates'
+        ' that the information is not known.')
     pub_month_missing = models.BooleanField(default=False)
     pub_day_missing = models.BooleanField(default=False)
     # This is dumb but I'm going to be using flags so I can write this
@@ -124,6 +124,8 @@ class Book(Notable):
 
     class Meta:
         ordering = ['primary_title']
+        verbose_name = 'Derrida library work'
+        verbose_name_plural = 'Derrida library works'
 
     def __str__(self):
         if self.copyright_year:
