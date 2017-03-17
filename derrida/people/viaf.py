@@ -46,7 +46,7 @@ class ViafAPI(object):
     def parse_date(graph, pred):
         """Parse the date using a regex to pull the year and return as an
         integer. If ambiguous (i.e. more than one!), return None instead"""
-        regex = re.compile(r'\d+?(?=-|$)')
+        regex = re.compile(r'(\-|^)\d+?(?=-|$)')
         date_list = []
         for subj, pred, obj in graph.triples((None, pred, None)):
             # Dates come in YYYY-MM-DD or just YYYY for antiquity

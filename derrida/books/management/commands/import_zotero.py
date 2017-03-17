@@ -1,13 +1,16 @@
+from datetime import date
 import pandas as pd
 import re
 from collections import defaultdict
 from html import unescape
 
+from django.db import IntegrityError
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.core.management.base import BaseCommand, CommandError
 
 from derrida.books.models import Book, Catalogue, OwningInstitution, \
-    CreatorType, Publisher, Reference, ReferenceType, DerridaWork
+    CreatorType, Publisher, Reference, ReferenceType, DerridaWork, ItemType, \
+    Journal
 from derrida.places.models import Place
 from derrida.places.geonames import GeoNamesAPI
 from derrida.people.models import Person
@@ -41,7 +44,7 @@ class Command(BaseCommand):
                 self.stats['error_count'] += 1
                 print('Error: %s - %s' % (row['Title'], err))
 
-        print('''Import either created or found:
+        self.stdout.write('''Import either created or found:
         %(book_count)d books
         %(place_count)d places
         %(person_count)d people
@@ -50,10 +53,18 @@ class Command(BaseCommand):
 
         %(error_count)d errors''' % self.stats)
 
-        print(
-            "In addition, the following tags looked suspicious: %s"
-            % self.dud_code_list
-        )
+        if len(self.dud_code_list) > 0:
+            self.stdout.write("In addition, the following tags "
+                              "looked suspicious:")
+            for tag in self.dud_code_list:
+                self.stdout.write("    %s" % tag)
+        unset = ReferenceType.objects.get(name='Unset')
+        unset_refs = Reference.objects.filter(reference_type=unset)
+        self.stdout.write("I found %s references with Unset tags." %
+            len(unset_refs))
+        self.stdout.write("They were:")
+        for reference in unset_refs:
+            self.stdout.write("    %s" % reference)
 
     def clean_data(self, csvfile):
         '''Method to import data and clean up fields'''
@@ -63,7 +74,7 @@ class Command(BaseCommand):
         wanted_columns = [
             'Key',
             'Item Type',
-            'Publication Year',
+            'Date',
             'Author',
             'Title',
             'Translator',
@@ -75,13 +86,15 @@ class Command(BaseCommand):
             'Extra',
             'Notes',
             'Manual Tags',
+            'Pages',
+            'Publication Title',
             ]
         zotero_data = zotero_data[wanted_columns]
         # Set NaNs to None for Py3 falsy compatibility
         zotero_data = zotero_data.fillna('')
         # For now, remove rows that are not 'book' or 'bookSection'
-        keep_types = ['book', 'bookSection']
-        zotero_data = zotero_data.loc[zotero_data['Item Type'].isin(keep_types)]
+        # keep_types = ['book', 'bookSection']
+        # zotero_data = zotero_data.loc[zotero_data['Item Type'].isin(keep_types)]
 
         # Handle HTML in comment fields
         def strip_html(text):
@@ -96,30 +109,77 @@ class Command(BaseCommand):
         '''Create a book object and associated models'''
         # Create a dictionary and fill in the stuff that can be dropped in
         newbook_dict = {
-            'title': row['Title'],
-            'pub_year': row['Publication Year'],
-            'short_title': ' '.join(row['Title'].split()[0:2]),
+            'primary_title': row['Title'],
+            'short_title': ' '.join(row['Title'].split()[0:4]),
             'original_pub_info': '%s %s' % (row['Publisher'], row['Place']),
+            'page_range': row['Pages'],
+            'uri': row['Url'],
             'is_extant': False,
             'is_annotated': False,
         }
-
-        # Handle books with no year set
-        try:
-            int(newbook_dict['pub_year'])
-        except ValueError:
-            newbook_dict['pub_year'] = None
-
         # Start a newbook object
         try:
-            newbook = Book.objects.get(title=newbook_dict['title'])
+            newbook = Book.objects.get(primary_title=newbook_dict['primary_title'])
         except ObjectDoesNotExist:
+
             newbook = Book(**newbook_dict)
+        # Set the item type
+        item_type_map = {
+            'book': 'Book',
+            'bookSection': 'Book Section',
+            'dictionaryEntry': 'Book Section',
+            'journalArticle': 'Journal Article',
+        }
+        newbook.item_type = ItemType.objects.get(
+            name=item_type_map[row['Item Type']]
+        )
+        journalarticle = ItemType.objects.get(name='Journal Article')
+        booksection = ItemType.objects.get(name='Book Section')
+
+        # Do handling for all year types
+        # If it passes with a single year, it need merely be set
+        if row['Date']:
+            try:
+                int(row['Date'])
+            except ValueError:
+                if newbook.item_type != journalarticle:
+                    newbook.copyright_year = None
+                if newbook.item_type == journalarticle:
+                    year_month = (row['Date']).split('-')
+                    # If we have a year and a month, set pub_date and copyright_year
+                    if len(year_month) == 2:
+                        newbook.copyright_year = year_month[0]
+                        newbook.pub_date = date(
+                            int(year_month[0]),
+                            int(year_month[1]),
+                            1
+                        )
+                        newbook.pub_day_missing = True
+                    else:
+                        newbook.copyright_year = year_month[0]
+            else:
+                newbook.copyright_year = None
+        # Build Journals to create an authorized journal list
+        if newbook.item_type == journalarticle:
+            journal, created = Journal.objects.get_or_create(
+                name=row['Publication Title'],
+            )
+            newbook.journal = journal
+
+        # Add larger_work_title for bookSection
+        if newbook.item_type == booksection:
+            newbook.larger_work_title = row['Publication Title']
+
 
         # Place
         # Run a geonames search and return a dict to set the place
         if row['Place']:
-            place_dict = self.geonames_lookup(row['Place'])
+            # Handle & in place names
+            if '&' in row['Place']:
+                place_name = (re.match(r'\w+', row['Place'])).group(0)
+            else:
+                place_name = row['Place']
+            place_dict = self.geonames_lookup(place_name)
             place, created = Place.objects.get_or_create(
                     name=row['Place'],
                     **place_dict
@@ -135,6 +195,14 @@ class Command(BaseCommand):
                                 )
             newbook.publisher = publisher
             self.stats['publisher_count'] += 1
+
+        # Extra Derrida fields
+        # Set that it is a translation if there's a translator field
+        # Set that it is extant in PUL JD if Finding Aid URL exists
+        if row['Translator']:
+            newbook.is_translation = True
+        if row['Url']:
+            newbook.is_extant = True
 
         # Save so we can add creators
         newbook.save()
@@ -180,7 +248,8 @@ class Command(BaseCommand):
             split_tags = row['Manual Tags'].split(';')
             for tag in split_tags:
                 tag = tag.strip()
-                if self.parse_ref_tag(tag, newbook, row):
+                result = self.parse_ref_tag(tag, newbook, row)
+                if result:
                     self.stats['reference_count'] += 1
 
         # Declare the book saved
@@ -234,13 +303,14 @@ class Command(BaseCommand):
         try:
             work = (re.search(work_re, tag)).group(0)
             page_loc = (re.search(page_loc_re, tag)).group(0)
-            annotation_type = (re.search(annotation_type_re, tag)).group(0)
+            if re.search(annotation_type_re, tag):
+                annotation_type = (re.search(annotation_type_re, tag)).group(0)
             if re.search(book_page_seq_re, tag):
                 book_page_seq = (re.search(book_page_seq_re, tag)).group(0)
             if re.search(annotation_status_re, tag):
                 annotation_status = (re.search(annotation_status_re, tag)).group(0)
         except AttributeError:
-            self.dud_code_list.append(tag)
+            self.dud_code_list.append(tag + " " + newbook.short_title)
         derridawork_mapping = {
             'dg': 'De la grammatologie',
         }
@@ -250,6 +320,13 @@ class Command(BaseCommand):
             'E': 'Epigraph',
             'C': 'Citation',
             'F': 'Footnote',
+            'R': 'Citation',
+            # If any are missing, either None or the final code char will get
+            # yanked in, so all of these also = Unset
+            None: 'Unset',
+            'Y': 'Unset',
+            'N': 'Unset',
+            'U': 'Unset'
         }
 
         # Set the annotation flags
@@ -278,3 +355,4 @@ class Command(BaseCommand):
                 )
         except KeyError:
             self.dud_code_list.append(tag)
+        return True

@@ -53,10 +53,24 @@ class OwningInstitution(Named, Notable, BookCount):
         return self.short_name or self.name
 
 
+class ItemType(Named, Notable):
+    '''Item types for types of book'''
+    pass
+
+
+class Journal(Named, Notable):
+    '''List of associated journals for use with "book" objects'''
+    pass
+
+
 class Book(Notable):
-    '''An individual book or volume'''
-    title = models.TextField()
+    '''An individual book or volume, also journal articles and book sections'''
+    primary_title = models.TextField()
     short_title = models.CharField(max_length=255)
+    larger_work_title = models.CharField(max_length=255, blank=True, null=True)
+    item_type = models.ForeignKey(ItemType)
+    journal = models.ForeignKey(Journal, blank=True, null=True)
+    page_range = models.CharField(max_length=20, blank=True, null=True)
     zotero_id = models.CharField(
         max_length=255,
         # Add validator for any Zotero IDs entered manually by form.
@@ -71,15 +85,30 @@ class Book(Notable):
     publisher = models.ForeignKey(Publisher, blank=True, null=True)
     pub_place = models.ForeignKey(Place, verbose_name='Place of Publication',
         blank=True, null=True)
-    pub_year = models.PositiveIntegerField('Publication Year',
-        blank=True, null=True)
+    # New date field model for Derrida to accomodate work dates and
+    # French copyright/printing practices.
+    pub_date = models.DateField('Publication/Print Date',
+        blank=True, null=True, help_text='Date in YYYY-MM-DD format. If either'
+        ' pub_month or pub_day are missing, will autoset to 01 to indicate this'
+        ' on save.')
+    pub_month_missing = models.BooleanField(default=False)
+    pub_day_missing = models.BooleanField(default=False)
+    # This is dumb but I'm going to be using flags so I can write this
+    # as a field set and specify how to handle the date using the Quincy project
+    # as an example.
+    copyright_year = models.PositiveIntegerField(blank=True, null=True)
+    work_year = models.IntegerField(blank=True, null=True)
     # is positive integer enough, or do we need more validation here?
-    is_extant = models.BooleanField(default=False)
+    is_extant = models.BooleanField(help_text='Extant in PUL JD', default=False)
     is_annotated = models.BooleanField(default=False)
     is_digitized = models.BooleanField(default=False)
+    is_translation = models.BooleanField(default=False)
+    has_insertions = models.BooleanField(default=False)
+    has_dedication = models.BooleanField(default=False)
     dimensions = models.CharField(max_length=255, blank=True)
     # expected length? is char sufficient or do we need text?
-
+    # Finding Aid url
+    uri = models.URLField(help_text='Finding Aid URL', blank=True, null=True)
     subjects = models.ManyToManyField(Subject, through='BookSubject')
     languages = models.ManyToManyField(Language, through='BookLanguage')
 
@@ -94,11 +123,11 @@ class Book(Notable):
     footnotes = GenericRelation(Footnote)
 
     class Meta:
-        ordering = ['title']
+        ordering = ['primary_title']
 
     def __str__(self):
-        if self.pub_year:
-            return '%s (%s)' % (self.short_title, self.pub_year)
+        if self.copyright_year:
+            return '%s (%s)' % (self.short_title, self.copyright_year)
         else:
             return '%s (n.d.)' % (self.short_title)
 
@@ -136,6 +165,14 @@ class Book(Notable):
         creator_type = CreatorType.objects.get(name=creator_type)
         Creator.objects.create(person=person, creator_type=creator_type,
             book=self)
+
+    def save(self, *args, **kwargs):
+        '''Override save for this model to set date-month based on flags'''
+        if self.pub_day_missing:
+            self.pub_date = self.pub_date.replace(day=1)
+        if self.pub_month_missing:
+            self.pub_date = self.pub_date.replace(month=1)
+        super(Book, self).save(*args, **kwargs);
 
 
 class Catalogue(Notable, DateRange):
@@ -251,3 +288,13 @@ class Reference(models.Model):
     derridawork_pageloc = models.CharField(max_length=2)
     book_page = models.CharField(max_length=10, blank=True, null=True)
     reference_type = models.ForeignKey(ReferenceType)
+
+    def __str__(self):
+        return "%s, %s%s: %s, %s, %s" % (
+            self.derridawork.short_title,
+            self.derridawork_page,
+            self.derridawork_pageloc,
+            self.book.short_title,
+            self.book_page,
+            self.reference_type
+        )

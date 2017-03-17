@@ -1,0 +1,26 @@
+[
+{
+    "model": "books.itemtype",
+    "pk": 1,
+    "fields": {
+        "name": "Book",
+        "notes": ""
+    }
+},
+{
+    "model": "books.itemtype",
+    "pk": 2,
+    "fields": {
+        "name": "Book Section",
+        "notes": ""
+    }
+},
+{
+    "model": "books.itemtype",
+    "pk": 3,
+    "fields": {
+        "name": "Journal Article",
+        "notes": ""
+    }
+}
+]

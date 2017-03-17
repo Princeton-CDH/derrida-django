@@ -41,9 +41,9 @@ class DateRange(models.Model):
     validation that requires end year falls after start year.'''
 
     #: start year (optional)
-    start_year = models.PositiveIntegerField(null=True, blank=True)
+    start_year = models.SmallIntegerField(null=True, blank=True)
     #: end year (optional)
-    end_year = models.PositiveIntegerField(null=True, blank=True)
+    end_year = models.SmallIntegerField(null=True, blank=True)
 
     class Meta:
         abstract = True

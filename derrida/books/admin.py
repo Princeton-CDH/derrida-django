@@ -7,7 +7,7 @@ from derrida.footnotes.admin import FootnoteInline
 from .models import Subject, Language, Publisher, OwningInstitution, \
     Book, Catalogue, BookSubject, BookLanguage, CreatorType, Creator, \
     PersonBook, PersonBookRelationshipType, \
-    DerridaWork, Reference, ReferenceType
+    DerridaWork, Reference, ReferenceType, Journal, ItemType
 
 
 class NamedNotableBookCount(NamedNotableAdmin):
@@ -96,14 +96,16 @@ class BookAdminForm(forms.ModelForm):
 class BookAdmin(admin.ModelAdmin):
     form = BookAdminForm
 
-    list_display = ('short_title', 'author_names', 'pub_year',
+    list_display = ('short_title', 'author_names', 'copyright_year',
         'catalogue_call_numbers', 'is_extant', 'is_annotated',
         'is_digitized', 'has_notes')
     # NOTE: fields are specified here so that notes input will be displayed last
-    fields = ('title', 'short_title', 'original_pub_info', 'publisher',
-        'pub_place', 'pub_year', 'is_extant', 'is_annotated', 'is_digitized',
+    fields = ('primary_title', 'short_title', 'larger_work_title', 'item_type',
+        'journal_id', 'original_pub_info', 'publisher',
+        'pub_place', 'copyright_year', ('pub_date', 'pub_day_missing',
+        'pub_month_missing'), 'is_extant', 'is_annotated', 'is_digitized',
         'dimensions', 'notes')
-    search_fields = ('title', 'creator__person__authorized_name',
+    search_fields = ('primary_title', 'creator__person__authorized_name',
         'catalogue__call_number', 'notes', 'publisher__name')
     inlines = [CreatorInline, LanguageInline, SubjectInline, CatalogueInline,
         PersonBookInline, FootnoteInline]
@@ -135,3 +137,5 @@ admin.site.register(PersonBook, PersonBookAdmin)
 admin.site.register(DerridaWork)
 admin.site.register(ReferenceType)
 admin.site.register(Reference)
+admin.site.register(ItemType)
+admin.site.register(Journal)
