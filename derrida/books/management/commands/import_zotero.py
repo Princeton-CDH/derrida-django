@@ -53,14 +53,12 @@ class Command(BaseCommand):
 
         %(error_count)d errors''' % self.stats)
 
-        if len(self.dud_code_list) > 0:
-            self.stdout.write("In addition, the following tags "
-                              "looked suspicious:")
-            for tag in self.dud_code_list:
-                self.stdout.write("    %s" % tag)
+        self.stdout.write("In addition, the following tags looked suspicious:")
+        for tag in self.dud_code_list:
+            self.stdout.write("    %s" % tag)
         unset = ReferenceType.objects.get(name='Unset')
         unset_refs = Reference.objects.filter(reference_type=unset)
-        self.stdout.write("I found %s references with Unset tags." %
+        self.stdout.write("I also found %s references with Unset tags." %
             len(unset_refs))
         self.stdout.write("They were:")
         for reference in unset_refs:
@@ -79,7 +77,6 @@ class Command(BaseCommand):
             'Title',
             'Translator',
             'Editor',
-            'Series Editor',
             'Url',
             'Publisher',
             'Place',
@@ -111,7 +108,7 @@ class Command(BaseCommand):
         # Create a dictionary and fill in the stuff that can be dropped in
         newbook_dict = {
             'primary_title': row['Title'],
-            'short_title': (' '.join(row['Title'].split()[0:4])).strip('\"'),
+            'short_title': ' '.join(row['Title'].split()[0:4]),
             'original_pub_info': '%s %s' % (row['Publisher'], row['Place']),
             'page_range': row['Pages'],
             'uri': row['Url'],
@@ -142,7 +139,6 @@ class Command(BaseCommand):
         if row['Date']:
             try:
                 int(row['Date'])
-                newbook.copyright_year = row['Date']
             except ValueError:
                 if newbook.item_type != journalarticle:
                     newbook.copyright_year = None
@@ -159,8 +155,8 @@ class Command(BaseCommand):
                         newbook.pub_day_missing = True
                     else:
                         newbook.copyright_year = year_month[0]
-        else:
-            newbook.copyright_year = None
+            else:
+                newbook.copyright_year = None
         # Build Journals to create an authorized journal list
         if newbook.item_type == journalarticle:
             journal, created = Journal.objects.get_or_create(
@@ -176,12 +172,10 @@ class Command(BaseCommand):
         # Place
         # Run a geonames search and return a dict to set the place
         if row['Place']:
-            # Handle & in place names
-            if '&' in row['Place']:
-                place_name = (re.match(r'\w+', row['Place'])).group(0)
-            else:
-                place_name = row['Place']
-            place_dict = self.geonames_lookup(place_name)
+
+            if '&' or 'and' in row['Place']:
+                place = re.match
+            place_dict = self.geonames_lookup(row['Place'])
             place, created = Place.objects.get_or_create(
                     name=row['Place'],
                     **place_dict
@@ -205,7 +199,6 @@ class Command(BaseCommand):
             newbook.is_translation = True
         if row['Url']:
             newbook.is_extant = True
-
         # Save so we can add creators
         newbook.save()
 
@@ -218,7 +211,7 @@ class Command(BaseCommand):
             CreatorType.objects.get_or_create(name=c_type)
 
         for c_type in creator_types:
-            if row[c_type]:
+            if c_type in row:
                 # Check to see if this is a list that needs splitting on ;
                 if re.match(';', row[c_type]):
                     # If yes, create entries for each (stripe edge whitespace)
@@ -291,7 +284,7 @@ class Command(BaseCommand):
         work_re = re.compile(r'^\D+')
         # Assuming citation is on a particular page, and the work abbreviation
         # is lower case. If not, needs fixing.
-        page_loc_re = re.compile(r'(?<=[a-z])\d+([a-z])|.')
+        page_loc_re = re.compile(r'(?<=[a-z])\d+([a-z]|.)')
         annotation_type_re = re.compile(r'[A-Z]')
         book_page_seq_re = re.compile(r'(?<=[A-Z]).+?(?=[A-Z])')
         annotation_status_re = re.compile(r'[A-Z]$')
@@ -350,7 +343,7 @@ class Command(BaseCommand):
                                     short_title=derridawork_mapping[work]
                                 ),
                     derridawork_page=re.sub(r'[a-z]', '', page_loc),
-                    derridawork_pageloc=re.sub(r'[^a-zA-Z0-9]', '', page_loc),
+                    derridawork_pageloc=re.sub(r'[^a-z]', '', page_loc),
                     reference_type=ReferenceType.objects.get(
                                         name=reference_mapping[annotation_type]),
                     book_page=book_page_seq,

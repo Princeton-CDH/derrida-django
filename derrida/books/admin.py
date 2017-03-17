@@ -76,6 +76,8 @@ class PersonBookInline(CollapsibleTabularInline):
     model = PersonBook
     form = PersonBookInlineForm
 
+class ReferenceInline(CollapsibleTabularInline):
+    model = Reference
 
 class BookAdminForm(forms.ModelForm):
     '''Custom model form for Book editing, used to add autocomplete
@@ -107,7 +109,7 @@ class BookAdmin(admin.ModelAdmin):
         'dimensions', 'notes')
     search_fields = ('primary_title', 'creator__person__authorized_name',
         'catalogue__call_number', 'notes', 'publisher__name')
-    inlines = [CreatorInline, LanguageInline, SubjectInline, CatalogueInline,
+    inlines = [ReferenceInline, CreatorInline, LanguageInline, SubjectInline, CatalogueInline,
         PersonBookInline, FootnoteInline]
     list_filter = ('subjects', 'languages', 'is_extant',
         'is_annotated', 'is_digitized')
