@@ -79,6 +79,7 @@ class Command(BaseCommand):
             'Title',
             'Translator',
             'Editor',
+            'Series Editor',
             'Url',
             'Publisher',
             'Place',
@@ -110,7 +111,7 @@ class Command(BaseCommand):
         # Create a dictionary and fill in the stuff that can be dropped in
         newbook_dict = {
             'primary_title': row['Title'],
-            'short_title': ' '.join(row['Title'].split()[0:4]),
+            'short_title': (' '.join(row['Title'].split()[0:4])).strip('\"'),
             'original_pub_info': '%s %s' % (row['Publisher'], row['Place']),
             'page_range': row['Pages'],
             'uri': row['Url'],
@@ -141,6 +142,7 @@ class Command(BaseCommand):
         if row['Date']:
             try:
                 int(row['Date'])
+                newbook.copyright_year = row['Date']
             except ValueError:
                 if newbook.item_type != journalarticle:
                     newbook.copyright_year = None
@@ -157,8 +159,8 @@ class Command(BaseCommand):
                         newbook.pub_day_missing = True
                     else:
                         newbook.copyright_year = year_month[0]
-            else:
-                newbook.copyright_year = None
+        else:
+            newbook.copyright_year = None
         # Build Journals to create an authorized journal list
         if newbook.item_type == journalarticle:
             journal, created = Journal.objects.get_or_create(
@@ -216,7 +218,7 @@ class Command(BaseCommand):
             CreatorType.objects.get_or_create(name=c_type)
 
         for c_type in creator_types:
-            if c_type in row:
+            if row[c_type]:
                 # Check to see if this is a list that needs splitting on ;
                 if re.match(';', row[c_type]):
                     # If yes, create entries for each (stripe edge whitespace)

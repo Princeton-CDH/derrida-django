@@ -101,7 +101,7 @@ class BookAdmin(admin.ModelAdmin):
         'is_digitized', 'has_notes')
     # NOTE: fields are specified here so that notes input will be displayed last
     fields = ('primary_title', 'short_title', 'larger_work_title', 'item_type',
-        'journal_id', 'original_pub_info', 'publisher',
+        'journal', 'original_pub_info', 'publisher',
         'pub_place', 'copyright_year', ('pub_date', 'pub_day_missing',
         'pub_month_missing'), 'is_extant', 'is_annotated', 'is_digitized',
         'dimensions', 'notes')
