@@ -77,6 +77,7 @@ class Command(BaseCommand):
             'Title',
             'Translator',
             'Editor',
+            'Series Editor',
             'Url',
             'Publisher',
             'Place',
@@ -139,6 +140,7 @@ class Command(BaseCommand):
         if row['Date']:
             try:
                 int(row['Date'])
+                newbook.copyright_year = row['Date']
             except ValueError:
                 if newbook.item_type != journalarticle:
                     newbook.copyright_year = None
@@ -155,8 +157,8 @@ class Command(BaseCommand):
                         newbook.pub_day_missing = True
                     else:
                         newbook.copyright_year = year_month[0]
-            else:
-                newbook.copyright_year = None
+        else:
+            newbook.copyright_year = None
         # Build Journals to create an authorized journal list
         if newbook.item_type == journalarticle:
             journal, created = Journal.objects.get_or_create(
@@ -174,10 +176,12 @@ class Command(BaseCommand):
         if row['Place']:
 
             if '&' or 'and' in row['Place']:
-                place = re.match
-            place_dict = self.geonames_lookup(row['Place'])
+                place_name = (re.match(r'\w+', row['Place'])).group(0)
+            else:
+                place_name = row['Place']
+            place_dict = self.geonames_lookup(place_name)
             place, created = Place.objects.get_or_create(
-                    name=row['Place'],
+                    name=place_name,
                     **place_dict
                 )
 
@@ -211,7 +215,7 @@ class Command(BaseCommand):
             CreatorType.objects.get_or_create(name=c_type)
 
         for c_type in creator_types:
-            if c_type in row:
+            if row[c_type]:
                 # Check to see if this is a list that needs splitting on ;
                 if re.match(';', row[c_type]):
                     # If yes, create entries for each (stripe edge whitespace)
