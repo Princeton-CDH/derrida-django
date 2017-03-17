@@ -286,7 +286,7 @@ class Reference(models.Model):
     derridawork = models.ForeignKey(DerridaWork)
     derridawork_page = models.CharField(max_length=10)
     derridawork_pageloc = models.CharField(max_length=2)
-    book_page = models.CharField(max_length=10, blank=True, null=True)
+    book_page = models.CharField(max_length=255, blank=True, null=True)
     reference_type = models.ForeignKey(ReferenceType)
 
     def __str__(self):
