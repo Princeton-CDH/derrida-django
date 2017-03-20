@@ -135,7 +135,8 @@ class Book(Notable):
 
     def catalogue_call_numbers(self):
         'Convenience access to catalogue call numbers, for display in admin'
-        return ', '.join([c.call_number for c in self.catalogue_set.all()])
+        return ', '.join([c.call_number for c in self.catalogue_set.all()
+                          if c.call_number])
     catalogue_call_numbers.short_description = 'Call Numbers'
 
     def authors(self):
@@ -185,7 +186,7 @@ class Catalogue(Notable, DateRange):
     is_current = models.BooleanField()
     # using char instead of int because assuming  call numbers may contain
     # strings as well as numbers
-    call_number = models.CharField(max_length=255, blank=True,
+    call_number = models.CharField(max_length=255, blank=True, null=True,
         help_text='Used for Derrida shelf mark')
 
     def __str__(self):
