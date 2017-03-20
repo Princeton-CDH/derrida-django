@@ -105,7 +105,7 @@ class BookAdmin(admin.ModelAdmin):
     fields = ('primary_title', 'short_title', 'larger_work_title', 'item_type',
         'journal', 'original_pub_info', 'publisher',
         'pub_place', 'copyright_year', ('pub_date', 'pub_day_missing',
-        'pub_month_missing'), 'is_extant', 'is_annotated', 'is_digitized',
+        'pub_month_missing'), 'is_extant', 'is_annotated', 'is_digitized', 'uri',
         'dimensions', 'notes')
     search_fields = ('primary_title', 'creator__person__authorized_name',
         'catalogue__call_number', 'notes', 'publisher__name')
