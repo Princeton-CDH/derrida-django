@@ -70,11 +70,11 @@
                   <div class="grp-tr">
                     <div class="grp-td">
                       <a href='{% url "admin:books_book_change" personbook.book.pk %}'>
-                        {{ personbook.book.title }}
+                        {{ personbook.book.primary_title }}
                       </a>
                     </div>
                     <div class='grp-td'>
-                      {{ personbook.book.pub_year }}
+                      {{ personbook.book.work_year }}
                     </div>
                     <div class='grp-td'>
                       <a href='{% url "admin:books_personbook_change" personbook.pk %}'>
