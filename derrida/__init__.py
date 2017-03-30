@@ -12,4 +12,4 @@ def context_extras(request):
     return {
         # software version
         'SW_VERSION': __version__
-    }
+    }    

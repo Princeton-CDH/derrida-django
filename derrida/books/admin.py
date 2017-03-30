@@ -7,7 +7,7 @@ from derrida.footnotes.admin import FootnoteInline
 from .models import Subject, Language, Publisher, OwningInstitution, \
     Book, Catalogue, BookSubject, BookLanguage, CreatorType, Creator, \
     PersonBook, PersonBookRelationshipType, \
-    DerridaWork, Reference, ReferenceType, Journal, ItemType
+    DerridaWork, Reference, ReferenceType, Journal, ItemType, AssociatedBook
 
 
 class NamedNotableBookCount(NamedNotableAdmin):
@@ -76,8 +76,16 @@ class PersonBookInline(CollapsibleTabularInline):
     model = PersonBook
     form = PersonBookInlineForm
 
+
 class ReferenceInline(CollapsibleTabularInline):
     model = Reference
+
+
+class AssociatedBookInline(CollapsibleTabularInline):
+    '''Tabular inline for Associated Book set'''
+    model = AssociatedBook
+    fk_name = 'from_book'
+
 
 class BookAdminForm(forms.ModelForm):
     '''Custom model form for Book editing, used to add autocomplete
@@ -109,7 +117,7 @@ class BookAdmin(admin.ModelAdmin):
         'dimensions', 'notes')
     search_fields = ('primary_title', 'creator__person__authorized_name',
         'catalogue__call_number', 'notes', 'publisher__name')
-    inlines = [ReferenceInline, CreatorInline, LanguageInline, SubjectInline, CatalogueInline,
+    inlines = [AssociatedBookInline, ReferenceInline, CreatorInline, LanguageInline, SubjectInline, CatalogueInline,
         PersonBookInline, FootnoteInline]
     list_filter = ('subjects', 'languages', 'is_extant',
         'is_annotated', 'is_digitized')

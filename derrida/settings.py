@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'django_cas_ng',
     'pucas',
     # local apps
+    'derrida.apps.DerridaConfig',
     'derrida.books',
     'derrida.places',
     'derrida.people',

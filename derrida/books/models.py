@@ -111,6 +111,7 @@ class Book(Notable):
     uri = models.URLField(help_text='Finding Aid URL', blank=True, null=True)
     subjects = models.ManyToManyField(Subject, through='BookSubject')
     languages = models.ManyToManyField(Language, through='BookLanguage')
+    books = models.ManyToManyField('Book', through='AssociatedBook')
 
     # books are connected to owning institutions via the Catalogue
     # model; mapping as a many-to-many with a through
@@ -177,6 +178,24 @@ class Book(Notable):
             self.pub_date = self.pub_date.replace(month=1)
         super(Book, self).save(*args, **kwargs);
 
+
+class AssociatedBook(models.Model):
+    '''Through model for associated book sets or sections'''
+    from_book = models.ForeignKey(Book, related_name='from_book')
+    to_book = models.ForeignKey(
+        Book,
+        related_name='to_book',
+        help_text=('Creates associations between works. To edit an existing'
+                   ' instance, please delete the relationship and'
+                   ' make a new one')
+    )
+
+    class Meta:
+        verbose_name = 'Associated Book'
+        verbose_name_plural = 'Associated Books'
+
+    def __str__(self):
+        return '%s - %s' % (self.from_book, self.to_book)
 
 class Catalogue(Notable, DateRange):
     '''Location of a book in the real world, associating it with an
