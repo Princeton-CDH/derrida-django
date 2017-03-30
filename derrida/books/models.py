@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.contenttypes.fields import GenericRelation
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.validators import RegexValidator
 from django.urls import reverse
 from django.utils.safestring import mark_safe
@@ -196,6 +197,7 @@ class AssociatedBook(models.Model):
 
     def __str__(self):
         return '%s - %s' % (self.from_book, self.to_book)
+
 
 class Catalogue(Notable, DateRange):
     '''Location of a book in the real world, associating it with an

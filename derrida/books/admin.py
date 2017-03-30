@@ -85,6 +85,7 @@ class AssociatedBookInline(CollapsibleTabularInline):
     '''Tabular inline for Associated Book set'''
     model = AssociatedBook
     fk_name = 'from_book'
+    
 
 
 class BookAdminForm(forms.ModelForm):
