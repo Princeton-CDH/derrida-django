@@ -7,7 +7,8 @@ from derrida.footnotes.admin import FootnoteInline
 from .models import Subject, Language, Publisher, OwningInstitution, \
     Book, Catalogue, BookSubject, BookLanguage, CreatorType, Creator, \
     PersonBook, PersonBookRelationshipType, \
-    DerridaWork, Reference, ReferenceType, Journal, ItemType, AssociatedBook
+    DerridaWork, DerridaWorkBook, Reference, ReferenceType, Journal, ItemType, \
+    AssociatedBook
 
 
 class NamedNotableBookCount(NamedNotableAdmin):
@@ -85,7 +86,7 @@ class AssociatedBookInline(CollapsibleTabularInline):
     '''Tabular inline for Associated Book set'''
     model = AssociatedBook
     fk_name = 'from_book'
-    
+
 
 
 class BookAdminForm(forms.ModelForm):
@@ -135,6 +136,18 @@ class PersonBookAdmin(admin.ModelAdmin):
     inlines = [FootnoteInline]
 
 
+class DerridaWorkBookInline(CollapsibleTabularInline):
+    model = DerridaWorkBook
+    fields = ('book', 'notes')
+
+
+class DerridaWorkAdmin(admin.ModelAdmin):
+    '''Creating a custom admin with inlines for Derrida Work to ease associating
+    a specific book edition with it'''
+    inlines = [DerridaWorkBookInline]
+    fields = ('short_title', 'full_citation', 'is_primary', 'notes')
+
+
 admin.site.register(Subject,  NamedNotableBookCount)
 admin.site.register(Language, NamedNotableBookCount)
 admin.site.register(Publisher, NamedNotableBookCount)
@@ -145,7 +158,7 @@ admin.site.register(PersonBookRelationshipType, NamedNotableAdmin)
 admin.site.register(PersonBook, PersonBookAdmin)
 
 # Citationality sub module
-admin.site.register(DerridaWork)
+admin.site.register(DerridaWork, DerridaWorkAdmin)
 admin.site.register(ReferenceType)
 admin.site.register(Reference)
 admin.site.register(ItemType)

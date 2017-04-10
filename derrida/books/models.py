@@ -295,9 +295,31 @@ class DerridaWork(Notable):
     short_title = models.CharField(max_length=255)
     full_citation = models.TextField()
     is_primary = models.BooleanField()
+    cited_books = models.ManyToManyField(
+        'DerridaWorkBook',
+        help_text='Indicate which edition(s) of a book Derrida '
+                  'cites in this work.',
+        related_name='book_edition',
+    )
 
     def __str__(self):
         return self.short_title
+
+
+class DerridaWorkBook(Notable):
+    '''Allows Book (now <Work>) model to be associated with the Platonic
+    DerridaWork model to indicate which physical books he is citing'''
+    derridawork = models.ForeignKey(DerridaWork, related_name='self_work')
+    book = models.ForeignKey(Book, related_name='book_edition')
+
+    class Meta:
+        verbose_name = 'Cited edition'
+        verbose_name_plural = 'Cited editions'
+
+    def __str__(self):
+        return 'Derrida cites %s in %s' % (self.book, self.derridawork)
+
+
 
 
 class ReferenceType(Named, Notable):
