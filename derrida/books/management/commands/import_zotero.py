@@ -117,11 +117,9 @@ class Command(BaseCommand):
             'is_annotated': False,
         }
         # Start a newbook object
-        try:
-            newbook = Book.objects.get(primary_title=newbook_dict['primary_title'])
-        except ObjectDoesNotExist:
-
-            newbook = Book(**newbook_dict)
+        # Ignore any attempt at being idempotent
+        # the multiple books with same or similar titles make that prohibitive
+        newbook = Book(**newbook_dict)
         # Set the item type
         item_type_map = {
             'book': 'Book',
@@ -217,8 +215,8 @@ class Command(BaseCommand):
         for c_type in creator_types:
             if row[c_type]:
                 # Check to see if this is a list that needs splitting on ;
-                if re.match(';', row[c_type]):
-                    # If yes, create entries for each (stripe edge whitespace)
+                if re.search(';', row[c_type]):
+                    # If yes, create entries for each (strip edge whitespace)
                     split_creators = row[c_type].split(';')
                     for creator in split_creators:
                         person, created = Person.objects.get_or_create(

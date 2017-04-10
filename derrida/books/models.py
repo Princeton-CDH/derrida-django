@@ -94,7 +94,7 @@ class Book(Notable):
         ' that the information is not known.')
     pub_month_missing = models.BooleanField(default=False)
     pub_day_missing = models.BooleanField(default=False)
-    # This is dumb but I'm going to be using flags so I can write this
+    # This is possibly suboptimal  but I'm going to be using flags so I can write this
     # as a field set and specify how to handle the date using the Quincy project
     # as an example.
     copyright_year = models.PositiveIntegerField(blank=True, null=True)
