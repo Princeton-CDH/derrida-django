@@ -82,7 +82,10 @@ class Book(Notable):
                     )]
     )
     original_pub_info = models.TextField(
-        verbose_name='Original Publication Information')
+        verbose_name='Original Publication Information',
+        blank=True,
+        null=True,
+        )
     publisher = models.ForeignKey(Publisher, blank=True, null=True)
     pub_place = models.ForeignKey(Place, verbose_name='Place of Publication',
         blank=True, null=True)
@@ -309,17 +312,23 @@ class DerridaWork(Notable):
 class DerridaWorkBook(Notable):
     '''Allows Book (now <Work>) model to be associated with the Platonic
     DerridaWork model to indicate which physical books he is citing'''
-    derridawork = models.ForeignKey(DerridaWork, related_name='self_work')
-    book = models.ForeignKey(Book, related_name='book_edition')
-
+    derridawork = models.ForeignKey(
+        DerridaWork,
+        related_name='self_work',
+        verbose_name='Cited in'
+    )
+    book = models.ForeignKey(
+        Book,
+        related_name='book_edition',
+        verbose_name='Cited edition'
+    )
+    
     class Meta:
-        verbose_name = 'Cited edition'
-        verbose_name_plural = 'Cited editions'
+        verbose_name = 'Edition - Derrida work relation'
+        verbose_name_plural = 'Edition - Derrida work relations'
 
     def __str__(self):
         return 'Derrida cites %s in %s' % (self.book, self.derridawork)
-
-
 
 
 class ReferenceType(Named, Notable):

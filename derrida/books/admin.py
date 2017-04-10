@@ -105,6 +105,11 @@ class BookAdminForm(forms.ModelForm):
         }
 
 
+
+class DerridaWorkBookInline(CollapsibleTabularInline):
+    model = DerridaWorkBook
+    fields = ('derridawork', 'book', 'notes')
+
 class BookAdmin(admin.ModelAdmin):
     form = BookAdminForm
 
@@ -119,7 +124,8 @@ class BookAdmin(admin.ModelAdmin):
         'dimensions', 'notes')
     search_fields = ('primary_title', 'creator__person__authorized_name',
         'catalogue__call_number', 'notes', 'publisher__name')
-    inlines = [AssociatedBookInline, ReferenceInline, CreatorInline, LanguageInline, SubjectInline, CatalogueInline,
+    inlines = [AssociatedBookInline, DerridaWorkBookInline, ReferenceInline,
+        CreatorInline, LanguageInline, SubjectInline, CatalogueInline,
         PersonBookInline, FootnoteInline]
     list_filter = ('subjects', 'languages', 'is_extant',
         'is_annotated', 'is_digitized')
@@ -134,11 +140,6 @@ class PersonBookAdmin(admin.ModelAdmin):
     fields = ('person', 'relationship_type', 'book', 'start_year',
               'end_year', 'notes')
     inlines = [FootnoteInline]
-
-
-class DerridaWorkBookInline(CollapsibleTabularInline):
-    model = DerridaWorkBook
-    fields = ('book', 'notes')
 
 
 class DerridaWorkAdmin(admin.ModelAdmin):
