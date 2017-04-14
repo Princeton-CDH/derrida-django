@@ -174,6 +174,39 @@ class Book(Notable):
         Creator.objects.create(person=person, creator_type=creator_type,
             book=self)
 
+    def parent(self):
+        '''Returns the physical parent book for a section. If called on a parent,
+        returns None for a falsy value.'''
+        if self.item_type.name == 'Book':
+            return None
+        else:
+            associated_books = self.books
+            for association in associated_books:
+                if association.is_collection:
+                    if association.from_book.name == 'Book':
+                        parent = association.from_book
+                    else:
+                        parent = association.to_book
+
+        return parent
+
+    def children(self):
+        '''Returns children of a parent book. If called on a child, returns None
+        so can be used as a children property check'''
+        children = []
+        # Using list in case we encounter book types that need to be added.
+        if self.item_type.name not in ['Book']:
+            return None
+        else:
+            associated_books = self.books
+            for association in associated_books:
+                if association.is_collection:
+                    if association.from_book.name not in ['Book']:
+                        children.append(association.from_book)
+                    if association.to_book.name not in ['Book']:
+                        children.append(association.to_book)
+        return children
+
     def save(self, *args, **kwargs):
         '''Override save for this model to set date-month based on flags'''
         if self.pub_day_missing:
@@ -193,6 +226,12 @@ class AssociatedBook(models.Model):
                    ' instance, please delete the relationship and'
                    ' make a new one')
     )
+    is_collection = models.BooleanField(
+        default=False,
+        help_text=('Denotes that a BookSection/Book or other section/work '
+                   'relationship is an actual parent-child. Assumes parent '
+                   'is larger work even though relationship is symmetric.')
+    )
 
     class Meta:
         verbose_name = 'Associated Book'
@@ -200,7 +239,6 @@ class AssociatedBook(models.Model):
 
     def __str__(self):
         return '%s - %s' % (self.from_book, self.to_book)
-
 
 class Catalogue(Notable, DateRange):
     '''Location of a book in the real world, associating it with an
@@ -322,7 +360,7 @@ class DerridaWorkBook(Notable):
         related_name='book_edition',
         verbose_name='Cited edition'
     )
-    
+
     class Meta:
         verbose_name = 'Edition - Derrida work relation'
         verbose_name_plural = 'Edition - Derrida work relations'
