@@ -176,7 +176,7 @@ class Book(Notable):
         Creator.objects.create(person=person, creator_type=creator_type,
             book=self)
 
-    def has_parent(self):
+    def get_parent(self):
         '''Returns the physical parent book for a section. If called on a parent,
         returns None for a falsy value.'''
         parent = None
@@ -184,7 +184,7 @@ class Book(Notable):
             return None
         else:
             associated_books = AssociatedBook.objects.filter(
-                Q(from_book=self) or Q(to_book=self) and Q(is_collection=True)
+                (Q(from_book=self) or Q(to_book=self)) and Q(is_collection=True)
             )
             for association in associated_books:
                 if association.from_book.item_type.name == 'Book':
@@ -193,7 +193,7 @@ class Book(Notable):
                     parent = association.to_book
         return parent
 
-    def has_children(self):
+    def get_children(self):
         '''Returns children of a parent book. If called on a child, returns None
         so can be used as a children property check'''
         children = []
@@ -201,14 +201,14 @@ class Book(Notable):
         if self.item_type.name not in ['Book']:
             return None
         else:
-            associated_books = self.books
+            associated_books = AssociatedBooks.objects.filter(
+                (Q(from_book=self) or Q(to_book=self)) and Q(is_collection=True)
+            )
             for association in associated_books:
-                print(association.is_collection)
-                if association.is_collection:
-                    if association.from_book.name not in ['Book']:
-                        children.append(association.from_book)
-                    if association.to_book.name not in ['Book']:
-                        children.append(association.to_book)
+                if association.from_book.item_type not in ['Book']:
+                    children.append(association.from_book)
+                if association.to_book.item_type not in ['Book']:
+                    children.append(association.to_book)
         return children
 
     def save(self, *args, **kwargs):

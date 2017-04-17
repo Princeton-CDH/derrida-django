@@ -143,10 +143,10 @@ class TestBook(TestCase):
         assert Creator.objects.filter(creator_type__name='Translator',
             person=derrida, book=la_vie).count() == 1
 
-    def test_has_parent(self):
+    def test_get_parent(self):
         # Book shouldn't have a parent
         la_vie = Book.objects.get(short_title__contains="La vie")
-        self.assertFalse(la_vie.has_parent())
+        self.assertFalse(la_vie.get_parent())
 
         pub, created = Publisher.objects.get_or_create(name='Pub Lee')
         pub_place, created = Place.objects.get_or_create(
@@ -166,6 +166,8 @@ class TestBook(TestCase):
             work_year=1823
         )
 
+        self.assertFalse(bk.get_parent())
+
         assoc, c = AssociatedBook.objects.get_or_create(
             from_book=la_vie,
             to_book=bk,
@@ -173,9 +175,69 @@ class TestBook(TestCase):
         )
         assert c
         assert assoc.is_collection
+        assert bk.get_parent() == la_vie
+        # Make sure the book/section distinction holds
+        self.assertFalse(la_vie.get_parent())
 
-        # bk section should
-        assert bk.has_parent() == la_vie
+        def test_get_children(self):
+            # Book shouldn't have any children
+            la_vie = Book.objects.get(short_title__contains="La vie")
+            self.assertFalse(la_vie.get_children())
+
+            pub, created = Publisher.objects.get_or_create(name='Pub Lee')
+            pub_place, created = Place.objects.get_or_create(
+                name='Printington',
+                geonames_id=4567,
+                latitude=0,
+                longitude=0
+            )
+            section = ItemType.objects.get(name='Book Section')
+            bk, created = Book.objects.get_or_create(
+                primary_title='Some rambling long old title',
+                item_type=section,
+                short_title='Some rambling',
+                original_pub_info='foo',
+                publisher=pub,
+                pub_place=pub_place,
+                work_year=1823
+            )
+
+            self.assertFalse(bk.get_parent())
+
+            assoc, c = AssociatedBook.objects.get_or_create(
+                from_book=la_vie,
+                to_book=bk,
+                is_collection=True
+            )
+            assert c
+            assert assoc.is_collection
+            assert la_vie.get_children().first() == bk
+            assert len(la_vie.get_children()) == 1
+            # Make a new book
+            bk, created = Book.objects.get_or_create(
+                primary_title='Some rambling long old title 2',
+                item_type=section,
+                short_title='Some rambling 2',
+                original_pub_info='foo',
+                publisher=pub,
+                pub_place=pub_place,
+                work_year=1823
+            )
+
+            # We haven't associated it yet
+            assert len(la_vie.get_children()) == 1
+
+            assoc, c = AssociatedBook.objects.get_or_create(
+                from_book=la_vie,
+                to_book=bk,
+                is_collection=True
+            )
+            # Now we have
+            assert c
+            assert assoc.is_collection
+            assert la_vie.get_children().first() == bk
+            assert len(la_vie.get_children()) == 2
+
 
 class TestCatalogue(TestCase):
 
