@@ -10,6 +10,8 @@ from derrida.places.models import Place
 from derrida.people.models import Person
 from derrida.footnotes.models import Footnote
 
+Q = models.Q
+
 
 class BookCount(models.Model):
     '''Mix-in for models related to books; adds book count property and link to
@@ -174,23 +176,24 @@ class Book(Notable):
         Creator.objects.create(person=person, creator_type=creator_type,
             book=self)
 
-    def parent(self):
+    def has_parent(self):
         '''Returns the physical parent book for a section. If called on a parent,
         returns None for a falsy value.'''
+        parent = None
         if self.item_type.name == 'Book':
             return None
         else:
-            associated_books = self.books
+            associated_books = AssociatedBook.objects.filter(
+                Q(from_book=self) or Q(to_book=self) and Q(is_collection=True)
+            )
             for association in associated_books:
-                if association.is_collection:
-                    if association.from_book.name == 'Book':
-                        parent = association.from_book
-                    else:
-                        parent = association.to_book
-
+                if association.from_book.item_type.name == 'Book':
+                    parent = association.from_book
+                else:
+                    parent = association.to_book
         return parent
 
-    def children(self):
+    def has_children(self):
         '''Returns children of a parent book. If called on a child, returns None
         so can be used as a children property check'''
         children = []
@@ -200,6 +203,7 @@ class Book(Notable):
         else:
             associated_books = self.books
             for association in associated_books:
+                print(association.is_collection)
                 if association.is_collection:
                     if association.from_book.name not in ['Book']:
                         children.append(association.from_book)
@@ -337,10 +341,10 @@ class DerridaWork(Notable):
     full_citation = models.TextField()
     is_primary = models.BooleanField()
     cited_books = models.ManyToManyField(
-        'DerridaWorkBook',
+        'Book',
+        through='DerridaWorkBook',
         help_text='Indicate which edition(s) of a book Derrida '
                   'cites in this work.',
-        related_name='book_edition',
     )
 
     def __str__(self):
@@ -352,13 +356,11 @@ class DerridaWorkBook(Notable):
     DerridaWork model to indicate which physical books he is citing'''
     derridawork = models.ForeignKey(
         DerridaWork,
-        related_name='self_work',
         verbose_name='Cited in'
     )
     book = models.ForeignKey(
         Book,
-        related_name='book_edition',
-        verbose_name='Cited edition'
+         verbose_name='Cited edition',
     )
 
     class Meta:

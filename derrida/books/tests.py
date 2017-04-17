@@ -143,6 +143,39 @@ class TestBook(TestCase):
         assert Creator.objects.filter(creator_type__name='Translator',
             person=derrida, book=la_vie).count() == 1
 
+    def test_has_parent(self):
+        # Book shouldn't have a parent
+        la_vie = Book.objects.get(short_title__contains="La vie")
+        self.assertFalse(la_vie.has_parent())
+
+        pub, created = Publisher.objects.get_or_create(name='Pub Lee')
+        pub_place, created = Place.objects.get_or_create(
+            name='Printington',
+            geonames_id=4567,
+            latitude=0,
+            longitude=0
+        )
+        section = ItemType.objects.get(name='Book Section')
+        bk, created = Book.objects.get_or_create(
+            primary_title='Some rambling long old title',
+            item_type=section,
+            short_title='Some rambling',
+            original_pub_info='foo',
+            publisher=pub,
+            pub_place=pub_place,
+            work_year=1823
+        )
+
+        assoc, c = AssociatedBook.objects.get_or_create(
+            from_book=la_vie,
+            to_book=bk,
+            is_collection=True
+        )
+        assert c
+        assert assoc.is_collection
+
+        # bk section should
+        assert bk.has_parent() == la_vie
 
 class TestCatalogue(TestCase):
 
@@ -165,3 +198,66 @@ class TestCatalogue(TestCase):
         # with no date set
         cat.start_year = 1891
         assert '%s / %s (1891-)' % (bk, inst) == str(cat)
+
+
+class TestDerridaWork(TestCase):
+
+    def setUp(self):
+        testwork, c = DerridaWork.objects.get_or_create(
+            short_title='Ceci n\'est pas un livre',
+            full_citation=('Ceci n\'est pas un livre: '
+                           'and other tales of deconstructionism'),
+            is_primary=True,
+        )
+
+
+    def test_str(self):
+        '''Test that DerridaWork produces its expected string'''
+        short_title='Ceci n\'est pas un livre'
+        testwork = DerridaWork.objects.get(short_title=short_title)
+        assert str(testwork) == short_title
+
+
+class TestDerridaWorkBook(TestCase):
+
+    def setUp(self):
+        testwork, c = DerridaWork.objects.get_or_create(
+            short_title='Ceci n\'est pas un livre',
+            full_citation=('Ceci n\'est pas un livre: '
+                           'and other tales of deconstructionism'),
+            is_primary=True,
+        )
+
+
+    def test_associate_with_cited_book(self):
+        '''Tests that DerridaWork and Book can be associated
+        as the edition cited in the platonic DerridaWork'''
+        pub, created = Publisher.objects.get_or_create(name='Pub Lee')
+        pub_place, created = Place.objects.get_or_create(
+            name='Printington',
+            geonames_id=4567,
+            latitude=0,
+            longitude=0
+        )
+        book = ItemType.objects.get(name='Book')
+        bk, created = Book.objects.get_or_create(
+            primary_title='Some rambling long old title',
+            item_type=book,
+            short_title='Some rambling',
+            original_pub_info='foo',
+            publisher=pub,
+            pub_place=pub_place,
+            work_year=1823
+        )
+        short_title='Ceci n\'est pas un livre'
+        testwork = DerridaWork.objects.get(short_title=short_title)
+
+        new_assoc, created = DerridaWorkBook.objects.get_or_create(
+            derridawork=testwork,
+            book=bk,
+        )
+
+        assert created
+        assert new_assoc.derridawork == testwork
+        assert new_assoc.book == bk
+        assert (testwork.cited_books).first() == bk
