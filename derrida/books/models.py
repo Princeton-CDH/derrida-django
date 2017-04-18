@@ -242,7 +242,7 @@ class AssociatedBook(models.Model):
         verbose_name_plural = 'Associated Books'
 
     def __str__(self):
-        return '%s - %s' % (self.from_book, self.to_book)
+        return '%s - %s' % (self.from_book.short_title, self.to_book.short_title)
 
 class Catalogue(Notable, DateRange):
     '''Location of a book in the real world, associating it with an

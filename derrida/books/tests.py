@@ -14,8 +14,15 @@ from unittest.mock import patch
 import os
 from io import StringIO
 
+# Import commmand
+from .management.commands import import_zotero
+
+
 # All the models
-from .models import *
+from derrida.places.models import Place
+from derrida.people.models import Person
+from .models import AssociatedBook, Book, Catalogue, Creator, CreatorType, ItemType, Publisher, OwningInstitution
+from .models import DerridaWork, DerridaWorkBook
 
 FIXTURE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)),
     'fixtures')
@@ -239,6 +246,83 @@ class TestBook(TestCase):
             assert len(la_vie.get_children()) == 2
 
 
+class TestAssociatedBook(TestCase):
+
+    def setUp(self):
+        section = ItemType.objects.get(name='Book Section')
+        pub, created = Publisher.objects.get_or_create(name='Pub Lee')
+        pub_place, created = Place.objects.get_or_create(
+            name='Printington',
+            geonames_id=4567,
+            latitude=0,
+            longitude=0
+        )
+
+        bk1, created = Book.objects.get_or_create(
+            primary_title='Some rambling long old title',
+            item_type=section,
+            short_title='Some rambling',
+            original_pub_info='foo',
+            publisher=pub,
+            pub_place=pub_place,
+            work_year=1823
+        )
+        bk2, created = Book.objects.get_or_create(
+            primary_title='Some rambling long old title: the sequel',
+            item_type=section,
+            short_title='Some rambling 2',
+            original_pub_info='foo',
+            publisher=pub,
+            pub_place=pub_place,
+            work_year=1823
+        )
+
+    def test_str(self):
+        books = Book.objects.all()
+        association = AssociatedBook(
+            from_book=books[0],
+            to_book=books[1],
+        )
+
+        assert str(association) == 'Some rambling - Some rambling 2'
+
+    def test_signals(self):
+        '''Checks the signals in signals.py for books module.
+        Should produce reciprocal creation and deletion'''
+        books = Book.objects.all()
+        association, created = AssociatedBook.objects.get_or_create(
+            from_book=books[0],
+            to_book=books[1],
+        )
+
+        assert created
+
+        # Refresh the object
+        books = Book.objects.all()
+
+        # Test the link
+        assoc_books = books[0].books.all()
+        print(assoc_books)
+        assert len(assoc_books) == 1
+        assert assoc_books[0] == books[1]
+
+        # Reverse it
+        assoc_books = books[1].books.all()
+        assert len(assoc_books) == 1
+        assert assoc_books[0] == books[0]
+
+        # Delete it
+        association.delete()
+
+        # Check again
+        assoc_books = books[0].books.all()
+        assert len(assoc_books) == 0
+
+        # Reverse it
+        assoc_books = books[1].books.all()
+        assert len(assoc_books) == 0
+
+
 class TestCatalogue(TestCase):
 
     def test_str(self):
@@ -323,3 +407,44 @@ class TestDerridaWorkBook(TestCase):
         assert new_assoc.derridawork == testwork
         assert new_assoc.book == bk
         assert (testwork.cited_books).first() == bk
+
+
+class TestImportZotero(TestCase):
+
+    test_csv = os.path.join(FIXTURE_DIR, 'test_zotero_data.csv')
+
+    def setUp(self):
+
+        self.cmd = import_zotero.Command()
+        self.cmd.stdout = StringIO()
+        self.cmd.stats = defaultdict(int)
+
+        # Kludge to get dummy values in the command we're using to test for
+        # API lookups, since we're already hacking it a bit.
+        # TODO: Figure out how to mock this instead
+        def dummy_viaf(*args, **kwargs):
+            return 'http://totallyviaf.org/viaf/00001/'
+        def dummy_geonames(*args, **kwargs):
+            return {
+                'latitude': 0,
+                'longitude': 0,
+                'geonames_id': 'http://notgeonames/0001/'
+            }
+
+        self.cmd.viaf_lookup = dummy_viaf
+        self.cmd.geonames_lookup = dummy_geonames
+
+    def test_run(self):
+            out = StringIO()
+            # pass the modified self.cmd object
+            call_command(self.cmd, self.test_csv, stdout=out)
+            output = out.getvalue()
+            assert '4 books' in output
+            assert '1 places' in output
+            assert '5 people' in output
+            assert '1 publishers' in output
+            assert '22 references from tags' in output
+
+            assert '0 errors' in output
+            assert 'following tags looked suspicious' not in output
+            assert '0 references with unset tags'

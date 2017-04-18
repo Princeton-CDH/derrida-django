@@ -53,12 +53,13 @@ class Command(BaseCommand):
 
         %(error_count)d errors''' % self.stats)
 
-        self.stdout.write("In addition, the following tags looked suspicious:")
-        for tag in self.dud_code_list:
-            self.stdout.write("    %s" % tag)
+        if len(self.dud_code_list) > 0:
+            self.stdout.write("In addition, the following tags looked suspicious:")
+            for tag in self.dud_code_list:
+                self.stdout.write("    %s" % tag)
         unset = ReferenceType.objects.get(name='Unset')
         unset_refs = Reference.objects.filter(reference_type=unset)
-        self.stdout.write("I also found %s references with Unset tags." %
+        self.stdout.write("I also found %s references with unset tags." %
             len(unset_refs))
         self.stdout.write("They were:")
         for reference in unset_refs:
@@ -224,13 +225,14 @@ class Command(BaseCommand):
                             viaf_id=self.viaf_lookup(creator.strip())
                         )
                         newbook.add_creator(person, c_type)
+                        self.stats['person_count'] += 1
                 else:
                     person, created = Person.objects.get_or_create(
                         authorized_name=row[c_type],
                         viaf_id=self.viaf_lookup(row[c_type])
                     )
-                newbook.add_creator(person, c_type)
-                self.stats['person_count'] += 1
+                    newbook.add_creator(person, c_type)
+                    self.stats['person_count'] += 1
         # Add catalogue entry for book
         # TODO: Call numbers?
         Catalogue.objects.get_or_create(
