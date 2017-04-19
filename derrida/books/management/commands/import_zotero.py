@@ -205,6 +205,9 @@ class Command(BaseCommand):
         # Save so we can add creators
         newbook.save()
 
+        # Notes
+        
+
         # Creators
         # Check if any exist in the row (using blank string as falsy)
         # If they do, create create their person entry with a VIAF lookup.

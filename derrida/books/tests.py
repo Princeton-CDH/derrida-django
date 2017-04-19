@@ -12,17 +12,22 @@ except ImportError:
 import json
 from unittest.mock import patch
 import os
+import re
 from io import StringIO
 
 # Import commmand
 from .management.commands import import_zotero
 
-
 # All the models
 from derrida.places.models import Place
 from derrida.people.models import Person
-from .models import AssociatedBook, Book, Catalogue, Creator, CreatorType, ItemType, Publisher, OwningInstitution
+from .models import AssociatedBook, Book, Catalogue, Creator, CreatorType, \
+    ItemType, Publisher, OwningInstitution
 from .models import DerridaWork, DerridaWorkBook
+
+# pandas
+from pandas import DataFrame
+
 
 FIXTURE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)),
     'fixtures')
@@ -434,17 +439,71 @@ class TestImportZotero(TestCase):
         self.cmd.viaf_lookup = dummy_viaf
         self.cmd.geonames_lookup = dummy_geonames
 
+        princeton, created = Place.objects.get_or_create(
+            name='Princeton, NJ',
+            **(self.cmd.geonames_lookup('Princeton, NJ'))
+        )
+        OwningInstitution.objects.get_or_create(
+            short_name='PUL',
+            contact_info='http://library.princeton.edu/help/contact-us',
+            place=princeton
+        )
+
     def test_run(self):
             out = StringIO()
             # pass the modified self.cmd object
             call_command(self.cmd, self.test_csv, stdout=out)
             output = out.getvalue()
-            assert '4 books' in output
-            assert '1 places' in output
-            assert '5 people' in output
-            assert '1 publishers' in output
-            assert '22 references from tags' in output
+            assert '5 books' in output
+            assert '2 places' in output
+            assert '7 people' in output
+            assert '2 publishers' in output
+            assert '23 references from tags' in output
 
             assert '0 errors' in output
             assert 'following tags looked suspicious' not in output
             assert '0 references with unset tags'
+
+    def test_clean_data(self):
+        data = self.cmd.clean_data(self.test_csv)
+        assert isinstance(data, DataFrame)
+        wanted_columns = [
+            'Key',
+            'Item Type',
+            'Date',
+            'Author',
+            'Title',
+            'Translator',
+            'Editor',
+            'Series Editor',
+            'Url',
+            'Publisher',
+            'Place',
+            'Language',
+            'Extra',
+            'Notes',
+            'Manual Tags',
+            'Pages',
+            'Publication Title',
+            ]
+
+        for column in wanted_columns:
+            assert column in data
+
+    def test_create_book(self):
+        data = self.cmd.clean_data(self.test_csv)
+        rows = []
+        for index, row in data.iterrows():
+            rows.append(row)
+        de_gram = rows[0]
+
+        # Make the first work - journal article
+        self.cmd.create_book(de_gram)
+        book = Book.objects.get(short_title__contains='De la')
+        assert book.primary_title == de_gram['Title']
+        self.assertFalse(book.is_extant)
+
+        # Make sure the author was associated
+        assert book.authors().count() == 1
+        derrida = 'Derrida, Jacques'
+        assert book.authors().first().person.authorized_name == derrida
