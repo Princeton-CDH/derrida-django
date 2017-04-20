@@ -220,6 +220,7 @@ class Book(Notable):
         super(Book, self).save(*args, **kwargs);
 
 
+
 class AssociatedBook(models.Model):
     '''Through model for associated book sets or sections'''
     from_book = models.ForeignKey(Book, related_name='from_book')

@@ -84,6 +84,7 @@ class Command(BaseCommand):
             'Place',
             'Language',
             'Extra',
+            'Abstract Note',
             'Notes',
             'Manual Tags',
             'Pages',
@@ -121,6 +122,9 @@ class Command(BaseCommand):
         # Ignore any attempt at being idempotent
         # the multiple books with same or similar titles make that prohibitive
         newbook = Book(**newbook_dict)
+        # Handle blank pub information
+        if newbook.original_pub_info == ' ':
+            newbook.original_pub_info = None
         # Set the item type
         item_type_map = {
             'book': 'Book',
@@ -136,6 +140,8 @@ class Command(BaseCommand):
 
         # Do handling for all year types
         # If it passes with a single year, it need merely be set
+        # The zotero data only has months for some journal articles, rest
+        # will need to be manually set by team
         if row['Date']:
             try:
                 int(row['Date'])
@@ -202,11 +208,22 @@ class Command(BaseCommand):
             newbook.is_translation = True
         if row['Url']:
             newbook.is_extant = True
-        # Save so we can add creators
-        newbook.save()
 
         # Notes
-        
+        if row['Notes']:
+            newbook.notes = row['Notes']
+        if row['Extra']:
+            if newbook.notes:
+                newbook.notes = '\n'.join([newbook.notes, row['Extra']])
+            else:
+                newbook.notes = row['Extra']
+        if row['Abstract Note']:
+            if newbook.notes:
+                newbook.notes = '\n'.join([newbook.notes, row['Abstract Note']])
+            else:
+                newbook.notes = row['Abstract Note']
+        # Save so we can add creators
+        newbook.save()
 
         # Creators
         # Check if any exist in the row (using blank string as falsy)
@@ -237,7 +254,7 @@ class Command(BaseCommand):
                     newbook.add_creator(person, c_type)
                     self.stats['person_count'] += 1
         # Add catalogue entry for book
-        # TODO: Call numbers?
+        # No shelf marks in Zotero info
         Catalogue.objects.get_or_create(
             book=newbook,
             is_current=True,
@@ -250,7 +267,7 @@ class Command(BaseCommand):
             split_tags = row['Manual Tags'].split(';')
             for tag in split_tags:
                 tag = tag.strip()
-                result = self.parse_ref_tag(tag, newbook, row)
+                result = self.parse_ref_tag(tag, newbook)
                 if result:
                     self.stats['reference_count'] += 1
 
@@ -284,7 +301,7 @@ class Command(BaseCommand):
                     viafid = viaf.uri_from_id(results[0]['viafid'])
         return viafid
 
-    def parse_ref_tag(self, tag, newbook, row):
+    def parse_ref_tag(self, tag, newbook):
         '''Code logic to parse Derrida team's tags'''
 
         # Compile the appropriate re's
@@ -293,7 +310,7 @@ class Command(BaseCommand):
         # is lower case. If not, needs fixing.
         page_loc_re = re.compile(r'(?<=[a-z])\d+([a-z]|.)')
         annotation_type_re = re.compile(r'[A-Z]')
-        book_page_seq_re = re.compile(r'(?<=[A-Z]).+?(?=[A-Z])')
+        book_page_seq_re = re.compile(r'(?<=[A-Z]).+?(?=[UNY])')
         annotation_status_re = re.compile(r'[A-Z]$')
 
         work = None
