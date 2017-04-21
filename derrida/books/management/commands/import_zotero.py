@@ -4,9 +4,8 @@ import re
 from collections import defaultdict
 from html import unescape
 
-from django.db import IntegrityError
-from django.core.exceptions import ObjectDoesNotExist, ValidationError
-from django.core.management.base import BaseCommand, CommandError
+from django.core.exceptions import ObjectDoesNotExist
+from django.core.management.base import BaseCommand
 
 from derrida.books.models import Book, Catalogue, OwningInstitution, \
     CreatorType, Publisher, Reference, ReferenceType, DerridaWork, ItemType, \
@@ -349,28 +348,25 @@ class Command(BaseCommand):
         }
 
         # Set the annotation flags
-        try:
-            if annotation_status == 'Y':
-                newbook.is_extant = True
-                newbook.is_annotated = True
-            if annotation_status == 'N':
-                newbook.is_extant = True
-        except:
-            self.dud_code_list.append(tag)
+        if annotation_status == 'Y':
+            newbook.is_extant = True
+            newbook.is_annotated = True
+        if annotation_status == 'N':
+            newbook.is_extant = True
         newbook.save()
 
         # Save make a Reference
         try:
-            ref, created = Reference.objects.get_or_create(
-                    book=newbook,
-                    derridawork=DerridaWork.objects.get(
-                                    short_title=derridawork_mapping[work]
-                                ),
-                    derridawork_page=re.sub(r'[a-z]', '', page_loc),
-                    derridawork_pageloc=re.sub(r'[^a-z]', '', page_loc),
-                    reference_type=ReferenceType.objects.get(
-                                        name=reference_mapping[annotation_type]),
-                    book_page=book_page_seq,
+            Reference.objects.get_or_create(
+                book=newbook,
+                derridawork=DerridaWork.objects.get(
+                                short_title=derridawork_mapping[work]
+                            ),
+                derridawork_page=re.sub(r'[a-z]', '', page_loc),
+                derridawork_pageloc=re.sub(r'[^a-z]', '', page_loc),
+                reference_type=ReferenceType.objects.get(
+                                    name=reference_mapping[annotation_type]),
+                book_page=book_page_seq,
                 )
         except KeyError:
             self.dud_code_list.append(tag)
