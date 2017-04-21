@@ -220,5 +220,3 @@ class TestPersonAutocomplete(TestCase):
         data = json.loads(response.content.decode('utf-8'))
         assert 'results' in data
         assert data['results'][0]['text'] == 'Mr. Author'
-        person = Person.objects.get(authorized_name='Mr. Author')
-        assert data['results'][0]['id'] == person.id

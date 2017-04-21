@@ -711,5 +711,3 @@ class TestPubAutocomplete(TestCase):
         data = json.loads(response.content.decode('utf-8'))
         assert 'results' in data
         assert data['results'][0]['text'] == 'Printing'
-        pub = Publisher.objects.get(name='Printing')
-        assert data['results'][0]['id'] == pub.id
