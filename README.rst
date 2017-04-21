@@ -75,9 +75,13 @@ is installed and the appropriate server key is loaded via `ssh-add`::
     cd derrida-django/deploy/
     ansible-playbook prod_derrida-django_.yml <-e github reference>
 
-Any valid Github tag type is accepted, but the script defaults to `master`.
-`ansible.cfg` and `hosts` set up the host group and configuration used in the
+Any valid Github tag type is accepted, but the script defaults to ``master``.
+``ansible.cfg`` and ``hosts`` set up the host group and configuration used in the
 commands.
+
+The production deploy does not involve itself with Apache configuration, because
+that is handled server side.
+
 
 Documentation
 ~~~~~~~~~~~~~
