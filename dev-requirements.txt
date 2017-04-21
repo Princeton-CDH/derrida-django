@@ -5,3 +5,5 @@ pytest-cov
 pytest-sugar
 django-debug-toolbar
 sphinx
+ansible
+# Optional, only needed if deploying
