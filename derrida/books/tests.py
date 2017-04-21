@@ -4,8 +4,10 @@ from collections import defaultdict
 import csv
 from django.contrib.auth import get_user_model
 from django.core.management import call_command
+from django.http import JsonResponse
 from django.utils.safestring import mark_safe
 from django.test import TestCase
+
 try:
     # django 1.10
     from django.urls import reverse
@@ -27,10 +29,13 @@ from derrida.people.models import Person
 from .models import AssociatedBook, Book, Catalogue, Creator, CreatorType, \
     ItemType, Publisher, OwningInstitution
 # Citationality extensions
-from .models import DerridaWork, DerridaWorkBook, Reference
+from .models import DerridaWork, DerridaWorkBook, Reference, ReferenceType
 
 # pandas
 from pandas import DataFrame
+
+# User model
+User = get_user_model()
 
 
 FIXTURE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)),
@@ -417,6 +422,78 @@ class TestDerridaWorkBook(TestCase):
         assert new_assoc.book == bk
         assert (testwork.cited_books).first() == bk
 
+class TestReference(TestCase):
+
+    def setUp(self):
+        section = ItemType.objects.get(name='Book Section')
+        pub, created = Publisher.objects.get_or_create(name='Pub Lee')
+        pub_place, created = Place.objects.get_or_create(
+            name='Printington',
+            geonames_id=4567,
+            latitude=0,
+            longitude=0
+        )
+
+        bk1, created = Book.objects.get_or_create(
+            primary_title='Some rambling long old title',
+            item_type=section,
+            short_title='Some rambling',
+            original_pub_info='foo',
+            publisher=pub,
+            pub_place=pub_place,
+            work_year=1823
+        )
+
+    def test_str(self):
+        bk1 = Book.objects.get(short_title='Some rambling')
+        dg = DerridaWork.objects.get(pk=1)
+        quotation = ReferenceType.objects.get(name='Quotation')
+        # Writing this out because complicated output
+        desired_output = 'De la grammatologie, 110a: Some rambling, 10s, Quotation'
+        reference, created = Reference.objects.get_or_create(
+            book=bk1,
+            derridawork=dg,
+            derridawork_page='110',
+            derridawork_pageloc='a',
+            book_page='10s',
+            reference_type=quotation
+        )
+        assert str(reference) == desired_output
+
+    def test_associate_with_book_and_derrida_work(self):
+        bk1 = Book.objects.get(short_title='Some rambling')
+        dg = DerridaWork.objects.get(pk=1)
+        quotation = ReferenceType.objects.get(name='Quotation')
+        # Writing this out because complicated output
+        desired_output = 'De la grammatologie, 110a: Some rambling, 10s, Quotation'
+        reference, created = Reference.objects.get_or_create(
+            book=bk1,
+            derridawork=dg,
+            derridawork_page='110',
+            derridawork_pageloc='a',
+            book_page='10s',
+            reference_type=quotation
+        )
+        reference2, created = Reference.objects.get_or_create(
+            book=bk1,
+            derridawork=dg,
+            derridawork_page='113',
+            derridawork_pageloc='b',
+            book_page='10s',
+            reference_type=quotation
+        )
+        # Make sure that more than one reference can be linked
+        references = Reference.objects.filter(book=bk1)
+        assert references.count() == 2
+        for ref in references:
+            assert ref.book == bk1
+            assert ref.derridawork == dg
+
+        # Delete one and check counts
+        references[0].delete()
+        references = Reference.objects.filter(book=bk1)
+        assert references.count() == 1
+
 
 class TestImportZotero(TestCase):
 
@@ -427,6 +504,7 @@ class TestImportZotero(TestCase):
         self.cmd = import_zotero.Command()
         self.cmd.stdout = StringIO()
         self.cmd.stats = defaultdict(int)
+        self.cmd.dud_code_list = []
 
         # Kludge to get dummy values in the command we're using to test for
         # API lookups, since we're already hacking it a bit.
@@ -535,11 +613,27 @@ class TestImportZotero(TestCase):
         assert len(references) == 2
         for reference in references:
             reference.delete()
+
         # Now play with tag types
         full_tag = 'dg112eF(IV)sU'
         self.cmd.parse_ref_tag(full_tag, bk)
         reference = Reference.objects.get(book=bk)
         assert reference.book_page == '(IV)s'
+        reference.delete()
+
+        full_tag = 'dg112eQ(IV)sU'
+        self.cmd.parse_ref_tag(full_tag, bk)
+        reference = Reference.objects.get(book=bk)
+        assert reference.reference_type.name == 'Quotation'
+        reference.delete()
+
+        # provisional tag has no book page
+        full_tag = 'dg112eQ___'
+        self.cmd.parse_ref_tag(full_tag, bk)
+        reference = Reference.objects.get(book=bk)
+        assert reference.reference_type.name == 'Quotation'
+        assert reference.book_page == None
+        reference.delete()
 
     def test_create_book(self):
         data = self.cmd.clean_data(self.test_csv)
@@ -563,7 +657,6 @@ class TestImportZotero(TestCase):
         self.assertFalse(book.is_extant)
         assert book.item_type == article
         assert book.copyright_year == 1965
-
         # Make sure the author was associated
         assert book.authors().count() == 1
         derrida = 'Derrida, Jacques'
@@ -574,8 +667,6 @@ class TestImportZotero(TestCase):
         # There should be one tag
         references = Reference.objects.filter(book=book)
         assert references.count() == 1
-
-
         # Check a book with notes fields of some sorts
         idees = rows[4]
         self.cmd.create_book(idees)
@@ -594,3 +685,31 @@ class TestImportZotero(TestCase):
         assert book.notes == '\n'.join([idees['Notes'],
                                       idees['Extra'],
                                       idees['Abstract Note']])
+
+class TestPubAutocomplete(TestCase):
+
+    def setUp(self):
+        user = User.objects.create_superuser(
+            username='test',
+            password='secret',
+            email='foo@bar.com'
+        )
+        pub = Publisher.objects.create(name='Printing',)
+
+    def test_view_behavior(self):
+        # No login for anonymous user
+        response = self.client.get(reverse('books:publisher-autocomplete'))
+        assert response.status_code == 302
+
+        # Get a response as a staff user
+        self.client.login(username='test', password='secret')
+        response = self.client.get(
+            reverse('books:publisher-autocomplete'),
+            params = {'q': 'Print'}
+        )
+        assert response.status_code == 200
+        data = json.loads(response.content.decode('utf-8'))
+        assert 'results' in data
+        assert data['results'][0]['text'] == 'Printing'
+        pub = Publisher.objects.get(name='Printing')
+        assert data['results'][0]['id'] == pub.id
