@@ -1,0 +1,119 @@
+# Ansible deploy YAML
+# --------------------
+# - Variation on QA setup
+# - Requires access to host via security methods
+# - Builds repo and sets permissions
+# - Does back up database
+# - Does NOT run migrations or set symlinks -- do that manually
+# ---
+#
+# CDH Developers: Contact bhicks@princeton.edu or cses@princeton.edu to
+# reach RC computing staff for access if necessary
+#
+# Usage: ansible-playbook prod_derrida-django_.yml <-e ref=hash>
+#   - ref: any valid hash, tag, or branch name, default is master
+
+- hosts: derrida
+  remote_user: root
+  # Set environment to use scl rh-python35
+  environment:
+    PATH: '/opt/rh/rh-python35/root/usr/bin/:{{ lookup("env","PATH") }}'
+    LD_LIBRARY_PATH: '/opt/rh/rh-python35/root/usr/lib64'
+  vars:
+    gitref: "{{ ref | default('master') }}"
+    prod: '/srv/www/prod'
+    repo: 'derrida-django'
+    djangoapp: 'derrida'
+    deploy: '{{ prod }}/{{ shorthash.stdout }}'
+  tasks:
+    # All yum tasks get wrapped in one call
+    - name: Install git if not already on server
+      yum:
+        name: git
+        state: latest
+    - name: Make sure we have devel packages for MySQL functionality
+      yum:
+        name: 'mariadb-devel'
+        state: latest
+    - name: Make sure we have gcc for builds
+      yum:
+        name: gcc
+        state: latest
+    - name: Install the MySQLdb adapter
+      yum:
+        name: MySQL-python
+        state: latest
+    - name: Clone the repo if doesn't already exit and make sure it's on gitref
+      git:
+        repo: https://github.com/Princeton-CDH/{{ repo }}.git
+        dest: /root/checkouts/{{ repo }}
+        version: '{{ gitref }}'
+    - name: Get repo short hash
+      command: git rev-parse --short HEAD
+      args:
+          chdir: '/root/checkouts/{{ repo }}'
+      register: shorthash
+    - name: Make sure /srv/www/prod exists and has appropriate permissions
+      file:
+          path: "{{ prod }}"
+          state: directory
+          mode: "u+rwx,g+rwx,o-rwx"
+    - name: Sync checkout to production
+      synchronize:
+        src: /root/checkouts/{{ repo }}/
+        dest: '{{ prod }}/{{ shorthash.stdout }}'
+      delegate_to: "{{ inventory_hostname }}"
+    - name: Make a directory for virtualenv
+      file:
+          path: "{{ deploy }}/env"
+          state: directory
+          mode: "u+rwx,g+rwx,o-rwx"
+    - name: set selinux context
+      sefcontext:
+        target: '{{ deploy }}/env(/.*)?'
+        setype: httpd_sys_script_exec_t
+        state: present
+    - name: Build a virtualenvironment
+      command: virtualenv "{{ deploy }}/env"
+    - name: Upgrade pip to latest in virtualenv
+      pip:
+        name: pip
+        state: latest
+        virtualenv: "{{ deploy }}/env"
+    - name: Install requirements via pip
+      pip:
+        virtualenv: "{{ deploy }}/env"
+        requirements: "{{ deploy }}/requirements.txt"
+    - name: Copy local_settings.py from /root/
+      synchronize:
+        src: /root/local_settings.py
+        dest: '{{ prod }}/{{ shorthash.stdout }}/{{ djangoapp }}'
+      delegate_to: "{{ inventory_hostname }}"
+    - name: Run ./manange.py collect static
+      django_manage:
+        command: collectstatic
+        app_path: "{{ deploy }}"
+        virtualenv: "{{ deploy }}/env"
+    - name: Copy over robots.txt
+      synchronize:
+        src: /root/robots.txt
+        dest: '{{ prod }}/{{ shorthash.stdout }}/static/'
+    - name: Set ownership recursively
+      file:
+        path: "{{ prod }}"
+        state: directory
+        owner: root
+        group: apache
+        recurse: yes
+        # NOTE: Apache can't write - change if we need an uploads folder
+        # when blog functionality is added.
+        mode: "u+rwx,g+rx,o-rwx"
+    delegate_to: "{{ inventory_hostname }}"
+    - name: Call restorecon on the full directory
+      command: 'restorecon -Rv {{ prod }}'
+    - name: Make a database dump to /tmp just in case
+      mysql_db:
+        state: dump
+        login_host: cdh-db.princeton.edu
+        name: derridaprod
+        target: "/tmp/derrida-prod-pre-{{ shorthash.stdout }}.sql"

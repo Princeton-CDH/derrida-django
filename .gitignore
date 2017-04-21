@@ -3,9 +3,11 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-# Add sqlite DBs
+# Sqlite DBs
 *.sqlite3
 
+# Ansible retry files
+*.retry
 
 # C extensions
 *.so
