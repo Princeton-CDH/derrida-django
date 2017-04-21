@@ -1,7 +1,7 @@
-# Ansible deploy YAML
+# Ansible Production Deploy YAML
 # --------------------
 # - Variation on QA setup
-# - Requires access to host via security methods
+# - Requires access to host via security methods (see note to CDH developers)
 # - Builds repo and sets permissions
 # - Does back up database
 # - Does NOT run migrations or set symlinks -- do that manually
@@ -12,6 +12,8 @@
 #
 # Usage: ansible-playbook prod_derrida-django_.yml <-e ref=hash>
 #   - ref: any valid hash, tag, or branch name, default is master
+# the --private-key flag can manually specify a key if you don't want to use
+# ssh-add or similar, or you can add ansible_ssh_private_key_file to variables.
 
 - hosts: derrida
   remote_user: root
