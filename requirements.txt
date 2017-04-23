@@ -5,4 +5,4 @@ django-autocomplete-light
 pandas
 requests
 rdflib
-git+https://github.com/Princeton-CDH/django-pucas.git@masters#egg=pucas
+git+https://github.com/Princeton-CDH/django-pucas.git@master#egg=pucas
