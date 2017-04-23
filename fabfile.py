@@ -4,6 +4,7 @@ from fabric.api import env, run, sudo
 from fabric.context_managers import cd
 from fabric.contrib.files import exists
 
+# Superceded by Ansible deploy but retained for this release.
 
 env.user = 'fabric-user'
 env.hosts = ['libservdhc7.princeton.edu']
