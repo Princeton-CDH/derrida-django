@@ -3,19 +3,17 @@ derrida-django
 Django web application for the `Derrida's Margins Project
 <https://cdh.princeton.edu/projects/derridas-margins/>`_.
 
-.. image:: https://travis-ci.org/Princeton-CDH/derrida-django.svg?branch=develop
+.. image:: https://travis-ci.org/Princeton-CDH/derrida-django.svg?branch=master
    :target: https://travis-ci.org/Princeton-CDH/derrida-django
    :alt: Build status
 
-.. image:: https://landscape.io/github/Princeton-CDH/derrida-django/develop/landscape.svg?style=flat
-  :target: https://landscape.io/github/Princeton-CDH/derrida-django/develop
+.. image:: https://landscape.io/github/Princeton-CDH/derrida-django/master/landscape.svg?style=flat
+  :target: https://landscape.io/github/Princeton-CDH/derrida-django/master
   :alt: Code Health
 
-.. image:: https://codecov.io/gh/Princeton-CDH/derrida-django/branch/develop/graph/badge.svg
+.. image:: https://codecov.io/gh/Princeton-CDH/derrida-django/branch/master/graph/badge.svg
    :target: https://codecov.io/gh/Princeton-CDH/derrida-django
    :alt: Code coverage
-
-
 
 This repo uses `git-flow <https://github.com/nvie/gitflow>`_ conventions, so the
 most recent code will be on the develop branch.
@@ -49,8 +47,6 @@ Initial setup and installation:
 -  copy sample local settings and configure for your environment
    ``cp derrida/local_settings.py.sample derrida/local_settings.py``
 
-(documentation TODO) - install & configure git commit hook for Asana
-integration
 
 Unit Tests
 ~~~~~~~~~~

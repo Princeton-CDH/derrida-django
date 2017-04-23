@@ -5,5 +5,4 @@ django-autocomplete-light
 pandas
 requests
 rdflib
-# use develop branch of pucas until we have an initial release
-git+https://github.com/Princeton-CDH/django-pucas.git@develop#egg=pucas
+git+https://github.com/Princeton-CDH/django-pucas.git@masters#egg=pucas
