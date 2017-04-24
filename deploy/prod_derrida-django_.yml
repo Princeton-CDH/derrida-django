@@ -16,7 +16,7 @@
 # ssh-add or similar, or you can add ansible_ssh_private_key_file to variables.
 
 - hosts: derrida
-  remote_user: root
+  become: root
   # Set environment to use scl rh-python35
   environment:
     PATH: '/opt/rh/rh-python35/root/usr/bin/:{{ lookup("env","PATH") }}'
@@ -28,23 +28,6 @@
     djangoapp: 'derrida'
     deploy: '{{ prod }}/{{ shorthash.stdout }}'
   tasks:
-    # All yum tasks get wrapped in one call
-    - name: Install git if not already on server
-      yum:
-        name: git
-        state: latest
-    - name: Make sure we have devel packages for MySQL functionality
-      yum:
-        name: 'mariadb-devel'
-        state: latest
-    - name: Make sure we have gcc for builds
-      yum:
-        name: gcc
-        state: latest
-    - name: Install the MySQLdb adapter
-      yum:
-        name: MySQL-python
-        state: latest
     - name: Clone the repo if doesn't already exit and make sure it's on gitref
       git:
         repo: https://github.com/Princeton-CDH/{{ repo }}.git
