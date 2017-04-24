@@ -259,6 +259,14 @@ class TestBook(TestCase):
             assert la_vie.get_children().first() == bk
             assert len(la_vie.get_children()) == 2
 
+            # Check the reverse association
+            assoc, c = AssociatedBook.objects.get(
+                from_book=bk,
+                to_book=la_vie,
+            )
+            assert assoc.is_collection
+
+
 
 class TestAssociatedBook(TestCase):
 
