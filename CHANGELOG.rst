@@ -37,8 +37,8 @@ Biographic Data (People)
 * As a record editor, I want to be able to associate roles and relationships to people so that I can document how they interacted with each other and the Derrida Library.
 * As a record editor, I want to be able to automatically associate authors with their VIAF URI, so that I can better document individuals associated with Derrida Library.
 
-Footnotes **(On Github, included under book fields.)**
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Footnotes **(Included under book fields in GitHub issues)**
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 * As a data editor, I want to add a new or edit an existing source type so that I can track the kinds of source documents used as evidence in the system.
 * As a data editor, I want to add a new or edit an existing footnote and associate it with any other kind of record in the system so that I can document evidence related to assertions made elsewhere in the data.
@@ -48,13 +48,9 @@ Footnotes **(On Github, included under book fields.)**
 User Management
 ~~~~~~~~~~~~~~~
 
-* As a project team member, I want to login with my Princeton CAS account so that
-I can use existing my existing credentials and not have to keep track of a separate
-username and password.
-* As an admin, I want to edit user and group permissions so I can manage project
-team member access within the system.
-* As an admin, I want to edit user and group permissions so I can manage project
-team member access within the system.
+* As a project team member, I want to login with my Princeton CAS account so that I can use existing my existing credentials and not have to keep track of a separate username and password.
+* As an admin, I want to edit user and group permissions so I can manage project team member access within the system.
+* As an admin, I want to edit user and group permissions so I can manage project team member access within the system.
 
 Zotero Import
 ~~~~~~~~~~~~~
@@ -62,4 +58,9 @@ Zotero Import
 * As a record editor, I want a one-time import of Books from Zotero data into the system so that I can refine and augment the initial data that’s already been collected.
 * As a record editor, I want a one-time import of People from Zotero data into the system so that I can refine and augment the initial data that’s already been collected.
 * As a record editor, I want publishing places associated with their GeoNames ID so that I can document publishing locations more clearly.
-* As a record editor, I want people associated with their
+* As a record editor, I want citations imported and associated with their works based on the tagging system implemented by the team.
+
+KNOWN ISSUES
+============
+
+* Not all content types currently work for the footnote object number lookup in admin.

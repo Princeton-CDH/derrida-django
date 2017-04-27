@@ -1,5 +1,8 @@
 derrida-django
---------------
+==============
+
+.. sphinx-start-marker-do-not-remove
+
 Django web application for the `Derrida's Margins Project
 <https://cdh.princeton.edu/projects/derridas-margins/>`_.
 
@@ -71,12 +74,11 @@ is installed and the appropriate server key is loaded via `ssh-add`::
     cd derrida-django/deploy/
     ansible-playbook prod_derrida-django_.yml <-e github reference>
 
-Any valid Github tag type is accepted, but the script defaults to ``master``.
-``ansible.cfg`` and ``hosts`` set up the host group and configuration used in the
-commands.
+Any valid Github tag type is accepted, but the script defaults to ``master``. ``ansible.cfg`` and ``hosts`` set up the host group and configuration used in the commands.
 
 The production deploy does not involve itself with Apache configuration, because
-that is handled server side.
+that is handled server side and currently assumes that migrations and symbolic
+linking are handled by hand.
 
 
 Documentation
@@ -93,4 +95,4 @@ directory::
     cd docs
     make html
 
-You can also view documentation for the current master branch `on GitHub Pages <https://princeton-cdh.github.io/derrida-django/html/>`__
+You can also view documentation for the current master branch on `GitHub Pages <https://princeton-cdh.github.io/derrida-django/html/>`__

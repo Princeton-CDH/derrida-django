@@ -1,0 +1,216 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>CHANGELOG &#8212; Derrida 0.5.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.5.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Code Documentation" href="codedocs.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="changelog">
+<span id="id1"></span><h1>CHANGELOG<a class="headerlink" href="#changelog" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="bio-bibliographical-admin-interface">
+<h2>0.5 Bio/Bibliographical Admin interface<a class="headerlink" href="#bio-bibliographical-admin-interface" title="Permalink to this headline">¶</a></h2>
+<p>Initial project release implements the bio/bibliographical portion of
+the database and customized Django admin interface for data import
+and management of biographical and bibliographic data.</p>
+<p>Features are expressed as user stories as written by the development and
+project teams.</p>
+<div class="section" id="book-metadata">
+<h3>Book Metadata<a class="headerlink" href="#book-metadata" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>As a record editor, I want to add a new or edit an existing book so that I can document the publication data, annotation data, citations, and other relevant details.</li>
+<li>As a record editor, I want to add new data in or edit the following fields so that I can document them in a standard way. See <a class="reference external" href="https://github.com/Princeton-CDH/derrida-django/issues/2">#2</a>.</li>
+<li>As a record editor, I want to be able to add a work&#8217;s original date, its copyright date, and its date d&#8217;impression (date of publication).</li>
+<li>As a record editor, when I’m editing a book I want to be able to associate people involved in creating the book so that I can document information about authors, translators, and editors.</li>
+<li>As a record editor, when I’m editing a book I want to be able to associate the book to all instances of citation related to that book.</li>
+<li>As a record editor, when I’m editing a book I want to be able to associate the book to a referent book (i.e., the text by Derrida in which the book is cited &#8211; always DG at this phase).</li>
+<li>As a record editor, when I’m browsing the list of books I want to see the author, short title, publication year, owning institution call number, and whether a book is extant, annotated, and/or digitized so that I can get a quick overview of volumes.</li>
+<li>As a record editor, when I search for books in the admin interface I want to search on title, author, and notes so that I can find specific items.</li>
+<li>As a record editor, when I’m editing a book I want to be able to add notes about the book.</li>
+</ul>
+</div>
+<div class="section" id="biographic-data-people">
+<h3>Biographic Data (People)<a class="headerlink" href="#biographic-data-people" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>As a record editor, I want to add a new or edit an existing person so that I can document people associated with the Derrida Library.</li>
+<li>As a record editor, I want to add a new or edit an existing role type so that I can document the kinds of roles played by people associated with the Derrida Library.</li>
+<li>As a record editor, I want to add a new or edit an existing relationship type so that I can document the kinds of relationships between people associated with the Derrida Library.</li>
+<li>As a record editor, I want to be able to associate roles and relationships to people so that I can document how they interacted with each other and the Derrida Library.</li>
+<li>As a record editor, I want to be able to automatically associate authors with their VIAF URI, so that I can better document individuals associated with Derrida Library.</li>
+</ul>
+</div>
+<div class="section" id="footnotes-included-under-book-fields-in-github-issues">
+<h3>Footnotes <strong>(Included under book fields in GitHub issues)</strong><a class="headerlink" href="#footnotes-included-under-book-fields-in-github-issues" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>As a data editor, I want to add a new or edit an existing source type so that I can track the kinds of source documents used as evidence in the system.</li>
+<li>As a data editor, I want to add a new or edit an existing footnote and associate it with any other kind of record in the system so that I can document evidence related to assertions made elsewhere in the data.</li>
+<li>As a data editor, when I’m editing a book or a book-person relationship, I want to be able to add footnotes on the same page so that I can add documentation on the same page.</li>
+</ul>
+</div>
+<div class="section" id="user-management">
+<h3>User Management<a class="headerlink" href="#user-management" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>As a project team member, I want to login with my Princeton CAS account so that I can use existing my existing credentials and not have to keep track of a separate username and password.</li>
+<li>As an admin, I want to edit user and group permissions so I can manage project team member access within the system.</li>
+<li>As an admin, I want to edit user and group permissions so I can manage project team member access within the system.</li>
+</ul>
+</div>
+<div class="section" id="zotero-import">
+<h3>Zotero Import<a class="headerlink" href="#zotero-import" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>As a record editor, I want a one-time import of Books from Zotero data into the system so that I can refine and augment the initial data that’s already been collected.</li>
+<li>As a record editor, I want a one-time import of People from Zotero data into the system so that I can refine and augment the initial data that’s already been collected.</li>
+<li>As a record editor, I want publishing places associated with their GeoNames ID so that I can document publishing locations more clearly.</li>
+<li>As a record editor, I want citations imported and associated with their works based on the tagging system implemented by the team.</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="section" id="known-issues">
+<h1>KNOWN ISSUES<a class="headerlink" href="#known-issues" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li>Not all content types currently work for the footnote object number lookup in admin.</li>
+</ul>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Derrida</a></h1>
+
+
+
+<p class="blurb">Django web application for "Derrida's Margins" CDH project</p>
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=Princeton-CDH&repo=derrida-django&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+    
+
+<p>
+<a href="https://travis-ci.org/Princeton-CDH/derrida-django">
+    <img
+        alt="https://secure.travis-ci.org/Princeton-CDH/derrida-django.svg?branch=master"
+        src="https://secure.travis-ci.org/Princeton-CDH/derrida-django.svg?branch=master"
+    />
+</a>
+</p>
+
+
+
+
+    
+
+<p>
+<a href="https://codecov.io/github/Princeton-CDH/derrida-django">
+    <img
+    alt="https://codecov.io/github/Princeton-CDH/derrida-django/coverage.svg?branch=master"
+    src="https://codecov.io/github/Princeton-CDH/derrida-django/coverage.svg?branch=master"
+    />
+</a>
+</p>
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codedocs.html">Code Documentation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#known-issues">KNOWN ISSUES</a></li>
+</ul>
+
+
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">CHANGELOG</a><ul>
+<li><a class="reference internal" href="#bio-bibliographical-admin-interface">0.5 Bio/Bibliographical Admin interface</a><ul>
+<li><a class="reference internal" href="#book-metadata">Book Metadata</a></li>
+<li><a class="reference internal" href="#biographic-data-people">Biographic Data (People)</a></li>
+<li><a class="reference internal" href="#footnotes-included-under-book-fields-in-github-issues">Footnotes <strong>(Included under book fields in GitHub issues)</strong></a></li>
+<li><a class="reference internal" href="#user-management">User Management</a></li>
+<li><a class="reference internal" href="#zotero-import">Zotero Import</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#known-issues">KNOWN ISSUES</a></li>
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, CDH @ Princeton & Trustees of Princeotn University.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="_sources/changelog.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

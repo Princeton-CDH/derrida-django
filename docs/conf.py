@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# Winthrop documentation build configuration file, created by
+# Derrida documentation build configuration file, created by
 # sphinx-quickstart on Thu Feb 16 16:16:42 2017.
 #
 # This file is execfile()d with the current directory set to its
@@ -23,11 +23,11 @@ import django
 
 sys.path.insert(0, os.path.abspath('..'))
 
-os.environ['DJANGO_SETTINGS_MODULE'] = 'winthrop.settings'
+os.environ['DJANGO_SETTINGS_MODULE'] = 'derrida.settings'
 django.setup()
 
 
-from winthrop import __version__
+from derrida import __version__
 
 
 # -- General configuration ------------------------------------------------
@@ -60,8 +60,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = 'Winthrop'
-copyright = '2017, CDH @ Princeton'
+project = 'Derrida'
+copyright = '2017, CDH @ Princeton & Trustees of Princeotn University'
 author = 'CDH @ Princeton'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -105,9 +105,9 @@ html_theme = 'alabaster'
 #
 # html_theme_options = {}
 html_theme_options = {
-    'description': 'Django web application for "The Winthrop Family on the Page" CDH project',
+    'description': 'Django web application for "Derrida\'s Margins" CDH project',
     'github_user': 'Princeton-CDH',
-    'github_repo': 'winthrop-django',
+    'github_repo': 'derrida-django',
     'travis_button': True,
     'codecov_button': True,
 }
@@ -125,7 +125,7 @@ html_static_path = ['_static']
 # -- Options for HTMLHelp output ------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'Winthropdoc'
+htmlhelp_basename = 'Derridadoc'
 
 
 # -- Options for LaTeX output ---------------------------------------------
@@ -152,7 +152,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'Winthrop.tex', 'Winthrop Documentation',
+    (master_doc, 'Derrida.tex', 'Derrida Documentation',
      'CDH @ Princeton & The Trustees of Princeton University', 'manual'),
 ]
 
@@ -162,7 +162,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'winthrop', 'Winthrop Documentation',
+    (master_doc, 'derrida', 'Derrida Documentation',
      [author], 1)
 ]
 
@@ -173,8 +173,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'Winthrop', 'Winthrop Documentation',
-     author, 'Winthrop', 'Django web application for the Winthrop Family on the Page project.',
+    (master_doc, 'Derrida', 'Derrida Documentation',
+     author, 'Derrida', 'Django web application for the Derrida\'s Margins project.',
      'Miscellaneous'),
 ]
 

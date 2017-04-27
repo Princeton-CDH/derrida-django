@@ -82,7 +82,7 @@
       delegate_to: "{{ inventory_hostname }}"
     - name: Set ownership recursively
       file:
-        path: "{{ prod }}"
+        path: "{{ prod }}/{{ shorthash.stdout }}"
         state: directory
         owner: deploy
         group: apache
