@@ -1,4 +1,4 @@
-__version_info__ = (0, 1, 0, 'dev')
+__version_info__ = (0, 5, 0, None)
 
 
 # Dot-connect all but the last. Last is dash-connected if not None.
@@ -12,4 +12,4 @@ def context_extras(request):
     return {
         # software version
         'SW_VERSION': __version__
-    }    
+    }

@@ -9,6 +9,7 @@ def build_symmetrical(sender, instance, *args, **kwargs):
     symmetrical_instance = AssociatedBook.objects.get_or_create(
         from_book=instance.to_book,
         to_book=instance.from_book,
+        is_collection=instance.is_collection
     )
     if not symmetrical_instance:
         raise Exception('Failed to created a reciprocal relationship')
