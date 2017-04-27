@@ -689,10 +689,13 @@ class TestImportZotero(TestCase):
         self.cmd.create_book(idees)
         book = Book.objects.get(short_title__contains='Idées')
         # Now all three should exist on their own separate line
-        print(book.notes)
         assert book.notes == '\n'.join([idees['Notes'],
                                       idees['Extra'],
                                       idees['Abstract Note']])
+
+        # Faked New York to check place setting functioning correctly
+        print(book.pub_place)
+        assert book.pub_place == Place.objects.get(name='New York')
 
 class TestPubAutocomplete(TestCase):
 

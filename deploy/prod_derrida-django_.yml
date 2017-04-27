@@ -16,7 +16,7 @@
 # ssh-add or similar, or you can add ansible_ssh_private_key_file to variables.
 
 - hosts: derrida
-  become: root
+  remote_user: deploy
   # Set environment to use scl rh-python35
   environment:
     PATH: '/opt/rh/rh-python35/root/usr/bin/:{{ lookup("env","PATH") }}'
@@ -31,33 +31,29 @@
     - name: Clone the repo if doesn't already exit and make sure it's on gitref
       git:
         repo: https://github.com/Princeton-CDH/{{ repo }}.git
-        dest: /root/checkouts/{{ repo }}
+        dest: /home/deploy/checkouts/{{ repo }}
         version: '{{ gitref }}'
     - name: Get repo short hash
       command: git rev-parse --short HEAD
       args:
-          chdir: '/root/checkouts/{{ repo }}'
+          chdir: '/home/deploy/checkouts/{{ repo }}'
       register: shorthash
     - name: Make sure /srv/www/prod exists and has appropriate permissions
       file:
           path: "{{ prod }}"
           state: directory
-          mode: "u+rwx,g+rx,o-rw"
+          mode: "u+rwx,g+rwx,o-rw"
     - name: Sync checkout to production
       synchronize:
-        src: /root/checkouts/{{ repo }}/
+        src: /home/deploy/checkouts/{{ repo }}/
         dest: '{{ prod }}/{{ shorthash.stdout }}'
       delegate_to: "{{ inventory_hostname }}"
     - name: Make a directory for virtualenv
       file:
           path: "{{ deploy }}/env"
           state: directory
-          mode: "u+rwx,g+rx,o-rw"
-    - name: set selinux context
-      sefcontext:
-        target: '{{ deploy }}/env(/.*)?'
-        setype: httpd_sys_script_exec_t
-        state: present
+          mode: "u+rwx,g+rwx,o-rw"
+          setype: httpd_sys_script_exec_t
     - name: Build a virtualenvironment
       command: virtualenv "{{ deploy }}/env"
     - name: Upgrade pip to latest in virtualenv
@@ -71,7 +67,7 @@
         requirements: "{{ deploy }}/requirements.txt"
     - name: Copy local_settings.py from /root/
       synchronize:
-        src: /root/local_settings.py
+        src: /home/deploy/local_settings.py
         dest: '{{ prod }}/{{ shorthash.stdout }}/{{ djangoapp }}'
       delegate_to: "{{ inventory_hostname }}"
     - name: Run ./manage.py collectstatic
@@ -81,19 +77,17 @@
         virtualenv: "{{ deploy }}/env"
     - name: Copy over robots.txt
       synchronize:
-        src: /root/robots.txt
+        src: /home/deploy/robots.txt
         dest: '{{ prod }}/{{ shorthash.stdout }}/static/'
       delegate_to: "{{ inventory_hostname }}"
     - name: Set ownership recursively
       file:
         path: "{{ prod }}"
         state: directory
-        owner: root
+        owner: deploy
         group: apache
         recurse: yes
       delegate_to: "{{ inventory_hostname }}"
-    - name: Call restorecon on the full directory
-      command: 'restorecon -Rv {{ prod }}'
     - name: Make a database dump to /tmp just in case
       mysql_db:
         state: dump

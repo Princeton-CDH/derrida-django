@@ -177,10 +177,11 @@ class Command(BaseCommand):
 
         # Place
         # Run a geonames search and return a dict to set the place
+        # Revised code to handle '&' and 'and' correctly by picking
+        # first city listed since Pub place is a one to many relation
         if row['Place']:
-
-            if '&' or 'and' in row['Place']:
-                place_name = (re.match(r'\w+', row['Place'])).group(0)
+            if '&' in row['Place'] or 'and' in row['Place']:
+                place_name = (re.match(r'(.+)(&|and)', row['Place'])).group(1).strip()
             else:
                 place_name = row['Place']
             place_dict = self.geonames_lookup(place_name)
@@ -189,7 +190,7 @@ class Command(BaseCommand):
                     **place_dict
                 )
 
-            newbook.place = place
+            newbook.pub_place = place
             self.stats['place_count'] += 1
 
         # Publisher
