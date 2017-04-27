@@ -1,0 +1,13 @@
+[
+{
+  "model": "places.place",
+  "pk": 1,
+  "fields": {
+    "name": "Frankfurt",
+    "notes": "",
+    "geonames_id": "",
+    "latitude": 50.11552,
+    "longitude": 8.68417
+  }
+}
+]

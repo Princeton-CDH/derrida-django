@@ -1,0 +1,96 @@
+# Ansible Production Deploy YAML
+# --------------------
+# - Variation on QA setup
+# - Requires access to host via security methods (see note to CDH developers)
+# - Builds repo and sets permissions
+# - Does back up database
+# - Does NOT run migrations or set symlinks -- do that manually
+# ---
+#
+# CDH Developers: Contact bhicks@princeton.edu or cses@princeton.edu to
+# reach RC computing staff for access if necessary
+#
+# Usage: ansible-playbook prod_derrida-django_.yml <-e ref=hash>
+#   - ref: any valid hash, tag, or branch name, default is master
+# the --private-key flag can manually specify a key if you don't want to use
+# ssh-add or similar, or you can add ansible_ssh_private_key_file to variables.
+
+- hosts: derrida
+  remote_user: deploy
+  # Set environment to use scl rh-python35
+  environment:
+    PATH: '/opt/rh/rh-python35/root/usr/bin/:{{ lookup("env","PATH") }}'
+    LD_LIBRARY_PATH: '/opt/rh/rh-python35/root/usr/lib64'
+  vars:
+    gitref: "{{ ref | default('master') }}"
+    prod: '/srv/www/prod'
+    repo: 'derrida-django'
+    djangoapp: 'derrida'
+    deploy: '{{ prod }}/{{ shorthash.stdout }}'
+  tasks:
+    - name: Clone the repo if doesn't already exit and make sure it's on gitref
+      git:
+        repo: https://github.com/Princeton-CDH/{{ repo }}.git
+        dest: /home/deploy/checkouts/{{ repo }}
+        version: '{{ gitref }}'
+    - name: Get repo short hash
+      command: git rev-parse --short HEAD
+      args:
+          chdir: '/home/deploy/checkouts/{{ repo }}'
+      register: shorthash
+    - name: Make sure /srv/www/prod exists and has appropriate permissions
+      file:
+          path: "{{ prod }}"
+          state: directory
+          mode: "u+rwx,g+rwx,o-rw"
+    - name: Sync checkout to production
+      synchronize:
+        src: /home/deploy/checkouts/{{ repo }}/
+        dest: '{{ prod }}/{{ shorthash.stdout }}'
+      delegate_to: "{{ inventory_hostname }}"
+    - name: Make a directory for virtualenv
+      file:
+          path: "{{ deploy }}/env"
+          state: directory
+          mode: "u+rwx,g+rwx,o-rw"
+          setype: httpd_sys_script_exec_t
+    - name: Build a virtualenvironment
+      command: virtualenv "{{ deploy }}/env"
+    - name: Upgrade pip to latest in virtualenv
+      pip:
+        name: pip
+        state: latest
+        virtualenv: "{{ deploy }}/env"
+    - name: Install requirements via pip
+      pip:
+        virtualenv: "{{ deploy }}/env"
+        requirements: "{{ deploy }}/requirements.txt"
+    - name: Copy local_settings.py from /root/
+      synchronize:
+        src: /home/deploy/local_settings.py
+        dest: '{{ prod }}/{{ shorthash.stdout }}/{{ djangoapp }}'
+      delegate_to: "{{ inventory_hostname }}"
+    - name: Run ./manage.py collectstatic
+      django_manage:
+        command: collectstatic
+        app_path: "{{ deploy }}"
+        virtualenv: "{{ deploy }}/env"
+    - name: Copy over robots.txt
+      synchronize:
+        src: /home/deploy/robots.txt
+        dest: '{{ prod }}/{{ shorthash.stdout }}/static/'
+      delegate_to: "{{ inventory_hostname }}"
+    - name: Set ownership recursively
+      file:
+        path: "{{ prod }}/{{ shorthash.stdout }}"
+        state: directory
+        owner: deploy
+        group: apache
+        recurse: yes
+      delegate_to: "{{ inventory_hostname }}"
+    - name: Make a database dump to /tmp just in case
+      mysql_db:
+        state: dump
+        login_host: cdh-db.princeton.edu
+        name: derridaprod
+        target: "/tmp/derrida-prod-pre-{{ shorthash.stdout }}.sql"

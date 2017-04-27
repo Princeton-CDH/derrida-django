@@ -1,0 +1,5 @@
+uses:
+  - django
+python-targets:
+  - 3
+autodetect: true

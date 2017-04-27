@@ -1,0 +1,8 @@
+django
+mysqlclient
+django-grappelli
+django-autocomplete-light
+pandas
+requests
+rdflib
+git+https://github.com/Princeton-CDH/django-pucas.git@master#egg=pucas

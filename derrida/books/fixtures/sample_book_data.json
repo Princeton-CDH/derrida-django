@@ -1,0 +1,184 @@
+[
+  {
+      "model": "books.owninginstitution",
+      "pk": 1,
+      "fields": {
+          "name": "",
+          "notes": "",
+          "short_name": "PUL",
+          "contact_info": "http://library.princeton.edu/help/contact-us",
+          "place": 1
+      }
+  },
+{
+    "model": "books.publisher",
+    "pk": 1,
+    "fields": {
+        "name": "Presses universitaires de France",
+        "notes": ""
+    }
+},
+{
+    "model": "books.publisher",
+    "pk": 2,
+    "fields": {
+        "name": "PUF",
+        "notes": ""
+    }
+},
+{
+    "model": "books.publisher",
+    "pk": 3,
+    "fields": {
+        "name": "Baconni\u00e8re",
+        "notes": ""
+    }
+},
+{
+    "model": "books.journal",
+    "pk": 1,
+    "fields": {
+        "name": "Critique",
+        "notes": ""
+    }
+},
+{
+    "model": "places.place",
+    "pk": 1,
+    "fields": {
+        "name": "Princeton, NJ",
+        "notes": "",
+        "geonames_id": "http://sws.geonames.org/5102922/",
+        "latitude": 40.34872,
+        "longitude": -74.65905
+    }
+},
+{
+    "model": "books.book",
+    "pk": 48,
+    "fields": {
+        "notes": "",
+        "primary_title": "La vie familiale et sociale des Indiens Nambikwara",
+        "short_title": "La vie familiale et",
+        "larger_work_title": null,
+        "item_type": 1,
+        "journal": null,
+        "page_range": "",
+        "zotero_id": "",
+        "original_pub_info": " ",
+        "publisher": null,
+        "pub_place": null,
+        "pub_date": null,
+        "pub_month_missing": false,
+        "pub_day_missing": false,
+        "copyright_year": 1948,
+        "work_year": null,
+        "is_extant": false,
+        "is_annotated": false,
+        "is_digitized": false,
+        "is_translation": false,
+        "has_insertions": false,
+        "has_dedication": false,
+        "dimensions": "",
+        "uri": ""
+    }
+},
+{
+    "model": "people.person",
+    "pk": 44,
+    "fields": {
+        "notes": "",
+        "start_year": 1908,
+        "end_year": 2009,
+        "authorized_name": "L\u00e9vi-Strauss",
+        "viaf_id": "https://viaf.org/viaf/102346347/",
+        "sort_name": "",
+        "family_group": ""
+    }
+},
+{
+    "model": "people.person",
+    "pk": 1,
+    "fields": {
+        "notes": "",
+        "start_year": 1930,
+        "end_year": 2004,
+        "authorized_name": "Derrida, Jacques",
+        "viaf_id": "https://viaf.org/viaf/88958529/",
+        "sort_name": "",
+        "family_group": ""
+    }
+},
+{
+    "model": "people.person",
+    "pk": 1,
+    "fields": {
+        "notes": "",
+        "start_year": 1930,
+        "end_year": 2004,
+        "authorized_name": "Derrida, Jacques",
+        "viaf_id": "https://viaf.org/viaf/88958529/",
+        "sort_name": "",
+        "family_group": ""
+    }
+},
+{
+    "model": "books.creatortype",
+    "pk": 1,
+    "fields": {
+        "name": "Author",
+        "notes": "",
+        "uri": null
+    }
+},
+{
+    "model": "books.creatortype",
+    "pk": 2,
+    "fields": {
+        "name": "Editor",
+        "notes": "",
+        "uri": null
+    }
+},
+{
+    "model": "books.creatortype",
+    "pk": 3,
+    "fields": {
+        "name": "Series Editor",
+        "notes": "",
+        "uri": null
+    }
+},
+{
+    "model": "books.creatortype",
+    "pk": 4,
+    "fields": {
+        "name": "Translator",
+        "notes": "",
+        "uri": null
+    }
+},
+{
+    "model": "books.creator",
+    "pk": 60,
+    "fields": {
+        "notes": "",
+        "creator_type": 1,
+        "person": 44,
+        "book": 48
+    }
+},
+{
+    "model": "books.catalogue",
+    "pk": 48,
+    "fields": {
+        "notes": "",
+        "start_year": null,
+        "end_year": null,
+        "institution": 1,
+        "book": 48,
+        "is_current": true,
+        "call_number": null
+    }
+}
+]

@@ -1,0 +1,9 @@
+pytest
+pytest-django
+pytest-cov
+# note: pytest-sugar is optional but pretty
+pytest-sugar
+django-debug-toolbar
+sphinx
+ansible
+# Optional, only needed if deploying
