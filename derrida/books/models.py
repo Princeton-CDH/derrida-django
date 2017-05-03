@@ -230,6 +230,7 @@ class AssociatedBook(models.Model):
                    ' instance, please delete the relationship and'
                    ' make a new one')
     )
+    # Makes sure that this relationship is a physical collection with book sections
     is_collection = models.BooleanField(
         default=False,
         help_text=('Denotes that a BookSection/Book or other section/work '
@@ -243,6 +244,7 @@ class AssociatedBook(models.Model):
 
     def __str__(self):
         return '%s - %s' % (self.from_book.short_title, self.to_book.short_title)
+
 
 class Catalogue(Notable, DateRange):
     '''Location of a book in the real world, associating it with an
@@ -269,14 +271,13 @@ class BookSubject(Notable):
     book = models.ForeignKey(Book)
     is_primary = models.BooleanField()
 
-
     class Meta:
         unique_together = ('subject', 'book')
-
 
     def __str__(self):
         return '%s %s%s' % (self.book, self.subject,
             ' (primary)' if self.is_primary else '')
+
 
 class BookLanguage(Notable):
     '''Through-model for book-language relationship, to allow designating
@@ -284,7 +285,6 @@ class BookLanguage(Notable):
     language = models.ForeignKey(Language)
     book = models.ForeignKey(Book)
     is_primary = models.BooleanField()
-
 
     class Meta:
         unique_together = ('book', 'language')
@@ -384,6 +384,7 @@ class Reference(models.Model):
     derridawork_pageloc = models.CharField(max_length=2)
     book_page = models.CharField(max_length=255, blank=True, null=True)
     reference_type = models.ForeignKey(ReferenceType)
+    anchor_text = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return "%s, %s%s: %s, %s, %s" % (
