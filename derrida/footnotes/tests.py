@@ -9,6 +9,7 @@ class TestSourceType(TestCase):
     # Add a testing fixture until project team decides on a set vocabulary
     # to load in a migration
     fixtures = ['initial_sourcetypes.json']
+
     def test_item_count(self):
         src_type = SourceType.objects.first()
         assert src_type.item_count() == 0
@@ -22,6 +23,7 @@ class TestBibliography(TestCase):
     # Add a testing fixture until project team decides on a set vocabulary
     # to load in a migration
     fixtures = ['initial_sourcetypes.json']
+
     def test_str(self):
         src_type = SourceType.objects.first()
         bibl = Bibliography.objects.create(bibliographic_note='citation',
