@@ -28,17 +28,20 @@ class CollapsibleTabularInline(admin.TabularInline):
 
 class CatalogueInline(CollapsibleTabularInline):
     model = Catalogue
+    extra = 1
     fields = ('institution', 'call_number', 'start_year', 'end_year',
               'notes')
 
 
 class SubjectInline(CollapsibleTabularInline):
     model = BookSubject
+    extra = 1
     fields = ('subject', 'is_primary', 'notes')
 
 
 class LanguageInline(CollapsibleTabularInline):
     model = BookLanguage
+    extra = 1
     fields = ('language', 'is_primary', 'notes')
 
 class CreatorInlineForm(forms.ModelForm):
@@ -54,9 +57,12 @@ class CreatorInlineForm(forms.ModelForm):
             )
         }
 
+
 class CreatorInline(CollapsibleTabularInline):
     model = Creator
+    extra = 1
     form = CreatorInlineForm
+
 
 class PersonBookInlineForm(forms.ModelForm):
     '''Custom model form for Book editing, used to add autocomplete
@@ -75,6 +81,7 @@ class PersonBookInlineForm(forms.ModelForm):
 
 class PersonBookInline(CollapsibleTabularInline):
     model = PersonBook
+    extra = 1
     form = PersonBookInlineForm
 
 
@@ -101,6 +108,7 @@ class ReferenceInline(admin.StackedInline):
 class AssociatedBookInline(CollapsibleTabularInline):
     '''Tabular inline for Associated Book set'''
     model = AssociatedBook
+    extra = 1
     fk_name = 'from_book'
 
 
@@ -122,6 +130,7 @@ class BookAdminForm(forms.ModelForm):
 
 class DerridaWorkBookInline(CollapsibleTabularInline):
     model = DerridaWorkBook
+    extra = 1
     fields = ('derridawork', 'book', 'notes')
 
 
