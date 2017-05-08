@@ -78,15 +78,30 @@ class PersonBookInline(CollapsibleTabularInline):
     form = PersonBookInlineForm
 
 
-class ReferenceInline(CollapsibleTabularInline):
+class ReferenceInline(admin.StackedInline):
     model = Reference
+    extra = 1
+    classes = ('grp-collapse grp-open',)
+    fieldsets = (
+        ('Citational Information', {
+                'fields': (
+                    'derridawork',
+                    'derridawork_page',
+                    'derridawork_pageloc',
+                    'book_page',
+                    'reference_type',
+                )
+        }),
+        ('Anchor Text', {
+            'fields': ('anchor_text',)
+        }),
+    )
 
 
 class AssociatedBookInline(CollapsibleTabularInline):
     '''Tabular inline for Associated Book set'''
     model = AssociatedBook
     fk_name = 'from_book'
-
 
 
 class BookAdminForm(forms.ModelForm):
@@ -105,10 +120,10 @@ class BookAdminForm(forms.ModelForm):
         }
 
 
-
 class DerridaWorkBookInline(CollapsibleTabularInline):
     model = DerridaWorkBook
     fields = ('derridawork', 'book', 'notes')
+
 
 class BookAdmin(admin.ModelAdmin):
     form = BookAdminForm

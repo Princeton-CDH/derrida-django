@@ -5,12 +5,13 @@
   {{ block.super }}
   <link rel='stylesheet' href='{% static "css/meltdown.css" %}'>
   <style>
-    #id_anchor_text {
-      width: 95%;
+    .grp-meltdown {
+      width: 95% !important;
       max-width: 758px;
       margin: auto;
     }
   </style>
+
 {% endblock %}
 
 {% block javascripts %}
@@ -21,10 +22,7 @@
   <script type="text/javascript" src='{% static "js/lib/element_resize_detection.js" %}'></script>
   <script>
     $(document).ready(function() {
-      $('#id_anchor_text').meltdown();
-      $('#id_reference_set-0-anchor_text').meltdown();
-      });
+      $('textarea[name^=reference_set]').filter('textarea[name$=anchor_text]').addClass('grp-meltdown').meltdown()
     });
-  </script>
-
+</script>
 {% endblock %}
