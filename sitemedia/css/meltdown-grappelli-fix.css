@@ -1,0 +1,8 @@
+  /* Class to mark Grappelli textarea fields that
+  need Meltdown.js functionality. Also fixes overflow with the
+  Grappelli text area and Meltdown.*/
+  .grp-meltdown {
+    max-width: 95% !important;
+    height: 100% !important;
+    margin: auto;
+  }

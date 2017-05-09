@@ -44,6 +44,7 @@ class LanguageInline(CollapsibleTabularInline):
     extra = 1
     fields = ('language', 'is_primary', 'notes')
 
+
 class CreatorInlineForm(forms.ModelForm):
     '''Custom model form for Book editing, used to add autocomplete
     for place lookup.'''
@@ -85,8 +86,50 @@ class PersonBookInline(CollapsibleTabularInline):
     form = PersonBookInlineForm
 
 
+class MeltdownTextAreaWidget(forms.Textarea):
+    '''Adds Meltdown.js functionality and grp-meltdown to a text area and ensures
+    all required js is loaded as well as a css fix to counteract an interaction
+    between Grappelli and Meltdown.js.
+
+    NOTE: Uses add-anchor-meltdown.js to initialize fields on the grp-meltdown
+    class'''
+    class Media:
+        css = {
+            'all': ('css/meltdown.css', 'css/meltdown-grappelli-fix.css',)
+        }
+        js = (
+            'js/lib/js-markdown-extra.js',
+            'js/jquery.meltdown.js',
+            'js/lib/rangyinputs-jquery.min.js',
+            'js/lib/element_resize_detection.js',
+            'js/add-anchor-meltdown.js'
+        )
+
+
+class ReferenceModelForm(forms.ModelForm):
+    '''Model form that uses custom Meltdownarea widget for anchor_text
+    TextField'''
+    class Meta:
+        model = Reference
+        fields = (
+            'derridawork',
+            'derridawork_page',
+            'derridawork_pageloc',
+            'book_page',
+            'reference_type',
+            'anchor_text'
+        )
+        widgets = {
+            'anchor_text': MeltdownTextAreaWidget(attrs={'class':
+                                                         'grp-meltdown'}),
+        }
+
+
 class ReferenceInline(admin.StackedInline):
+    '''Stacked inline for reference to give adequate room for the anchor_text
+    editor'''
     model = Reference
+    form = ReferenceModelForm
     extra = 1
     classes = ('grp-collapse grp-open',)
     fieldsets = (
@@ -103,6 +146,12 @@ class ReferenceInline(admin.StackedInline):
             'fields': ('anchor_text',)
         }),
     )
+
+
+class ReferenceAdmin(admin.ModelAdmin):
+    '''Override the modelform for Reference'''
+    model = Reference
+    form = ReferenceModelForm
 
 
 class AssociatedBookInline(CollapsibleTabularInline):
@@ -129,12 +178,15 @@ class BookAdminForm(forms.ModelForm):
 
 
 class DerridaWorkBookInline(CollapsibleTabularInline):
+    '''Inline for DerridaWork - Library Work relationships'''
     model = DerridaWorkBook
     extra = 1
     fields = ('derridawork', 'book', 'notes')
 
 
 class BookAdmin(admin.ModelAdmin):
+    '''Custom admin form for book, adds inlines and sets searchable fields, as
+    well as general field order and list display modifications'''
     form = BookAdminForm
 
     list_display = ('short_title', 'author_names', 'copyright_year',
@@ -185,6 +237,6 @@ admin.site.register(PersonBook, PersonBookAdmin)
 # Citationality sub module
 admin.site.register(DerridaWork, DerridaWorkAdmin)
 admin.site.register(ReferenceType)
-admin.site.register(Reference)
+admin.site.register(Reference, ReferenceAdmin)
 admin.site.register(ItemType)
 admin.site.register(Journal)
