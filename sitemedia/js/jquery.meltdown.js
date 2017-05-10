@@ -7,7 +7,7 @@
  */
 
 // BWH: Disabled tech preview function body ll. 349-364 and edited l. 491
-// These should be uncommented if it is removed in a previous version.
+// These should be uncommented if it is removed in a future version of Meltdown
 
 (function ($, window, document, undefined) {
     'use strict';
