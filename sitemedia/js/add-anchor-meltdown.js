@@ -7,5 +7,7 @@
 
 $(document).ready(function() {
   // By default, only fields marked by the widget.
-  $('.grp-meltdown').meltdown()
+  $('.grp-meltdown').meltdown({
+    openPreview: true,
+  });
 });
