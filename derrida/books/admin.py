@@ -121,7 +121,7 @@ class ReferenceModelForm(forms.ModelForm):
         )
         widgets = {
             'anchor_text': MeltdownTextAreaWidget(attrs={'class':
-                                                         'grp-meltdown'}),
+                                                         'meltdown-widget'}),
         }
 
 
