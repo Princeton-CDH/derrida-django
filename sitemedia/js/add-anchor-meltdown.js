@@ -12,32 +12,32 @@
     fixes this.
 */
 
-// Initial configurations
+// Initial configuration of meltdown is contained in this function
+// Changing any settings here will affect all instances of the widget
+function addMeltDown() {
+  $('.meltdown-widget').not('.grp-empty-form .meltdown-widget')
+    .meltdown({openPreview: true});
+}
+
 $(document).ready(function() {
-  // The filter avoids adding a meltdown widget to the hidden inline textarea
-  var hidden = $('.meltdown-widget').filter('textarea[name*="__prefix__"]')[0]
-  $('.meltdown-widget').filter('textarea[name!='+hidden.name+']').
-    meltdown({openPreview: true});
-  // Looking for changes to anything with that class
-  var observedNodes = $('.grp-items');
+  // Add meltdown to any pre-existing anchor text fields on reference inlines
+  addMeltDown()
+  // Initialize the MutationObserver crossbrowser compatible
   var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
-  // Pass handler function to myObserver instance
-  var myObserver = new MutationObserver (handler);
-  var config = {childList: true}
-  // Bind MutationObserver instance to any meltdown-widget types
-  observedNodes.each(function() {
-      myObserver.observe(this, config);
-  });
   // Handler function to look at mutationRecords for .meltdown-widget
   // and then bind meltdown events to them
   function handler (mutationRecords) {
     mutationRecords.forEach(function(mutation) {
       if (mutation.type == 'childList') {
-      $('.meltdown-widget').filter('textarea[name!='+hidden.name+']')
-        .meltdown({openPreview: true});
+        addMeltDown();
       }
     });
-
-}
+  }
+  // Pass handler function to myObserver instance
+  var myObserver = new MutationObserver (handler);
+  // Bind MutationObserver instance to any meltdown-widget types
+  $('.grp-items').each(function() {
+      myObserver.observe(this, {childList: true});
+  });
 
 });
