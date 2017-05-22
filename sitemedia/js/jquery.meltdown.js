@@ -6,6 +6,9 @@
  * Requires: jQuery v1.7.2 or later (1.9.1 recommended)
  */
 
+// BWH: Disabled tech preview function body ll. 349-364 and edited l. 491
+// These should be uncommented if it is removed in a future version of Meltdown
+
 (function ($, window, document, undefined) {
     'use strict';
 
@@ -344,6 +347,7 @@
     }
 
     function addWarning(meltdown, element) {
+      /*
         element.click(function(e) {
             var warning = $('<div class"' + plgName + '_warning"/>').html('<center><b>The preview area is a tech preview feature</b></center><br/>'
                                                                          + 'Live previews <b>can</b> cause the browser tab to stop responding.<br/><br/>'
@@ -358,6 +362,7 @@
             meltdown.preview.empty().append(warning);
             e.preventDefault();
         });
+        */
     }
 
     // Setup event handlers for the resize handle:
@@ -485,7 +490,7 @@
             this.editor = this.element.addClass("meltdown_editor");
             this.previewWrap =  $('<div class="' + plgName + '_preview-wrap" />').appendTo(this.wrap);
             this.resizeHandle = $('<div class="' + plgName + '_resizehandle"><span></span></div>').appendTo(this.previewWrap);
-            this.previewHeader =  $('<span class="' + plgName + '_preview-header">Preview Area (<a class="meltdown_techpreview" href="https://github.com/iphands/Meltdown/issues/1">Tech Preview</a>)</span>').appendTo(this.previewWrap);
+            this.previewHeader =  $('<span class="' + plgName + '_preview-header">Preview Area</span>').appendTo(this.previewWrap);
             this.preview =  $('<div class="' + plgName + '_preview" />').appendTo(this.previewWrap);
             this.bottommargin = $('<div class="' + plgName + '_bottommargin"/>').appendTo(this.wrap);
 
