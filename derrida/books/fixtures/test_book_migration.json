@@ -1,0 +1,3371 @@
+[
+{
+  "model": "books.language",
+  "pk": 1,
+  "fields": {
+    "name": "French",
+    "notes": "",
+    "uri": ""
+  }
+},
+{
+  "model": "books.language",
+  "pk": 2,
+  "fields": {
+    "name": "German",
+    "notes": "",
+    "uri": ""
+  }
+},
+{
+  "model": "books.language",
+  "pk": 3,
+  "fields": {
+    "name": "English",
+    "notes": "",
+    "uri": ""
+  }
+},
+{
+  "model": "books.publisher",
+  "pk": 1,
+  "fields": {
+    "name": "Biblioth\u00e8que de Cluny",
+    "notes": ""
+  }
+},
+{
+  "model": "books.publisher",
+  "pk": 2,
+  "fields": {
+    "name": "Vrin",
+    "notes": ""
+  }
+},
+{
+  "model": "books.publisher",
+  "pk": 3,
+  "fields": {
+    "name": "Garnier Flammarion",
+    "notes": ""
+  }
+},
+{
+  "model": "books.publisher",
+  "pk": 4,
+  "fields": {
+    "name": "Flammarion",
+    "notes": ""
+  }
+},
+{
+  "model": "books.publisher",
+  "pk": 5,
+  "fields": {
+    "name": "Garnier",
+    "notes": ""
+  }
+},
+{
+  "model": "books.publisher",
+  "pk": 6,
+  "fields": {
+    "name": "Les Belles Lettres",
+    "notes": ""
+  }
+},
+{
+  "model": "books.owninginstitution",
+  "pk": 1,
+  "fields": {
+    "name": "",
+    "notes": "",
+    "short_name": "PUL",
+    "contact_info": "http://library.princeton.edu/help/contact-us",
+    "place": 1
+  }
+},
+{
+  "model": "books.itemtype",
+  "pk": 1,
+  "fields": {
+    "name": "Book",
+    "notes": ""
+  }
+},
+{
+  "model": "books.itemtype",
+  "pk": 2,
+  "fields": {
+    "name": "Book Section",
+    "notes": ""
+  }
+},
+{
+  "model": "books.itemtype",
+  "pk": 3,
+  "fields": {
+    "name": "Journal Article",
+    "notes": ""
+  }
+},
+{
+  "model": "books.journal",
+  "pk": 1,
+  "fields": {
+    "name": "Communications",
+    "notes": ""
+  }
+},
+{
+  "model": "books.book",
+  "pk": 1,
+  "fields": {
+    "notes": "Hmm there is an interesting discrepancy here -- the copy contained in here (http://findingaids.princeton.edu/collections/RBD1.1/c553 ) has more annotations on the specific quoted text than the other copy.\u00a0\nSeuil",
+    "primary_title": "Rh\u00e9torique de l'image",
+    "short_title": "Rh\u00e9torique de l'image",
+    "larger_work_title": null,
+    "item_type": 3,
+    "journal": 1,
+    "page_range": "40-51",
+    "zotero_id": "",
+    "original_pub_info": "Paris & Princeton, NJ",
+    "publisher": null,
+    "pub_place": 2,
+    "pub_date": "1964-01-01",
+    "pub_month_missing": true,
+    "pub_day_missing": true,
+    "copyright_year": 1964,
+    "work_year": null,
+    "is_extant": true,
+    "is_annotated": true,
+    "is_digitized": false,
+    "is_translation": false,
+    "has_insertions": false,
+    "has_dedication": false,
+    "dimensions": "",
+    "uri": "http://findingaids.princeton.edu/collections/RBD1.1/c478"
+  }
+},
+{
+  "model": "books.book",
+  "pk": 2,
+  "fields": {
+    "notes": "",
+    "primary_title": "Le Petit, in Volume III: Oeuvres litt\u00e9raires",
+    "short_title": "Le Petit, in Volume",
+    "larger_work_title": "Oeuvres Compl\u00e8tes",
+    "item_type": 2,
+    "journal": null,
+    "page_range": "",
+    "zotero_id": "",
+    "original_pub_info": null,
+    "publisher": null,
+    "pub_place": null,
+    "pub_date": null,
+    "pub_month_missing": false,
+    "pub_day_missing": false,
+    "copyright_year": null,
+    "work_year": null,
+    "is_extant": false,
+    "is_annotated": false,
+    "is_digitized": false,
+    "is_translation": false,
+    "has_insertions": false,
+    "has_dedication": false,
+    "dimensions": "",
+    "uri": ""
+  }
+},
+{
+  "model": "books.book",
+  "pk": 3,
+  "fields": {
+    "notes": "On the other copy, it was 51 and no annotations \u00a0 This copy has annotations on 71: http://findingaids.princeton.edu/collections/RBD1/c12861 \u00a0 \u00a0",
+    "primary_title": "Discours de la m\u00e9thode",
+    "short_title": "Discours de la m\u00e9thode",
+    "larger_work_title": null,
+    "item_type": 1,
+    "journal": null,
+    "page_range": "",
+    "zotero_id": "",
+    "original_pub_info": "Biblioth\u00e8que de Cluny Paris",
+    "publisher": 1,
+    "pub_place": 2,
+    "pub_date": null,
+    "pub_month_missing": false,
+    "pub_day_missing": false,
+    "copyright_year": 1943,
+    "work_year": null,
+    "is_extant": true,
+    "is_annotated": true,
+    "is_digitized": false,
+    "is_translation": false,
+    "has_insertions": false,
+    "has_dedication": false,
+    "dimensions": "",
+    "uri": "http://findingaids.princeton.edu/collections/RBD1/c12861"
+  }
+},
+{
+  "model": "books.book",
+  "pk": 4,
+  "fields": {
+    "notes": "",
+    "primary_title": "Discours de la m\u00e9thode",
+    "short_title": "Discours de la m\u00e9thode",
+    "larger_work_title": null,
+    "item_type": 1,
+    "journal": null,
+    "page_range": "",
+    "zotero_id": "",
+    "original_pub_info": "Vrin Paris",
+    "publisher": 2,
+    "pub_place": 2,
+    "pub_date": null,
+    "pub_month_missing": false,
+    "pub_day_missing": false,
+    "copyright_year": 1961,
+    "work_year": null,
+    "is_extant": true,
+    "is_annotated": false,
+    "is_digitized": false,
+    "is_translation": false,
+    "has_insertions": false,
+    "has_dedication": false,
+    "dimensions": "",
+    "uri": "http://findingaids.princeton.edu/collections/RBD1/c12860"
+  }
+},
+{
+  "model": "books.book",
+  "pk": 5,
+  "fields": {
+    "notes": "dg203a/b/c/Q___: in 1st chapter; dg209aQ___: in\u00a0 4th chapter (around pp400)\n(or is this en \u0153uvres compl\u00e8tes?) Cf Note 2. p. 202. Derrida says he's referring to the Oeuvres Completes (Pleiade) only when the text appeared in one of the three volumes published before 1967. For other books (except the Essai sur l'Origine des langues), he's using Garnier editions. Jin: Hi, I just checked his copy of Emile and it's a Garnier edition. If he was indeed using Oevres compl\u00e8tes version for Emile, it would have been Tome II but we don't have that volume. This copy seems to be off in terms of page numbers because he sometimes cites pages that correspond to the introduction in this book.",
+    "primary_title": "\u00c9mile ou de l'\u00e9ducation",
+    "short_title": "\u00c9mile ou de l'\u00e9ducation",
+    "larger_work_title": null,
+    "item_type": 1,
+    "journal": null,
+    "page_range": "",
+    "zotero_id": "",
+    "original_pub_info": "Garnier Flammarion ",
+    "publisher": 3,
+    "pub_place": null,
+    "pub_date": null,
+    "pub_month_missing": false,
+    "pub_day_missing": false,
+    "copyright_year": 1966,
+    "work_year": null,
+    "is_extant": true,
+    "is_annotated": false,
+    "is_digitized": false,
+    "is_translation": false,
+    "has_insertions": false,
+    "has_dedication": false,
+    "dimensions": "",
+    "uri": "http://findingaids.princeton.edu/collections/RBD1/c10457"
+  }
+},
+{
+  "model": "books.book",
+  "pk": 6,
+  "fields": {
+    "notes": "",
+    "primary_title": "Emile ou de l'\u00e9ducation (manuscrit)",
+    "short_title": "Emile ou de l'\u00e9ducation",
+    "larger_work_title": null,
+    "item_type": 1,
+    "journal": null,
+    "page_range": "",
+    "zotero_id": "",
+    "original_pub_info": null,
+    "publisher": null,
+    "pub_place": null,
+    "pub_date": null,
+    "pub_month_missing": false,
+    "pub_day_missing": false,
+    "copyright_year": null,
+    "work_year": null,
+    "is_extant": false,
+    "is_annotated": false,
+    "is_digitized": false,
+    "is_translation": false,
+    "has_insertions": false,
+    "has_dedication": false,
+    "dimensions": "",
+    "uri": ""
+  }
+},
+{
+  "model": "books.book",
+  "pk": 7,
+  "fields": {
+    "notes": "CV: I only worked on the first 3 tags and looked for the pages in the edition we have. There was no annotation. However, in this edition, the Chapter 4 (and the Profession de foi in particular) is highly annotated, with a focus on the words \"comparaison\" or \"comparer\", \"sens\", \"voix\"...\n(or is this en \u0153uvres compl\u00e8tes?) Cf Note 2. p. 202. Derrida says he's referring to the Oeuvres Completes (Pleiade) only when the text appeared in one of the three volumes published before 1967. For other books (except the Essai sur l'Origine des langues), he's using Garnier editions. Jin: Hi, I just checked his copy of Emile and it's a Garnier edition. If he was indeed using Oevres compl\u00e8tes version for Emile, it would have been Tome II but we don't have that volume. This copy seems to be off in terms of page numbers because he sometimes cites pages that correspond to the introduction in this book.",
+    "primary_title": "\u00c9mile ou de l'\u00e9ducation [edition In Finding Aid which he probably did not use]",
+    "short_title": "\u00c9mile ou de l'\u00e9ducation",
+    "larger_work_title": null,
+    "item_type": 1,
+    "journal": null,
+    "page_range": "",
+    "zotero_id": "",
+    "original_pub_info": "Garnier Flammarion ",
+    "publisher": 3,
+    "pub_place": null,
+    "pub_date": null,
+    "pub_month_missing": false,
+    "pub_day_missing": false,
+    "copyright_year": 1966,
+    "work_year": null,
+    "is_extant": true,
+    "is_annotated": false,
+    "is_digitized": false,
+    "is_translation": false,
+    "has_insertions": false,
+    "has_dedication": false,
+    "dimensions": "",
+    "uri": "http://findingaids.princeton.edu/collections/RBD1/c10457"
+  }
+},
+{
+  "model": "books.book",
+  "pk": 8,
+  "fields": {
+    "notes": "",
+    "primary_title": "Ph\u00e8dre",
+    "short_title": "Ph\u00e8dre",
+    "larger_work_title": "Le Banquet / Ph\u00e8dre",
+    "item_type": 2,
+    "journal": null,
+    "page_range": "",
+    "zotero_id": "",
+    "original_pub_info": "Flammarion Paris",
+    "publisher": 4,
+    "pub_place": 2,
+    "pub_date": null,
+    "pub_month_missing": false,
+    "pub_day_missing": false,
+    "copyright_year": 1964,
+    "work_year": null,
+    "is_extant": true,
+    "is_annotated": false,
+    "is_digitized": false,
+    "is_translation": false,
+    "has_insertions": false,
+    "has_dedication": false,
+    "dimensions": "",
+    "uri": "http://findingaids.princeton.edu/collections/RBD1/c10116"
+  }
+},
+{
+  "model": "books.book",
+  "pk": 9,
+  "fields": {
+    "notes": "",
+    "primary_title": "Ph\u00e8dre",
+    "short_title": "Ph\u00e8dre",
+    "larger_work_title": "\u0152uvres compl\u00e8tes",
+    "item_type": 2,
+    "journal": null,
+    "page_range": "",
+    "zotero_id": "",
+    "original_pub_info": "Garnier Paris",
+    "publisher": 5,
+    "pub_place": 2,
+    "pub_date": null,
+    "pub_month_missing": false,
+    "pub_day_missing": false,
+    "copyright_year": 1938,
+    "work_year": null,
+    "is_extant": true,
+    "is_annotated": true,
+    "is_digitized": false,
+    "is_translation": false,
+    "has_insertions": false,
+    "has_dedication": false,
+    "dimensions": "",
+    "uri": "http://findingaids.princeton.edu/collections/RBD1/c10099"
+  }
+},
+{
+  "model": "books.book",
+  "pk": 10,
+  "fields": {
+    "notes": "three candidates: http://findingaids.princeton.edu/collections/RBD1?v1=Ph\u00e8dre&f1=kw&b1=AND&v2=&f2=kw&b2=AND&v3=&f3=kw&year=before&ed=&ld=&rpp=10&start=0",
+    "primary_title": "Ph\u00e8dre",
+    "short_title": "Ph\u00e8dre",
+    "larger_work_title": "\u0152uvres compl\u00e8tes",
+    "item_type": 2,
+    "journal": null,
+    "page_range": "",
+    "zotero_id": "",
+    "original_pub_info": "Les Belles Lettres Paris",
+    "publisher": 6,
+    "pub_place": 2,
+    "pub_date": null,
+    "pub_month_missing": false,
+    "pub_day_missing": false,
+    "copyright_year": 1961,
+    "work_year": null,
+    "is_extant": true,
+    "is_annotated": true,
+    "is_digitized": false,
+    "is_translation": false,
+    "has_insertions": false,
+    "has_dedication": false,
+    "dimensions": "",
+    "uri": "http://findingaids.princeton.edu/collections/RBD1/c10091"
+  }
+},
+{
+  "model": "books.catalogue",
+  "pk": 1,
+  "fields": {
+    "notes": "",
+    "start_year": null,
+    "end_year": null,
+    "institution": 1,
+    "book": 1,
+    "is_current": true,
+    "call_number": null
+  }
+},
+{
+  "model": "books.catalogue",
+  "pk": 2,
+  "fields": {
+    "notes": "",
+    "start_year": null,
+    "end_year": null,
+    "institution": 1,
+    "book": 2,
+    "is_current": true,
+    "call_number": null
+  }
+},
+{
+  "model": "books.catalogue",
+  "pk": 3,
+  "fields": {
+    "notes": "",
+    "start_year": null,
+    "end_year": null,
+    "institution": 1,
+    "book": 3,
+    "is_current": true,
+    "call_number": null
+  }
+},
+{
+  "model": "books.catalogue",
+  "pk": 4,
+  "fields": {
+    "notes": "",
+    "start_year": null,
+    "end_year": null,
+    "institution": 1,
+    "book": 4,
+    "is_current": true,
+    "call_number": null
+  }
+},
+{
+  "model": "books.catalogue",
+  "pk": 5,
+  "fields": {
+    "notes": "",
+    "start_year": null,
+    "end_year": null,
+    "institution": 1,
+    "book": 5,
+    "is_current": true,
+    "call_number": null
+  }
+},
+{
+  "model": "books.catalogue",
+  "pk": 6,
+  "fields": {
+    "notes": "",
+    "start_year": null,
+    "end_year": null,
+    "institution": 1,
+    "book": 6,
+    "is_current": true,
+    "call_number": null
+  }
+},
+{
+  "model": "books.catalogue",
+  "pk": 7,
+  "fields": {
+    "notes": "",
+    "start_year": null,
+    "end_year": null,
+    "institution": 1,
+    "book": 7,
+    "is_current": true,
+    "call_number": null
+  }
+},
+{
+  "model": "books.catalogue",
+  "pk": 8,
+  "fields": {
+    "notes": "",
+    "start_year": null,
+    "end_year": null,
+    "institution": 1,
+    "book": 8,
+    "is_current": true,
+    "call_number": null
+  }
+},
+{
+  "model": "books.catalogue",
+  "pk": 9,
+  "fields": {
+    "notes": "",
+    "start_year": null,
+    "end_year": null,
+    "institution": 1,
+    "book": 9,
+    "is_current": true,
+    "call_number": null
+  }
+},
+{
+  "model": "books.catalogue",
+  "pk": 10,
+  "fields": {
+    "notes": "",
+    "start_year": null,
+    "end_year": null,
+    "institution": 1,
+    "book": 10,
+    "is_current": true,
+    "call_number": null
+  }
+},
+{
+  "model": "books.creatortype",
+  "pk": 1,
+  "fields": {
+    "name": "Author",
+    "notes": "",
+    "uri": null
+  }
+},
+{
+  "model": "books.creatortype",
+  "pk": 2,
+  "fields": {
+    "name": "Editor",
+    "notes": "",
+    "uri": null
+  }
+},
+{
+  "model": "books.creatortype",
+  "pk": 3,
+  "fields": {
+    "name": "Series Editor",
+    "notes": "",
+    "uri": null
+  }
+},
+{
+  "model": "books.creatortype",
+  "pk": 4,
+  "fields": {
+    "name": "Translator",
+    "notes": "",
+    "uri": null
+  }
+},
+{
+  "model": "books.creator",
+  "pk": 1,
+  "fields": {
+    "notes": "",
+    "creator_type": 1,
+    "person": 1,
+    "book": 1
+  }
+},
+{
+  "model": "books.creator",
+  "pk": 2,
+  "fields": {
+    "notes": "",
+    "creator_type": 1,
+    "person": 2,
+    "book": 2
+  }
+},
+{
+  "model": "books.creator",
+  "pk": 3,
+  "fields": {
+    "notes": "",
+    "creator_type": 1,
+    "person": 3,
+    "book": 3
+  }
+},
+{
+  "model": "books.creator",
+  "pk": 4,
+  "fields": {
+    "notes": "",
+    "creator_type": 1,
+    "person": 3,
+    "book": 4
+  }
+},
+{
+  "model": "books.creator",
+  "pk": 5,
+  "fields": {
+    "notes": "",
+    "creator_type": 1,
+    "person": 4,
+    "book": 5
+  }
+},
+{
+  "model": "books.creator",
+  "pk": 6,
+  "fields": {
+    "notes": "",
+    "creator_type": 1,
+    "person": 4,
+    "book": 6
+  }
+},
+{
+  "model": "books.creator",
+  "pk": 7,
+  "fields": {
+    "notes": "",
+    "creator_type": 1,
+    "person": 4,
+    "book": 7
+  }
+},
+{
+  "model": "books.creator",
+  "pk": 8,
+  "fields": {
+    "notes": "",
+    "creator_type": 1,
+    "person": 5,
+    "book": 8
+  }
+},
+{
+  "model": "books.creator",
+  "pk": 9,
+  "fields": {
+    "notes": "",
+    "creator_type": 1,
+    "person": 5,
+    "book": 9
+  }
+},
+{
+  "model": "books.creator",
+  "pk": 10,
+  "fields": {
+    "notes": "",
+    "creator_type": 1,
+    "person": 5,
+    "book": 10
+  }
+},
+{
+  "model": "books.derridawork",
+  "pk": 1,
+  "fields": {
+    "notes": "",
+    "short_title": "De la grammatologie",
+    "full_citation": "Placeholder citation",
+    "is_primary": false
+  }
+},
+{
+  "model": "books.referencetype",
+  "pk": 1,
+  "fields": {
+    "name": "Citation",
+    "notes": ""
+  }
+},
+{
+  "model": "books.referencetype",
+  "pk": 2,
+  "fields": {
+    "name": "Quotation",
+    "notes": ""
+  }
+},
+{
+  "model": "books.referencetype",
+  "pk": 3,
+  "fields": {
+    "name": "Epigraph",
+    "notes": ""
+  }
+},
+{
+  "model": "books.referencetype",
+  "pk": 4,
+  "fields": {
+    "name": "Footnote",
+    "notes": ""
+  }
+},
+{
+  "model": "books.referencetype",
+  "pk": 5,
+  "fields": {
+    "name": "Unset",
+    "notes": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 1,
+  "fields": {
+    "book": 1,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "72",
+    "derridawork_pageloc": "b",
+    "book_page": "2p",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 2,
+  "fields": {
+    "book": 1,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "72",
+    "derridawork_pageloc": "c",
+    "book_page": "2p",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 3,
+  "fields": {
+    "book": 2,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "210",
+    "derridawork_pageloc": "d",
+    "book_page": "",
+    "reference_type": 4,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 4,
+  "fields": {
+    "book": 3,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "27",
+    "derridawork_pageloc": "c",
+    "book_page": "71",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 5,
+  "fields": {
+    "book": 4,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "27",
+    "derridawork_pageloc": "c",
+    "book_page": "51",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 6,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "141",
+    "derridawork_pageloc": "a",
+    "book_page": "",
+    "reference_type": 3,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 7,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "145",
+    "derridawork_pageloc": "a",
+    "book_page": "",
+    "reference_type": 3,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 8,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "188",
+    "derridawork_pageloc": "c",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 9,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "197",
+    "derridawork_pageloc": "a",
+    "book_page": "",
+    "reference_type": 3,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 10,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "202",
+    "derridawork_pageloc": "b",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 11,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "203",
+    "derridawork_pageloc": "a",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 12,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "203",
+    "derridawork_pageloc": "b",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 13,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "203",
+    "derridawork_pageloc": "c",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 14,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "204",
+    "derridawork_pageloc": "a",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 15,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "204",
+    "derridawork_pageloc": "b",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 16,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "204",
+    "derridawork_pageloc": "c",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 17,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "204",
+    "derridawork_pageloc": "d",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 18,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "204",
+    "derridawork_pageloc": "e",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 19,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "204",
+    "derridawork_pageloc": "f",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 20,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "205",
+    "derridawork_pageloc": "a",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 21,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "209",
+    "derridawork_pageloc": "a",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 22,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "209",
+    "derridawork_pageloc": "b",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 23,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "209",
+    "derridawork_pageloc": "c",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 24,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "210",
+    "derridawork_pageloc": "b",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 25,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "231",
+    "derridawork_pageloc": "a",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 26,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "234",
+    "derridawork_pageloc": "a",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 27,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "234",
+    "derridawork_pageloc": "b",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 28,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "239",
+    "derridawork_pageloc": "a",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 29,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "240",
+    "derridawork_pageloc": "a",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 30,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "240",
+    "derridawork_pageloc": "b",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 31,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "241",
+    "derridawork_pageloc": "c",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 32,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "242",
+    "derridawork_pageloc": "a",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 33,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "242",
+    "derridawork_pageloc": "b",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 34,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "246",
+    "derridawork_pageloc": "a",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 35,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "246",
+    "derridawork_pageloc": "b",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 36,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "246",
+    "derridawork_pageloc": "c",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 37,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "246",
+    "derridawork_pageloc": "d",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 38,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "247",
+    "derridawork_pageloc": "a",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 39,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "248",
+    "derridawork_pageloc": "d",
+    "book_page": "",
+    "reference_type": 4,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 40,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "252",
+    "derridawork_pageloc": "b",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 41,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "254",
+    "derridawork_pageloc": "c",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 42,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "260",
+    "derridawork_pageloc": "b",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 43,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "261",
+    "derridawork_pageloc": "a",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 44,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "261",
+    "derridawork_pageloc": "b",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 45,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "261",
+    "derridawork_pageloc": "c",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 46,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "262",
+    "derridawork_pageloc": "b",
+    "book_page": "",
+    "reference_type": 4,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 47,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "262",
+    "derridawork_pageloc": "d",
+    "book_page": "",
+    "reference_type": 4,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 48,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "280",
+    "derridawork_pageloc": "a",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 49,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "280",
+    "derridawork_pageloc": "b",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 50,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "281",
+    "derridawork_pageloc": "a",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 51,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "281",
+    "derridawork_pageloc": "b",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 52,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "281",
+    "derridawork_pageloc": "c",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 53,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "282",
+    "derridawork_pageloc": "a",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 54,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "282",
+    "derridawork_pageloc": "b",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 55,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "304",
+    "derridawork_pageloc": "b",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 56,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "311",
+    "derridawork_pageloc": "e",
+    "book_page": "",
+    "reference_type": 4,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 57,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "317",
+    "derridawork_pageloc": "b",
+    "book_page": "",
+    "reference_type": 1,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 58,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "321",
+    "derridawork_pageloc": "c",
+    "book_page": "",
+    "reference_type": 4,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 59,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "324",
+    "derridawork_pageloc": "b",
+    "book_page": "",
+    "reference_type": 4,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 60,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "326",
+    "derridawork_pageloc": "a",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 61,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "336",
+    "derridawork_pageloc": "a",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 62,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "337",
+    "derridawork_pageloc": "b",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 63,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "337",
+    "derridawork_pageloc": "c",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 64,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "338",
+    "derridawork_pageloc": "a",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 65,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "355",
+    "derridawork_pageloc": "d",
+    "book_page": "",
+    "reference_type": 4,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 66,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "357",
+    "derridawork_pageloc": "b",
+    "book_page": "",
+    "reference_type": 4,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 67,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "360",
+    "derridawork_pageloc": "b",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 68,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "373",
+    "derridawork_pageloc": "b",
+    "book_page": "",
+    "reference_type": 4,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 69,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "373",
+    "derridawork_pageloc": "d",
+    "book_page": "",
+    "reference_type": 4,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 70,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "401",
+    "derridawork_pageloc": "g",
+    "book_page": "",
+    "reference_type": 4,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 71,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "401",
+    "derridawork_pageloc": "h",
+    "book_page": "",
+    "reference_type": 4,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 72,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "403",
+    "derridawork_pageloc": "c",
+    "book_page": "",
+    "reference_type": 4,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 73,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "406",
+    "derridawork_pageloc": "b",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 74,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "406",
+    "derridawork_pageloc": "c",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 75,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "410",
+    "derridawork_pageloc": "b",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 76,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "411",
+    "derridawork_pageloc": "a",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 77,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "414",
+    "derridawork_pageloc": "b",
+    "book_page": "",
+    "reference_type": 4,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 78,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "416",
+    "derridawork_pageloc": "d",
+    "book_page": "",
+    "reference_type": 4,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 79,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "419",
+    "derridawork_pageloc": "c",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 80,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "419",
+    "derridawork_pageloc": "d",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 81,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "419",
+    "derridawork_pageloc": "e",
+    "book_page": "",
+    "reference_type": 4,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 82,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "420",
+    "derridawork_pageloc": "a",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 83,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "425",
+    "derridawork_pageloc": "a",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 84,
+  "fields": {
+    "book": 5,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "425",
+    "derridawork_pageloc": "b",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 85,
+  "fields": {
+    "book": 6,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "373",
+    "derridawork_pageloc": "c",
+    "book_page": "",
+    "reference_type": 4,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 86,
+  "fields": {
+    "book": 6,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "398",
+    "derridawork_pageloc": "a",
+    "book_page": "",
+    "reference_type": 4,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 87,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "141",
+    "derridawork_pageloc": "a",
+    "book_page": "190",
+    "reference_type": 3,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 88,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "145",
+    "derridawork_pageloc": "a",
+    "book_page": "146",
+    "reference_type": 3,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 89,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "188",
+    "derridawork_pageloc": "c",
+    "book_page": "590",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 90,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "197",
+    "derridawork_pageloc": "a",
+    "book_page": "",
+    "reference_type": 3,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 91,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "202",
+    "derridawork_pageloc": "b",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 92,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "203",
+    "derridawork_pageloc": "a",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 93,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "203",
+    "derridawork_pageloc": "b",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 94,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "203",
+    "derridawork_pageloc": "c",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 95,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "204",
+    "derridawork_pageloc": "a",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 96,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "204",
+    "derridawork_pageloc": "b",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 97,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "204",
+    "derridawork_pageloc": "c",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 98,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "204",
+    "derridawork_pageloc": "d",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 99,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "204",
+    "derridawork_pageloc": "e",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 100,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "204",
+    "derridawork_pageloc": "f",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 101,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "205",
+    "derridawork_pageloc": "a",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 102,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "209",
+    "derridawork_pageloc": "a",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 103,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "209",
+    "derridawork_pageloc": "b",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 104,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "209",
+    "derridawork_pageloc": "c",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 105,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "210",
+    "derridawork_pageloc": "b",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 106,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "231",
+    "derridawork_pageloc": "a",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 107,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "234",
+    "derridawork_pageloc": "a",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 108,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "234",
+    "derridawork_pageloc": "b",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 109,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "239",
+    "derridawork_pageloc": "a",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 110,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "240",
+    "derridawork_pageloc": "a",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 111,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "240",
+    "derridawork_pageloc": "b",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 112,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "241",
+    "derridawork_pageloc": "c",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 113,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "242",
+    "derridawork_pageloc": "a",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 114,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "242",
+    "derridawork_pageloc": "b",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 115,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "246",
+    "derridawork_pageloc": "a",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 116,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "246",
+    "derridawork_pageloc": "b",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 117,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "246",
+    "derridawork_pageloc": "c",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 118,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "246",
+    "derridawork_pageloc": "d",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 119,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "247",
+    "derridawork_pageloc": "a",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 120,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "248",
+    "derridawork_pageloc": "d",
+    "book_page": "",
+    "reference_type": 4,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 121,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "252",
+    "derridawork_pageloc": "b",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 122,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "254",
+    "derridawork_pageloc": "c",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 123,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "260",
+    "derridawork_pageloc": "b",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 124,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "261",
+    "derridawork_pageloc": "a",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 125,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "261",
+    "derridawork_pageloc": "b",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 126,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "261",
+    "derridawork_pageloc": "c",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 127,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "262",
+    "derridawork_pageloc": "b",
+    "book_page": "",
+    "reference_type": 4,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 128,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "262",
+    "derridawork_pageloc": "d",
+    "book_page": "",
+    "reference_type": 4,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 129,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "280",
+    "derridawork_pageloc": "a",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 130,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "280",
+    "derridawork_pageloc": "b",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 131,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "281",
+    "derridawork_pageloc": "a",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 132,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "281",
+    "derridawork_pageloc": "b",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 133,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "281",
+    "derridawork_pageloc": "c",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 134,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "282",
+    "derridawork_pageloc": "a",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 135,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "282",
+    "derridawork_pageloc": "b",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 136,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "304",
+    "derridawork_pageloc": "b",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 137,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "311",
+    "derridawork_pageloc": "e",
+    "book_page": "",
+    "reference_type": 4,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 138,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "317",
+    "derridawork_pageloc": "b",
+    "book_page": "",
+    "reference_type": 1,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 139,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "321",
+    "derridawork_pageloc": "c",
+    "book_page": "",
+    "reference_type": 4,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 140,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "324",
+    "derridawork_pageloc": "b",
+    "book_page": "",
+    "reference_type": 4,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 141,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "326",
+    "derridawork_pageloc": "a",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 142,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "336",
+    "derridawork_pageloc": "a",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 143,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "337",
+    "derridawork_pageloc": "b",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 144,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "337",
+    "derridawork_pageloc": "c",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 145,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "338",
+    "derridawork_pageloc": "a",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 146,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "355",
+    "derridawork_pageloc": "d",
+    "book_page": "",
+    "reference_type": 4,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 147,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "357",
+    "derridawork_pageloc": "b",
+    "book_page": "",
+    "reference_type": 4,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 148,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "360",
+    "derridawork_pageloc": "b",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 149,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "373",
+    "derridawork_pageloc": "b",
+    "book_page": "",
+    "reference_type": 4,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 150,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "373",
+    "derridawork_pageloc": "d",
+    "book_page": "",
+    "reference_type": 4,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 151,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "401",
+    "derridawork_pageloc": "g",
+    "book_page": "",
+    "reference_type": 4,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 152,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "401",
+    "derridawork_pageloc": "h",
+    "book_page": "",
+    "reference_type": 4,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 153,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "403",
+    "derridawork_pageloc": "c",
+    "book_page": "",
+    "reference_type": 4,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 154,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "406",
+    "derridawork_pageloc": "b",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 155,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "406",
+    "derridawork_pageloc": "c",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 156,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "410",
+    "derridawork_pageloc": "b",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 157,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "411",
+    "derridawork_pageloc": "a",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 158,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "414",
+    "derridawork_pageloc": "b",
+    "book_page": "",
+    "reference_type": 4,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 159,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "416",
+    "derridawork_pageloc": "d",
+    "book_page": "",
+    "reference_type": 4,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 160,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "419",
+    "derridawork_pageloc": "c",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 161,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "419",
+    "derridawork_pageloc": "d",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 162,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "419",
+    "derridawork_pageloc": "e",
+    "book_page": "",
+    "reference_type": 4,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 163,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "420",
+    "derridawork_pageloc": "a",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 164,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "425",
+    "derridawork_pageloc": "a",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 165,
+  "fields": {
+    "book": 7,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "425",
+    "derridawork_pageloc": "b",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 166,
+  "fields": {
+    "book": 8,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "26",
+    "derridawork_pageloc": "a",
+    "book_page": "(278a)170p",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 167,
+  "fields": {
+    "book": 8,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "50",
+    "derridawork_pageloc": "c",
+    "book_page": "(275a)165p",
+    "reference_type": 1,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 168,
+  "fields": {
+    "book": 8,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "57",
+    "derridawork_pageloc": "a",
+    "book_page": "(275d)166p",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 169,
+  "fields": {
+    "book": 8,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "57",
+    "derridawork_pageloc": "b",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 170,
+  "fields": {
+    "book": 8,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "70",
+    "derridawork_pageloc": "a",
+    "book_page": "(277e)170p",
+    "reference_type": 1,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 171,
+  "fields": {
+    "book": 8,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "395",
+    "derridawork_pageloc": "b",
+    "book_page": "(275d)166p",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 172,
+  "fields": {
+    "book": 9,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "26",
+    "derridawork_pageloc": "a",
+    "book_page": "(278a)289p",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 173,
+  "fields": {
+    "book": 9,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "50",
+    "derridawork_pageloc": "c",
+    "book_page": "(275a)287p",
+    "reference_type": 1,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 174,
+  "fields": {
+    "book": 9,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "57",
+    "derridawork_pageloc": "a",
+    "book_page": "(275d)288p",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 175,
+  "fields": {
+    "book": 9,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "70",
+    "derridawork_pageloc": "a",
+    "book_page": "(277e)292p",
+    "reference_type": 1,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 176,
+  "fields": {
+    "book": 9,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "395",
+    "derridawork_pageloc": "b",
+    "book_page": "(275d)287-289p",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 177,
+  "fields": {
+    "book": 10,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "26",
+    "derridawork_pageloc": "a",
+    "book_page": "(278a)94p",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 178,
+  "fields": {
+    "book": 10,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "50",
+    "derridawork_pageloc": "c",
+    "book_page": "(275a)88p",
+    "reference_type": 1,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 179,
+  "fields": {
+    "book": 10,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "57",
+    "derridawork_pageloc": "a",
+    "book_page": "(275d)89p",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 180,
+  "fields": {
+    "book": 10,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "57",
+    "derridawork_pageloc": "b",
+    "book_page": "",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 181,
+  "fields": {
+    "book": 10,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "70",
+    "derridawork_pageloc": "a",
+    "book_page": "(277e)93p",
+    "reference_type": 1,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "books.reference",
+  "pk": 182,
+  "fields": {
+    "book": 10,
+    "instance": null,
+    "derridawork": 1,
+    "derridawork_page": "395",
+    "derridawork_pageloc": "b",
+    "book_page": "(275d)89-90",
+    "reference_type": 2,
+    "anchor_text": ""
+  }
+},
+{
+  "model": "people.person",
+  "pk": 1,
+  "fields": {
+    "notes": "",
+    "start_year": 1915,
+    "end_year": 1980,
+    "authorized_name": "Barthes, Roland",
+    "viaf_id": "https://viaf.org/viaf/44295060/",
+    "sort_name": "",
+    "family_group": ""
+  }
+},
+{
+  "model": "people.person",
+  "pk": 2,
+  "fields": {
+    "notes": "",
+    "start_year": 1897,
+    "end_year": 1962,
+    "authorized_name": "Bataille, Georges",
+    "viaf_id": "https://viaf.org/viaf/41834843/",
+    "sort_name": "",
+    "family_group": ""
+  }
+},
+{
+  "model": "people.person",
+  "pk": 3,
+  "fields": {
+    "notes": "",
+    "start_year": 1596,
+    "end_year": 1650,
+    "authorized_name": "Descartes, Ren\u00e9",
+    "viaf_id": "https://viaf.org/viaf/41838958/",
+    "sort_name": "",
+    "family_group": ""
+  }
+},
+{
+  "model": "people.person",
+  "pk": 4,
+  "fields": {
+    "notes": "",
+    "start_year": 1712,
+    "end_year": 1778,
+    "authorized_name": "Rousseau, Jean-Jacques",
+    "viaf_id": "https://viaf.org/viaf/100184045/",
+    "sort_name": "",
+    "family_group": ""
+  }
+},
+{
+  "model": "people.person",
+  "pk": 5,
+  "fields": {
+    "notes": "",
+    "start_year": -427,
+    "end_year": -347,
+    "authorized_name": "Platon",
+    "viaf_id": "https://viaf.org/viaf/108159964/",
+    "sort_name": "",
+    "family_group": ""
+  }
+},
+{
+  "model": "places.place",
+  "pk": 1,
+  "fields": {
+    "name": "Princeton, NJ",
+    "notes": "",
+    "geonames_id": "http://sws.geonames.org/5102922/",
+    "latitude": 40.34872,
+    "longitude": -74.65905
+  }
+},
+{
+  "model": "places.place",
+  "pk": 2,
+  "fields": {
+    "name": "Paris",
+    "notes": "",
+    "geonames_id": "http://sws.geonames.org/2988507/",
+    "latitude": 48.85341,
+    "longitude": 2.3488
+  }
+}
+]

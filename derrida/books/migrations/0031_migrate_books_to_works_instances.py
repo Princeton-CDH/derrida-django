@@ -50,23 +50,19 @@ def books_to_works(books, apps):
         book_authors = [creator.person for creator in
                         book.creator_set.filter(creator_type__name='Author')]
 
-        # FIXME: not getting grouped as expected... subset
-        # data as fixture and write unit test
-
-        # check if previous work is set and this book belongs to it
         if previous_work and belongs_to_work(book, previous_work):
             work = previous_work
             # no guarantee we get works in order; if current instance
             # copyright year is later than current work year, update the work
-            if work.year > book.copyright_year:
+            if not work.year or (book.copyright_year and work.year > book.copyright_year):
                 work.year = book.copyright_year
                 work.save()
 
         # otherwise, create a new work
         else:
-            work = Work.objects.create(
-                primary_title=book.primary_title,
-                short_title=book.short_title,
+            work_title = cleaned_title(book.primary_title, remove_accents=False)
+            work = Work.objects.create(primary_title=work_title,
+                short_title=work_title,
                 year=book.work_year or book.copyright_year)
             # NOTE: work_year doesn't seem to be set; use copyright year
             # as a placeholder
@@ -85,6 +81,9 @@ def books_to_works(books, apps):
                             notes=booklang.notes)
                 for booklang in book.booklanguage_set.all()])
 
+            # store the new work to check for re-use when processing the next book
+            previous_work = work
+
         # then create the individual instance
         instance = Instance.objects.create(work=work)
         # NOTE: this migration doesn't set alternate title because
@@ -94,7 +93,8 @@ def books_to_works(books, apps):
         # these fields copy exactly from book to work unchanged
         copy_fields = ['publisher', 'zotero_id', 'is_extant', 'is_annotated',
                        'is_translation', 'dimensions', 'copyright_year',
-                       'journal', 'uri', 'has_dedication', 'has_insertions']
+                       'journal', 'uri', 'has_dedication', 'has_insertions',
+                       'notes']
         for field in copy_fields:
             setattr(instance, field, getattr(book, field))
         # convert book ambiguous pub date to instance print date
@@ -138,10 +138,9 @@ def books_to_works(books, apps):
             if matches.exists() and matches.count() == 1:
                 collection = matches.first()
             else:
-                print('Creating stub work record for %s / %s' % (book.short_title, book.larger_work_title))
                 collection_work = Work.objects.create(primary_title=book.larger_work_title,
                     short_title=book.larger_work_title,
-                    year=book.work_year,
+                    year=book.work_year or book.copyright_year,
                     notes='Stub collection work %s created from book section for %s' % \
                         (book.larger_work_title, book.short_title))
                 collection_work.authors.set(book_authors)

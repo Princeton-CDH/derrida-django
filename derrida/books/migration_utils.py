@@ -2,12 +2,15 @@ import re
 from unidecode import unidecode
 
 
-def cleaned_title(title):
+def cleaned_title(title, remove_accents=True):
     # remove parenthetical or bracketed comments at the end of a title
     # for comparison purposes;
     # convert accented characters to plain text equivalent so that
     # variants with and without accents will match
-    return unidecode(re.sub(r'\s*[\[\()].*[\]\)]\s*$', '', title))
+    title = re.sub(r'\s*[\[\()].*[\]\)]\s*$', '', title)
+    if remove_accents:
+        return unidecode(title)
+    return title
 
 
 def belongs_to_work(book, work):
@@ -15,11 +18,19 @@ def belongs_to_work(book, work):
     # - all authors match AND
     #   titles match exactly (case-insensitive)
     #  OR titles match after dropping parenthetical/bracket of book title
-    work_title = work.primary_title.strip().lower()
-    return work.authors.count() == book.authors().count() and \
-        all([creator.person in work.authors.all() for creator in book.authors()]) \
-        and (book.primary_title.strip().lower() == work_title \
-             or cleaned_title(book.primary_title).strip().lower() == work_title)
+
+    work_title = cleaned_title(work.primary_title.strip().lower())
+    book_title = cleaned_title(book.primary_title).strip().lower()
+    # NOTE: not using convenience method book.authors because this utility
+    # is intended for use with migration models which do not have
+    # access to custom mdoel methods
+    book_authors = [creator.person for creator in
+                    book.creator_set.filter(creator_type__name='Author')]
+
+    return work.authors.count() == len(book_authors) and \
+        all([person in work.authors.all() for person in book_authors]) \
+        and book_title == work_title
+
 
 def parse_page_range(page_range):
     # match digits or roman numerals
