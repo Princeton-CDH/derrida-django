@@ -197,4 +197,13 @@ class Migration(migrations.Migration):
             name='instancelanguage',
             unique_together=set([('instance', 'language')]),
         ),
+        migrations.AlterModelOptions(
+            name='reference',
+            options={'ordering': ['derridawork', 'derridawork_page', 'derridawork_pageloc']},
+        ),
+        migrations.AlterField(
+            model_name='personbook',
+            name='book',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='books.Instance'),
+        ),
     ]

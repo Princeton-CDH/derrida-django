@@ -537,7 +537,7 @@ class PersonBook(Notable, DateRange):
     annotation.'''
     # FIXME: better name? concept/thing/model
     person = models.ForeignKey(Person)
-    book = models.ForeignKey(Book)
+    book = models.ForeignKey(Instance)
     relationship_type = models.ForeignKey(PersonBookRelationshipType)
 
     class Meta:

@@ -11,7 +11,7 @@ from .models import Subject, Language, Publisher, OwningInstitution, \
     AssociatedBook
 # refactored models
 from .models import Work, Instance, WorkSubject, WorkLanguage, \
-    InstanceLanguage, InstanceCatalogue
+    InstanceLanguage, InstanceCatalogue, InstanceCreator
 
 
 class NamedNotableBookCount(NamedNotableAdmin):
@@ -63,6 +63,26 @@ class CreatorInlineForm(forms.ModelForm):
 
 class CreatorInline(CollapsibleTabularInline):
     model = Creator
+    extra = 1
+    form = CreatorInlineForm
+
+
+class InstanceCreatorInlineForm(forms.ModelForm):
+    '''Custom model form for Book editing, used to add autocomplete
+    for place lookup.'''
+    class Meta:
+        model = Creator
+        fields = ('creator_type', 'person', 'notes')
+        widgets = {
+            'person': autocomplete.ModelSelect2(
+                url='people:person-autocomplete',
+                attrs={'data-placeholder': 'Start typing a name to search...'}
+            )
+        }
+
+
+class InstanceCreatorInline(CollapsibleTabularInline):
+    model = InstanceCreator
     extra = 1
     form = CreatorInlineForm
 
@@ -153,7 +173,7 @@ class BookAdmin(admin.ModelAdmin):
         'catalogue__call_number', 'notes', 'publisher__name')
     inlines = [AssociatedBookInline, DerridaWorkBookInline, ReferenceInline,
         CreatorInline, LanguageInline, SubjectInline, CatalogueInline,
-        PersonBookInline, FootnoteInline]
+        FootnoteInline]
     list_filter = ('subjects', 'languages', 'is_extant',
         'is_annotated', 'is_digitized')
 
@@ -222,7 +242,8 @@ class WorkAdmin(admin.ModelAdmin):
     # NOTE: fields are specified here so that notes input will be displayed last
     fields = ('primary_title', 'short_title', 'year', 'uri', 'authors', 'notes')
     search_fields = ('primary_title', 'authors__authorized_name', 'notes')
-    inlines = [WorkSubjectInline, WorkLanguageInline, WorkInstanceInline]
+    inlines = [WorkSubjectInline, WorkLanguageInline, WorkInstanceInline,
+        FootnoteInline]
     list_filter = ('subjects', 'languages')
 
 
@@ -271,7 +292,8 @@ class InstanceAdmin(admin.ModelAdmin):
         'work__authors__authorized_name', 'instancecatalogue__call_number',
         'notes', 'publisher__name')
     # TODO: how to display sections collected by an instance?
-    inlines = [InstanceLanguageInline, InstanceCatalogueInline, ReferenceInline]
+    inlines = [ReferenceInline, InstanceCreatorInline, InstanceLanguageInline,
+        InstanceCatalogueInline, PersonBookInline, FootnoteInline]
     list_filter = ('languages', 'is_extant', 'is_annotated', 'has_insertions')
     filter_horizontal = ['cited_in']
 
