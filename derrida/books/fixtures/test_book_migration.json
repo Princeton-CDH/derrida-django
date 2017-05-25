@@ -157,7 +157,7 @@
     "larger_work_title": "Oeuvres Compl\u00e8tes",
     "item_type": 2,
     "journal": null,
-    "page_range": "",
+    "page_range": "foo-bar",
     "zotero_id": "",
     "original_pub_info": null,
     "publisher": null,

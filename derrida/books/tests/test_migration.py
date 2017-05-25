@@ -154,4 +154,11 @@ def test_data_migration():
     assert article.print_date.isoformat() == "1964-01-01"
     assert not article.print_date_day_known
     assert not article.print_date_month_known
+    # references copied
+    assert article.reference_set.count() == 2
+
+    # Test Case 4
+    # data modified to force page range parsing error
+    instance = Instance.objects.get(work__primary_title__contains='Le Petit')
+    assert 'Error parsing page range "foo-bar"' in instance.notes
 

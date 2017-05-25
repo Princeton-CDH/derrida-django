@@ -118,8 +118,9 @@ def books_to_works(books, apps):
                 instance.start_page = start
                 instance.end_page = end
             except:
-                instance.note.append('\Error parsing page range %s' % \
-                    book.page_range)
+                # if page range couldn't be parsed, add a note
+                instance.notes += '\Error parsing page range "%s"' % \
+                    book.page_range
 
         # copy catalogu data from book to instance
         for catalog_record in book.catalogue_set.all():
