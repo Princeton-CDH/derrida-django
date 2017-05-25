@@ -121,7 +121,7 @@ def books_to_works(books, apps):
             except:
                 # if page range couldn't be parsed, add a note
                 instance.notes += '\Error parsing page range "%s"' % \
-                    book.parse_page_range
+                    book.page_range
 
         # set instance languages
         InstanceLanguage.objects.bulk_create([
