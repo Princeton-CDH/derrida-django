@@ -39,6 +39,7 @@ def books_to_works(books, apps):
     WorkLanguage = apps.get_model("books", "WorkLanguage")
     Instance = apps.get_model("books", "Instance")
     InstanceCatalogue = apps.get_model("books", "InstanceCatalogue")
+    InstanceLanguage = apps.get_model("books", "InstanceLanguage")
     Place = apps.get_model("places", "Place")
 
     previous_work = None
@@ -120,7 +121,14 @@ def books_to_works(books, apps):
             except:
                 # if page range couldn't be parsed, add a note
                 instance.notes += '\Error parsing page range "%s"' % \
-                    book.page_range
+                    book.parse_page_range
+
+        # set instance languages
+        InstanceLanguage.objects.bulk_create([
+            InstanceLanguage(instance=instance, subject=booklang.language,
+                        is_primary=booklang.is_primary,
+                        notes=booklang.notes)
+            for booklang in book.booklanguage_set.all()])
 
         # copy catalogu data from book to instance
         for catalog_record in book.catalogue_set.all():
