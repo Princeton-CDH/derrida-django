@@ -3,6 +3,7 @@ from django.contrib.contenttypes.fields import GenericRelation
 from django.core.validators import RegexValidator
 from django.urls import reverse
 from django.utils.safestring import mark_safe
+from sortedm2m.fields import SortedManyToManyField
 
 from derrida.common.models import Named, Notable, DateRange
 from derrida.places.models import Place
@@ -63,6 +64,180 @@ class ItemType(Named, Notable):
 class Journal(Named, Notable):
     '''List of associated journals for use with "book" objects'''
     pass
+
+class Work(Notable):
+    '''A platonic work.  Stores common information about multiple
+    instances, copies, or editions of the same work.'''
+    primary_title = models.TextField()
+    short_title = models.CharField(max_length=255)
+    year = models.IntegerField(blank=True, null=True)
+    # is this work-specific or instance?
+    uri = models.URLField('URI', blank=True, help_text='Linked data URI',
+        default='')
+    authors = models.ManyToManyField(Person)
+    subjects = models.ManyToManyField(Subject, through='WorkSubject')
+    languages = models.ManyToManyField(Language, through='WorkLanguage')
+
+    class Meta:
+        ordering = ['primary_title']
+        verbose_name = 'Derrida library work'
+
+    def __str__(self):
+        return '%s (%s)' % (self.short_title, self.year or 'n.d.')
+
+    def author_names(self):
+        'Display author names; convenience access for display in admin'
+        # NOTE: possibly might want to use last names here
+        return ', '.join(str(auth) for auth in self.authors.all())
+    author_names.short_description = 'Authors'
+    author_names.admin_order_field = 'authors__authorized_name'
+
+    def instance_count(self):
+        base_url = reverse('admin:books_instance_changelist')
+        return mark_safe('<a href="%s?%ss__id__exact=%s">%s</a>' % (
+                            base_url,
+                            self.__class__.__name__.lower(),
+                            self.pk,
+                            self.instance_set.count()
+                ))
+    instance_count.short_description = '# instances'
+
+
+class Instance(Notable):
+    '''A single instance of a work - i.e., a specific copy or edition
+    or translation.  Can also include books that appear as sections
+    of a collected works.'''
+    work = models.ForeignKey(Work)
+    alternate_title = models.CharField(blank=True, max_length=255)
+    publisher = models.ForeignKey(Publisher, blank=True, null=True)
+    pub_place = SortedManyToManyField(Place,
+        verbose_name='Place(s) of Publication', blank=True)
+    zotero_id = models.CharField(
+        max_length=255,
+        # Add validator for any Zotero IDs entered manually by form.
+        validators=[RegexValidator(
+                        r'\W',
+                        inverse_match=True,
+                        message='Zotero IDs must be alphanumeric.'
+                    )]
+    )
+    is_extant = models.BooleanField(help_text='Extant in PUL JD', default=False)
+    is_annotated = models.BooleanField(default=False)
+    is_translation = models.BooleanField(default=False)
+    dimensions = models.CharField(max_length=255, blank=True)
+    copyright_year = models.PositiveIntegerField(blank=True, null=True)
+    journal = models.ForeignKey(Journal, blank=True, null=True)
+    print_date = models.DateField('Print Date',
+        blank=True, null=True, help_text='Date in YYYY-MM-DD format. If either'
+        ' pub_month or pub_day_missing are checked 01 for MM or DD indicates'
+        ' that the information is not known.')
+    print_date_day_known = models.BooleanField(default=False)
+    print_date_month_known = models.BooleanField(default=False)
+    print_date_year_known = models.BooleanField(default=True)
+    uri = models.URLField('URI', blank=True, default='',
+        help_text='Finding Aid URL for items in PUL Derrida Library')
+    has_dedication = models.BooleanField(default=False)
+    has_insertions = models.BooleanField(default=False)
+    # page range: using character fields to support non-numeric pages, e.g.
+    # roman numerals for introductory pages; using two fields to support
+    # sorting within a volume of collected works.
+    start_page = models.CharField(max_length=20, blank=True, null=True)
+    end_page = models.CharField(max_length=20, blank=True, null=True)
+
+    languages = models.ManyToManyField(Language, through='InstanceLanguage')
+
+    collected_in = models.ForeignKey('self', related_name='collected_set',
+        on_delete=models.SET_NULL, blank=True, null=True,
+        help_text='Larger work instance that collects or includes this item')
+    # work instances are connected to owning institutions via the Catalogue
+    # model; mapping as a many-to-many with a through
+    # model in case we want to access owning instutions directly
+    owning_institutions = models.ManyToManyField(OwningInstitution,
+        through='InstanceCatalogue')
+
+    # proof-of-concept generic relation to footnotes
+    footnotes = GenericRelation(Footnote)
+
+    class Meta:
+        ordering = ['alternate_title', 'work__primary_title'] ## ??
+        verbose_name = 'Derrida library work instance'
+
+    def __str__(self):
+        return '%s (%s)' % (self.alternate_title or self.work.short_title,
+            self.copyright_year or 'n.d.')
+
+    def display_title(self):
+        return self.alternate_title or self.work.short_title or '[no title]'
+    display_title.short_description = 'Title'
+
+    @property
+    def item_type(self):
+        if self.journal:
+            return 'Journal Article'
+        if self.collected_in:
+            return 'Book Section'
+        return 'Book'
+
+    def author_names(self):
+        'Display Work author names; convenience access for display in admin'
+        return self.work.author_names()
+    author_names.short_description = 'Authors'
+    author_names.admin_order_field = 'work__authors__authorized_name'
+
+    def catalogue_call_numbers(self):
+        'Convenience access to catalogue call numbers, for display in admin'
+        return ', '.join([c.call_number for c in self.instancecatalogue_set.all()
+                          if c.call_number])
+    catalogue_call_numbers.short_description = 'Call Numbers'
+    catalogue_call_numbers.admin_order_field = 'catalogue__call_number'
+
+
+class WorkSubject(Notable):
+    '''Through-model for work-subject relationship, to allow designating
+    a particular subject as primary or adding notes.'''
+    subject = models.ForeignKey(Subject)
+    work = models.ForeignKey(Work)
+    is_primary = models.BooleanField()
+
+    class Meta:
+        unique_together = ('subject', 'work')
+        verbose_name = 'Subject'
+
+    def __str__(self):
+        return '%s %s%s' % (self.work, self.subject,
+            ' (primary)' if self.is_primary else '')
+
+
+class WorkLanguage(Notable):
+    '''Through-model for work-language relationship, to allow designating
+    one language as primary or adding notes.'''
+    language = models.ForeignKey(Language)
+    work = models.ForeignKey(Work)
+    is_primary = models.BooleanField()
+
+    class Meta:
+        unique_together = ('work', 'language')
+        verbose_name = 'Language'
+
+    def __str__(self):
+        return '%s %s%s' % (self.work, self.language,
+            ' (primary)' if self.is_primary else '')
+
+
+class InstanceLanguage(Notable):
+    '''Through-model for instance-language relationship, to allow designating
+    one language as primary or adding notes.'''
+    language = models.ForeignKey(Language)
+    instance = models.ForeignKey(Instance)
+    is_primary = models.BooleanField()
+
+    class Meta:
+        unique_together = ('instance', 'language')
+        verbose_name = 'Language'
+
+    def __str__(self):
+        return '%s %s%s' % (self.instance, self.language,
+            ' (primary)' if self.is_primary else '')
 
 
 class Book(Notable):
@@ -130,14 +305,11 @@ class Book(Notable):
 
     class Meta:
         ordering = ['primary_title']
-        verbose_name = 'Derrida library work'
-        verbose_name_plural = 'Derrida library works'
+        verbose_name = 'Derrida library work (OLD)'
+        verbose_name_plural = 'Derrida library works (OLD)'
 
     def __str__(self):
-        if self.copyright_year:
-            return '%s (%s)' % (self.short_title, self.copyright_year)
-        else:
-            return '%s (n.d.)' % (self.short_title)
+        return '%s (%s)' % (self.short_title, self.copyright_year or 'n.d.')
 
     def catalogue_call_numbers(self):
         'Convenience access to catalogue call numbers, for display in admin'
@@ -240,7 +412,6 @@ class AssociatedBook(models.Model):
 
     class Meta:
         verbose_name = 'Associated Book'
-        verbose_name_plural = 'Associated Books'
 
     def __str__(self):
         return '%s - %s' % (self.from_book.short_title, self.to_book.short_title)
@@ -257,11 +428,35 @@ class Catalogue(Notable, DateRange):
     call_number = models.CharField(max_length=255, blank=True, null=True,
         help_text='Used for Derrida shelf mark')
 
+
+
     def __str__(self):
         dates = ''
         if self.dates:
             dates = ' (%s)' % self.dates
         return '%s / %s%s' % (self.book, self.institution, dates)
+
+
+class InstanceCatalogue(Notable, DateRange):
+    '''Location of a work instance  in the real world, associating it with an
+    owning instutition.'''
+    institution = models.ForeignKey(OwningInstitution)
+    instance = models.ForeignKey(Instance)
+    is_current = models.BooleanField()
+    # using char instead of int because assuming  call numbers may contain
+    # strings as well as numbers
+    call_number = models.CharField(max_length=255, blank=True, null=True,
+        help_text='Used for Derrida shelf mark')
+
+    class Meta:
+        verbose_name = 'Catalogue'
+
+    def __str__(self):
+        dates = ''
+        if self.dates:
+            dates = ' (%s)' % self.dates
+        return '%s / %s%s' % (self.instance, self.institution, dates)
+
 
 
 class BookSubject(Notable):
@@ -308,6 +503,19 @@ class Creator(Notable):
 
     def __str__(self):
         return '%s %s %s' % (self.person, self.creator_type, self.book)
+
+
+class InstanceCreator(Notable):
+    creator_type = models.ForeignKey(CreatorType)
+    # technically should disallow author here, but can clean that up later
+    person = models.ForeignKey(Person)
+    instance = models.ForeignKey(Instance)
+
+    def __str__(self):
+        return '%s %s %s' % (self.person, self.creator_type, self.instance)
+
+
+
 
 class PersonBookRelationshipType(Named, Notable):
     '''Type of non-annotation relationship assocating a person
@@ -379,12 +587,14 @@ class ReferenceType(Named, Notable):
 class Reference(models.Model):
     '''References to Derrida's works from Zotero Tags collected by team'''
     book = models.ForeignKey(Book)
+    # reference both book and instance until book data is migrated
+    instance = models.ForeignKey(Instance, blank=True, null=True)
     derridawork = models.ForeignKey(DerridaWork)
     derridawork_page = models.CharField(max_length=10)
     derridawork_pageloc = models.CharField(max_length=2)
-    book_page = models.CharField(max_length=255, blank=True, null=True)
+    book_page = models.CharField(max_length=255, blank=True)
     reference_type = models.ForeignKey(ReferenceType)
-    anchor_text = models.TextField(blank=True, null=True)
+    anchor_text = models.TextField(blank=True)
 
     def __str__(self):
         return "%s, %s%s: %s, %s, %s" % (

@@ -5,4 +5,6 @@ django-autocomplete-light
 pandas
 requests
 rdflib
+django-sortedm2m
+unidecode
 git+https://github.com/Princeton-CDH/django-pucas.git@master#egg=pucas

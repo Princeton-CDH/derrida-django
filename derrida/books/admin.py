@@ -9,6 +9,9 @@ from .models import Subject, Language, Publisher, OwningInstitution, \
     PersonBook, PersonBookRelationshipType, \
     DerridaWork, DerridaWorkBook, Reference, ReferenceType, Journal, ItemType, \
     AssociatedBook
+# refactored models
+from .models import Work, Instance, WorkSubject, WorkLanguage, \
+    InstanceLanguage, InstanceCatalogue
 
 
 class NamedNotableBookCount(NamedNotableAdmin):
@@ -173,6 +176,103 @@ class DerridaWorkAdmin(admin.ModelAdmin):
     fields = ('short_title', 'full_citation', 'is_primary', 'notes')
 
 
+### refactored work/instance model admin
+
+
+class WorkSubjectInline(CollapsibleTabularInline):
+    model = WorkSubject
+    extra = 1
+    fields = ('subject', 'is_primary', 'notes')
+
+
+class WorkLanguageInline(CollapsibleTabularInline):
+    model = WorkLanguage
+    extra = 1
+    fields = ('language', 'is_primary', 'notes')
+
+
+class WorkInstanceInline(CollapsibleTabularInline):
+    '''Minimal inline view to display instances within work edit form'''
+    model = Instance
+    extra = 0
+    fields = ('alternate_title', 'copyright_year', 'print_date',
+        'is_extant', 'is_annotated', 'is_translation', 'notes')
+    # FIXME: this appears not to be supported by grappelli; how to work around?
+    show_change_link = True
+
+
+class WorkAdminForm(forms.ModelForm):
+    '''Custom model form for Work editing, used to add autocomplete
+    for person lookup.'''
+    class Meta:
+        model = Work
+        exclude = []
+        widgets = {
+            'authors': autocomplete.ModelSelect2Multiple(
+                url='people:person-autocomplete',
+                attrs={'data-placeholder': 'Start typing a name to search...'}
+            )
+        }
+
+
+class WorkAdmin(admin.ModelAdmin):
+    form = WorkAdminForm
+    list_display = ('short_title', 'author_names', 'year', 'instance_count', 'has_notes')
+    # NOTE: fields are specified here so that notes input will be displayed last
+    fields = ('primary_title', 'short_title', 'year', 'uri', 'authors', 'notes')
+    search_fields = ('primary_title', 'authors__authorized_name', 'notes')
+    inlines = [WorkSubjectInline, WorkLanguageInline, WorkInstanceInline]
+    list_filter = ('subjects', 'languages')
+
+
+class InstanceLanguageInline(CollapsibleTabularInline):
+    model = InstanceLanguage
+    extra = 1
+    fields = ('language', 'is_primary', 'notes')
+
+
+class InstanceCatalogueInline(CollapsibleTabularInline):
+    model = InstanceCatalogue
+    extra = 1
+    fields = ('institution', 'call_number', 'start_year', 'end_year',
+              'notes')
+
+class InstanceAdminForm(forms.ModelForm):
+    '''Custom model form for Instance editing, used to add autocomplete
+    for publication place  lookup.'''
+    class Meta:
+        model = Work
+        exclude = []
+        widgets = {
+            'pub_place': autocomplete.ModelSelect2Multiple(
+                url='places:autocomplete',
+                attrs={'data-placeholder': 'Start typing location to search...'})
+        }
+
+
+class InstanceAdmin(admin.ModelAdmin):
+    form = InstanceAdminForm
+
+    list_display = ('display_title', 'author_names', 'copyright_year',
+        'item_type', 'catalogue_call_numbers', 'is_extant', 'is_annotated',
+        'is_translation', 'has_notes')
+    # NOTE: fields are specified here so that notes input will be displayed last
+    fields = ('work', 'alternate_title', 'journal', 'publisher',
+        'pub_place', 'copyright_year', 'print_date',
+        ('print_date_year_known', 'print_date_month_known',
+         'print_date_day_known'),
+        ('is_extant', 'is_translation'),
+        ('is_annotated', 'has_insertions', 'has_dedication'),
+        'uri', 'dimensions', ('start_page', 'end_page'),
+        'collected_in', 'notes')
+    search_fields = ('alternate_title', 'work__primary_title',
+        'work__authors__authorized_name', 'instancecatalogue__call_number',
+        'notes', 'publisher__name')
+    # TODO: how to display sections collected by an instance?
+    inlines = [InstanceLanguageInline, InstanceCatalogueInline, ReferenceInline]
+    list_filter = ('languages', 'is_extant', 'is_annotated', 'has_insertions')
+
+
 admin.site.register(Subject,  NamedNotableBookCount)
 admin.site.register(Language, NamedNotableBookCount)
 admin.site.register(Publisher, NamedNotableBookCount)
@@ -181,6 +281,10 @@ admin.site.register(Book, BookAdmin)
 admin.site.register(CreatorType, NamedNotableAdmin)
 admin.site.register(PersonBookRelationshipType, NamedNotableAdmin)
 admin.site.register(PersonBook, PersonBookAdmin)
+
+# refactored models
+admin.site.register(Work, WorkAdmin)
+admin.site.register(Instance, InstanceAdmin)
 
 # Citationality sub module
 admin.site.register(DerridaWork, DerridaWorkAdmin)
