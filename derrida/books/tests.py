@@ -644,7 +644,7 @@ class TestImportZotero(TestCase):
         self.cmd.parse_ref_tag(full_tag, bk)
         reference = Reference.objects.get(book=bk)
         assert reference.reference_type.name == 'Quotation'
-        assert reference.book_page == None
+        assert reference.book_page == ''
         reference.delete()
 
     def test_create_book(self):

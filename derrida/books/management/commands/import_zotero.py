@@ -315,7 +315,7 @@ class Command(BaseCommand):
 
         work = None
         page_loc = None
-        book_page_seq = None
+        book_page_seq = ''
         annotation_type = None
         annotation_status = None
 

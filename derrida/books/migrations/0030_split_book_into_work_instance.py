@@ -11,7 +11,7 @@ import sortedm2m.fields
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('people', '0003_split_book_into_work_instance'),
+        ('people', '0002_allow_neg_years_bc'),
         ('places', '0001_initial'),
         ('books', '0029_add_anchor_text_reference'),
     ]
