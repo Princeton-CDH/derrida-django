@@ -155,6 +155,9 @@ class Instance(Notable):
     owning_institutions = models.ManyToManyField(OwningInstitution,
         through='InstanceCatalogue')
 
+    cited_in = models.ManyToManyField('DerridaWork',
+        help_text='Derrida works that cite this edition or instance')
+
     # proof-of-concept generic relation to footnotes
     footnotes = GenericRelation(Footnote)
 
@@ -596,6 +599,10 @@ class Reference(models.Model):
     reference_type = models.ForeignKey(ReferenceType)
     anchor_text = models.TextField(blank=True)
 
+    class Meta:
+        ordering = ['derridawork', 'derridawork_page', 'derridawork_pageloc']
+
+
     def __str__(self):
         return "%s, %s%s: %s, %s, %s" % (
             self.derridawork.short_title,
@@ -605,3 +612,12 @@ class Reference(models.Model):
             self.book_page,
             self.reference_type
         )
+
+    def anchor_text_snippet(self):
+        '''Anchor text snippet, for admin display'''
+        snippet = self.anchor_text[:100]
+        if len(self.anchor_text) > 100:
+            return ''.join([snippet, ' ...'])
+        return snippet
+    anchor_text_snippet.short_description = 'Anchor Text'
+    anchor_text.admin_order_field = 'anchor_text'

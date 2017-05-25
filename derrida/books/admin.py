@@ -93,7 +93,7 @@ class ReferenceInline(admin.StackedInline):
     extra = 1
     classes = ('grp-collapse grp-open',)
     fieldsets = (
-        ('Citational Information', {
+        ('Citation Information', {
                 'fields': (
                     'derridawork',
                     'derridawork_page',
@@ -217,7 +217,8 @@ class WorkAdminForm(forms.ModelForm):
 
 class WorkAdmin(admin.ModelAdmin):
     form = WorkAdminForm
-    list_display = ('short_title', 'author_names', 'year', 'instance_count', 'has_notes')
+    list_display = ('short_title', 'author_names', 'year', 'instance_count',
+        'has_notes')
     # NOTE: fields are specified here so that notes input will be displayed last
     fields = ('primary_title', 'short_title', 'year', 'uri', 'authors', 'notes')
     search_fields = ('primary_title', 'authors__authorized_name', 'notes')
@@ -262,6 +263,7 @@ class InstanceAdmin(admin.ModelAdmin):
         ('print_date_year_known', 'print_date_month_known',
          'print_date_day_known'),
         ('is_extant', 'is_translation'),
+        'cited_in',
         ('is_annotated', 'has_insertions', 'has_dedication'),
         'uri', 'dimensions', ('start_page', 'end_page'),
         'collected_in', 'notes')
@@ -271,6 +273,31 @@ class InstanceAdmin(admin.ModelAdmin):
     # TODO: how to display sections collected by an instance?
     inlines = [InstanceLanguageInline, InstanceCatalogueInline, ReferenceInline]
     list_filter = ('languages', 'is_extant', 'is_annotated', 'has_insertions')
+    filter_horizontal = ['cited_in']
+
+
+class ReferenceAdmin(admin.ModelAdmin):
+    list_display = ['derridawork', 'derridawork_page', 'derridawork_pageloc',
+        'instance', 'book_page', 'reference_type', 'anchor_text_snippet']
+    list_filter = ['derridawork', 'reference_type']
+    search_fields = ['anchor_text']
+    # *almost* the same as:
+    # fieldsets = ReferenceInline.fieldsets
+    fieldsets = (
+        ('Citation Information', {
+                'fields': (
+                    'derridawork',
+                    'derridawork_page',
+                    'derridawork_pageloc',
+                    'instance',
+                    'book_page',
+                    'reference_type',
+                )
+        }),
+        ('Anchor Text', {
+            'fields': ('anchor_text',)
+        }),
+    )
 
 
 admin.site.register(Subject,  NamedNotableBookCount)
@@ -289,6 +316,6 @@ admin.site.register(Instance, InstanceAdmin)
 # Citationality sub module
 admin.site.register(DerridaWork, DerridaWorkAdmin)
 admin.site.register(ReferenceType)
-admin.site.register(Reference)
+admin.site.register(Reference, ReferenceAdmin)
 admin.site.register(ItemType)
 admin.site.register(Journal)
