@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.contenttypes.fields import GenericRelation
 from django.core.validators import RegexValidator
+from django.core.exceptions import ValidationError
 from django.urls import reverse
 from django.utils.safestring import mark_safe
 from sortedm2m.fields import SortedManyToManyField
@@ -165,8 +166,13 @@ class Instance(Notable):
         ordering = ['alternate_title', 'work__primary_title'] ## ??
         verbose_name = 'Derrida library work instance'
 
+    def clean(self):
+        # Don't allow both journal and collected work
+        if self.journal and self.collected_in:
+            raise ValidationError('Cannot belong to both a journal and a collection')
+
     def __str__(self):
-        return '%s (%s)' % (self.alternate_title or self.work.short_title,
+        return '%s (%s)' % (self.display_title(),
             self.copyright_year or 'n.d.')
 
     def display_title(self):

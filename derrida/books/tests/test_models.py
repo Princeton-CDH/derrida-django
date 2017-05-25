@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
-import os
-
-from django.contrib.auth import get_user_model
-from django.utils.safestring import mark_safe
+from django.core.exceptions import ValidationError
 from django.test import TestCase
 from django.urls import reverse
 import pytest
@@ -11,14 +8,12 @@ import pytest
 from derrida.places.models import Place
 from derrida.people.models import Person
 # Common models between projects and associated new types
-from derrida.books.models import AssociatedBook, Book, Catalogue, Creator, CreatorType, \
-    ItemType, Publisher, OwningInstitution
+from derrida.books.models import AssociatedBook, Book, Catalogue, Creator, \
+    CreatorType, ItemType, Publisher, OwningInstitution, Journal
 # Citationality extensions
-from derrida.books.models import DerridaWork, DerridaWorkBook, Reference, ReferenceType, \
-    Work
-
-# User model
-User = get_user_model()
+from derrida.books.models import DerridaWork, DerridaWorkBook, Reference, \
+    ReferenceType, Work, Instance, InstanceCatalogue, WorkLanguage, \
+    InstanceLanguage, Language, WorkSubject, Subject
 
 
 class TestOwningInstitution(TestCase):
@@ -41,14 +36,11 @@ class TestOwningInstitution(TestCase):
         inst = OwningInstitution.objects.create(name='NYSL',
             place=pl)
         # new institution has no books associated
-        base_url = reverse('admin:books_book_changelist')
-        assert inst.book_count() == \
-            mark_safe('<a href="%s?%ss__id__exact=%s">%s</a>' %
-                (base_url,
-                inst.__class__.__name__.lower(),
-                inst.pk,
-                0)
-            )
+        change_url = reverse('admin:books_book_changelist')
+        admin_book_count = inst.book_count()
+        assert change_url in admin_book_count
+        assert 'id__exact=%s' % inst.pk in admin_book_count
+        assert '0' in admin_book_count
 
         # create a book and associated it with the institution
         book = ItemType.objects.get(name='Book')
@@ -63,14 +55,10 @@ class TestOwningInstitution(TestCase):
         cat = Catalogue.objects.create(institution=inst, book=bk,
             is_current=False)
 
-
-        assert inst.book_count() == \
-            mark_safe('<a href="%s?%ss__id__exact=%s">%s</a>' %
-                (base_url,
-                inst.__class__.__name__.lower(),
-                inst.pk,
-                1)
-            )
+        inst_book_count = inst.book_count()
+        assert change_url in inst_book_count
+        assert 'id__exact=%s' % inst.pk in inst_book_count
+        assert '1' in inst_book_count
 
 
 class TestBook(TestCase):
@@ -481,4 +469,143 @@ class TestReference(TestCase):
         references[0].delete()
         references = Reference.objects.filter(book=bk1)
         assert references.count() == 1
+
+
+class TestWork(TestCase):
+    fixtures = ['sample_work_data.json']
+
+    def test_str(self):
+        la_vie = Work.objects.get(short_title__contains="La vie")
+        assert '%s (%s)' % (la_vie.short_title, la_vie.year) \
+            == str(la_vie)
+        # no date
+        la_vie.year = None
+        assert '%s (n.d.)' % (la_vie.short_title, )
+
+    def test_author_names(self):
+        la_vie = Work.objects.get(short_title__contains="La vie")
+        assert la_vie.author_names() == "L\u00e9vi-Strauss"
+
+    def test_instance_count(self):
+        la_vie = Work.objects.get(short_title__contains="La vie")
+        inst_count = la_vie.instance_count()
+        instance_list_url = reverse('admin:books_instance_changelist')
+        assert instance_list_url in inst_count
+        assert 'id__exact=%s' % la_vie.pk in inst_count
+        assert '1' in inst_count
+
+
+class TestInstance(TestCase):
+    fixtures = ['sample_work_data.json']
+
+    def test_display_title(self):
+        la_vie = Instance.objects.get(work__short_title__contains="La vie")
+        # short title from work if no alternate title
+        assert la_vie.display_title() == la_vie.work.short_title
+        # alternate title from instance if set
+        la_vie.alternate_title = 'Family Life'
+        assert la_vie.display_title() == la_vie.alternate_title
+
+    def test_str(self):
+        la_vie = Instance.objects.get(work__short_title__contains="La vie")
+        assert '%s (%s)' % (la_vie.display_title(), la_vie.copyright_year) \
+            == str(la_vie)
+        # no date
+        la_vie.year = None
+        assert '%s (n.d.)' % (la_vie.display_title(), )
+
+    def test_item_type(self):
+        la_vie = Instance.objects.get(work__short_title__contains="La vie")
+        assert la_vie.item_type == 'Book'
+
+        # journal article
+        la_vie.journal = Journal.objects.all().first()
+        assert la_vie.item_type == 'Journal Article'
+
+        # book section
+        la_vie.journal = None
+        la_vie.collected_in = Instance()
+        assert la_vie.item_type == 'Book Section'
+
+    def test_author_names(self):
+        la_vie = Instance.objects.get(work__short_title__contains="La vie")
+        assert la_vie.author_names() == la_vie.work.author_names()
+
+    def test_catalogue_call_number(self):
+        la_vie = Instance.objects.get(work__short_title__contains="La vie")
+        # fixture has no call number (shelf-mark)
+        assert la_vie.catalogue_call_numbers() == ''
+
+        # add a first and second catalogue record
+        owning_inst = OwningInstitution.objects.first()
+        InstanceCatalogue.objects.create(institution=owning_inst,
+            instance=la_vie, call_number='NY789', is_current=True)
+        assert la_vie.catalogue_call_numbers() == 'NY789'
+        InstanceCatalogue.objects.create(institution=owning_inst,
+            instance=la_vie, call_number='PU456', is_current=True)
+        assert la_vie.catalogue_call_numbers() == 'NY789, PU456'
+
+    def test_clean(self):
+        la_vie = Instance.objects.get(work__short_title__contains="La vie")
+        la_vie.journal = Journal.objects.all().first()
+        la_vie.collected_in = Instance()
+        with pytest.raises(ValidationError) as err:
+            la_vie.clean()
+        assert 'Cannot belong to both a journal and a collection' in str(err)
+
+
+class TestWorkLanguage(TestCase):
+    fixtures = ['sample_work_data.json']
+
+    def test_str(self):
+        la_vie = Work.objects.get(short_title__contains="La vie")
+        fr = Language.objects.get(name='French')
+        wklang = WorkLanguage(language=fr, work=la_vie)
+        assert str(wklang) == '%s %s' % (la_vie, fr)
+
+        wklang.is_primary = True
+        assert str(wklang) == '%s %s (primary)' % (la_vie, fr)
+
+
+class TestWorkSubject(TestCase):
+    fixtures = ['sample_work_data.json']
+
+    def test_str(self):
+        la_vie = Work.objects.get(short_title__contains="La vie")
+        ling = Subject(name='Linguistics')
+        wksubj = WorkSubject(work=la_vie, subject=ling)
+        assert str(wksubj) == '%s %s' % (la_vie, ling)
+
+        wksubj.is_primary = True
+        assert str(wksubj) == '%s %s (primary)' % (la_vie, ling)
+
+
+class TestInstanceLanguage(TestCase):
+    fixtures = ['sample_work_data.json']
+
+    def test_str(self):
+        la_vie = Instance.objects.get(work__short_title__contains="La vie")
+        ger = Language.objects.get(name='German')
+        instlang = InstanceLanguage(language=ger, instance=la_vie)
+        assert str(instlang) == '%s %s' % (la_vie, ger)
+
+        instlang.is_primary = True
+        assert str(instlang) == '%s %s (primary)' % (la_vie, ger)
+
+
+class TestInstanceCatalogue(TestCase):
+    fixtures = ['sample_work_data.json']
+
+    def test_str(self):
+        la_vie = Instance.objects.get(work__short_title__contains="La vie")
+
+        inst_cat = la_vie.instancecatalogue_set.first()
+        assert str(inst_cat) == '%s / %s' % (la_vie, inst_cat.institution)
+
+        # with dates
+        inst_cat.start_year = 1891
+        assert str(inst_cat) == '%s / %s (1891-)' % (la_vie, inst_cat.institution)
+
+
+
 
