@@ -153,7 +153,8 @@ def books_to_works(books, apps):
                 collection = matches.first()
             else:
                 collection_work = Work.objects.create(primary_title=book.larger_work_title,
-                    short_title=book.larger_work_title,
+                    # truncate to short title allowed length if nececsary
+                    short_title=book.larger_work_title[:255],
                     year=book.work_year or book.copyright_year,
                     notes='Stub collection work %s created from book section for %s' % \
                         (book.larger_work_title, book.short_title))
