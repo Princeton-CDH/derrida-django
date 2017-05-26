@@ -14,12 +14,20 @@ from .models import Work, Instance, WorkSubject, WorkLanguage, \
     InstanceLanguage, InstanceCatalogue, InstanceCreator
 
 
-class NamedNotableBookCount(NamedNotableAdmin):
-    list_display = NamedNotableAdmin.list_display + ('book_count',)
+class NamedNotableInstanceCount(NamedNotableAdmin):
+    list_display = NamedNotableAdmin.list_display + ('instance_count',)
+
+
+class NamedNotableWorkInstanceCount(NamedNotableAdmin):
+    list_display = NamedNotableAdmin.list_display + \
+        ('work_count', 'instance_count')
+
+class NamedNotableWorkCount(NamedNotableAdmin):
+    list_display = NamedNotableAdmin.list_display + ('work_count',)
 
 
 class OwningInstitutionAdmin(admin.ModelAdmin):
-    list_display = ('short_name', 'name', 'place', 'has_notes', 'book_count')
+    list_display = ('short_name', 'name', 'place', 'has_notes', 'instance_count')
     fields = ('name', 'short_name', 'contact_info', 'place', 'notes')
     search_fields = ('name', 'short_name', 'contact_info', 'notes')
 
@@ -322,14 +330,16 @@ class ReferenceAdmin(admin.ModelAdmin):
     )
 
 
-admin.site.register(Subject,  NamedNotableBookCount)
-admin.site.register(Language, NamedNotableBookCount)
-admin.site.register(Publisher, NamedNotableBookCount)
+admin.site.register(Subject,  NamedNotableWorkCount)
+admin.site.register(Language, NamedNotableWorkInstanceCount)
+admin.site.register(Publisher, NamedNotableInstanceCount)
 admin.site.register(OwningInstitution, OwningInstitutionAdmin)
-admin.site.register(Book, BookAdmin)
+# NOTE: suppress old book models from admin to avoid getting data
+# entered in the wrong place; they will be removed in a subsequent release
+# admin.site.register(Book, BookAdmin)
 admin.site.register(CreatorType, NamedNotableAdmin)
-admin.site.register(PersonBookRelationshipType, NamedNotableAdmin)
-admin.site.register(PersonBook, PersonBookAdmin)
+# admin.site.register(PersonBookRelationshipType, NamedNotableAdmin)
+# admin.site.register(PersonBook, PersonBookAdmin)
 
 # refactored models
 admin.site.register(Work, WorkAdmin)

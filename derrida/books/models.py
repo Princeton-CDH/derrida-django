@@ -14,39 +14,61 @@ from derrida.footnotes.models import Footnote
 Q = models.Q
 
 
-class BookCount(models.Model):
+# TODO: could work/instance count be refactored for more general use?
+
+class WorkCount(models.Model):
+    '''Mix-in for models related to works; adds work count property and link to
+    associated works'''
+    class Meta:
+        abstract = True
+
+    def work_count(self):
+        base_url = reverse('admin:books_work_changelist')
+        return mark_safe('<a href="%s?%ss__id__exact=%s">%s</a>' % (
+                            base_url,
+                            self.__class__.__name__.lower(),
+                            self.pk,
+                            self.work_set.count()
+                ))
+    work_count.short_description = '# works'
+    # NOTE: possible to use a count field for admin ordering!
+    # see https://mounirmesselmeni.github.io/2016/03/21/how-to-order-a-calculated-count-field-in-djangos-admin/
+    # book_count.admin_order_field = 'work__count'
+
+
+class InstanceCount(models.Model):
     '''Mix-in for models related to books; adds book count property and link to
     associated books'''
     class Meta:
         abstract = True
 
-    def book_count(self):
-        base_url = reverse('admin:books_book_changelist')
+    def instance_count(self):
+        base_url = reverse('admin:books_instance_changelist')
         return mark_safe('<a href="%s?%ss__id__exact=%s">%s</a>' % (
                             base_url,
                             self.__class__.__name__.lower(),
                             self.pk,
-                            self.book_set.count()
+                            self.instance_set.count()
                 ))
-    book_count.short_description = '# books'
+    instance_count.short_description = '# instances'
 
 
-class Subject(Named, Notable, BookCount):
+class Subject(Named, Notable, WorkCount):
     '''Subject categorization for books'''
     uri = models.URLField(blank=True, null=True)
 
 
-class Language(Named, Notable, BookCount):
+class Language(Named, Notable, WorkCount, InstanceCount):
     '''Language that a book is written in or a language included in a book'''
     uri = models.URLField(blank=True, null=True)
 
 
-class Publisher(Named, Notable, BookCount):
+class Publisher(Named, Notable, InstanceCount):
     '''Publisher of a book'''
     pass
 
 
-class OwningInstitution(Named, Notable, BookCount):
+class OwningInstitution(Named, Notable, InstanceCount):
     '''Institution that owns the extant copy of a book'''
     short_name = models.CharField(max_length=255, blank=True,
         help_text='Optional short name for admin display')
@@ -157,7 +179,8 @@ class Instance(Notable):
         through='InstanceCatalogue')
 
     cited_in = models.ManyToManyField('DerridaWork',
-        help_text='Derrida works that cite this edition or instance')
+        help_text='Derrida works that cite this edition or instance',
+        blank=True)
 
     # proof-of-concept generic relation to footnotes
     footnotes = GenericRelation(Footnote)
@@ -206,7 +229,7 @@ class WorkSubject(Notable):
     a particular subject as primary or adding notes.'''
     subject = models.ForeignKey(Subject)
     work = models.ForeignKey(Work)
-    is_primary = models.BooleanField()
+    is_primary = models.BooleanField(default=False)
 
     class Meta:
         unique_together = ('subject', 'work')

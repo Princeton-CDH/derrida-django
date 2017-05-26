@@ -28,7 +28,7 @@ class TestOwningInstitution(TestCase):
         inst.short_name = short_name
         assert str(inst) == short_name
 
-    def test_book_count(self):
+    def test_instance_count(self):
         # test abstract book count mix-in via owning institution model
         # tests that html for admin form is rendered correctly
 
@@ -36,8 +36,8 @@ class TestOwningInstitution(TestCase):
         inst = OwningInstitution.objects.create(name='NYSL',
             place=pl)
         # new institution has no books associated
-        change_url = reverse('admin:books_book_changelist')
-        admin_book_count = inst.book_count()
+        change_url = reverse('admin:books_instance_changelist')
+        admin_book_count = inst.instance_count()
         assert change_url in admin_book_count
         assert 'id__exact=%s' % inst.pk in admin_book_count
         assert '0' in admin_book_count
@@ -45,17 +45,15 @@ class TestOwningInstitution(TestCase):
         # create a book and associated it with the institution
         book = ItemType.objects.get(name='Book')
         pub = Publisher.objects.create(name='Pub Lee')
-        bk = Book.objects.create(primary_title='Some rambling long old title',
-            short_title='Some rambling',
-            item_type=book,
-            original_pub_info='foo',
-            publisher=pub, pub_place=pl, work_year=1823,
-            is_extant=False, is_annotated=False, is_digitized=False)
+        wk = Work.objects.create(primary_title='Some title')
+        instance = Instance.objects.create(work=wk)
+         # publisher=pub, pub_place=pl,
+            # is_extant=False, is_annotated=False, is_digitized=False)
 
-        cat = Catalogue.objects.create(institution=inst, book=bk,
-            is_current=False)
+        cat = InstanceCatalogue.objects.create(institution=inst,
+            instance=instance, is_current=False)
 
-        inst_book_count = inst.book_count()
+        inst_book_count = inst.instance_count()
         assert change_url in inst_book_count
         assert 'id__exact=%s' % inst.pk in inst_book_count
         assert '1' in inst_book_count
@@ -578,6 +576,23 @@ class TestWorkSubject(TestCase):
 
         wksubj.is_primary = True
         assert str(wksubj) == '%s %s (primary)' % (la_vie, ling)
+
+    def test_work_count(self):
+        # test abstract work count mix-in via owning subject model
+        # tests that html for admin form is rendered correctly
+        la_vie = Work.objects.get(short_title__contains="La vie")
+        subj = Subject.objects.create(name='Linguistics')
+        # new subject has no books associated
+        change_url = reverse('admin:books_work_changelist')
+        admin_work_count = subj.work_count()
+        assert change_url in admin_work_count
+        assert 'id__exact=%s' % la_vie.pk in admin_work_count
+        assert '0' in admin_work_count
+
+        # add a work/subject
+        WorkSubject.objects.create(work=la_vie, subject=subj)
+        admin_work_count = subj.work_count()
+        assert '1' in admin_work_count
 
 
 class TestInstanceLanguage(TestCase):
