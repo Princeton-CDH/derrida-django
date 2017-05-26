@@ -174,7 +174,7 @@
     "has_insertions": false,
     "has_dedication": false,
     "dimensions": "",
-    "uri": ""
+    "uri": null
   }
 },
 {
@@ -187,7 +187,7 @@
     "larger_work_title": null,
     "item_type": 1,
     "journal": null,
-    "page_range": "",
+    "page_range": null,
     "zotero_id": "",
     "original_pub_info": "Biblioth\u00e8que de Cluny Paris",
     "publisher": 1,

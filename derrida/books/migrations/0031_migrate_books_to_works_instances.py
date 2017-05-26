@@ -92,12 +92,17 @@ def books_to_works(books, apps):
         # those items will require manual cleanup
 
         # these fields copy exactly from book to work unchanged
-        copy_fields = ['publisher', 'zotero_id', 'is_extant', 'is_annotated',
-                       'is_translation', 'dimensions', 'copyright_year',
-                       'journal', 'uri', 'has_dedication', 'has_insertions',
-                       'notes']
+        # - character fields that could be null in book but must be '' in instance
+        copy_fields = ['zotero_id', 'dimensions', 'uri', 'notes']
+        for field in copy_fields:
+            setattr(instance, field, getattr(book, field) or '')
+        # other fields (boolean & foreignkey) that can't be '' when unset
+        copy_fields = ['publisher', 'is_extant', 'is_annotated',
+                       'is_translation', 'copyright_year',
+                       'journal', 'has_dedication', 'has_insertions']
         for field in copy_fields:
             setattr(instance, field, getattr(book, field))
+
         # convert book ambiguous pub date to instance print date
         instance.print_date = book.pub_date
         instance.print_date_day_known = not book.pub_day_missing
