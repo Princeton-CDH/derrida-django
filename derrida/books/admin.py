@@ -270,6 +270,12 @@ class InstanceCatalogueInline(CollapsibleTabularInline):
 class InstanceAdminForm(forms.ModelForm):
     '''Custom model form for Instance editing, used to add autocomplete
     for publication place  lookup.'''
+    # override print date field to allow entering just year or year-month
+    print_date = forms.DateField(
+            input_formats=["%Y", "%Y-%m", "%Y-%m-%d"],
+            widget=forms.widgets.DateInput(format="%Y-%m-%d"),
+            help_text=Instance.print_date_help_text)
+
     class Meta:
         model = Work
         exclude = []
@@ -282,7 +288,7 @@ class InstanceAdminForm(forms.ModelForm):
 
 class InstanceAdmin(admin.ModelAdmin):
     form = InstanceAdminForm
-
+    date_hierarchy = 'print_date'
     list_display = ('display_title', 'author_names', 'copyright_year',
         'item_type', 'catalogue_call_numbers', 'is_extant', 'is_annotated',
         'is_translation', 'has_notes')

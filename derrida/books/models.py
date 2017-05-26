@@ -151,10 +151,11 @@ class Instance(Notable):
     dimensions = models.CharField(max_length=255, blank=True)
     copyright_year = models.PositiveIntegerField(blank=True, null=True)
     journal = models.ForeignKey(Journal, blank=True, null=True)
+    print_date_help_text = 'Date as YYYY-MM-DD, YYYY-MM, or YYYY format. Use' \
+        + ' print date day/month/year known flags to indicate' \
+        + ' that the information is not known.'
     print_date = models.DateField('Print Date',
-        blank=True, null=True, help_text='Date in YYYY-MM-DD format. If either'
-        ' pub_month or pub_day_missing are checked 01 for MM or DD indicates'
-        ' that the information is not known.')
+        blank=True, null=True, help_text=print_date_help_text)
     print_date_day_known = models.BooleanField(default=False)
     print_date_month_known = models.BooleanField(default=False)
     print_date_year_known = models.BooleanField(default=True)
