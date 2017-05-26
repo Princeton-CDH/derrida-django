@@ -94,7 +94,8 @@ class Work(Notable):
     primary_title = models.TextField()
     short_title = models.CharField(max_length=255)
     year = models.IntegerField(blank=True, null=True)
-    # is this work-specific or instance?
+    # NOTE: this is inteneded for a generic linked data URI;
+    # finding aid URL should be tracked on Instance rather than Work
     uri = models.URLField('URI', blank=True, help_text='Linked data URI',
         default='')
     authors = models.ManyToManyField(Person)
