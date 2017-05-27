@@ -1,45 +1,20 @@
 # -*- coding: utf-8 -*-
-import logging
-from collections import defaultdict
-import csv
-from django.contrib.auth import get_user_model
-from django.core.management import call_command
-from django.http import JsonResponse
-from django.utils.safestring import mark_safe
+from django.core.exceptions import ValidationError
 from django.test import TestCase
-
-try:
-    # django 1.10
-    from django.urls import reverse
-except ImportError:
-    from django.core.urlresolvers import reverse
-import json
-from unittest.mock import patch
-import os
-import re
-from io import StringIO
-
-# Import commmand
-from .management.commands import import_zotero
+from django.urls import reverse
+import pytest
 
 # All the models
 from derrida.places.models import Place
 from derrida.people.models import Person
 # Common models between projects and associated new types
-from .models import AssociatedBook, Book, Catalogue, Creator, CreatorType, \
-    ItemType, Publisher, OwningInstitution
+from derrida.books.models import AssociatedBook, Book, Catalogue, Creator, \
+    CreatorType, ItemType, Publisher, OwningInstitution, Journal
 # Citationality extensions
-from .models import DerridaWork, DerridaWorkBook, Reference, ReferenceType
+from derrida.books.models import DerridaWork, DerridaWorkBook, Reference, \
+    ReferenceType, Work, Instance, InstanceCatalogue, WorkLanguage, \
+    InstanceLanguage, Language, WorkSubject, Subject
 
-# pandas
-from pandas import DataFrame
-
-# User model
-User = get_user_model()
-
-
-FIXTURE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-    'fixtures')
 
 class TestOwningInstitution(TestCase):
     fixtures = ['sample_book_data.json']
@@ -53,7 +28,7 @@ class TestOwningInstitution(TestCase):
         inst.short_name = short_name
         assert str(inst) == short_name
 
-    def test_book_count(self):
+    def test_instance_count(self):
         # test abstract book count mix-in via owning institution model
         # tests that html for admin form is rendered correctly
 
@@ -61,36 +36,27 @@ class TestOwningInstitution(TestCase):
         inst = OwningInstitution.objects.create(name='NYSL',
             place=pl)
         # new institution has no books associated
-        base_url = reverse('admin:books_book_changelist')
-        assert inst.book_count() == \
-            mark_safe('<a href="%s?%ss__id__exact=%s">%s</a>' %
-                (base_url,
-                inst.__class__.__name__.lower(),
-                inst.pk,
-                0)
-            )
+        change_url = reverse('admin:books_instance_changelist')
+        admin_book_count = inst.instance_count()
+        assert change_url in admin_book_count
+        assert 'id__exact=%s' % inst.pk in admin_book_count
+        assert '0' in admin_book_count
 
         # create a book and associated it with the institution
         book = ItemType.objects.get(name='Book')
         pub = Publisher.objects.create(name='Pub Lee')
-        bk = Book.objects.create(primary_title='Some rambling long old title',
-            short_title='Some rambling',
-            item_type=book,
-            original_pub_info='foo',
-            publisher=pub, pub_place=pl, work_year=1823,
-            is_extant=False, is_annotated=False, is_digitized=False)
+        wk = Work.objects.create(primary_title='Some title')
+        instance = Instance.objects.create(work=wk)
+         # publisher=pub, pub_place=pl,
+            # is_extant=False, is_annotated=False, is_digitized=False)
 
-        cat = Catalogue.objects.create(institution=inst, book=bk,
-            is_current=False)
+        cat = InstanceCatalogue.objects.create(institution=inst,
+            instance=instance, is_current=False)
 
-
-        assert inst.book_count() == \
-            mark_safe('<a href="%s?%ss__id__exact=%s">%s</a>' %
-                (base_url,
-                inst.__class__.__name__.lower(),
-                inst.pk,
-                1)
-            )
+        inst_book_count = inst.instance_count()
+        assert change_url in inst_book_count
+        assert 'id__exact=%s' % inst.pk in inst_book_count
+        assert '1' in inst_book_count
 
 
 class TestBook(TestCase):
@@ -503,222 +469,158 @@ class TestReference(TestCase):
         assert references.count() == 1
 
 
-class TestImportZotero(TestCase):
+class TestWork(TestCase):
+    fixtures = ['sample_work_data.json']
 
-    test_csv = os.path.join(FIXTURE_DIR, 'test_zotero_data.csv')
+    def test_str(self):
+        la_vie = Work.objects.get(short_title__contains="La vie")
+        assert '%s (%s)' % (la_vie.short_title, la_vie.year) \
+            == str(la_vie)
+        # no date
+        la_vie.year = None
+        assert '%s (n.d.)' % (la_vie.short_title, )
 
-    def setUp(self):
+    def test_author_names(self):
+        la_vie = Work.objects.get(short_title__contains="La vie")
+        assert la_vie.author_names() == "L\u00e9vi-Strauss"
 
-        self.cmd = import_zotero.Command()
-        self.cmd.stdout = StringIO()
-        self.cmd.stats = defaultdict(int)
-        self.cmd.dud_code_list = []
+    def test_instance_count(self):
+        la_vie = Work.objects.get(short_title__contains="La vie")
+        inst_count = la_vie.instance_count()
+        instance_list_url = reverse('admin:books_instance_changelist')
+        assert instance_list_url in inst_count
+        assert 'id__exact=%s' % la_vie.pk in inst_count
+        assert '1' in inst_count
 
-        # Kludge to get dummy values in the command we're using to test for
-        # API lookups, since we're already hacking it a bit.
-        # TODO: Figure out how to mock this instead
-        def dummy_viaf(*args, **kwargs):
-            return 'http://totallyviaf.org/viaf/00001/'
-        def dummy_geonames(*args, **kwargs):
-            return {
-                'latitude': 0,
-                'longitude': 0,
-                'geonames_id': 'http://notgeonames/0001/'
-            }
 
-        self.cmd.viaf_lookup = dummy_viaf
-        self.cmd.geonames_lookup = dummy_geonames
+class TestInstance(TestCase):
+    fixtures = ['sample_work_data.json']
 
-        princeton, created = Place.objects.get_or_create(
-            name='Princeton, NJ',
-            **(self.cmd.geonames_lookup('Princeton, NJ'))
-        )
-        OwningInstitution.objects.get_or_create(
-            short_name='PUL',
-            contact_info='http://library.princeton.edu/help/contact-us',
-            place=princeton
-        )
+    def test_display_title(self):
+        la_vie = Instance.objects.get(work__short_title__contains="La vie")
+        # short title from work if no alternate title
+        assert la_vie.display_title() == la_vie.work.short_title
+        # alternate title from instance if set
+        la_vie.alternate_title = 'Family Life'
+        assert la_vie.display_title() == la_vie.alternate_title
 
-    def test_run(self):
-            out = StringIO()
-            # pass the modified self.cmd object
-            call_command(self.cmd, self.test_csv, stdout=out)
-            output = out.getvalue()
-            assert '5 books' in output
-            assert '2 places' in output
-            assert '7 people' in output
-            assert '2 publishers' in output
-            assert '23 references from tags' in output
+    def test_str(self):
+        la_vie = Instance.objects.get(work__short_title__contains="La vie")
+        assert '%s (%s)' % (la_vie.display_title(), la_vie.copyright_year) \
+            == str(la_vie)
+        # no date
+        la_vie.year = None
+        assert '%s (n.d.)' % (la_vie.display_title(), )
 
-            assert '0 errors' in output
-            assert 'following tags looked suspicious' not in output
-            assert '0 references with unset tags'
+    def test_item_type(self):
+        la_vie = Instance.objects.get(work__short_title__contains="La vie")
+        assert la_vie.item_type == 'Book'
 
-    def test_clean_data(self):
-        data = self.cmd.clean_data(self.test_csv)
-        assert isinstance(data, DataFrame)
-        wanted_columns = [
-            'Key',
-            'Item Type',
-            'Date',
-            'Author',
-            'Title',
-            'Translator',
-            'Editor',
-            'Series Editor',
-            'Url',
-            'Publisher',
-            'Place',
-            'Language',
-            'Extra',
-            'Abstract Note',
-            'Notes',
-            'Manual Tags',
-            'Pages',
-            'Publication Title',
-            ]
+        # journal article
+        la_vie.journal = Journal.objects.all().first()
+        assert la_vie.item_type == 'Journal Article'
 
-        for column in wanted_columns:
-            assert column in data
+        # book section
+        la_vie.journal = None
+        la_vie.collected_in = Instance()
+        assert la_vie.item_type == 'Book Section'
 
-    def test_parse_ref_tag(self):
-        pub, created = Publisher.objects.get_or_create(name='Pub Lee')
-        pub_place, created = Place.objects.get_or_create(
-            name='Printington',
-            geonames_id=4567,
-            latitude=0,
-            longitude=0
-        )
-        book = ItemType.objects.get(name='Book')
-        bk, created = Book.objects.get_or_create(
-            primary_title='Some rambling long old title',
-            item_type=book,
-            short_title='Some rambling',
-            original_pub_info='foo',
-            publisher=pub,
-            pub_place=pub_place,
-            work_year=1823
-        )
-        dg = DerridaWork.objects.get(short_title='De la grammatologie')
-        # Get a tag that's a full format
-        full_tag = 'dg109cF10sU'
+    def test_author_names(self):
+        la_vie = Instance.objects.get(work__short_title__contains="La vie")
+        assert la_vie.author_names() == la_vie.work.author_names()
 
-        self.cmd.parse_ref_tag(full_tag, bk)
-        reference = Reference.objects.get(book=bk)
-        assert reference.derridawork == dg
-        assert reference.derridawork_page == '109'
-        assert reference.derridawork_pageloc == 'c'
-        assert reference.reference_type.name == 'Footnote'
-        # page + sequelae
-        assert reference.book_page == '10s'
-        # Unknown if it's annotated or not, s
-        self.assertFalse(bk.is_extant)
-        self.assertFalse(bk.is_annotated)
-        # Make sure two can be added by the short_description
-        full_tag = 'dg111cF10sU'
-        self.cmd.parse_ref_tag(full_tag, bk)
-        references = Reference.objects.filter(book=bk)
-        assert len(references) == 2
-        for reference in references:
-            reference.delete()
+    def test_catalogue_call_number(self):
+        la_vie = Instance.objects.get(work__short_title__contains="La vie")
+        # fixture has no call number (shelf-mark)
+        assert la_vie.catalogue_call_numbers() == ''
 
-        # Now play with tag types
-        full_tag = 'dg112eF(IV)sU'
-        self.cmd.parse_ref_tag(full_tag, bk)
-        reference = Reference.objects.get(book=bk)
-        assert reference.book_page == '(IV)s'
-        reference.delete()
+        # add a first and second catalogue record
+        owning_inst = OwningInstitution.objects.first()
+        InstanceCatalogue.objects.create(institution=owning_inst,
+            instance=la_vie, call_number='NY789', is_current=True)
+        assert la_vie.catalogue_call_numbers() == 'NY789'
+        InstanceCatalogue.objects.create(institution=owning_inst,
+            instance=la_vie, call_number='PU456', is_current=True)
+        assert la_vie.catalogue_call_numbers() == 'NY789, PU456'
 
-        full_tag = 'dg112eQ(IV)sU'
-        self.cmd.parse_ref_tag(full_tag, bk)
-        reference = Reference.objects.get(book=bk)
-        assert reference.reference_type.name == 'Quotation'
-        reference.delete()
+    def test_clean(self):
+        la_vie = Instance.objects.get(work__short_title__contains="La vie")
+        la_vie.journal = Journal.objects.all().first()
+        la_vie.collected_in = Instance()
+        with pytest.raises(ValidationError) as err:
+            la_vie.clean()
+        assert 'Cannot belong to both a journal and a collection' in str(err)
 
-        # provisional tag has no book page
-        full_tag = 'dg112eQ___'
-        self.cmd.parse_ref_tag(full_tag, bk)
-        reference = Reference.objects.get(book=bk)
-        assert reference.reference_type.name == 'Quotation'
-        assert reference.book_page == None
-        reference.delete()
 
-    def test_create_book(self):
-        data = self.cmd.clean_data(self.test_csv)
-        rows = []
-        for index, row in data.iterrows():
-            rows.append(row)
-        de_gram = rows[0]
+class TestWorkLanguage(TestCase):
+    fixtures = ['sample_work_data.json']
 
-        # Make the first work - journal article
-        article = ItemType.objects.get(name='Journal Article')
-        self.cmd.create_book(de_gram)
-        book = Book.objects.get(short_title__contains='De la')
-        assert book.primary_title == de_gram['Title']
-        assert book.short_title == ' '.join(de_gram['Title'].split()[0:4])
-        # No publisher so should be None
-        self.assertFalse(book.original_pub_info)
-        assert book.page_range ==  de_gram['Pages']
-        # Reflecting no finding aid and annotations need to be set
-        # manually, defaulting to false
-        self.assertFalse(book.is_annotated)
-        self.assertFalse(book.is_extant)
-        assert book.item_type == article
-        assert book.copyright_year == 1965
-        # Make sure the author was associated
-        assert book.authors().count() == 1
-        derrida = 'Derrida, Jacques'
-        assert book.authors().first().person.authorized_name == derrida
-        # Make sure a catalogue exists for Princeton
-        catalogue = Catalogue.objects.get(book=book)
-        assert catalogue.institution.short_name == 'PUL'
-        # There should be one tag
-        references = Reference.objects.filter(book=book)
-        assert references.count() == 1
-        # Check a book with notes fields of some sorts
-        idees = rows[4]
-        self.cmd.create_book(idees)
-        book = Book.objects.get(short_title__contains='Idées')
-        assert book.notes
-        # Only one of three note fields set
-        assert book.notes == idees['Abstract Note']
-        # Let's fix that
-        book.delete()
-        idees['Notes'] = 'Notes field'
-        idees['Extra'] = 'Extra field'
-        self.cmd.create_book(idees)
-        book = Book.objects.get(short_title__contains='Idées')
-        # Now all three should exist on their own separate line
-        assert book.notes == '\n'.join([idees['Notes'],
-                                      idees['Extra'],
-                                      idees['Abstract Note']])
+    def test_str(self):
+        la_vie = Work.objects.get(short_title__contains="La vie")
+        fr = Language.objects.get(name='French')
+        wklang = WorkLanguage(language=fr, work=la_vie)
+        assert str(wklang) == '%s %s' % (la_vie, fr)
 
-        # Faked New York to check place setting functioning correctly
-        print(book.pub_place)
-        assert book.pub_place == Place.objects.get(name='New York')
+        wklang.is_primary = True
+        assert str(wklang) == '%s %s (primary)' % (la_vie, fr)
 
-class TestPubAutocomplete(TestCase):
 
-    def setUp(self):
-        user = User.objects.create_superuser(
-            username='test',
-            password='secret',
-            email='foo@bar.com'
-        )
-        pub = Publisher.objects.create(name='Printing',)
+class TestWorkSubject(TestCase):
+    fixtures = ['sample_work_data.json']
 
-    def test_view_behavior(self):
-        # No login for anonymous user
-        response = self.client.get(reverse('books:publisher-autocomplete'))
-        assert response.status_code == 302
+    def test_str(self):
+        la_vie = Work.objects.get(short_title__contains="La vie")
+        ling = Subject(name='Linguistics')
+        wksubj = WorkSubject(work=la_vie, subject=ling)
+        assert str(wksubj) == '%s %s' % (la_vie, ling)
 
-        # Get a response as a staff user
-        self.client.login(username='test', password='secret')
-        response = self.client.get(
-            reverse('books:publisher-autocomplete'),
-            params = {'q': 'Print'}
-        )
-        assert response.status_code == 200
-        data = json.loads(response.content.decode('utf-8'))
-        assert 'results' in data
-        assert data['results'][0]['text'] == 'Printing'
+        wksubj.is_primary = True
+        assert str(wksubj) == '%s %s (primary)' % (la_vie, ling)
+
+    def test_work_count(self):
+        # test abstract work count mix-in via owning subject model
+        # tests that html for admin form is rendered correctly
+        la_vie = Work.objects.get(short_title__contains="La vie")
+        subj = Subject.objects.create(name='Linguistics')
+        # new subject has no books associated
+        change_url = reverse('admin:books_work_changelist')
+        admin_work_count = subj.work_count()
+        assert change_url in admin_work_count
+        assert 'id__exact=%s' % la_vie.pk in admin_work_count
+        assert '0' in admin_work_count
+
+        # add a work/subject
+        WorkSubject.objects.create(work=la_vie, subject=subj)
+        admin_work_count = subj.work_count()
+        assert '1' in admin_work_count
+
+
+class TestInstanceLanguage(TestCase):
+    fixtures = ['sample_work_data.json']
+
+    def test_str(self):
+        la_vie = Instance.objects.get(work__short_title__contains="La vie")
+        ger = Language.objects.get(name='German')
+        instlang = InstanceLanguage(language=ger, instance=la_vie)
+        assert str(instlang) == '%s %s' % (la_vie, ger)
+
+        instlang.is_primary = True
+        assert str(instlang) == '%s %s (primary)' % (la_vie, ger)
+
+
+class TestInstanceCatalogue(TestCase):
+    fixtures = ['sample_work_data.json']
+
+    def test_str(self):
+        la_vie = Instance.objects.get(work__short_title__contains="La vie")
+
+        inst_cat = la_vie.instancecatalogue_set.first()
+        assert str(inst_cat) == '%s / %s' % (la_vie, inst_cat.institution)
+
+        # with dates
+        inst_cat.start_year = 1891
+        assert str(inst_cat) == '%s / %s (1891-)' % (la_vie, inst_cat.institution)
+
+
+
+

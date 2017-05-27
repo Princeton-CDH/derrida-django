@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_cas_ng',
+    'sortedm2m',
     'pucas',
     # local apps
     'derrida.apps.DerridaConfig',

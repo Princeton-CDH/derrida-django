@@ -39,6 +39,8 @@ class Person(Notable, DateRange):
 
     class Meta:
         verbose_name_plural = 'People'
+        # should this sort on sort_name first before authorized name?
+        # if not, why do we have it?
         ordering = ['authorized_name']
 
     def save(self, *args, **kwargs):
