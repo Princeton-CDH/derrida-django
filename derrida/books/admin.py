@@ -177,12 +177,35 @@ class ReferenceInline(admin.StackedInline):
             'fields': ('anchor_text',)
         }),
     )
+    widgets = {
+            'anchor_text': MeltdownTextAreaWidget(attrs={'class':
+                                                         'meltdown-widget'}),
+        }
 
 
 class ReferenceAdmin(admin.ModelAdmin):
-    '''Override the modelform for Reference'''
-    model = Reference
+    '''Customize admin display and editing for references.'''
     form = ReferenceModelForm
+    list_display = ['derridawork', 'derridawork_page', 'derridawork_pageloc',
+        'instance', 'book_page', 'reference_type', 'anchor_text_snippet']
+    list_filter = ['derridawork', 'reference_type']
+    search_fields = ['anchor_text']
+    # *almost* the same as ReferenceInline.fieldsets (adds instance)
+    fieldsets = (
+        ('Citation Information', {
+                'fields': (
+                    'derridawork',
+                    'derridawork_page',
+                    'derridawork_pageloc',
+                    'instance',
+                    'book_page',
+                    'reference_type',
+                )
+        }),
+        ('Anchor Text', {
+            'fields': ('anchor_text',)
+        }),
+    )
 
 
 class AssociatedBookInline(CollapsibleTabularInline):
@@ -362,30 +385,6 @@ class InstanceAdmin(admin.ModelAdmin):
         InstanceCatalogueInline, PersonBookInline, FootnoteInline]
     list_filter = ('languages', 'is_extant', 'is_annotated', 'has_insertions')
     filter_horizontal = ['cited_in']
-
-
-class ReferenceAdmin(admin.ModelAdmin):
-    list_display = ['derridawork', 'derridawork_page', 'derridawork_pageloc',
-        'instance', 'book_page', 'reference_type', 'anchor_text_snippet']
-    list_filter = ['derridawork', 'reference_type']
-    search_fields = ['anchor_text']
-    # *almost* the same as:
-    # fieldsets = ReferenceInline.fieldsets
-    fieldsets = (
-        ('Citation Information', {
-                'fields': (
-                    'derridawork',
-                    'derridawork_page',
-                    'derridawork_pageloc',
-                    'instance',
-                    'book_page',
-                    'reference_type',
-                )
-        }),
-        ('Anchor Text', {
-            'fields': ('anchor_text',)
-        }),
-    )
 
 
 admin.site.register(Subject,  NamedNotableWorkCount)
