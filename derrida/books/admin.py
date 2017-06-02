@@ -349,7 +349,8 @@ class InstanceAdminForm(forms.ModelForm):
     print_date = forms.DateField(
             input_formats=["%Y", "%Y-%m", "%Y-%m-%d"],
             widget=forms.widgets.DateInput(format="%Y-%m-%d"),
-            help_text=Instance.print_date_help_text)
+            help_text=Instance.print_date_help_text,
+            required=False)
 
     class Meta:
         model = Work
