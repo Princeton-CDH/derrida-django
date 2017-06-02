@@ -93,7 +93,8 @@ class Work(Notable):
     instances, copies, or editions of the same work.'''
     primary_title = models.TextField()
     short_title = models.CharField(max_length=255)
-    year = models.IntegerField(blank=True, null=True)
+    year = models.IntegerField(blank=True, null=True,
+        help_text='Original publication date')
     # NOTE: this is inteneded for a generic linked data URI;
     # finding aid URL should be tracked on Instance rather than Work
     uri = models.URLField('URI', blank=True, help_text='Linked data URI',
