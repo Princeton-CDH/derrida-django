@@ -1,4 +1,4 @@
-django
+django==1.11.1
 mysqlclient
 django-grappelli
 django-autocomplete-light
