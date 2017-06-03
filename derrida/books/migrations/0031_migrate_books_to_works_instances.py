@@ -42,54 +42,41 @@ def books_to_works(books, apps):
     InstanceLanguage = apps.get_model("books", "InstanceLanguage")
     Place = apps.get_model("places", "Place")
 
-    previous_work = None
-
-    # books are grouped in such a way that detectable matching instances
-    # should be processed in order
+    # NOTE: this data migration does not attempt to group book instances
+    # into works because automating that logic is too difficult.
+    # Clean up must be done manually after the migration.
     for book in books:
         # capture author list, may be used in multiple places
         book_authors = [creator.person for creator in
                         book.creator_set.filter(creator_type__name='Author')]
 
-        if previous_work and belongs_to_work(book, previous_work):
-            work = previous_work
-            # no guarantee we get works in order; if current instance
-            # copyright year is later than current work year, update the work
-            if not work.year or (book.copyright_year and work.year > book.copyright_year):
-                work.year = book.copyright_year
-                work.save()
-
-        # otherwise, create a new work
-        else:
-            work_title = cleaned_title(book.primary_title, remove_accents=False)
-            work = Work.objects.create(primary_title=work_title,
-                short_title=work_title,
-                year=book.work_year or book.copyright_year)
-            # NOTE: work_year doesn't seem to be set; use copyright year
-            # as a placeholder
-            work.authors.set(book_authors)
-            # subjects could include flags for primary or notes, so
-            # create via through model
-            WorkSubject.objects.bulk_create([
-                WorkSubject(work=work, subject=booksubj.subject,
-                            is_primary=booksubj.is_primary,
-                            notes=booksubj.notes)
-                for booksubj in book.booksubject_set.all()])
-            # similar for languages
-            WorkLanguage.objects.bulk_create([
-                WorkLanguage(work=work, subject=booklang.language,
-                            is_primary=booklang.is_primary,
-                            notes=booklang.notes)
-                for booklang in book.booklanguage_set.all()])
-
-            # store the new work to check for re-use when processing the next book
-            previous_work = work
+        # create a new work
+        work_title = cleaned_title(book.primary_title, remove_accents=False)
+        work = Work.objects.create(primary_title=work_title,
+            short_title=work_title,
+            year=book.work_year or book.copyright_year)
+        # NOTE: work_year doesn't seem to be set; use copyright year
+        # as a placeholder
+        work.authors.set(book_authors)
+        # subjects could include flags for primary or notes, so
+        # create via through model
+        WorkSubject.objects.bulk_create([
+            WorkSubject(work=work, subject=booksubj.subject,
+                        is_primary=booksubj.is_primary,
+                        notes=booksubj.notes)
+            for booksubj in book.booksubject_set.all()])
+        # similar for languages
+        WorkLanguage.objects.bulk_create([
+            WorkLanguage(work=work, subject=booklang.language,
+                        is_primary=booklang.is_primary,
+                        notes=booklang.notes)
+            for booklang in book.booklanguage_set.all()])
 
         # then create the individual instance
         instance = Instance.objects.create(work=work)
         # NOTE: this migration doesn't set alternate title because
         # items with alternate titles can't be grouped into works;
-        # those items will require manual cleanup
+        # that also requires manual cleanup
 
         # these fields copy exactly from book to work unchanged
         # - character fields that could be null in book but must be '' in instance

@@ -86,11 +86,14 @@ def test_data_migration():
 
     # inspect the works/instances generated from fixture book data
 
+    # revised so that works/instances are no longer automatically grouped;
+    # should get one work and one instance for each book
+
     ### Test Case 1
     # Plato / Phedre.  Test data includes three copies of the Phaedrus
     # (`Phèdre`); two are part of complete works and one is in a
     # publication of the Symposion (`Le Banquet`).  Expected outcome:
-    # 1) three works: Phèdre, Le Banquet, Œuvres complètes
+    # 1) 5 works: Phèdre, Le Banquet, Œuvres complètes
     # 2) three instances of `Phèdre`, one instance of the `Le Banquet`
     #    and one `Œuvres complètes`
     # 3) Two instances of `Phedre` associated with `Œuvres complètes`
@@ -98,7 +101,7 @@ def test_data_migration():
 
     # migration should generate three works: Phèdre, Le Banquet, Œuvres complètes
     plato_works = Work.objects.filter(authors__authorized_name='Platon')
-    assert plato_works.count() == 3
+    assert plato_works.count() == 5
     work_titles = [work.primary_title for work in plato_works]
     for title in ['Phèdre', 'Le Banquet / Phèdre', 'Œuvres complètes']:
         assert title in work_titles
@@ -124,9 +127,8 @@ def test_data_migration():
     # accents in the titles and some without
     rousseau_works = Work.objects.filter(authors__authorized_name__contains='Rousseau')
     rousseau_instances = Instance.objects.filter(work__authors__authorized_name__contains='Rousseau')
-    assert rousseau_works.count() == 1
+    assert rousseau_works.count() == 3
     assert rousseau_instances.count() == 3
-    assert rousseau_works.first().year == 1966
 
     ## Test Case 3
     # Journal article; test that all data is copied
