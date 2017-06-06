@@ -3,6 +3,17 @@
 CHANGELOG
 =========
 
+0.6 Bibliographic Enhancements
+------------------------------
+
+Refactor books into works and instances; update citation admin functionality to support capturing citation anchor text with minimal formatting.
+
+* As a record editor, I want to be able to add new or edit citation anchor text in both French and English.
+* As an data editor, I want to be able to add the anchor text of a citation along with basic markdown formatting (bold, italic) so that I can accurately capture Derrida's citations.
+* As a record editor, I want to add and edit bibliographic data for works and instances of works so I can document shared metadata and group different copies and editions of the same work.
+* As a record editor, I want to document the print date for a book, including month and year when available, so that I can check if a given copy was available to Derrida when he was writing a text.
+
+
 0.5 Bio/Bibliographical Admin interface
 ---------------------------------------
 

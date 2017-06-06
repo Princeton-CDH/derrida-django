@@ -7,4 +7,4 @@ requests
 rdflib
 django-sortedm2m
 unidecode
-git+https://github.com/Princeton-CDH/django-pucas.git@master#egg=pucas
+git+https://github.com/Princeton-CDH/django-pucas.git@0.5#egg=pucas
