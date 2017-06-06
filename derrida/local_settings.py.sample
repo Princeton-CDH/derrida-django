@@ -1,14 +1,52 @@
-# local settings for sensitive configurations that should not be
+# Sample local settings
+# Copy to derrida/local_settings.py and configure
+# includes sensitive configurations, should *not* be
 # checked into version control
+
+import os
+# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = []
 
-# username for accessing GeoNames API
-GEONAMES_USERNAME = ''
-
 # SECURITY WARNING: keep the secret key used in production secret!
 # http://www.miniwebtool.com/django-secret-key-generator/
 SECRET_KEY = ''
+
+# Database
+# https://docs.djangoproject.com/en/1.10/ref/settings/#databases
+DATABASES = {
+    # sqlite for development
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    }
+    # mysql for qa/prod
+    # 'default': {
+    #     "ENGINE": "django.db.backends.mysql",
+    #     'NAME': '',
+    #     'USER': '',
+    #     'PASSWORD': '',
+    # }
+}
+
+# username for accessing GeoNames API
+GEONAMES_USERNAME = ''
+
+# mapbox access token
+MAPBOX_ACCESS_TOKEN = ''
+
+# CAS login configuration
+CAS_SERVER_URL = ''
+
+PUCAS_LDAP.update({
+    'SERVERS': [],
+    'SEARCH_BASE': '',
+    'SEARCH_FILTER': "(uid=%(user)s)",
+})
+
+
