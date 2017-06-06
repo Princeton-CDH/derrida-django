@@ -6,6 +6,9 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# username for accessing GeoNames API
+GEONAMES_USERNAME = ''
+
 # SECURITY WARNING: keep the secret key used in production secret!
 # http://www.miniwebtool.com/django-secret-key-generator/
 SECRET_KEY = ''
