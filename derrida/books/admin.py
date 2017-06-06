@@ -9,14 +9,25 @@ from .models import Subject, Language, Publisher, OwningInstitution, \
     PersonBook, PersonBookRelationshipType, \
     DerridaWork, DerridaWorkBook, Reference, ReferenceType, Journal, ItemType, \
     AssociatedBook
+# refactored models
+from .models import Work, Instance, WorkSubject, WorkLanguage, \
+    InstanceLanguage, InstanceCatalogue, InstanceCreator
 
 
-class NamedNotableBookCount(NamedNotableAdmin):
-    list_display = NamedNotableAdmin.list_display + ('book_count',)
+class NamedNotableInstanceCount(NamedNotableAdmin):
+    list_display = NamedNotableAdmin.list_display + ('instance_count',)
+
+
+class NamedNotableWorkInstanceCount(NamedNotableAdmin):
+    list_display = NamedNotableAdmin.list_display + \
+        ('work_count', 'instance_count')
+
+class NamedNotableWorkCount(NamedNotableAdmin):
+    list_display = NamedNotableAdmin.list_display + ('work_count',)
 
 
 class OwningInstitutionAdmin(admin.ModelAdmin):
-    list_display = ('short_name', 'name', 'place', 'has_notes', 'book_count')
+    list_display = ('short_name', 'name', 'place', 'has_notes', 'instance_count')
     fields = ('name', 'short_name', 'contact_info', 'place', 'notes')
     search_fields = ('name', 'short_name', 'contact_info', 'notes')
 
@@ -28,18 +39,22 @@ class CollapsibleTabularInline(admin.TabularInline):
 
 class CatalogueInline(CollapsibleTabularInline):
     model = Catalogue
+    extra = 1
     fields = ('institution', 'call_number', 'start_year', 'end_year',
               'notes')
 
 
 class SubjectInline(CollapsibleTabularInline):
     model = BookSubject
+    extra = 1
     fields = ('subject', 'is_primary', 'notes')
 
 
 class LanguageInline(CollapsibleTabularInline):
     model = BookLanguage
+    extra = 1
     fields = ('language', 'is_primary', 'notes')
+
 
 class CreatorInlineForm(forms.ModelForm):
     '''Custom model form for Book editing, used to add autocomplete
@@ -54,9 +69,32 @@ class CreatorInlineForm(forms.ModelForm):
             )
         }
 
+
 class CreatorInline(CollapsibleTabularInline):
     model = Creator
+    extra = 1
     form = CreatorInlineForm
+
+
+class InstanceCreatorInlineForm(forms.ModelForm):
+    '''Custom model form for Book editing, used to add autocomplete
+    for place lookup.'''
+    class Meta:
+        model = Creator
+        fields = ('creator_type', 'person', 'notes')
+        widgets = {
+            'person': autocomplete.ModelSelect2(
+                url='people:person-autocomplete',
+                attrs={'data-placeholder': 'Start typing a name to search...'}
+            )
+        }
+
+
+class InstanceCreatorInline(CollapsibleTabularInline):
+    model = InstanceCreator
+    extra = 1
+    form = CreatorInlineForm
+
 
 class PersonBookInlineForm(forms.ModelForm):
     '''Custom model form for Book editing, used to add autocomplete
@@ -75,18 +113,106 @@ class PersonBookInlineForm(forms.ModelForm):
 
 class PersonBookInline(CollapsibleTabularInline):
     model = PersonBook
+    extra = 1
     form = PersonBookInlineForm
 
 
-class ReferenceInline(CollapsibleTabularInline):
+class MeltdownTextAreaWidget(forms.Textarea):
+    '''Adds Meltdown.js functionality and grp-meltdown to a text area and ensures
+    all required js is loaded as well as a css fix to counteract an interaction
+    between Grappelli and Meltdown.js.
+
+    NOTE: Uses add-anchor-meltdown.js to initialize fields on the grp-meltdown
+    class'''
+    class Media:
+        css = {
+            'all': ('css/meltdown.css', 'css/meltdown-grappelli-fix.css',)
+        }
+        js = (
+            'js/lib/js-markdown-extra.js',
+            'js/jquery.meltdown.js',
+            'js/lib/rangyinputs-jquery.min.js',
+            'js/lib/element_resize_detection.js',
+            'js/add-anchor-meltdown.js'
+        )
+
+
+class ReferenceModelForm(forms.ModelForm):
+    '''Model form that uses custom Meltdownarea widget for anchor_text
+    TextField'''
+    class Meta:
+        model = Reference
+        fields = (
+            'derridawork',
+            'derridawork_page',
+            'derridawork_pageloc',
+            'book_page',
+            'reference_type',
+            'anchor_text'
+        )
+        widgets = {
+            'anchor_text': MeltdownTextAreaWidget(attrs={'class':
+                                                         'meltdown-widget'}),
+        }
+
+
+class ReferenceInline(admin.StackedInline):
+    '''Stacked inline for reference to give adequate room for the anchor_text
+    editor'''
     model = Reference
+    form = ReferenceModelForm
+    extra = 1
+    classes = ('grp-collapse grp-open',)
+    fieldsets = (
+        ('Citation Information', {
+                'fields': (
+                    'derridawork',
+                    'derridawork_page',
+                    'derridawork_pageloc',
+                    'book_page',
+                    'reference_type',
+                )
+        }),
+        ('Anchor Text', {
+            'fields': ('anchor_text',)
+        }),
+    )
+    widgets = {
+            'anchor_text': MeltdownTextAreaWidget(attrs={'class':
+                                                         'meltdown-widget'}),
+        }
+
+
+class ReferenceAdmin(admin.ModelAdmin):
+    '''Customize admin display and editing for references.'''
+    form = ReferenceModelForm
+    list_display = ['derridawork', 'derridawork_page', 'derridawork_pageloc',
+        'instance', 'book_page', 'reference_type', 'anchor_text_snippet']
+    list_filter = ['derridawork', 'reference_type']
+    search_fields = ['anchor_text']
+    # *almost* the same as ReferenceInline.fieldsets (adds instance)
+    fieldsets = (
+        ('Citation Information', {
+                'fields': (
+                    'derridawork',
+                    'derridawork_page',
+                    'derridawork_pageloc',
+                    'instance',
+                    'book_page',
+                    'reference_type',
+                )
+        }),
+        ('Anchor Text', {
+            'fields': ('anchor_text',)
+        }),
+    )
 
 
 class AssociatedBookInline(CollapsibleTabularInline):
     '''Tabular inline for Associated Book set'''
     model = AssociatedBook
+    extra = 1
     fk_name = 'from_book'
-
 
 
 class BookAdminForm(forms.ModelForm):
@@ -105,12 +231,16 @@ class BookAdminForm(forms.ModelForm):
         }
 
 
-
 class DerridaWorkBookInline(CollapsibleTabularInline):
+    '''Inline for DerridaWork - Library Work relationships'''
     model = DerridaWorkBook
+    extra = 1
     fields = ('derridawork', 'book', 'notes')
 
+
 class BookAdmin(admin.ModelAdmin):
+    '''Custom admin form for book, adds inlines and sets searchable fields, as
+    well as general field order and list display modifications'''
     form = BookAdminForm
 
     list_display = ('short_title', 'author_names', 'copyright_year',
@@ -126,7 +256,7 @@ class BookAdmin(admin.ModelAdmin):
         'catalogue__call_number', 'notes', 'publisher__name')
     inlines = [AssociatedBookInline, DerridaWorkBookInline, ReferenceInline,
         CreatorInline, LanguageInline, SubjectInline, CatalogueInline,
-        PersonBookInline, FootnoteInline]
+        FootnoteInline]
     list_filter = ('subjects', 'languages', 'is_extant',
         'is_annotated', 'is_digitized')
 
@@ -149,18 +279,133 @@ class DerridaWorkAdmin(admin.ModelAdmin):
     fields = ('short_title', 'full_citation', 'is_primary', 'notes')
 
 
-admin.site.register(Subject,  NamedNotableBookCount)
-admin.site.register(Language, NamedNotableBookCount)
-admin.site.register(Publisher, NamedNotableBookCount)
+### refactored work/instance model admin
+
+
+class WorkSubjectInline(CollapsibleTabularInline):
+    model = WorkSubject
+    extra = 1
+    fields = ('subject', 'is_primary', 'notes')
+
+
+class WorkLanguageInline(CollapsibleTabularInline):
+    model = WorkLanguage
+    extra = 1
+    fields = ('language', 'is_primary', 'notes')
+
+
+class WorkInstanceInline(CollapsibleTabularInline):
+    '''Minimal inline view to display instances within work edit form'''
+    model = Instance
+    extra = 0
+    fields = ('alternate_title', 'copyright_year', 'print_date',
+        'is_extant', 'is_annotated', 'is_translation', 'notes')
+    # FIXME: this appears not to be supported by grappelli; how to work around?
+    show_change_link = True
+
+
+class WorkAdminForm(forms.ModelForm):
+    '''Custom model form for Work editing, used to add autocomplete
+    for person lookup.'''
+    class Meta:
+        model = Work
+        exclude = []
+        widgets = {
+            'authors': autocomplete.ModelSelect2Multiple(
+                url='people:person-autocomplete',
+                attrs={'data-placeholder': 'Start typing a name to search...'}
+            )
+        }
+
+
+class WorkAdmin(admin.ModelAdmin):
+    form = WorkAdminForm
+    list_display = ('short_title', 'author_names', 'year', 'instance_count',
+        'has_notes')
+    # NOTE: fields are specified here so that notes input will be displayed last
+    fields = ('primary_title', 'short_title', 'year', 'uri', 'authors', 'notes')
+    search_fields = ('primary_title', 'authors__authorized_name', 'notes')
+    inlines = [WorkSubjectInline, WorkLanguageInline, WorkInstanceInline,
+        FootnoteInline]
+    list_filter = ('subjects', 'languages')
+
+
+class InstanceLanguageInline(CollapsibleTabularInline):
+    model = InstanceLanguage
+    extra = 1
+    fields = ('language', 'is_primary', 'notes')
+
+
+class InstanceCatalogueInline(CollapsibleTabularInline):
+    model = InstanceCatalogue
+    extra = 1
+    fields = ('institution', 'call_number', 'start_year', 'end_year',
+              'notes')
+
+class InstanceAdminForm(forms.ModelForm):
+    '''Custom model form for Instance editing, used to add autocomplete
+    for publication place  lookup.'''
+    # override print date field to allow entering just year or year-month
+    print_date = forms.DateField(
+            input_formats=["%Y", "%Y-%m", "%Y-%m-%d"],
+            widget=forms.widgets.DateInput(format="%Y-%m-%d"),
+            help_text=Instance.print_date_help_text,
+            required=False)
+
+    class Meta:
+        model = Work
+        exclude = []
+        widgets = {
+            'pub_place': autocomplete.ModelSelect2Multiple(
+                url='places:autocomplete',
+                attrs={'data-placeholder': 'Start typing location to search...'})
+        }
+
+
+class InstanceAdmin(admin.ModelAdmin):
+    form = InstanceAdminForm
+    date_hierarchy = 'print_date'
+    list_display = ('display_title', 'author_names', 'copyright_year',
+        'item_type', 'catalogue_call_numbers', 'is_extant', 'is_annotated',
+        'is_translation', 'has_notes')
+    # NOTE: fields are specified here so that notes input will be displayed last
+    fields = ('work', 'alternate_title', 'journal', 'publisher',
+        'pub_place', 'copyright_year', 'print_date',
+        ('print_date_year_known', 'print_date_month_known',
+         'print_date_day_known'),
+        ('is_extant', 'is_translation'),
+        'cited_in',
+        ('is_annotated', 'has_insertions', 'has_dedication'),
+        'uri', 'dimensions', ('start_page', 'end_page'),
+        'collected_in', 'notes')
+    search_fields = ('alternate_title', 'work__primary_title',
+        'work__authors__authorized_name', 'instancecatalogue__call_number',
+        'notes', 'publisher__name')
+    # TODO: how to display sections collected by an instance?
+    inlines = [ReferenceInline, InstanceCreatorInline, InstanceLanguageInline,
+        InstanceCatalogueInline, PersonBookInline, FootnoteInline]
+    list_filter = ('languages', 'is_extant', 'is_annotated', 'has_insertions')
+    filter_horizontal = ['cited_in']
+
+
+admin.site.register(Subject,  NamedNotableWorkCount)
+admin.site.register(Language, NamedNotableWorkInstanceCount)
+admin.site.register(Publisher, NamedNotableInstanceCount)
 admin.site.register(OwningInstitution, OwningInstitutionAdmin)
-admin.site.register(Book, BookAdmin)
+# NOTE: suppress old book models from admin to avoid getting data
+# entered in the wrong place; they will be removed in a subsequent release
+# admin.site.register(Book, BookAdmin)
 admin.site.register(CreatorType, NamedNotableAdmin)
-admin.site.register(PersonBookRelationshipType, NamedNotableAdmin)
-admin.site.register(PersonBook, PersonBookAdmin)
+# admin.site.register(PersonBookRelationshipType, NamedNotableAdmin)
+# admin.site.register(PersonBook, PersonBookAdmin)
+
+# refactored models
+admin.site.register(Work, WorkAdmin)
+admin.site.register(Instance, InstanceAdmin)
 
 # Citationality sub module
 admin.site.register(DerridaWork, DerridaWorkAdmin)
 admin.site.register(ReferenceType)
-admin.site.register(Reference)
+admin.site.register(Reference, ReferenceAdmin)
 admin.site.register(ItemType)
 admin.site.register(Journal)

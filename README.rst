@@ -18,8 +18,12 @@ Django web application for the `Derrida's Margins Project
    :target: https://codecov.io/gh/Princeton-CDH/derrida-django
    :alt: Code coverage
 
-This repo uses `git-flow <https://github.com/nvie/gitflow>`_ conventions, so the
-most recent code will be on the develop branch.
+
+`Current release documentation <https://princeton-cdh.github.io/derrida-django/>`_.
+
+This repo uses `git-flow <https://github.com/nvie/gitflow>`_ conventions; master
+contains the most recent release, and work in progress will be on the develop branch.
+Pull requests shoudl be made against develop.
 
 Current development status
 --------------------------
@@ -85,14 +89,16 @@ Documentation
 ~~~~~~~~~~~~~
 
 Documentation is generated using `sphinx <http://www.sphinx-doc.org/>`__
-To generate documentation them, first install development requirements::
+To generate documentation, first install development requirements::
 
     pip install -r dev-requirements.txt
 
-Then build documentation using the customized make file in the `docs`
+Then build the documentation using the customized make file in the `docs`
 directory::
 
-    cd docs
+    cd sphinx-docs
     make html
 
-You can also view documentation for the current master branch on `GitHub Pages <https://princeton-cdh.github.io/derrida-django/html/>`__
+When building documentation for a production release, use `make docs` to
+update the published documentation on GitHub Pages.
+

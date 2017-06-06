@@ -4,6 +4,12 @@ from django.dispatch import receiver
 from .models import AssociatedBook
 
 
+# NOTES: These signals serve to keep the two relatinoships symmetrical since
+# Django does not manage this with a through model to itself, i.e. we want
+# both books to be from_book and to_book to one another.
+
+# For the why, see https://docs.djangoproject.com/en/1.11/ref/models/fields/#django.db.models.ManyToManyField.through_fields
+# and also https://docs.djangoproject.com/en/1.11/topics/db/models/#extra-fields-on-many-to-many-relationships (see restrictions)
 @receiver(post_save, sender=AssociatedBook)
 def build_symmetrical(sender, instance, *args, **kwargs):
     symmetrical_instance = AssociatedBook.objects.get_or_create(

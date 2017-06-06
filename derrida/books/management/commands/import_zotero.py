@@ -36,6 +36,7 @@ class Command(BaseCommand):
             contact_info='http://library.princeton.edu/help/contact-us',
             place=princeton
         )
+
         for index, row in zotero_import.iterrows():
             try:
                 self.create_book(row)
@@ -58,11 +59,12 @@ class Command(BaseCommand):
                 self.stdout.write("    %s" % tag)
         unset = ReferenceType.objects.get(name='Unset')
         unset_refs = Reference.objects.filter(reference_type=unset)
-        self.stdout.write("I also found %s references with unset tags." %
-            len(unset_refs))
-        self.stdout.write("They were:")
-        for reference in unset_refs:
-            self.stdout.write("    %s" % reference)
+        if unset_refs:
+            self.stdout.write("I also found %s references with unset tags." %
+                len(unset_refs))
+            self.stdout.write("They were:")
+            for reference in unset_refs:
+                self.stdout.write("    %s" % reference)
 
     def clean_data(self, csvfile):
         '''Method to import data and clean up fields'''
@@ -184,12 +186,16 @@ class Command(BaseCommand):
                 place_name = (re.match(r'(.+)(&|and)', row['Place'])).group(1).strip()
             else:
                 place_name = row['Place']
-            place_dict = self.geonames_lookup(place_name)
-            place, created = Place.objects.get_or_create(
-                    name=place_name,
-                    **place_dict
-                )
 
+            try:
+                # check local db first before hitting geonames
+                place = Place.objects.get(name=place_name)
+            except Place.DoesNotExist:
+                place_info = self.geonames_lookup(place_name)
+                place, created = Place.objects.get_or_create(
+                        name=place_name,
+                        **place_info
+                    )
             newbook.pub_place = place
             self.stats['place_count'] += 1
 
@@ -237,22 +243,24 @@ class Command(BaseCommand):
             if row[c_type]:
                 # Check to see if this is a list that needs splitting on ;
                 if re.search(';', row[c_type]):
-                    # If yes, create entries for each (strip edge whitespace)
-                    split_creators = row[c_type].split(';')
-                    for creator in split_creators:
-                        person, created = Person.objects.get_or_create(
-                            authorized_name=creator.strip(),
-                            viaf_id=self.viaf_lookup(creator.strip())
-                        )
-                        newbook.add_creator(person, c_type)
-                        self.stats['person_count'] += 1
+                    # make a list of creator names for each (strip edge whitespace)
+                    creators = [name.strip() for name in row[c_type].split(';')]
                 else:
-                    person, created = Person.objects.get_or_create(
-                        authorized_name=row[c_type],
-                        viaf_id=self.viaf_lookup(row[c_type])
-                    )
+                    # single creator name
+                    creators = [row[c_type].strip()]
+
+                # Find or create entries for each person
+                for creator in creators:
+                    try:
+                        person = Person.objects.get(authorized_name=creator)
+                    except Person.DoesNotExist:
+                        person, created = Person.objects.get_or_create(
+                            authorized_name=creator,
+                            viaf_id=self.viaf_lookup(creator)
+                        )
+                        self.stats['person_count'] += 1
                     newbook.add_creator(person, c_type)
-                    self.stats['person_count'] += 1
+
         # Add catalogue entry for book
         # No shelf marks in Zotero info
         Catalogue.objects.get_or_create(
@@ -315,7 +323,7 @@ class Command(BaseCommand):
 
         work = None
         page_loc = None
-        book_page_seq = None
+        book_page_seq = ''
         annotation_type = None
         annotation_status = None
 

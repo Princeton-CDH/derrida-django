@@ -1,8 +1,10 @@
-django
+django==1.11.1
 mysqlclient
 django-grappelli
 django-autocomplete-light
 pandas
 requests
 rdflib
-git+https://github.com/Princeton-CDH/django-pucas.git@master#egg=pucas
+django-sortedm2m
+unidecode
+git+https://github.com/Princeton-CDH/django-pucas.git@0.5#egg=pucas

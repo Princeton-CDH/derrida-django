@@ -3,6 +3,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+
 # Sqlite DBs
 *.sqlite3
 
@@ -21,7 +22,6 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
 lib64/
 parts/
 sdist/
@@ -67,7 +67,11 @@ instance/
 .scrapy
 
 # Sphinx documentation
-docs/_build/
+sphinx-docs/_build/
+sphinx-docs/html/
+sphinx-docs/doctrees/
+# ignore built documentation (*except* on master branch for github pages)
+docs
 
 # PyBuilder
 target/
