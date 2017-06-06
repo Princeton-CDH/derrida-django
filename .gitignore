@@ -68,6 +68,7 @@ instance/
 
 # Sphinx documentation
 sphinx-docs/_build/
+sphinx-docs/html/
 sphinx-docs/doctrees/
 # ignore built documentation (*except* on master branch for github pages)
 docs
