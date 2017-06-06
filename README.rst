@@ -6,15 +6,15 @@ derrida-django
 Django web application for the `Derrida's Margins Project
 <https://cdh.princeton.edu/projects/derridas-margins/>`_.
 
-.. image:: https://travis-ci.org/Princeton-CDH/derrida-django.svg?branch=master
+.. image:: https://travis-ci.org/Princeton-CDH/derrida-django.svg?branch=develop
    :target: https://travis-ci.org/Princeton-CDH/derrida-django
    :alt: Build status
 
-.. image:: https://landscape.io/github/Princeton-CDH/derrida-django/master/landscape.svg?style=flat
-  :target: https://landscape.io/github/Princeton-CDH/derrida-django/master
+.. image:: https://landscape.io/github/Princeton-CDH/derrida-django/develop/landscape.svg?style=flat
+  :target: https://landscape.io/github/Princeton-CDH/derrida-django/develop
   :alt: Code Health
 
-.. image:: https://codecov.io/gh/Princeton-CDH/derrida-django/branch/master/graph/badge.svg
+.. image:: https://codecov.io/gh/Princeton-CDH/derrida-django/branch/develop/graph/badge.svg
    :target: https://codecov.io/gh/Princeton-CDH/derrida-django
    :alt: Code coverage
 
