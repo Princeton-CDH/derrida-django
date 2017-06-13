@@ -43,9 +43,16 @@ class Footnote(Notable):
     snippet_text = models.TextField(blank=True)
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE,
         # restrict choices to "content" models (exclude django/admin models)
+        # and models that are available in django admin
+        # (otherwise, lookup is not possible)
         limit_choices_to=models.Q(app_label='places') |
-                         models.Q(app_label='people') |
-                         models.Q(app_label='books'))
+             models.Q(app_label='people',
+                      model__in=['person', 'relationshiptype']) |
+             models.Q(app_label='books',
+                      model__in=['work', 'instance', 'derridawork',
+                                 'referencetype', 'reference', 'itemtype',
+                                 'journal', 'subject', 'language',
+                                 'publisher', 'owninginstitution']))
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
     is_agree = models.BooleanField(help_text='True if the evidence ' +
