@@ -5,10 +5,8 @@ from dal import autocomplete
 from derrida.common.admin import NamedNotableAdmin
 from derrida.footnotes.admin import FootnoteInline
 from .models import Subject, Language, Publisher, OwningInstitution, \
-    Book, Catalogue, BookSubject, BookLanguage, CreatorType, Creator, \
-    PersonBook, PersonBookRelationshipType, \
-    DerridaWork, DerridaWorkBook, Reference, ReferenceType, Journal, ItemType, \
-    AssociatedBook
+    CreatorType, PersonBook, PersonBookRelationshipType, \
+    DerridaWork, Reference, ReferenceType, Journal
 # refactored models
 from .models import Work, Instance, WorkSubject, WorkLanguage, \
     InstanceLanguage, InstanceCatalogue, InstanceCreator
@@ -37,50 +35,12 @@ class CollapsibleTabularInline(admin.TabularInline):
     classes = ('grp-collapse grp-open',)
 
 
-class CatalogueInline(CollapsibleTabularInline):
-    model = Catalogue
-    extra = 1
-    fields = ('institution', 'call_number', 'start_year', 'end_year',
-              'notes')
-
-
-class SubjectInline(CollapsibleTabularInline):
-    model = BookSubject
-    extra = 1
-    fields = ('subject', 'is_primary', 'notes')
-
-
-class LanguageInline(CollapsibleTabularInline):
-    model = BookLanguage
-    extra = 1
-    fields = ('language', 'is_primary', 'notes')
-
-
-class CreatorInlineForm(forms.ModelForm):
-    '''Custom model form for Book editing, used to add autocomplete
-    for place lookup.'''
-    class Meta:
-        model = Creator
-        fields = ('creator_type', 'person', 'notes')
-        widgets = {
-            'person': autocomplete.ModelSelect2(
-                url='people:person-autocomplete',
-                attrs={'data-placeholder': 'Start typing a name to search...'}
-            )
-        }
-
-
-class CreatorInline(CollapsibleTabularInline):
-    model = Creator
-    extra = 1
-    form = CreatorInlineForm
-
 
 class InstanceCreatorInlineForm(forms.ModelForm):
     '''Custom model form for Book editing, used to add autocomplete
     for place lookup.'''
     class Meta:
-        model = Creator
+        model = InstanceCreator
         fields = ('creator_type', 'person', 'notes')
         widgets = {
             'person': autocomplete.ModelSelect2(
@@ -93,28 +53,7 @@ class InstanceCreatorInlineForm(forms.ModelForm):
 class InstanceCreatorInline(CollapsibleTabularInline):
     model = InstanceCreator
     extra = 1
-    form = CreatorInlineForm
-
-
-class PersonBookInlineForm(forms.ModelForm):
-    '''Custom model form for Book editing, used to add autocomplete
-    for place lookup.'''
-    class Meta:
-        model = PersonBook
-        fields = ('person', 'relationship_type', 'start_year', 'end_year',
-                  'notes')
-        widgets = {
-            'person': autocomplete.ModelSelect2(
-                url='people:person-autocomplete',
-                attrs={'data-placeholder': 'Start typing a name to search...'}
-            )
-        }
-
-
-class PersonBookInline(CollapsibleTabularInline):
-    model = PersonBook
-    extra = 1
-    form = PersonBookInlineForm
+    form = InstanceCreatorInlineForm
 
 
 class MeltdownTextAreaWidget(forms.Textarea):
@@ -208,59 +147,6 @@ class ReferenceAdmin(admin.ModelAdmin):
     )
 
 
-class AssociatedBookInline(CollapsibleTabularInline):
-    '''Tabular inline for Associated Book set'''
-    model = AssociatedBook
-    extra = 1
-    fk_name = 'from_book'
-
-
-class BookAdminForm(forms.ModelForm):
-    '''Custom model form for Book editing, used to add autocomplete
-    for place lookup.'''
-    class Meta:
-        model = Book
-        exclude = []
-        widgets = {
-            'pub_place': autocomplete.ModelSelect2(
-                url='places:autocomplete',
-                attrs={'data-placeholder': 'Start typing location to search...'}),
-           'publisher': autocomplete.ModelSelect2(
-                url='books:publisher-autocomplete',
-                attrs={'data-placeholder': 'Start typing publisher name to search...'})
-        }
-
-
-class DerridaWorkBookInline(CollapsibleTabularInline):
-    '''Inline for DerridaWork - Library Work relationships'''
-    model = DerridaWorkBook
-    extra = 1
-    fields = ('derridawork', 'book', 'notes')
-
-
-class BookAdmin(admin.ModelAdmin):
-    '''Custom admin form for book, adds inlines and sets searchable fields, as
-    well as general field order and list display modifications'''
-    form = BookAdminForm
-
-    list_display = ('short_title', 'author_names', 'copyright_year',
-        'catalogue_call_numbers', 'is_extant', 'is_annotated',
-        'is_digitized', 'has_notes')
-    # NOTE: fields are specified here so that notes input will be displayed last
-    fields = ('primary_title', 'short_title', 'larger_work_title', 'item_type',
-        'journal', 'original_pub_info', 'publisher',
-        'pub_place', 'copyright_year', ('pub_date', 'pub_day_missing',
-        'pub_month_missing'), 'is_extant', 'is_annotated', 'is_digitized', 'uri',
-        'dimensions', 'notes')
-    search_fields = ('primary_title', 'creator__person__authorized_name',
-        'catalogue__call_number', 'notes', 'publisher__name')
-    inlines = [AssociatedBookInline, DerridaWorkBookInline, ReferenceInline,
-        CreatorInline, LanguageInline, SubjectInline, CatalogueInline,
-        FootnoteInline]
-    list_filter = ('subjects', 'languages', 'is_extant',
-        'is_annotated', 'is_digitized')
-
-
 class PersonBookAdmin(admin.ModelAdmin):
     # NOTE: person-book is editable on the book page, but exposing as a
     # top level as well to make it easier to associate footnotes with
@@ -275,7 +161,6 @@ class PersonBookAdmin(admin.ModelAdmin):
 class DerridaWorkAdmin(admin.ModelAdmin):
     '''Creating a custom admin with inlines for Derrida Work to ease associating
     a specific book edition with it'''
-    inlines = [DerridaWorkBookInline]
     fields = ('short_title', 'full_citation', 'is_primary', 'notes')
 
 
@@ -342,6 +227,27 @@ class InstanceCatalogueInline(CollapsibleTabularInline):
     fields = ('institution', 'call_number', 'start_year', 'end_year',
               'notes')
 
+class PersonBookInlineForm(forms.ModelForm):
+    '''Custom model form for Book editing, used to add autocomplete
+    for place lookup.'''
+    class Meta:
+        model = PersonBook
+        fields = ('person', 'relationship_type', 'start_year', 'end_year',
+                  'notes')
+        widgets = {
+            'person': autocomplete.ModelSelect2(
+                url='people:person-autocomplete',
+                attrs={'data-placeholder': 'Start typing a name to search...'}
+            )
+        }
+
+
+class PersonBookInline(CollapsibleTabularInline):
+    model = PersonBook
+    extra = 1
+    form = PersonBookInlineForm
+
+
 class InstanceAdminForm(forms.ModelForm):
     '''Custom model form for Instance editing, used to add autocomplete
     for publication place  lookup.'''
@@ -407,5 +313,4 @@ admin.site.register(Instance, InstanceAdmin)
 admin.site.register(DerridaWork, DerridaWorkAdmin)
 admin.site.register(ReferenceType)
 admin.site.register(Reference, ReferenceAdmin)
-admin.site.register(ItemType)
 admin.site.register(Journal)
