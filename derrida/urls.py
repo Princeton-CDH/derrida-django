@@ -13,6 +13,7 @@ urlpatterns = [
     url(r'^$', RedirectView.as_view(pattern_name='admin:index')),
     # # grappelli URLS for admin related lookups & autocompletes
     url(r'^grappelli/', include('grappelli.urls')),
+    url(r'^admin/iiif-books/', include('djiffy.urls', namespace='djiffy')),
     url(r'^admin/', admin.site.urls),
     url(r'^accounts/', include('pucas.cas_urls')),
     url(r'^books/', include('derrida.books.urls', namespace='books')),

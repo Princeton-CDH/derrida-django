@@ -32,9 +32,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
     'django_cas_ng',
     'sortedm2m',
     'pucas',
+    'djiffy',
     # local apps
     'derrida.apps.DerridaConfig',
     'derrida.books',
