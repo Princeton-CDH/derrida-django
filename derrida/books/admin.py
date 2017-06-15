@@ -1,6 +1,7 @@
+from dal import autocomplete
 from django import forms
 from django.contrib import admin
-from dal import autocomplete
+from djiffy.admin import ManifestSelectWidget
 
 from derrida.common.admin import NamedNotableAdmin
 from derrida.footnotes.admin import FootnoteInline
@@ -264,7 +265,8 @@ class InstanceAdminForm(forms.ModelForm):
         widgets = {
             'pub_place': autocomplete.ModelSelect2Multiple(
                 url='places:autocomplete',
-                attrs={'data-placeholder': 'Start typing location to search...'})
+                attrs={'data-placeholder': 'Start typing location to search...'}),
+           'digital_edition': ManifestSelectWidget
         }
 
 
@@ -283,7 +285,7 @@ class InstanceAdmin(admin.ModelAdmin):
         'cited_in',
         ('is_annotated', 'has_insertions', 'has_dedication'),
         'uri', 'dimensions', ('start_page', 'end_page'),
-        'collected_in', 'notes')
+        'collected_in', 'digital_edition', 'notes')
     search_fields = ('alternate_title', 'work__primary_title',
         'work__authors__authorized_name', 'instancecatalogue__call_number',
         'notes', 'publisher__name')

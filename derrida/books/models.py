@@ -4,6 +4,7 @@ from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
 from django.urls import reverse
 from django.utils.safestring import mark_safe
+from djiffy.models import Manifest
 from sortedm2m.fields import SortedManyToManyField
 
 from derrida.common.models import Named, Notable, DateRange
@@ -219,6 +220,10 @@ class Instance(Notable):
     cited_in = models.ManyToManyField('DerridaWork',
         help_text='Derrida works that cite this edition or instance',
         blank=True)
+
+    #: digital edition via IIIF as instance of :class:`djiffy.models.Manifest`
+    digital_edition = models.ForeignKey(Manifest, blank=True, null=True,
+        help_text='Digitized edition of this book, if available')
 
     # proof-of-concept generic relation to footnotes
     #: generic relation to :class:~`derrida.footnotes.models.Footnote`
