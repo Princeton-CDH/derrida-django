@@ -17,6 +17,10 @@ ALLOWED_HOSTS = []
 # http://www.miniwebtool.com/django-secret-key-generator/
 SECRET_KEY = ''
 
+
+# Turn this on in test/QA site to show test banner
+#SHOW_TEST_WARNING = True
+
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 DATABASES = {
