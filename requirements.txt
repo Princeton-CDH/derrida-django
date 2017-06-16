@@ -2,10 +2,10 @@ django==1.11.1
 mysqlclient
 django-grappelli
 django-autocomplete-light
-pandas
 requests
 rdflib
 django-sortedm2m
+# unidecode dependency can be removed once squashed book migrations are removed
 unidecode
 git+https://github.com/Princeton-CDH/django-pucas.git@0.5#egg=pucas
 # unreleased py3 piffle currently needs to be required explicitly
