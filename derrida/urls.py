@@ -6,11 +6,13 @@ from django.conf import settings
 from django.conf.urls import url, include
 from django.contrib import admin
 from django.views.generic.base import RedirectView
+from annotator_store import views as annotator_views
+
 
 urlpatterns = [
     # for now, since there is not yet any public-facing site,
     # redirect base url to admin index page
-    url(r'^$', RedirectView.as_view(pattern_name='admin:index')),
+    url(r'^$', RedirectView.as_view(pattern_name='admin:index'), name='site-index'),
     # # grappelli URLS for admin related lookups & autocompletes
     url(r'^grappelli/', include('grappelli.urls')),
     url(r'^admin/iiif-books/', include('djiffy.urls', namespace='djiffy')),
@@ -19,6 +21,10 @@ urlpatterns = [
     url(r'^books/', include('derrida.books.urls', namespace='books')),
     url(r'^people/', include('derrida.people.urls', namespace='people')),
     url(r'^places/', include('derrida.places.urls', namespace='places')),
+     # annotations API
+    url(r'^annotations/api/', include('annotator_store.urls', namespace='annotation-api')),
+    # annotatorjs doesn't handle trailing slash in api prefix url
+    url(r'^annotations/api', annotator_views.AnnotationIndex.as_view(), name='annotation-api-prefix'),
 ]
 
 # NOTE: for some reason this isn't getting added automatically

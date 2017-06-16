@@ -1,0 +1,9 @@
+{% extends 'djiffy/canvas_detail.html' %}
+
+{% block javascript %}
+    {{ block.super }}
+    {# enable annotation functionality if user has appropriate permissions #}
+    {% if perms.interventions.add_intervention %}
+        {% include 'snippets/annotator_init.html' %}
+    {% endif %}
+{% endblock %}

@@ -33,10 +33,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
+    'django.contrib.sites',
     'django_cas_ng',
     'sortedm2m',
     'pucas',
     'djiffy',
+    'annotator_store',
     # local apps
     'derrida.apps.DerridaConfig',
     'derrida.books',
@@ -44,6 +46,7 @@ INSTALLED_APPS = [
     'derrida.people',
     'derrida.footnotes',
     'derrida.common',
+    'derrida.interventions',
 ]
 
 MIDDLEWARE = [
@@ -145,6 +148,9 @@ PUCAS_LDAP = {
         'email': 'mail',
     },
 }
+
+
+ANNOTATOR_ANNOTATION_MODEL = 'interventions.Intervention'
 
 ##################
 # LOCAL SETTINGS #

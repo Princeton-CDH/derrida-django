@@ -1,0 +1,14 @@
+/* local overrides for annotator.js editor and annotator marginalia display */
+
+/* tweak some djiffy/annotator styles for display */
+.inner {
+  display: inline-block; /* match page image size exactly */
+}
+.margin-container-show aside.margin-container { right: -5px;}
+.marginalia-item > div {
+    padding-left: 20px;
+}
+.marginalia-item label {
+    padding-right: 5px;
+}
+
