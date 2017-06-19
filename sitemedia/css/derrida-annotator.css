@@ -12,3 +12,28 @@
     padding-right: 5px;
 }
 
+/* Grab hand over editor control so that you know it can be used to move */
+.annotator-controls {
+  cursor: move;
+}
+/* override default style for editor labels */
+.annotator-editor .annotator-item label {
+  cursor: default;
+
+
+}
+
+.annotator-widget {
+  min-width: 375px;
+}
+
+/* annotator edit labels */
+.annotator-editor .annotator-item label.field-label {
+  color: black;
+  font-weight: bold;
+  background-color: lightgray;
+  margin: 2px;
+  padding: 2px;
+  display: inline-block;
+  width: 95%;
+}

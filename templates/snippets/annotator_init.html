@@ -11,7 +11,7 @@
 <!--  <script type="text/javascript" src="//emory-lits-labs.github.io/annotator-meltdown-zotero/build/0.1.0/annotator.meltdown.zotero.min.js"></script> <!-- includes jquery-ui autocomplete, also used by related-pages -->
 
 <!--   <script type="text/javascript" src="{% static 'js/annotator/annotator.permissions.js' %}"></script> -->
-  {# // <script type="text/javascript" src="{% static 'js/annotator/winthrop-plugin.js' %}"></script> #}
+  <script type="text/javascript" src="{% static 'js/annotator/interventions-plugin.js' %}"></script>
   {# // <script type="text/javascript" src="{% static 'js/annotator/tag-lookup.js' %}"></script> #}
   <link rel="stylesheet" type="text/css" href="//emory-lits-labs.github.io/annotator-imgselect/src/jquery.imgareaselect-0.9.10/css/imgareaselect-default.css" />
   <script type="text/javascript" src="//emory-lits-labs.github.io/annotator-imgselect/build/0.2.2/annotator.imgselect.min.js"></script>
@@ -148,6 +148,7 @@ $.ajaxSetup({
   var marginalia_opts = {
     show_author: true,
     // viewer: annotatormeltdown.render,
+     viewer: interventions.viewer,
     renderExtensions: [
         // annotation_permissions.renderExtension,
         // winthrop.makeRenderExtension(confs)
@@ -182,6 +183,7 @@ $.ajaxSetup({
               // annotatormeltdown.getEditorExtension({min_width: '500px', font_awesome: true}),
               _marginalia.editorExtension,  /* includes tags */
               // winthrop.makeEditorExtension(confs)
+              interventions.editorExtension,
           ]
       })
       .include(annotatorImageSelect, {
