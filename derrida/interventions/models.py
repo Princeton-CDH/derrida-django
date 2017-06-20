@@ -8,7 +8,7 @@ from derrida.common.models import Named, Notable
 
 
 #: intervention type codes to distinguish annotations and insertions
-TYPES = AttrDict({
+INTERVENTION_TYPES = AttrDict({
     'ANNOTATION': 'A',
     'INSERTION': 'I',
     'BOTH': 'AI',
@@ -22,21 +22,21 @@ class TagQuerySet(models.QuerySet):
 
     def for_annotations(self):
         '''Find tags that apply to annotations'''
-        return self.filter(applies_to__contains=TYPES.ANNOTATION)
+        return self.filter(applies_to__contains=INTERVENTION_TYPES.ANNOTATION)
 
     def for_insertions(self):
         '''Find tags that apply to insertions'''
-        return self.filter(applies_to__contains=TYPES.INSERTION)
+        return self.filter(applies_to__contains=INTERVENTION_TYPES.INSERTION)
 
 
 class Tag(Named, Notable):
     APPLIES_TO_CHOICES = (
-        (TYPES.ANNOTATION, 'Annotations only'),
-        (TYPES.INSERTION, 'Insertions only'),
-        (TYPES.BOTH, 'Both Annotations and Insertions'),
+        (INTERVENTION_TYPES.ANNOTATION, 'Annotations only'),
+        (INTERVENTION_TYPES.INSERTION, 'Insertions only'),
+        (INTERVENTION_TYPES.BOTH, 'Both Annotations and Insertions'),
     )
     applies_to = models.CharField(max_length=2, choices=APPLIES_TO_CHOICES,
-        default=TYPES.BOTH,
+        default=INTERVENTION_TYPES.BOTH,
         help_text='Type or types of interventions this tag is applicable to.')
 
     objects = TagQuerySet.as_manager()
@@ -45,13 +45,13 @@ class Tag(Named, Notable):
 class Intervention(BaseAnnotation):
 
     INTERVENTION_TYPE_CHOICES = (
-        (TYPES.ANNOTATION, 'Annotation'),
-        (TYPES.INSERTION, 'Insertion'),
+        (INTERVENTION_TYPES.ANNOTATION, 'Annotation'),
+        (INTERVENTION_TYPES.INSERTION, 'Insertion'),
     )
     intervention_type = models.CharField(
         max_length=2,
         choices=INTERVENTION_TYPE_CHOICES,
-        default=TYPES.ANNOTATION,
+        default=INTERVENTION_TYPES.ANNOTATION,
     )
 
     #: associated IIIF :cjass:`djiffy.models.Canvas` for interventions
@@ -122,12 +122,12 @@ class Intervention(BaseAnnotation):
         specific to :class:`Intervention`.  Data is as provided from json
         request data, as sent by annotator.js.'''
 
-        # Catch any SQL Foreign Key issues by saving before processing the
-        # extra data using super()
-        # FIXME: only necessary if no pk is set?
-        # super(Intervention, self).save()
+        # If the object does not yet exist in the database, it must be
+        # saved before adding foreign key or many-to-many relationships.
+        if self._state.adding:
+            super(Intervention, self).save()
 
-        # set any tags that are passed if they already exist in the db
+        # Set any tags that are passed if they already exist in the db
         # (tag vocabulary is enforced; unrecognized tags are ignored)
         if 'tags' in data:
             tags = Tag.objects.filter(name__in=data['tags'])
