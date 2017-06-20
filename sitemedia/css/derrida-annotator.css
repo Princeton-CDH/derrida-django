@@ -37,3 +37,14 @@
   display: inline-block;
   width: 95%;
 }
+
+
+/*
+  Override for jQuery autocomplete menu. Creates a box-shadow to highlight the
+  autocomplete menu when it appears.
+*/
+.ui-menu {
+      box-shadow: 0px 0px 10px blue;
+      -moz-box-shadow: 0px 0px 10px blue;
+      -webkit-box-shadow: 0px 0px 10px blue;
+}
