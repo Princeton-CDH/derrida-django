@@ -4,6 +4,7 @@ from django.db import models
 from djiffy.models import Canvas
 
 from derrida.common.models import Named, Notable
+from derrida.books.models import Language
 # from derrida.people.models import Person
 
 
@@ -57,8 +58,16 @@ class Intervention(BaseAnnotation):
     #: associated IIIF :cjass:`djiffy.models.Canvas` for interventions
     #: related to an image
     canvas = models.ForeignKey(Canvas, null=True, blank=True)
-    #: Tags to describe the intervention and its characteristics
-    tags = models.ManyToManyField(Tag, blank=True)
+    #: Tags to describe the intervention and its characteristics;
+    #: many-to-many relationship to :class:`Tag`
+    tags = models.ManyToManyField(Tag, blank=True,
+        help_text='Tags to describe this intervation and its characteristics')
+    #: language of the insertion text (i.e. :attr:`text`)
+    text_language = models.ForeignKey(Language, null=True, blank=True,
+        help_text='Language of the annotation text', related_name='+')
+    #: language of the quoted text or anchor text (i.e. :attr:`quote`)
+    quote_language = models.ForeignKey(Language, null=True, blank=True,
+            help_text='Language of the anchor text', related_name='+')
 
     # todo
     # author = models.ForeignKey(Person, null=True, blank=True)
@@ -134,6 +143,25 @@ class Intervention(BaseAnnotation):
             self.tags.set(tags)
             del data['tags']
 
+        # annotation text language; unset or invalid clears out the language
+        try:
+            self.text_language = Language.objects.get(name=data.get('text_language', None))
+        except Language.DoesNotExist:
+            self.text_language = None
+
+        # quote/anchor text language; unset or invalid clears it out
+        try:
+            self.quote_language = Language.objects.get(name=data.get('quote_language', None))
+        except Language.DoesNotExist:
+            self.quote_language = None
+
+        # remove fields if present, but don't error if they are not
+        for field in ['text_language', 'quote_language']:
+            try:
+                del data[field]
+            except KeyError:
+                pass
+
         return data
 
     def info(self):
@@ -145,4 +173,9 @@ class Intervention(BaseAnnotation):
         info.update({
             'tags': [tag.name for tag in self.tags.all()],
         })
+        if self.text_language:
+            info['text_language'] = self.text_language.name
+        if self.quote_language:
+            info['quote_language'] = self.quote_language.name
+
         return info

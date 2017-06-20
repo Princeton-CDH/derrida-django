@@ -57,7 +57,8 @@ class InterventionAdminForm(forms.ModelForm):
                 attrs={'data-placeholder': 'Start typing canvas name or uri to search...'}),
 
         }
-        fields = ('canvas', 'intervention_type', 'text', 'quote',
+        fields = ('canvas', 'intervention_type', 'text', 'text_language',
+            'quote', 'quote_language',
             'tags', 'user', 'extra_data', 'uri')
 
         # fields = ('canvas', 'text', 'tags', 'text_translation', 'languages',
@@ -67,7 +68,8 @@ class InterventionAdminForm(forms.ModelForm):
 class InterventionAdmin(AnnotationAdmin):
     form = InterventionAdminForm
     filter_horizontal = ('tags', )
-    list_display = ('admin_thumbnail', 'intervention_type', 'text_preview', 'canvas')
+    list_display = ('admin_thumbnail', 'intervention_type', 'text_preview',
+        'canvas')
     # NOTE: 'quote' == anchor text, and should be editable
     readonly_fields = ('uri', 'extra_data')
 

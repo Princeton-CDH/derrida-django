@@ -6,6 +6,7 @@ from django.test import TestCase
 from django.urls import reverse
 from djiffy.models import Canvas, Manifest
 
+from derrida.books.models import Language
 from .models import Tag, INTERVENTION_TYPES, Intervention
 
 
@@ -79,6 +80,8 @@ class TestIntervention(TestCase):
 
         note = Intervention()
 
+        ### tags ###
+
         # test adding new tags
         # - using three existing tags and one nonexistent
         tags = ['underlining', 'circling', 'bogus']
@@ -106,6 +109,43 @@ class TestIntervention(TestCase):
         note.handle_extra_data({'tags': []}, Mock())
         assert note.tags.count() == 0
 
+        ### languages ##
+
+        # test setting text language
+        # - valid language name
+        data = note.handle_extra_data({'text_language': 'English'}, Mock())
+        assert note.text_language.name == 'English'
+        assert 'text_language' not in data
+        # - invalid language name does not error, clears language
+        data = note.handle_extra_data({'text_language': 'Klingon'}, Mock())
+        assert note.text_language is None
+        # - empty language does not error, clears out
+        note.text_language = Language.objects.first()
+        data = note.handle_extra_data({'text_language': ''}, Mock())
+        assert note.text_language is None
+        # value not present is also not an error
+        note.language = Language.objects.first()
+        data = note.handle_extra_data({}, Mock())
+        assert note.text_language is None
+
+        # test setting quoted text / anchor text language
+        # - valid language name
+        data = note.handle_extra_data({'quote_language': 'English'}, Mock())
+        assert note.quote_language.name == 'English'
+        assert 'quote_language' not in data
+        # - invalid language name does not error, clears language
+        data = note.handle_extra_data({'quote_language': 'Klingon'}, Mock())
+        assert note.quote_language is None
+        # - empty language does not error, clears out
+        note.quote_language = Language.objects.first()
+        data = note.handle_extra_data({'quote_language': ''}, Mock())
+        assert note.quote_language is None
+        # value not present is also not an error
+        note.language = Language.objects.first()
+        data = note.handle_extra_data({}, Mock())
+        assert note.quote_language is None
+
+
     def test_info(self):
         note = Intervention.objects.create()
 
@@ -115,6 +155,20 @@ class TestIntervention(TestCase):
         note.handle_extra_data({'tags': tags}, Mock())
         # order not guaranteed / not important; compare as a set
         assert set(note.info()['tags']) == set(tags)
+
+        # languages should be present if set
+        # not set - not included in info
+        info = note.info()
+        assert 'text_language' not in info
+        assert 'quote_language' not in info
+        # both set - should be included by name
+        lang1 = Language.objects.first()
+        lang2 = Language.objects.last()
+        note.text_language = lang1
+        note.quote_language = lang2
+        info = note.info()
+        assert info['text_language'] == lang1.name
+        assert info['quote_language'] == lang2.name
 
     def test_iiif_image_selection(self):
         annotation = Intervention()
