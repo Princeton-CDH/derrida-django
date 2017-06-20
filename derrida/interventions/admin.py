@@ -5,7 +5,7 @@ from django.contrib import admin
 from django.utils.safestring import mark_safe
 from djiffy.models import Canvas
 
-from .models import Intervention
+from .models import Intervention, Tag
 
 
 class CanvasLinkWidget(autocomplete.ModelSelect2):
@@ -46,6 +46,7 @@ class InterventionAdminForm(forms.ModelForm):
             # 'tags': 'Annotation type',
             'quote': 'Anchor text',
             # 'author': 'Annotator',
+            'uri': 'URI'
         }
         widgets = {
             # 'author': autocomplete.ModelSelect2(
@@ -56,18 +57,27 @@ class InterventionAdminForm(forms.ModelForm):
                 attrs={'data-placeholder': 'Start typing canvas name or uri to search...'}),
 
         }
-        fields = ('canvas', 'intervention_type', 'text', 'quote', 'user',
-                  'extra_data', 'uri')
+        fields = ('canvas', 'intervention_type', 'text', 'quote',
+            'tags', 'user', 'extra_data', 'uri')
+
         # fields = ('canvas', 'text', 'tags', 'text_translation', 'languages',
         #           'subjects', 'author', 'quote', 'anchor_translation',
         #           'anchor_languages', 'user', 'extra_data', 'uri')
 
 class InterventionAdmin(AnnotationAdmin):
     form = InterventionAdminForm
+    filter_horizontal = ('tags', )
     list_display = ('admin_thumbnail', 'intervention_type', 'text_preview', 'canvas')
     # NOTE: 'quote' == anchor text, and should be editable
     readonly_fields = ('uri', 'extra_data')
 
 
+class TagAdmin(admin.ModelAdmin):
+    list_display = ('name', 'applies_to')
+    list_filter = ('applies_to', )
+    fields = ('name', 'applies_to', 'notes')
+
+
 admin.site.unregister(Intervention)
 admin.site.register(Intervention, InterventionAdmin)
+admin.site.register(Tag, TagAdmin)
