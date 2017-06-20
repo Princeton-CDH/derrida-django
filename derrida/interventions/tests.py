@@ -1,6 +1,9 @@
+import json
 from unittest.mock import Mock, patch
 
+from django.contrib.auth import get_user_model
 from django.test import TestCase
+from django.urls import reverse
 from djiffy.models import Canvas, Manifest
 
 from .models import Tag, INTERVENTION_TYPES, Intervention
@@ -114,8 +117,6 @@ class TestIntervention(TestCase):
         assert set(note.info()['tags']) == set(tags)
 
     def test_iiif_image_selection(self):
-        # borrowed from winthrop code
-
         annotation = Intervention()
         # no canvas or image selection
         assert not annotation.iiif_image_selection()
@@ -142,8 +143,6 @@ class TestIntervention(TestCase):
         assert iiif_region_info['height'] == 13.5
 
     def test_admin_thumbnail(self):
-        # borrowed from winthrop code
-
         annotation = Intervention()
         # no canvas or image selection
         assert not annotation.admin_thumbnail()
@@ -162,5 +161,81 @@ class TestIntervention(TestCase):
         }
         assert annotation.admin_thumbnail() == \
             '<img src="%s" />' % annotation.iiif_image_selection().mini_thumbnail()
+
+
+class TestInterventionViews(TestCase):
+
+    def setUp(self):
+        # create an admin user to test autocomplete views
+        self.password = 'pass!@#$'
+        self.admin = get_user_model().objects.create_superuser('testadmin',
+            'test@example.com', self.password)
+
+    def test_tag_autocomplete(self):
+        tag_autocomplete_url = reverse('interventions:tag-autocomplete')
+        result = self.client.get(tag_autocomplete_url,
+            params={'q': 'circ'})
+        # not allowed to anonymous user
+        assert result.status_code == 302
+
+        # login as an admin user
+        self.client.login(username=self.admin.username, password=self.password)
+
+        result = self.client.get(tag_autocomplete_url, {'q': 'circ'})
+        assert result.status_code == 200
+        # decode response to inspect
+        data = json.loads(result.content.decode('utf-8'))
+        assert data['results'][0]['text'] == 'circling'
+
+        # filter by mode
+        tag_autocomplete_url = reverse('interventions:tag-autocomplete',
+            kwargs={'mode': 'annotation'})
+        result = self.client.get(tag_autocomplete_url, {'q': 'line'})
+        assert result.status_code == 200
+        # decode response to inspect
+        data = json.loads(result.content.decode('utf-8'))
+        assert data['results'][0]['text'] == 'line'
+
+        tag_autocomplete_url = reverse('interventions:tag-autocomplete',
+            kwargs={'mode': 'insertion'})
+        result = self.client.get(tag_autocomplete_url, {'q': 'line'})
+        assert result.status_code == 200
+        # decode response to inspect
+        data = json.loads(result.content.decode('utf-8'))
+        assert not data['results']
+
+    def test_canvas_detail(self):
+        # canvas detail logic is tested in djiffy,
+        # but test local customization to catch any
+        # breaks in the template rendering
+
+        manifest = Manifest.objects.create(short_id='foo')
+        canvas = Canvas.objects.create(short_id='bar', manifest=manifest,
+            order=0)
+
+        canvas_url = reverse('djiffy:canvas',
+            kwargs={'manifest_id': canvas.manifest.short_id, 'id': canvas.short_id})
+        response = self.client.get(canvas_url)
+        self.assertTemplateUsed(response, 'djiffy/canvas_detail.html')
+        self.assertNotContains(response, 'annotator.min.js',
+            msg_prefix='Annotator not enabled for user without annotation add permission')
+
+        # login as an admin user
+        self.client.login(username=self.admin.username, password=self.password)
+        response = self.client.get(canvas_url)
+        self.assertContains(response, 'css/derrida-annotator.css',
+            msg_prefix='canvas detail page includes local annotator styles')
+        self.assertContains(response, 'interventions-plugin.js',
+            msg_prefix='canvas detail page includes local intervention plugin')
+        # check that expected autocomplete urls are present
+        # NOTE: currently tag autocomplete is annotation tags only
+        self.assertContains(response,
+            reverse('interventions:tag-autocomplete', kwargs={'mode': 'annotation'}),
+            msg_prefix='annotator init includes tag autocomplete url')
+        # username configured
+        self.assertContains(response,
+            'app.ident.identity = "%s";' % self.admin.username,
+            msg_prefix='Logged in user username passed to annotator')
+
 
 
