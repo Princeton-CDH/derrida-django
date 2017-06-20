@@ -290,6 +290,9 @@ class TestInterventionViews(TestCase):
         self.assertContains(response,
             'app.ident.identity = "%s";' % self.admin.username,
             msg_prefix='Logged in user username passed to annotator')
+        self.assertContains(response,
+            reverse('books:language-autocomplete'),
+            msg_prefix='annotator init includes language autocomplete url')
 
 
 

@@ -96,30 +96,37 @@ $.ajaxSetup({
     };
 
   var autocomplete_url = {
-{#    language: "{% url 'books:language-autocomplete' %}", #}
+    language: "{% url 'books:language-autocomplete' %}",
 {#    annotator: "{% url 'people:autocomplete' 'annotator' %}", #}
 {#    subject:  "{% url 'books:subject-autocomplete' %}", #}
 // NOTE: in future, mode will need to be set based on intervention type
     tag: "{% url 'interventions:tag-autocomplete' mode='annotation' %}"
   };
 
-var confs = [{
+
+var confs = [
+    {
+      name: 'text_language',
+      label: 'Annotation Language',
+      type: 'select',
+      choicesURL: autocomplete_url.language
+    },
+    {
       name: 'tags',
       label: 'Tags',
       list: true,
-      autocompleteURL: autocomplete_url.tag,
+      autocompleteURL: autocomplete_url.tag
+    },
+    {
+      name: 'quote_language',
+      label: 'Anchor Text Language',
+      type: 'select',
+      choicesURL: autocomplete_url.language
     }
   {% comment %}
 /*    { name: 'translation',
       label: 'Translation',
       size: 'textarea'
-    },
-    {
-      name: 'languages',
-      label: 'Languages',
-      placeholder: 'Type or click to select languages',
-      list: true,
-      autocompleteUrl: autocomplete_url.language
     },
     {
       name: 'subjects',
@@ -144,12 +151,6 @@ var confs = [{
       label: 'Anchor text translation',
       size: 'textarea'
     },
-    {
-      name: 'anchor_languages',
-      label: 'Anchor text languages',
-      placeholder: 'Type or click to select languages',
-      list: true,
-      autocompleteUrl: autocomplete_url.language
     }*/  {% endcomment %}
   ];
 

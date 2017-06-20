@@ -83,21 +83,24 @@ var interventions = {
           // for each item in the config, add a new annotator field
           // and configure appropriate load/save methods
           $.each(confs, function(index, config) {
-            var type = config.size ? config.size : 'input';
+            // update config with default field type
+            config = $.extend({'type': 'input'}, config);
+
+            // create new annotation editor field based on the config
             var field = editor.addField({
               // set input name based on field name
               id: 'annotator-' + config.name,
               // This is properly *placeholder*, so setting is as such
               // using label as fallback
               label: config.placeholder ? config.placeholder : config.label,
-              type: type,
+              type: config.type,
               // load the field for display when the editor is rendered
               load: function(field, annotation) {
                   // determine value to set in the input for this field;
                   // must be set to something to avoid carrying over
                   // values from other annotation instances
                   var display_val = '',
-                    $input = $(field).find(type);
+                    $input = $(field).find(config.type);
 
                   // retrieve field value from the annotation object
                   if (annotation[config.name] || annotation[config.name == 0]) {
@@ -114,7 +117,7 @@ var interventions = {
                   $input.val(display_val);
               },
               submit: function(field, annotation) {
-                var $input = $(field).find(type);
+                var $input = $(field).find(config.type);
                 // send data version without worrying about display value
                 annotation[config.name] = $input.data('value');
               },
@@ -122,11 +125,27 @@ var interventions = {
               config: config
             });
 
+            var input = $(field).find(config.type);
+            if (config.type == 'select' && config.choicesURL) {
+              // For now, choices are loaded via same json data used
+              // for autocomplete views
+              $.getJSON(config.choicesURL, function(data) {
+                console.log(data.results);
+                  $.each(data.results, function(index, item) {
+                   input.append($('<option>', {value: item.text, text: item.text}))
+                 });
+              });
+
+              // update stored data value when the selected value changes
+              input.on('change', function() {
+                 input.data('value', this.value);
+              });
+            }
+
             // initialize autocomplete field if a url is configured
             if (config.autocompleteURL) {
               // find the input element for this field and configure
               // the autocomplete widget
-              var input = $(field).find(type);
               input.autocomplete({
                     minLength: 0,
                     // Retrieve values via ajax
@@ -167,7 +186,8 @@ var interventions = {
                   $(this).autocomplete("search");
                 });
 
-            }
+            } // end config autocomplete
+
           });
 
       }
