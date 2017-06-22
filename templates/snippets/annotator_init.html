@@ -154,13 +154,14 @@ var confs = [
     }*/  {% endcomment %}
   ];
 
+  var interventions = annotatorInterventions(confs);
+
   var marginalia_opts = {
     show_author: true,
-    // viewer: annotatormeltdown.render,
      viewer: interventions.viewer,
     renderExtensions: [
         // annotation_permissions.renderExtension,
-        // winthrop.makeRenderExtension(confs)
+        interventions.renderExtension,
     ],
     toggle: {
       class: 'btn btn-green',
@@ -175,7 +176,6 @@ var confs = [
 
 
   // configuring marginalia here so it can be referenced in annotator search
-  // Also including var for language autocomplete since it's used twice
   var _marginalia = annotatorMarginalia(marginalia_opts);
   var app = new annotator.App()
       .include(contentUri)
@@ -189,10 +189,7 @@ var confs = [
           */
           {% endcomment %}
           editorExtensions: [
-              // annotatormeltdown.getEditorExtension({min_width: '500px', font_awesome: true}),
-              // _marginalia.editorExtension,  /* includes tags */
-              // winthrop.makeEditorExtension(confs)
-              interventions.getEditorExtension(confs),
+            interventions.editorExtension,
           ]
       })
       .include(annotatorImageSelect, {
@@ -216,8 +213,6 @@ var confs = [
   // (enforced at application level, only affects what is displayed)
   app.ident.is_superuser = {{ request.user.is_superuser|lower }}
 
-  // Bind listener for mouse downs on controls for grab hand icon
-  // grabbyControls('.annotator-controls');
 });
 
 

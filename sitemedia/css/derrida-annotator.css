@@ -19,16 +19,6 @@
 /* override default style for editor labels */
 .annotator-editor .annotator-item label {
   cursor: default;
-
-
-}
-
-.annotator-widget {
-  min-width: 375px;
-}
-
-/* annotator edit labels */
-.annotator-editor .annotator-item label.field-label {
   color: black;
   font-weight: bold;
   background-color: lightgray;
@@ -38,6 +28,19 @@
   width: 95%;
 }
 
+.annotator-widget {
+  min-width: 375px;
+}
+
+/* marginalia card display labels */
+.marginalia-item label {
+  background-color: lightgray;
+  display: inline-block;
+  width: 95%;
+  margin-top: 5px;
+  margin-bottom: 0;
+  text-align: right;
+}
 
 /*
   Override for jQuery autocomplete menu. Creates a box-shadow to highlight the

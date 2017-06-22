@@ -1,5 +1,12 @@
 
-var interventions = {
+
+/**
+ * Return an intervention plugin with render and editor extension
+ * methods based on the configuration passed in.
+ */
+function annotatorInterventions(confs) {
+
+  var interventions = {
 
     /**
      * Parse and return the last value from a comma-delimited string
@@ -44,6 +51,26 @@ var interventions = {
       input.data('value', val_list)
     },
 
+    /**
+     * Retrieve an annotation field value and convert for display.
+     * Returns empty string if no value is set, converts to comma
+     * delimited if multiple is true.
+     * @param annotation
+     * @param field_name
+     * @param multiple (defaults to false)
+     */
+    field_display_value: function(annotation, field_name, multiple=false) {
+      var display_val = '';
+       if (annotation[field_name] || annotation[field_name] == 0) {
+          display_val = annotation[field_name];
+          // convert to comma-delimited if list is configured
+          if (multiple) {
+            display_val = display_val.join(', ') + ', ';
+          }
+        }
+        return display_val;
+    },
+
 
     /**
      *  Annotation viewer method, for customizing marginalia display.
@@ -61,14 +88,69 @@ var interventions = {
       }
     },
 
+    renderExtension: function(annotation, item) {
+      console.log('render extension');
+      console.log(annotation);
+      console.log(item);
+
+      $.each(confs, function(index, config) {
+        // skip tags; tag display already handled by marginalia
+        if (config.name == 'tags') {
+          return;
+        }
+        console.log(config);
+        var div, span, display_val;
+        // find or create div to display the field
+        div = item.find('.annotator-' + config.name);
+        // if it does not exist, create it
+        if (div.length == 0) {
+          div = $('<div/>').addClass('annotator-' + config.name);
+          // add the label for this field
+          div.append($('<label/>').html(config.label));
+          div.append($('<span/>'));
+          // insert before tag/footer
+          div.insertBefore(item.find('.annotator-tags'));
+        }
+
+        span = div.find('span');
+
+        // fixme: duplicated from editor extension function
+        // if field is present on the annotation
+        display_val = interventions.field_display_value(annotation,
+          config.name, config.list);
+        if (display_val) {
+          span.html(display_val);
+          div.show()
+        } else {
+          div.hide();
+        }
+
+/*       if (annotation[config.name] || annotation[config.name == 0]) {
+        console.log('value present');
+          // populate input value the annotation data
+          display_val = annotation[config.name];
+          console.log(display_val);
+          // convert to comma-delimited if list is configured
+          if (config.list) {
+            display_val = display_val.join(', ') + ', ';
+          }
+          span.html(display_val);
+          div.show();
+        } else {
+          div.hide();
+        }*/
+
+      });
+
+      return item;
+    },
+
     /**
      * Generate and return an annotator editor extension based on the
      * specified set of fields.
      * @param confs
      */
-    getEditorExtension: function(confs) {
-
-      return function editorExtension(editor) {
+     editorExtension: function(editor) {
           // update built-in annotation text field so label and placeholders
           // make sense for how it is being used in this project
           // TODO: could these overrides be included in the config?
@@ -78,7 +160,7 @@ var interventions = {
           // replace default placeholder text ('Comments...')
           text_input.attr('placeholder', 'Transcription of annotation text, if any');
           // add a label
-          text_input.before('<label class="field-label">Text</label>');
+          text_input.before('<label>Text</label>');
 
           // for each item in the config, add a new annotator field
           // and configure appropriate load/save methods
@@ -90,8 +172,7 @@ var interventions = {
             var field = editor.addField({
               // set input name based on field name
               id: 'annotator-' + config.name,
-              // This is properly *placeholder*, so setting is as such
-              // using label as fallback
+              // set input placeholder, using label as fallback
               label: config.placeholder ? config.placeholder : config.label,
               type: config.type,
               // load the field for display when the editor is rendered
@@ -99,22 +180,14 @@ var interventions = {
                   // determine value to set in the input for this field;
                   // must be set to something to avoid carrying over
                   // values from other annotation instances
-                  var display_val = '',
-                    $input = $(field).find(config.type);
+                  var $input = $(field).find(config.type);
 
-                  // retrieve field value from the annotation object
-                  if (annotation[config.name] || annotation[config.name == 0]) {
-                      // store the value on input element data
-                      $input.data('value', annotation[config.name]);
-                      // populate input value the annotation data
-                      display_val = annotation[config.name];
-                      // convert to comma-delimited if list is configured
-                      if (config.list) {
-                        display_val = display_val.join(', ') + ', ';
-                      }
-                  }
+                  // store the field value in native form on input element data
+                  $input.data('value', annotation[config.name]);
+
                   // set the input value
-                  $input.val(display_val);
+                  $input.val(interventions.field_display_value(annotation,
+                    config.name, config.list));
               },
               submit: function(field, annotation) {
                 var $input = $(field).find(config.type);
@@ -126,6 +199,10 @@ var interventions = {
             });
 
             var input = $(field).find(config.type);
+            // add a label for the new input
+            input.before($('<label/>').html(config.label));
+
+            // load select choices if configured
             if (config.type == 'select' && config.choicesURL) {
               // For now, choices are loaded via same json data used
               // for autocomplete views
@@ -135,7 +212,6 @@ var interventions = {
                    input.append($('<option>', {value: item.text, text: item.text}))
                  });
               });
-
               // update stored data value when the selected value changes
               input.on('change', function() {
                  input.data('value', this.value);
@@ -191,5 +267,7 @@ var interventions = {
           });
 
       }
-    }
-};
+  };
+
+  return interventions;
+}
