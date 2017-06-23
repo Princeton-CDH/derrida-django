@@ -71,7 +71,6 @@ function annotatorInterventions(confs) {
         return display_val;
     },
 
-
     /**
      *  Annotation viewer method, for customizing marginalia display.
      * Only handles annotation text field display.
@@ -89,16 +88,11 @@ function annotatorInterventions(confs) {
     },
 
     renderExtension: function(annotation, item) {
-      console.log('render extension');
-      console.log(annotation);
-      console.log(item);
-
       $.each(confs, function(index, config) {
         // skip tags; tag display already handled by marginalia
         if (config.name == 'tags') {
           return;
         }
-        console.log(config);
         var div, span, display_val;
         // find or create div to display the field
         div = item.find('.annotator-' + config.name);
@@ -114,8 +108,7 @@ function annotatorInterventions(confs) {
 
         span = div.find('span');
 
-        // fixme: duplicated from editor extension function
-        // if field is present on the annotation
+        // if field is present on the annotation, show it
         display_val = interventions.field_display_value(annotation,
           config.name, config.list);
         if (display_val) {
@@ -124,21 +117,6 @@ function annotatorInterventions(confs) {
         } else {
           div.hide();
         }
-
-/*       if (annotation[config.name] || annotation[config.name == 0]) {
-        console.log('value present');
-          // populate input value the annotation data
-          display_val = annotation[config.name];
-          console.log(display_val);
-          // convert to comma-delimited if list is configured
-          if (config.list) {
-            display_val = display_val.join(', ') + ', ';
-          }
-          span.html(display_val);
-          div.show();
-        } else {
-          div.hide();
-        }*/
 
       });
 
@@ -190,9 +168,19 @@ function annotatorInterventions(confs) {
                     config.name, config.list));
               },
               submit: function(field, annotation) {
+                // get the value from the form input and set it on the
+                // annotation object
                 var $input = $(field).find(config.type);
-                // send data version without worrying about display value
-                annotation[config.name] = $input.data('value');
+
+                // multi-valued fields, selects, and autocompletes store
+                // values as a list in the data attribute
+                if (config.list || config.type == 'select' || config.autocompleteURL) {
+                   // send data version without worrying about display value
+                  annotation[config.name] = $input.data('value');
+                } else {
+                  // text fields do not use data attribute for storage
+                  annotation[config.name] = $input.val();
+                }
               },
               // store element config on the editor field in case we need it later
               config: config
@@ -207,7 +195,6 @@ function annotatorInterventions(confs) {
               // For now, choices are loaded via same json data used
               // for autocomplete views
               $.getJSON(config.choicesURL, function(data) {
-                console.log(data.results);
                   $.each(data.results, function(index, item) {
                    input.append($('<option>', {value: item.text, text: item.text}))
                  });
