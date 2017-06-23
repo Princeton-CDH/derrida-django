@@ -107,9 +107,15 @@ $.ajaxSetup({
 var confs = [
     {
       name: 'text_language',
-      label: 'Annotation Language',
+      label: 'Language',
       type: 'select',
       choicesURL: autocomplete_url.language
+    },
+    {
+      name: 'text_translation',
+      label: 'Translation',
+      type: 'textarea',
+      placeholder: 'Translation of annotation text (optional)'
     },
     {
       name: 'tags',

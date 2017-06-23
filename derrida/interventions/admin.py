@@ -55,9 +55,9 @@ class InterventionAdminForm(forms.ModelForm):
             'canvas': CanvasLinkWidget(
                 url='djiffy:canvas-autocomplete',
                 attrs={'data-placeholder': 'Start typing canvas name or uri to search...'}),
-
         }
-        fields = ('canvas', 'intervention_type', 'text', 'text_language',
+        fields = ('canvas', 'intervention_type',
+            'text', 'text_language', 'text_translation',
             'quote', 'quote_language',
             'tags', 'user', 'extra_data', 'uri')
 

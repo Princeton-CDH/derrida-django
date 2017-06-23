@@ -62,9 +62,13 @@ class Intervention(BaseAnnotation):
     #: many-to-many relationship to :class:`Tag`
     tags = models.ManyToManyField(Tag, blank=True,
         help_text='Tags to describe this intervation and its characteristics')
-    #: language of the insertion text (i.e. :attr:`text`)
+    #: language of the intervention text (i.e. :attr:`text`)
     text_language = models.ForeignKey(Language, null=True, blank=True,
-        help_text='Language of the annotation text', related_name='+')
+        help_text='Language of the intervention text', related_name='+')
+    #: translation language of the intervention text (i.e. :attr:`text`)
+    text_translation = models.TextField(blank=True,
+        help_text='Translation of the intervention text (optional)')
+
     #: language of the quoted text or anchor text (i.e. :attr:`quote`)
     quote_language = models.ForeignKey(Language, null=True, blank=True,
             help_text='Language of the anchor text', related_name='+')
@@ -155,8 +159,10 @@ class Intervention(BaseAnnotation):
         except Language.DoesNotExist:
             self.quote_language = None
 
+        self.text_translation = data.get('text_translation', '')
+
         # remove fields if present, but don't error if they are not
-        for field in ['text_language', 'quote_language']:
+        for field in ['text_language', 'quote_language', 'text_translation']:
             try:
                 del data[field]
             except KeyError:
@@ -173,9 +179,12 @@ class Intervention(BaseAnnotation):
         info.update({
             'tags': [tag.name for tag in self.tags.all()],
         })
+        # languages - display language name
         if self.text_language:
             info['text_language'] = self.text_language.name
         if self.quote_language:
             info['quote_language'] = self.quote_language.name
+        if self.text_translation:
+            info['text_translation'] = self.text_translation
 
         return info

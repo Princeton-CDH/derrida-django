@@ -109,7 +109,7 @@ class TestIntervention(TestCase):
         note.handle_extra_data({'tags': []}, Mock())
         assert note.tags.count() == 0
 
-        ### languages ##
+        ### languages ###
 
         # test setting text language
         # - valid language name
@@ -145,6 +145,14 @@ class TestIntervention(TestCase):
         data = note.handle_extra_data({}, Mock())
         assert note.quote_language is None
 
+        ### text translation ###
+        translation_text = 'translated text goes here'
+        data = note.handle_extra_data({'text_translation': translation_text},
+            Mock())
+        assert 'text_translation' not in data
+        assert note.text_translation == translation_text
+        note.handle_extra_data({}, Mock())
+        assert note.text_translation == ''
 
     def test_info(self):
         note = Intervention.objects.create()
@@ -169,6 +177,15 @@ class TestIntervention(TestCase):
         info = note.info()
         assert info['text_language'] == lang1.name
         assert info['quote_language'] == lang2.name
+
+        # text translation
+        # - not set, not included
+        info = note.info()
+        assert 'text_translation' not in info
+        # - included when set
+        note.text_translation = 'some translated text goes here'
+        info = note.info()
+        assert info['text_translation'] == note.text_translation
 
     def test_iiif_image_selection(self):
         annotation = Intervention()
