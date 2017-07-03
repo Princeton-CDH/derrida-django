@@ -17,13 +17,13 @@ creators|Katie Chenoweth, Rebecca Koeser, Jean Bauer, Ben Hicks
 
 #This next group of lines allows you to color code your modules and indicate which entity is the central node of that module
 #The central node allows you to choose whether to display all the entities in the module, or just the central entity and module name to save space
-#If you don't want to indicate a central module, make sure there is "|" immediately after the hex color, otherwise the parser will throw an 
+#If you don't want to indicate a central module, make sure there is "|" immediately after the hex color, otherwise the parser will throw an
 #Array Out of Bounds exception
 #Probably best to limit your diagram to 5 or 6 modules, otherwise it can get confusing
 #module|NAME OF MODULE|HEX COLOR|CENTRAL ENTITY OF THAT MODULE
 
 module|django|#5B806B|django_content_type
-module|bibliography|#465B73|books_book
+module|bibliography|#465B73|books_instance
 module|citation|#A9A9A9|books_reference
 module|footnotes|#342140|footnotes_footnote
 module|people|#BFA778|people_person
@@ -44,25 +44,27 @@ auth_permission|django|
 auth_user|django|
 auth_user_groups|django|
 auth_user_user_permissions|django|
-books_associatedbook|bibliography|
-books_book|bibliography|
-books_booklanguage|bibliography|
-books_booksubject|bibliography|
-books_catalogue|bibliography|
-books_creator|bibliography|
 books_creatortype|bibliography|
-books_derridawork|citation|
-books_derridaworkbook|citation|
-books_itemtype|bibliography|
+books_instance|bibliography|
+books_instance_cited_in|bibliography|
+books_instance_pub_place|bibliography|
+books_instancecatalogue|bibliography|
+books_instancecreator|bibliography|
+books_instancelanguage|bibliography|
 books_journal|bibliography|
 books_language|bibliography|
+books_subject|bibliography|
 books_owninginstitution|bibliography|
 books_personbook|people|
 books_personbookrelationshiptype|people|
 books_publisher|bibliography|
+books_work|bibliography|
+books_work_authors|bibliography|
+books_worklanguage|bibliography|
+books_worksubject|bibliography|
+books_derridawork|citation|
 books_reference|citation|
 books_referencetype|citation|
-books_subject|bibliography|
 django_admin_log|django|
 django_cas_ng_proxygrantingticket|django|
 django_cas_ng_sessionticket|django|
