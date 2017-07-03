@@ -272,6 +272,7 @@ class InstanceAdminForm(forms.ModelForm):
 
 class InstanceAdmin(admin.ModelAdmin):
     form = InstanceAdminForm
+    # NOTE: uses custom change form to display associated interventions
     date_hierarchy = 'print_date'
     list_display = ('display_title', 'author_names', 'copyright_year',
         'item_type', 'catalogue_call_numbers', 'is_extant', 'is_annotated',
