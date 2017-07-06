@@ -3,6 +3,18 @@
 CHANGELOG
 =========
 
+0.7
+---
+
+Maintenance release to clean up obsolete models and code after
+the refactor in 0.6.
+
+* Fix footnote object lookup so it is restricted to models that can
+  be listed in Django admin.
+* Remove obsolete code (Book models, Zotero book import) and dependencies,
+  and squash book migrations
+
+
 0.6 Bibliographic Enhancements
 ------------------------------
 

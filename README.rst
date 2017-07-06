@@ -18,6 +18,9 @@ Django web application for the `Derrida's Margins Project
    :target: https://codecov.io/gh/Princeton-CDH/derrida-django
    :alt: Code coverage
 
+.. image:: https://requires.io/github/Princeton-CDH/derrida-django/requirements.svg?branch=master
+   :target: https://requires.io/github/Princeton-CDH/derrida-django/requirements/?branch=master
+   :alt: Requirements Status
 
 `Current release documentation <https://princeton-cdh.github.io/derrida-django/>`_.
 

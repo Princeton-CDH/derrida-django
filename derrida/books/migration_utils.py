@@ -1,6 +1,9 @@
 import re
 from unidecode import unidecode
 
+## NOTE: this code will be removed once squashed book migrations. ##
+## have been applied and old migration code is removed.           ##
+
 
 def cleaned_title(title, remove_accents=True):
     # remove parenthetical or bracketed comments at the end of a title
