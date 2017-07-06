@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Code Documentation &#8212; Derrida 0.6.0-pre documentation</title>
+    <title>Code Documentation &#8212; Derrida 0.7.0 documentation</title>
     
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.6.0-pre',
+        VERSION:     '0.7.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -203,102 +203,6 @@ references connecting them.</p>
 <div class="section" id="id2">
 <h3>Models<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
 <span class="target" id="module-derrida.books.models"></span><dl class="class">
-<dt id="derrida.books.models.AssociatedBook">
-<em class="property">class </em><code class="descclassname">derrida.books.models.</code><code class="descname">AssociatedBook</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/derrida/books/models.html#AssociatedBook"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#derrida.books.models.AssociatedBook" title="Permalink to this definition">¶</a></dt>
-<dd><p>Through model for associated book sets or sections</p>
-</dd></dl>
-
-<dl class="class">
-<dt id="derrida.books.models.Book">
-<em class="property">class </em><code class="descclassname">derrida.books.models.</code><code class="descname">Book</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/derrida/books/models.html#Book"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#derrida.books.models.Book" title="Permalink to this definition">¶</a></dt>
-<dd><p>An individual book or volume, also journal articles and book sections</p>
-<dl class="method">
-<dt id="derrida.books.models.Book.add_author">
-<code class="descname">add_author</code><span class="sig-paren">(</span><em>person</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/derrida/books/models.html#Book.add_author"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#derrida.books.models.Book.add_author" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add the specified person as an author of this book</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="derrida.books.models.Book.add_creator">
-<code class="descname">add_creator</code><span class="sig-paren">(</span><em>person</em>, <em>creator_type</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/derrida/books/models.html#Book.add_creator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#derrida.books.models.Book.add_creator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Associate the specified person as a creator of this book
-using the specified type (e.g., author, editor, etc.).
-Will throw an exception if creator type is not valid.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="derrida.books.models.Book.add_editor">
-<code class="descname">add_editor</code><span class="sig-paren">(</span><em>person</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/derrida/books/models.html#Book.add_editor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#derrida.books.models.Book.add_editor" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add the specified person as an editor of this book</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="derrida.books.models.Book.add_translator">
-<code class="descname">add_translator</code><span class="sig-paren">(</span><em>person</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/derrida/books/models.html#Book.add_translator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#derrida.books.models.Book.add_translator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add the specified person as an translator of this book</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="derrida.books.models.Book.author_names">
-<code class="descname">author_names</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/derrida/books/models.html#Book.author_names"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#derrida.books.models.Book.author_names" title="Permalink to this definition">¶</a></dt>
-<dd><p>Display author names; convenience access for display in admin</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="derrida.books.models.Book.catalogue_call_numbers">
-<code class="descname">catalogue_call_numbers</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/derrida/books/models.html#Book.catalogue_call_numbers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#derrida.books.models.Book.catalogue_call_numbers" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convenience access to catalogue call numbers, for display in admin</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="derrida.books.models.Book.get_children">
-<code class="descname">get_children</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/derrida/books/models.html#Book.get_children"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#derrida.books.models.Book.get_children" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns children of a parent book. If called on a child, returns None
-so can be used as a children property check</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="derrida.books.models.Book.get_parent">
-<code class="descname">get_parent</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/derrida/books/models.html#Book.get_parent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#derrida.books.models.Book.get_parent" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the physical parent book for a section. If called on a parent,
-returns None for a falsy value.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="derrida.books.models.Book.save">
-<code class="descname">save</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/derrida/books/models.html#Book.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#derrida.books.models.Book.save" title="Permalink to this definition">¶</a></dt>
-<dd><p>Override save for this model to set date-month based on flags</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="derrida.books.models.BookLanguage">
-<em class="property">class </em><code class="descclassname">derrida.books.models.</code><code class="descname">BookLanguage</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/derrida/books/models.html#BookLanguage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#derrida.books.models.BookLanguage" title="Permalink to this definition">¶</a></dt>
-<dd><p>Through-model for book-language relationship, to allow designating
-one language as primary or adding notes.</p>
-</dd></dl>
-
-<dl class="class">
-<dt id="derrida.books.models.BookSubject">
-<em class="property">class </em><code class="descclassname">derrida.books.models.</code><code class="descname">BookSubject</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/derrida/books/models.html#BookSubject"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#derrida.books.models.BookSubject" title="Permalink to this definition">¶</a></dt>
-<dd><p>Through-model for book-subject relationship, to allow designating
-a particular subject as primary or adding notes.</p>
-</dd></dl>
-
-<dl class="class">
-<dt id="derrida.books.models.Catalogue">
-<em class="property">class </em><code class="descclassname">derrida.books.models.</code><code class="descname">Catalogue</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/derrida/books/models.html#Catalogue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#derrida.books.models.Catalogue" title="Permalink to this definition">¶</a></dt>
-<dd><p>Location of a book in the real world, associating it with an
-owning instutition.</p>
-</dd></dl>
-
-<dl class="class">
-<dt id="derrida.books.models.Creator">
-<em class="property">class </em><code class="descclassname">derrida.books.models.</code><code class="descname">Creator</code><span class="sig-paren">(</span><em>id</em>, <em>notes</em>, <em>creator_type</em>, <em>person</em>, <em>book</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/derrida/books/models.html#Creator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#derrida.books.models.Creator" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="class">
 <dt id="derrida.books.models.CreatorType">
 <em class="property">class </em><code class="descclassname">derrida.books.models.</code><code class="descname">CreatorType</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/derrida/books/models.html#CreatorType"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#derrida.books.models.CreatorType" title="Permalink to this definition">¶</a></dt>
 <dd><p>Type of creator role a person can have to a book - author,
@@ -328,13 +232,6 @@ part of Derrida&#8217;s library</p>
 <dd><p>short title</p>
 </dd></dl>
 
-</dd></dl>
-
-<dl class="class">
-<dt id="derrida.books.models.DerridaWorkBook">
-<em class="property">class </em><code class="descclassname">derrida.books.models.</code><code class="descname">DerridaWorkBook</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/derrida/books/models.html#DerridaWorkBook"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#derrida.books.models.DerridaWorkBook" title="Permalink to this definition">¶</a></dt>
-<dd><p>Allows Book (now &lt;Work&gt;) model to be associated with the Platonic
-DerridaWork model to indicate which physical books he is citing</p>
 </dd></dl>
 
 <dl class="class">
@@ -549,12 +446,6 @@ one language as primary or adding notes.</p>
 <dd><p><a class="reference internal" href="#derrida.books.models.Language" title="derrida.books.models.Language"><code class="xref py py-class docutils literal"><span class="pre">Language</span></code></a></p>
 </dd></dl>
 
-</dd></dl>
-
-<dl class="class">
-<dt id="derrida.books.models.ItemType">
-<em class="property">class </em><code class="descclassname">derrida.books.models.</code><code class="descname">ItemType</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/derrida/books/models.html#ItemType"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#derrida.books.models.ItemType" title="Permalink to this definition">¶</a></dt>
-<dd><p>Item types for types of book</p>
 </dd></dl>
 
 <dl class="class">
@@ -816,31 +707,6 @@ django-autocomplete-light.  Restricted to staff only.</p>
 </dd></dl>
 
 </div>
-<div class="section" id="module-derrida.books.management.commands.import_zotero">
-<span id="import-zotero"></span><h3>import_zotero<a class="headerlink" href="#module-derrida.books.management.commands.import_zotero" title="Permalink to this headline">¶</a></h3>
-<p>Import command for derrida team&#8217;s spreadsheet. It can be invoked using:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">manage</span><span class="o">.</span><span class="n">py</span> <span class="n">import_zotero</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">csv</span>
-</pre></div>
-</div>
-<p>The expect behavior is designed for a once-off import of entries exported
-from a Zotero library and will produce
-duplicate book entries (but not duplicates of any entries created
-as part of book creation).</p>
-<p>All persons created attempt to have a VIAF uri associated and all places
-have a Geonames ID assigned if possible.</p>
-<p>The tag schema used by the team was:</p>
-<ol class="arabic simple">
-<li>Derrida’s work title: (always dg)</li>
-<li>Page number in <code class="docutils literal"><span class="pre">DG</span></code>: arabic numeral</li>
-<li>position of reference on page in sequential order from top to bottom: lower case letter (<code class="docutils literal"><span class="pre">a,</span> <span class="pre">b,</span> <span class="pre">c,</span> <span class="pre">d</span></code> etc.)</li>
-<li>Type of reference in <code class="docutils literal"><span class="pre">DG</span></code>: <code class="docutils literal"><span class="pre">C,</span> <span class="pre">Q,</span> <span class="pre">F</span> <span class="pre">or</span> <span class="pre">E</span></code> (citation, quotation, footnote, or epigraph.)</li>
-<li>page number in cited work: arabic numeral (pending clarification of what to do with roman numerals)</li>
-<li>whether Derrida cites the page number alone or appended with sq. : if alone, this field has <code class="docutils literal"><span class="pre">p</span></code>, if sq., this field has <code class="docutils literal"><span class="pre">s</span></code></li>
-<li>whether our copy of Derrida’s cited work exists in the library and if so, whether it has annotations: <code class="docutils literal"><span class="pre">Y</span> <span class="pre">/</span> <span class="pre">N</span> <span class="pre">/</span> <span class="pre">U</span></code> (yes, we have it and it has annotations; we have it but the page cited doesn’t have annotations; we don’t have the work in Derrida’s library)</li>
-</ol>
-<p>e.g. <code class="docutils literal"><span class="pre">dg11aQ256pY</span></code> could be a reference contained in the first position on p. 11 of DG and containing a quotation from p. 256 of the cited work that exists in Derrida’s library and contains annotations on p. 256.
-<code class="docutils literal"><span class="pre">dg11aQ_is</span></code> a provisional tag that could be created based only on the information contained within DG.</p>
-</div>
 </div>
 <div class="section" id="module-derrida.people">
 <span id="people"></span><h2>People<a class="headerlink" href="#module-derrida.people" title="Permalink to this headline">¶</a></h2>
@@ -1079,7 +945,6 @@ for or against information in the system.</p>
 <li><a class="reference internal" href="#module-derrida.books">Books</a><ul>
 <li><a class="reference internal" href="#id2">Models</a></li>
 <li><a class="reference internal" href="#id3">Views</a></li>
-<li><a class="reference internal" href="#module-derrida.books.management.commands.import_zotero">import_zotero</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#module-derrida.people">People</a><ul>
