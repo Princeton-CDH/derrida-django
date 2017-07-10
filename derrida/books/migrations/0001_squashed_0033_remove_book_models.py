@@ -33,48 +33,10 @@ def load_initial_derridawork(apps, schema_editor):
 
 class Migration(migrations.Migration):
 
-    replaces = [
-        ('books', '0001_initial'),
-        ('books', '0002_add_citationality_models'),
-        ('books', '0003_citationality_postmeeting_revisions'),
-        ('books', '0004_make_uri_optional_creator_type'),
-        ('books', '0005_optional_uri_fields_language_subject'),
-        ('books', '0006_initial_languages'),
-        ('books', '0007_fix_pluralizatition_citationality'),
-        ('books', '0008_add_str_referencetype_derridawork'),
-        ('books', '0009_ref_type_use_common'),
-        ('books', '0010_initial_reftypes'),
-        ('books', '0011_add_foreign_key_ref_reftype'),
-        ('books', '0012_template_derrida_work'),
-        ('books', '0013_add_journal_type_item_type_dates'),
-        ('books', '0014_add_flags_pub_date'),
-        ('books', '0015_add_uri_book'),
-        ('books', '0016_allow_neg_years_bc'),
-        ('books', '0017_additional_derrida_flags'),
-        ('books', '0018_add_page_range'),
-        ('books', '0019_rename_journal_id_journal'),
-        ('books', '0020_add_initial_item_types'),
-        ('books', '0021_add_initial_item_types'),
-        ('books', '0022_help_text_pub_date'),
-        ('books', '0023_raise_char_limit_book_page'),
-        ('books', '0024_expand_larger_title_space_improve_admin_clarity'),
-        ('books', '0025_help_text_catatalogue'),
-        ('books', '0026_book_many_to_many_self'),
-        ('books', '0027_remove_symmetrical_flag_associated_books'),
-        ('books', '0028_add_derrida_workbook'),
-        ('books', '0029_add_anchor_text_reference'),
-        ('books', '0030_split_book_into_work_instance'),
-        ('books', '0031_migrate_books_to_works_instances'),
-        ('books', '0032_cited_in_optional_subject_default_not_primary'),
-        ('books', '0033_remove_book_models')
-    ]
-
     initial = True
 
     dependencies = [
         ('people', '0002_allow_neg_years_bc'),
-
-        ('people', '0001_initial'),
         ('places', '0001_initial'),
     ]
 
