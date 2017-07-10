@@ -2,7 +2,7 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
-from djiffy.models import Manifest, Canvas
+from djiffy.models import Manifest
 import json
 
 from derrida.books.models import Publisher, Instance
