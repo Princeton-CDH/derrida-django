@@ -27,11 +27,9 @@
                 {% for intervention in canvas.intervention_set.all %}
                   <div class="grp-tr">
                     <div class="grp-td">
-                        {% if intervention.canvas %}
                         {# TODO: add anchor link logic to link directly to intervention #}
-                            <a href="{{ intervention.canvas.get_absolute_url }}"
+                        <a href="{{ intervention.canvas.get_absolute_url }}"
                             title="View on canvas">{{ intervention.admin_thumbnail|safe }}</a>
-                        {% endif %}
                     </div>
                     <div class="grp-td">{{ canvas.label }}</div>
                     <div class="grp-td">{{ intervention.get_intervention_type_display }}</div>

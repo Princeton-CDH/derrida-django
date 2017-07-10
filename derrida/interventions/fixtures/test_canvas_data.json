@@ -1,0 +1,184 @@
+[
+{
+  "model": "djiffy.manifest",
+  "pk": 1,
+  "fields": {
+    "label": "win003",
+    "short_id": "pjh346468s",
+    "uri": "https://plum.princeton.edu/concern/scanned_resources/pjh346468s/manifest",
+    "metadata": "{\"Collection\":[\"Winthrop\"]}",
+    "created": "2017-06-15",
+    "last_modified": "2017-06-15",
+    "extra_data": "{\"edm_rights\":[\"http://rightsstatements.org/vocab/NKC/1.0/\"],\"memberOf\":[{\"title\":\"Winthrop\",\"@id\":\"https://plum.princeton.edu/collections/p4j03fz143\"}],\"identifier\":[\"ark:/88435/wd376019h\"],\"@context\":\"https://bibdata.princeton.edu/context.json\",\"title\":\"win003\",\"@id\":\"https://plum.princeton.edu/concern/scanned_resources/pjh346468s\"}"
+  }
+},
+{
+  "model": "djiffy.canvas",
+  "pk": 1,
+  "fields": {
+    "label": "00000001.tif",
+    "short_id": "pgm80m810j",
+    "uri": "https://plum.princeton.edu/concern/scanned_resources/pjh346468s/manifest/canvas/pgm80m810j",
+    "iiif_image_id": "https://libimages1.princeton.edu/loris/plum_prod/pg%2Fm8%2F0m%2F81%2F0j-intermediate_file.jp2",
+    "manifest": 1,
+    "thumbnail": true,
+    "order": 0
+  }
+},
+{
+  "model": "djiffy.canvas",
+  "pk": 2,
+  "fields": {
+    "label": "00000002.tif",
+    "short_id": "p2514r0058",
+    "uri": "https://plum.princeton.edu/concern/scanned_resources/pjh346468s/manifest/canvas/p2514r0058",
+    "iiif_image_id": "https://libimages1.princeton.edu/loris/plum_prod/p2%2F51%2F4r%2F00%2F58-intermediate_file.jp2",
+    "manifest": 1,
+    "thumbnail": false,
+    "order": 1
+  }
+},
+{
+  "model": "djiffy.canvas",
+  "pk": 3,
+  "fields": {
+    "label": "00000003.tif",
+    "short_id": "pxk81mx267",
+    "uri": "https://plum.princeton.edu/concern/scanned_resources/pjh346468s/manifest/canvas/pxk81mx267",
+    "iiif_image_id": "https://libimages1.princeton.edu/loris/plum_prod/px%2Fk8%2F1m%2Fx2%2F67-intermediate_file.jp2",
+    "manifest": 1,
+    "thumbnail": false,
+    "order": 2
+  }
+},
+{
+  "model": "djiffy.canvas",
+  "pk": 4,
+  "fields": {
+    "label": "00000004.tif",
+    "short_id": "pfj238d902",
+    "uri": "https://plum.princeton.edu/concern/scanned_resources/pjh346468s/manifest/canvas/pfj238d902",
+    "iiif_image_id": "https://libimages1.princeton.edu/loris/plum_prod/pf%2Fj2%2F38%2Fd9%2F02-intermediate_file.jp2",
+    "manifest": 1,
+    "thumbnail": false,
+    "order": 3
+  }
+},
+{
+  "model": "djiffy.canvas",
+  "pk": 5,
+  "fields": {
+    "label": "00000005.tif",
+    "short_id": "p2r36xb28k",
+    "uri": "https://plum.princeton.edu/concern/scanned_resources/pjh346468s/manifest/canvas/p2r36xb28k",
+    "iiif_image_id": "https://libimages1.princeton.edu/loris/plum_prod/p2%2Fr3%2F6x%2Fb2%2F8k-intermediate_file.jp2",
+    "manifest": 1,
+    "thumbnail": false,
+    "order": 4
+  }
+},
+{
+  "model": "djiffy.canvas",
+  "pk": 6,
+  "fields": {
+    "label": "00000006.tif",
+    "short_id": "ppv63jb36d",
+    "uri": "https://plum.princeton.edu/concern/scanned_resources/pjh346468s/manifest/canvas/ppv63jb36d",
+    "iiif_image_id": "https://libimages1.princeton.edu/loris/plum_prod/pp%2Fv6%2F3j%2Fb3%2F6d-intermediate_file.jp2",
+    "manifest": 1,
+    "thumbnail": false,
+    "order": 5
+  }
+},
+{
+  "model": "djiffy.canvas",
+  "pk": 7,
+  "fields": {
+    "label": "00000007.tif",
+    "short_id": "ptb09mj26x",
+    "uri": "https://plum.princeton.edu/concern/scanned_resources/pjh346468s/manifest/canvas/ptb09mj26x",
+    "iiif_image_id": "https://libimages1.princeton.edu/loris/plum_prod/pt%2Fb0%2F9m%2Fj2%2F6x-intermediate_file.jp2",
+    "manifest": 1,
+    "thumbnail": false,
+    "order": 6
+  }
+},
+{
+  "model": "djiffy.canvas",
+  "pk": 8,
+  "fields": {
+    "label": "00000008.tif",
+    "short_id": "pcf95mp23x",
+    "uri": "https://plum.princeton.edu/concern/scanned_resources/pjh346468s/manifest/canvas/pcf95mp23x",
+    "iiif_image_id": "https://libimages1.princeton.edu/loris/plum_prod/pc%2Ff9%2F5m%2Fp2%2F3x-intermediate_file.jp2",
+    "manifest": 1,
+    "thumbnail": false,
+    "order": 7
+  }
+},
+{
+  "model": "djiffy.canvas",
+  "pk": 9,
+  "fields": {
+    "label": "00000009.tif",
+    "short_id": "pj3862m14h",
+    "uri": "https://plum.princeton.edu/concern/scanned_resources/pjh346468s/manifest/canvas/pj3862m14h",
+    "iiif_image_id": "https://libimages1.princeton.edu/loris/plum_prod/pj%2F38%2F62%2Fm1%2F4h-intermediate_file.jp2",
+    "manifest": 1,
+    "thumbnail": false,
+    "order": 8
+  }
+},
+{
+  "model": "djiffy.canvas",
+  "pk": 10,
+  "fields": {
+    "label": "00000010.tif",
+    "short_id": "p9593x610w",
+    "uri": "https://plum.princeton.edu/concern/scanned_resources/pjh346468s/manifest/canvas/p9593x610w",
+    "iiif_image_id": "https://libimages1.princeton.edu/loris/plum_prod/p9%2F59%2F3x%2F61%2F0w-intermediate_file.jp2",
+    "manifest": 1,
+    "thumbnail": false,
+    "order": 9
+  }
+},
+{
+  "model": "djiffy.canvas",
+  "pk": 11,
+  "fields": {
+    "label": "00000011.tif",
+    "short_id": "ps7528s31c",
+    "uri": "https://plum.princeton.edu/concern/scanned_resources/pjh346468s/manifest/canvas/ps7528s31c",
+    "iiif_image_id": "https://libimages1.princeton.edu/loris/plum_prod/ps%2F75%2F28%2Fs3%2F1c-intermediate_file.jp2",
+    "manifest": 1,
+    "thumbnail": false,
+    "order": 10
+  }
+},
+{
+  "model": "djiffy.canvas",
+  "pk": 12,
+  "fields": {
+    "label": "00000012.tif",
+    "short_id": "pgx41px33k",
+    "uri": "https://plum.princeton.edu/concern/scanned_resources/pjh346468s/manifest/canvas/pgx41px33k",
+    "iiif_image_id": "https://libimages1.princeton.edu/loris/plum_prod/pg%2Fx4%2F1p%2Fx3%2F3k-intermediate_file.jp2",
+    "manifest": 1,
+    "thumbnail": false,
+    "order": 11
+  }
+},
+{
+  "model": "djiffy.canvas",
+  "pk": 13,
+  "fields": {
+    "label": "00000013.tif",
+    "short_id": "pj6733h38f",
+    "uri": "https://plum.princeton.edu/concern/scanned_resources/pjh346468s/manifest/canvas/pj6733h38f",
+    "iiif_image_id": "https://libimages1.princeton.edu/loris/plum_prod/pj%2F67%2F33%2Fh3%2F8f-intermediate_file.jp2",
+    "manifest": 1,
+    "thumbnail": false,
+    "order": 12
+  }
+}
+]
