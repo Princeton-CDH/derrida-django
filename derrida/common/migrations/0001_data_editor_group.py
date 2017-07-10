@@ -8,15 +8,23 @@ from django.db import migrations
 
 
 def load_fixture(apps, schema_editor):
+    # ensure permissions have been created before loading fixture
+    for app_config in apps.get_app_configs():
+        app_config.models_module = True
+        create_permissions(app_config, apps=apps, verbosity=0)
+        app_config.models_module = None
+
     call_command('loaddata', 'data_editor_group', app_label='common', verbose=0)
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
+        ('books', '0001_squashed_0033_remove_book_models'),
+        ('people', '0001_initial'),
+        ('places', '0001_initial'),
     ]
 
     operations = [
         migrations.RunPython(load_fixture, reverse_code=migrations.RunPython.noop),
-
     ]
