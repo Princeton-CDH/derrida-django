@@ -10,3 +10,8 @@
 body {
 	background: $base-background-color;
 }
+
+.container.djifbooks {
+	min-height: 60vh;
+	@extend .grid-container;
+}
