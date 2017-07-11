@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block head_extras %}
-    <link rel="stylesheet" type="text/css" href="{% static "css/local.css" %}" />
+    {% include 'snippets/local_styles.html' %}
     <link rel="stylesheet" type="text/css" href="{% static "css/test-banner.css" %}" />
     {# Include analytics if INCLUDE_ANALYTICS is set to True #}
     {# {% include 'snippets/analytics.html' %} #}
