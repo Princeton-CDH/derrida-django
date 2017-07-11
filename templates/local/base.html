@@ -69,7 +69,9 @@ by default; use page_rdf_type to override with a webpage subclass.
     {% endif %}
   {% endblock %}
 
-  {% block content %}{% endblock %}
+  <div class="grid-container">
+    {% block content %}{% endblock %}
+  </div>
 
   {% include 'components/footer.html' %}
   </body>
