@@ -22,8 +22,8 @@ by default; use page_rdf_type to override with a webpage subclass.
   </head>
   <body class="{% block body_class %}{% endblock %}"{% block body_attrs %}{% endblock %}>
 
-    <header class="mdl-layout__header mdl-layout__header--with-logo {{ headerClass }}">
-      <div class="mdl-layout__header-row mdl-layout__header-row--aligned-left">
+    <header class="mdl-layout__header mdl-layout__header--with-logo mdl-layout__header--transparent {{ headerClass }}">
+      <div class="mdl-layout__header-row">
         <!-- Title -->
         <a class="mdl-layout-title" href="{% url 'site-index' %}">{% block nav-title %}Home{% endblock %}</a>
         <!-- Add spacer, to align navigation to the right -->
@@ -40,6 +40,18 @@ by default; use page_rdf_type to override with a webpage subclass.
           {% endblock %}
           {% block navbar-extra %}{% endblock %}
         </nav>
+        <!-- Search Form -->
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable
+                    mdl-textfield--floating-label mdl-textfield--align-right">
+          <label class="mdl-button mdl-js-button mdl-button--icon"
+                 for="waterfall-exp">
+            <i class="material-icons">search</i>
+          </label>
+          <div class="mdl-textfield__expandable-holder">
+            <input class="mdl-textfield__input" type="text" name="sample"
+                   id="waterfall-exp">
+          </div>
+        </div>
       </div>
     </header>
 
