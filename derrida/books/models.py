@@ -427,7 +427,7 @@ class Reference(models.Model):
     anchor_text = models.TextField(blank=True)
     #: ManyToManyField to :class:`djiffy.models.Canvas`
     canvases = models.ManyToManyField(Canvas, blank=True,
-        help_text="Scanned images from Derrida's Library")
+        help_text="Scanned images from Derrida's Library | ")
 
     class Meta:
         ordering = ['derridawork', 'derridawork_page', 'derridawork_pageloc']

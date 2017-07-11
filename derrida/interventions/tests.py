@@ -8,7 +8,7 @@ from django.test import TestCase
 from django.urls import reverse
 from djiffy.models import Canvas, Manifest
 
-from derrida.books.models import Language
+from derrida.books.models import Instance, Language
 from .models import Tag, INTERVENTION_TYPES, Intervention
 
 
@@ -363,4 +363,55 @@ class TestInterventionViews(TestCase):
             msg_prefix='annotator init includes language autocomplete url')
 
 
+class TestExtendedCanvasAutocomplete(TestCase):
 
+    fixtures = ['sample_work_data.json']
+
+    def setUp(self):
+        self.manif1 = Manifest.objects.create(short_id='bk123', label='Foobar')
+        self.pages = Canvas.objects.bulk_create([
+            Canvas(label='P1', short_id='pg1', order=0, manifest=self.manif1),
+            Canvas(label='P2', short_id='pg2', order=1, manifest=self.manif1),
+            Canvas(label='P3', short_id='pg3', order=2, manifest=self.manif1)
+        ])
+        self.manif2 = Manifest.objects.create(short_id='bk456', label='Book 2')
+        self.instance = Instance.objects.get(work__short_title__contains="La vie")
+
+        # create an admin user to test autocomplete views
+        self.password = 'pass!@#$'
+        self.admin = get_user_model().objects.create_superuser('testadmin',
+            'test@example.com', self.password)
+
+    def test_canvas_autocomplete(self):
+        canvas_autocomplete_url = reverse('djiffy:canvas-autocomplete')
+        # normal functionality NOT broken
+        self.client.login(username=self.admin.username, password=self.password)
+        response = self.client.get(canvas_autocomplete_url, {'q': 'p1'})
+        assert response.status_code == 200
+        data = json.loads(response.content.decode('utf-8'))
+        assert 'results' in data
+        assert data['results'][0]['text'] == str(self.pages[0])
+        # add a book instance pk to the result
+        # avoid params so as to simulate the get string that
+        # dal expects
+        response = self.client.get(
+            canvas_autocomplete_url,
+            {'q': 'p1', 'forward': ('{"instance": "%s"}' % self.instance.pk)}
+        )
+        assert response.status_code == 200
+
+        data = json.loads(response.content.decode('utf-8'))
+        # key exists
+        assert 'results' in data
+        # but it is empty because no instance is associated
+        assert not data['results']
+        # now try with an association set
+        self.instance.digital_edition = self.manif1
+        self.instance.save()
+        response = self.client.get(
+            canvas_autocomplete_url,
+            {'q': 'p1', 'forward': '{"instance": "%s"}' % self.instance.pk}
+        )
+        data = json.loads(response.content.decode('utf-8'))
+        assert 'results' in data
+        assert data['results'][0]['text'] == str(self.pages[0])

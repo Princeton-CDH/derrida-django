@@ -1,4 +1,4 @@
-from dal import autocomplete
+from dal import autocomplete, forward
 from django import forms
 from django.contrib import admin
 from djiffy.admin import ManifestSelectWidget
@@ -87,6 +87,7 @@ class ReferenceModelForm(forms.ModelForm):
             'derridawork_page',
             'derridawork_pageloc',
             'book_page',
+            'instance',
             'canvases',
             'reference_type',
             'anchor_text'
@@ -97,9 +98,11 @@ class ReferenceModelForm(forms.ModelForm):
             'canvases': autocomplete.ModelSelect2Multiple(
                 url='djiffy:canvas-autocomplete',
                 attrs={
-                    'data-placeholder': 'Start typing a page label '
-                                        'to search...'
+                    'data-placeholder': 'Type a page or manifest label to '
+                                        'search',
+                    'data-width': '900px'
                 },
+                forward=[forward.Field('instance')],
             ),
         }
 

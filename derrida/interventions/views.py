@@ -3,6 +3,7 @@ import json
 from dal import autocomplete
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.db.models import Q
 from djiffy import views as djiffy_views
 
 from derrida.books.models import Language
@@ -65,3 +66,12 @@ class CanvasDetail(LoginPermissionRequired, djiffy_views.CanvasDetail):
 
 class CanvasAutocomplete(LoginPermissionRequired, djiffy_views.CanvasAutocomplete):
     permission_required = 'djiffy.view_canvas'
+
+    def get_queryset(self):
+        query = super(CanvasAutocomplete, self).get_queryset()
+        # Add an extra filter based on the forwarded value of 'instance',
+        # if provided
+        instance = self.forwarded.get('instance', None)
+        if instance:
+            query = query.filter(manifest__instance__pk=instance)
+        return query
