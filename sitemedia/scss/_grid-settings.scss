@@ -1,17 +1,22 @@
 @import "neat/neat";
 
+// Override default grid settings
+$neat-grid: (
+  columns: 4,
+  gutter: 2.9411764705882%
+);
+
 // Define grid for medium and large viewport
 $large-medium-viewport-grid: (
   columns: 12,
   gutter: 2.9411764705882%,
+  media: 735px
 );
 
-// Define grid for the small viewports
-$neat-grid: (
-  columns: 4,
-  gutter: 2.9411764705882%,
-  media: 735px,
-);
+html, body {
+  max-width: 100%;
+  max-width: 100vw;
+}
 
 // Set all content to no larger than max specified margins
 body {
@@ -23,6 +28,4 @@ body {
   @include grid-container;
   max-width: 1020px;
   min-width: 320px;
-  height: 1000px;
   margin: auto;
-}
