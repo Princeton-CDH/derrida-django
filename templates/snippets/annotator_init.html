@@ -91,7 +91,7 @@ $.ajaxSetup({
 
 var language_choices = {{ languages_js|safe }};
 
-var confs = [
+var fields = [
     {
       name: 'text_language',
       label: 'Language',
@@ -149,7 +149,7 @@ var confs = [
     }*/  {% endcomment %}
   ];
 
-  var interventions = annotatorInterventions(confs);
+  var interventions = annotatorInterventions(fields);
 
   var marginalia_opts = {
     show_author: true,
@@ -172,6 +172,17 @@ var confs = [
 
   // configuring marginalia here so it can be referenced in annotator search
   var _marginalia = annotatorMarginalia(marginalia_opts);
+
+/* custom authz policy based on current django user permissions */
+{# FIXME: should this check annotator_store permissions since that is what the api checks? #}
+var user_permissions = {
+  update: {{ perms.interventions.change_intervention|lower }},
+  delete: {{ perms.interventions.delete_intervention|lower }},
+}
+annotator.authz.AclAuthzPolicy.prototype.permits = function (action, context, identity) {
+  return user_permissions[action];
+}
+
   var app = new annotator.App()
       .include(contentUri)
       .include(annotator.ui.main, {
