@@ -173,7 +173,11 @@ var fields = [
   // configuring marginalia here so it can be referenced in annotator search
   var _marginalia = annotatorMarginalia(marginalia_opts);
 
-/* custom authz policy based on current django user permissions */
+/* custom authz policy based on current django user permissions
+  NOTE: django permissions are enforced by the api, but this allows
+  marginalia to only display edit and delete options based on what
+  the user should be able to do.
+*/
 {# FIXME: should this check annotator_store permissions since that is what the api checks? #}
 var user_permissions = {
   update: {{ perms.interventions.change_intervention|lower }},
