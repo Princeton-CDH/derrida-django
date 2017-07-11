@@ -87,12 +87,20 @@ class ReferenceModelForm(forms.ModelForm):
             'derridawork_page',
             'derridawork_pageloc',
             'book_page',
+            'canvases',
             'reference_type',
             'anchor_text'
         )
         widgets = {
             'anchor_text': MeltdownTextAreaWidget(attrs={'class':
-                                                         'meltdown-widget'}),
+                                                  'meltdown-widget'}),
+            'canvases': autocomplete.ModelSelect2Multiple(
+                url='djiffy:canvas-autocomplete',
+                attrs={
+                    'data-placeholder': 'Start typing a page label '
+                                        'to search...'
+                },
+            ),
         }
 
 
@@ -110,6 +118,7 @@ class ReferenceInline(admin.StackedInline):
                     'derridawork_page',
                     'derridawork_pageloc',
                     'book_page',
+                    'canvases',
                     'reference_type',
                 )
         }),
@@ -138,6 +147,7 @@ class ReferenceAdmin(admin.ModelAdmin):
                     'derridawork_page',
                     'derridawork_pageloc',
                     'instance',
+                    'canvases',
                     'book_page',
                     'reference_type',
                 )
