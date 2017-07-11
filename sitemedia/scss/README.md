@@ -1,0 +1,38 @@
+# Derrida Sass Assets
+
+## Requirements
+These are the requirements needed to compile the styles used by this project.
+* Sass
+* Bourbon
+* Neat
+
+### File Structure
+This project depends on Bourbon and Neat libraries to be installed and located in the `sitemedia/scss` folder.
+* Bourbon directory: `scss/bourbon`
+* Neat directory: `scss/neat`
+
+## Installation
+
+### Sass compiler
+Sass is required to compile sass files into web-readable css. There are many ways of compiling sass files; this project uses the sass gem package.
+
+#### Install via gem
+Run the command `gem install sass`
+
+### Bourbon and Neat
+The easiest way to install Bourbon and Neat is through `gem`. However, you can use any installation method listed in the the Bourbon and Neat documentation as long as the files are located in the location specified in the previous section.
+
+#### Install via gem (Recommended):
+1. Navigate to the `scss` folder in the project directory
+2. Install the bourbon and neat gems via command line `gem install bourbon && gem install neat`
+3. Install bourbon and neat locally using `bourbon install` and `neat install`
+4. The `bourbon` and `neat` folders should now be in the `scss` directory
+
+## Building CSS files
+To build the style assets, run the following command from the `scss` directory:
+`sass --scss site.scss ../css/local.css`
+
+To generate a compressed version of the styles, use the command:
+`sass --scss -t compressed site.scss ../css/local.min.css`
+
+This will compile the scss file `style.scss` into css, minify the css, and move it to the css folder. Changes made to the scss file will not be reflected until that command is executed.
