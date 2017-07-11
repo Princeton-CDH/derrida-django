@@ -11,6 +11,9 @@ body {
 	background: $base-background-color;
 }
 
+.mdl-layout__header {
+	margin-bottom: 0.7em;
+}
 
 .grid-container {
 	& > .container {
