@@ -191,14 +191,23 @@ function annotatorInterventions(confs) {
             input.before($('<label/>').html(config.label));
 
             // load select choices if configured
-            if (config.type == 'select' && config.choicesURL) {
-              // For now, choices are loaded via same json data used
-              // for autocomplete views
-              $.getJSON(config.choicesURL, function(data) {
-                  $.each(data.results, function(index, item) {
-                   input.append($('<option>', {value: item.text, text: item.text}))
+            if (config.type == 'select') {
+              // check first for a list of choices passed in
+              if (config.choices) {
+                $.each(config.choices, function(index, item) {
+                   input.append($('<option>', {value: item, text: item}))
                  });
-              });
+              // otherwise, load choices via url
+              } else if (config.choicesURL) {
+                // For now, choices are loaded via same json data used
+                // for autocomplete views
+                $.getJSON(config.choicesURL, function(data) {
+                    $.each(data.results, function(index, item) {
+                     input.append($('<option>', {value: item.text, text: item.text}))
+                   });
+                });
+              }
+
               // update stored data value when the selected value changes
               input.on('change', function() {
                  input.data('value', this.value);

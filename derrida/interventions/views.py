@@ -1,8 +1,11 @@
+import json
+
 from dal import autocomplete
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from djiffy import views as djiffy_views
 
+from derrida.books.models import Language
 from .models import Tag
 
 
@@ -51,6 +54,13 @@ class ManifestDetail(LoginPermissionRequired, djiffy_views.ManifestDetail):
 
 class CanvasDetail(LoginPermissionRequired, djiffy_views.CanvasDetail):
     permission_required = 'djiffy.view_canvas'
+
+    def get_context_data(self, **kwargs):
+        context = super(CanvasDetail, self).get_context_data(**kwargs)
+        # pass in list of languages for use in annotator edit form
+        languages = Language.objects.all().values_list('name', flat=True)
+        context['languages_js'] = json.dumps(list(languages))
+        return context
 
 
 class CanvasAutocomplete(LoginPermissionRequired, djiffy_views.CanvasAutocomplete):

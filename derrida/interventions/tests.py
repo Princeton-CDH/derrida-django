@@ -341,6 +341,10 @@ class TestInterventionViews(TestCase):
         # login as an admin user
         self.client.login(username=self.admin.username, password=self.password)
         response = self.client.get(canvas_url)
+
+        # check that languages are passed in to template via context
+        assert 'languages_js' in response.context
+
         self.assertContains(response, 'css/derrida-annotator.css',
             msg_prefix='canvas detail page includes local annotator styles')
         self.assertContains(response, 'interventions-plugin.js',

@@ -103,13 +103,16 @@ $.ajaxSetup({
     tag: "{% url 'interventions:tag-autocomplete' mode='annotation' %}"
   };
 
+var language_choices = {{ languages_js|safe }};
 
 var confs = [
     {
       name: 'text_language',
       label: 'Language',
       type: 'select',
-      choicesURL: autocomplete_url.language
+      choices: language_choices
+      // NOTE: could also use choicesURL to load choices, e.g.
+      // choicesURL: autocomplete_url.language
     },
     {
       name: 'text_translation',
@@ -127,7 +130,7 @@ var confs = [
       name: 'quote_language',
       label: 'Anchor Text Language',
       type: 'select',
-      choicesURL: autocomplete_url.language
+      choices: language_choices
     }
   {% comment %}
 /*    { name: 'translation',
