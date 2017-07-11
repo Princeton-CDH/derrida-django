@@ -1,7 +1,9 @@
 import json
 from unittest.mock import Mock, patch
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Permission
 from django.test import TestCase
 from django.urls import reverse
 from djiffy.models import Canvas, Manifest
@@ -242,6 +244,11 @@ class TestInterventionViews(TestCase):
         self.admin = get_user_model().objects.create_superuser('testadmin',
             'test@example.com', self.password)
 
+        # create staff user to test logged in but no perms
+        self.staffer = get_user_model().objects.create_user('tester',
+            'tester@example.com', self.password, is_staff=True)
+
+
     def test_tag_autocomplete(self):
         tag_autocomplete_url = reverse('interventions:tag-autocomplete')
         result = self.client.get(tag_autocomplete_url,
@@ -275,7 +282,46 @@ class TestInterventionViews(TestCase):
         data = json.loads(result.content.decode('utf-8'))
         assert not data['results']
 
+    def test_iiif_permissions(self):
+        # iiif views of digitized content are restricted to users
+        # with appropriate permissions due to copyright concerns
+
+        manifest = Manifest.objects.create(short_id='foo')
+        canvas = Canvas.objects.create(short_id='bar', manifest=manifest,
+            order=0)
+
+        iiif_urls = [
+            reverse('djiffy:list'),
+            reverse('djiffy:manifest', kwargs={'id': manifest.short_id}),
+            reverse('djiffy:canvas',
+                kwargs={'manifest_id': manifest.short_id,
+                        'id': canvas.short_id}),
+            reverse('djiffy:canvas-autocomplete'),
+        ]
+
+        # without logging in, should get redirect to login page
+        for url in iiif_urls:
+            response = self.client.get(url)
+            assert response.status_code == 302
+            assert response.url == '%s?next=%s' % (settings.LOGIN_URL, url)
+
+        # logged in but insufficient privileges - 403 permission denied
+        self.client.login(username=self.staffer.username, password=self.password)
+        for url in iiif_urls:
+            assert self.client.get(url).status_code == 403
+
+        # logged in as admin - should be able to access the content
+        self.client.login(username=self.admin.username, password=self.password)
+        for url in iiif_urls:
+            assert self.client.get(url).status_code == 200
+
     def test_canvas_detail(self):
+        # login as an staff user without permission to view canvas
+        # but not add annotations
+        self.staffer.user_permissions.add(Permission.objects.get(codename='view_canvas'))
+
+        self.client.login(username=self.staffer.username, password=self.password)
+
         # canvas detail logic is tested in djiffy,
         # but test local customization to catch any
         # breaks in the template rendering
@@ -287,6 +333,7 @@ class TestInterventionViews(TestCase):
         canvas_url = reverse('djiffy:canvas',
             kwargs={'manifest_id': canvas.manifest.short_id, 'id': canvas.short_id})
         response = self.client.get(canvas_url)
+        assert response.status_code == 200
         self.assertTemplateUsed(response, 'djiffy/canvas_detail.html')
         self.assertNotContains(response, 'annotator.min.js',
             msg_prefix='Annotator not enabled for user without annotation add permission')
