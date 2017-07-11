@@ -10,4 +10,5 @@ git+https://github.com/Princeton-CDH/django-pucas.git@0.5#egg=pucas
 # unreleased py3 piffle currently needs to be required explicitly
 git+https://github.com/Princeton-CDH/piffle.git@feature/python3-compatibility#egg=piffle
 git+https://github.com/Princeton-CDH/djiffy.git@develop#egg=djiffy
-git+https://github.com/Princeton-CDH/django-annotator-store.git@0.5#egg=annotator_store
+# require develop version of annotator-store, next release should be 0.6
+git+https://github.com/Princeton-CDH/django-annotator-store.git@develop#egg=annotator_store
