@@ -55,7 +55,7 @@ class Intervention(BaseAnnotation):
         default=INTERVENTION_TYPES.ANNOTATION,
     )
 
-    #: associated IIIF :cjass:`djiffy.models.Canvas` for interventions
+    #: associated IIIF :class:`djiffy.models.Canvas` for interventions
     #: related to an image
     canvas = models.ForeignKey(Canvas, null=True, blank=True)
     #: Tags to describe the intervention and its characteristics;

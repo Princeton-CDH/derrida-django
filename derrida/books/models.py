@@ -4,7 +4,7 @@ from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
 from django.urls import reverse
 from django.utils.safestring import mark_safe
-from djiffy.models import Manifest
+from djiffy.models import Canvas, Manifest
 from sortedm2m.fields import SortedManyToManyField
 
 from derrida.common.models import Named, Notable, DateRange
@@ -425,10 +425,12 @@ class Reference(models.Model):
     reference_type = models.ForeignKey(ReferenceType)
     #: anchor text
     anchor_text = models.TextField(blank=True)
+    #: ManyToManyField to :class:`djiffy.models.Canvas`
+    canvases = models.ManyToManyField(Canvas, blank=True,
+        help_text="Associated page images from Derrida's library")
 
     class Meta:
         ordering = ['derridawork', 'derridawork_page', 'derridawork_pageloc']
-
 
     def __str__(self):
         return "%s, %s%s: %s, %s, %s" % (
