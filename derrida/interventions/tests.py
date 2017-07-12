@@ -54,6 +54,25 @@ class TestIntervention(TestCase):
         # self.pb = PersonBook.objects.create(book=book, person=self.author,
         #     relationship_type=PersonBookRelationshipType.objects.get(pk=1))
 
+    def test_str(self):
+        # canvas automatically associated by uri on save
+        manif = Manifest.objects.create()
+        canvas = Canvas.objects.create(uri='http://so.me/iiif/id/',
+            order=0, manifest=manif, label='foo')
+        note = Intervention.objects.create(uri=canvas.uri)
+        # Minimum possible information, canvas
+        assert str(note) == 'Annotation with no text (foo)'
+        note.tags.set(Tag.objects.filter(name__in=['underlining', 'arrow']))
+        # Add tags
+        assert str(note) == ('Annotation with no text, tagged as '
+                             'arrow, underlining (foo)')
+        # Add text
+        note.text = 'text'
+        assert str(note) == 'text (foo)'
+        # Add quote
+        note.quote = 'quote'
+        assert str(note) == 'quote (foo)'
+
     def test_save(self):
         # canvas automatically associated by uri on save
         manif = Manifest.objects.create()
@@ -415,3 +434,99 @@ class TestExtendedCanvasAutocomplete(TestCase):
         data = json.loads(response.content.decode('utf-8'))
         assert 'results' in data
         assert data['results'][0]['text'] == str(self.pages[0])
+
+
+class TestInterventionAutocomplete(TestCase):
+
+    fixtures = ['sample_work_data.json']
+
+    def setUp(self):
+        self.manif = Manifest.objects.create(short_id='bk123', label='Foobar')
+        self.manif2 = Manifest.objects.create(short_id='bk456', label='Baz')
+        self.canvas = Canvas.objects.create(
+            label='P1',
+            short_id='pg1',
+            order=0,
+            manifest=self.manif,
+            uri='http://so.me/iiif/id')
+        self.canvas2 = Canvas.objects.create(
+            label='P2',
+            short_id='pg2',
+            order=1,
+            manifest=self.manif2,
+            uri='http://so.me/iiif/id2',
+        )
+        self.instance = Instance.objects.get(work__short_title__contains="La vie")
+        self.instance.digital_edition = self.manif2
+        self.instance.save()
+        # create an admin user to test autocomplete views
+        self.password = 'pass!@#$'
+        self.admin = get_user_model().objects.create_superuser('testadmin',
+            'test@example.com', self.password)
+
+        self.note1 = Intervention.objects.create(uri=self.canvas.uri, canvas=self.canvas)
+        self.note2 = Intervention.objects.create(uri=self.canvas.uri, canvas=self.canvas)
+        self.note3 = Intervention.objects.create(uri=self.canvas2.uri, canvas=self.canvas2)
+
+    def test_intervention_autocomplete(self):
+
+        note1 = self.note1
+        note2 = self.note2
+        intervention_autocomplete_url = reverse('interventions:autocomplete')
+
+        # not logged in client can't have permissions
+        response = self.client.get(intervention_autocomplete_url)
+        assert response.status_code == 302
+
+        # logged in client has permission as superuser
+        self.client.login(username=self.admin.username, password=self.password)
+        response = self.client.get(intervention_autocomplete_url)
+        data = json.loads(response.content.decode('utf-8'))
+        assert response.status_code == 200
+        assert 'results' in data
+        # both notes should be returned
+        assert len(data['results']) == 3
+
+        # filterable notes, testing the text field lookups
+        note1.quote = 'test'
+        note2.quote = 'foo2'
+        note2.text_language = Language.objects.get(name='French')
+        note1.save()
+        note2.save()
+        # 'test' should return note1 but not note2
+        response = self.client.get(intervention_autocomplete_url, {'q': 'test'})
+        data = json.loads(response.content.decode('utf-8'))
+        assert 'results' in data
+        assert len(data['results']) == 1
+        assert data['results'][0]['text'] == 'test (P1)'
+
+        # testing fk lookups: 'French' should return note2 but not note 1
+        response = self.client.get(intervention_autocomplete_url, {'q': 'French'})
+        data = json.loads(response.content.decode('utf-8'))
+        assert 'results' in data
+        assert len(data['results']) == 1
+        assert str(data['results'][0]['text']) == 'foo2 (P1)'
+
+        # Test tag handling since it's a more complicated query
+        note1.quote = 'test2'
+        note1.save()
+        tags = Tag.objects.filter(name__in=['underlining', 'arrow'])
+        note1.tags.set(tags)
+        response = self.client.get(intervention_autocomplete_url, {'q': 'underlining'})
+        data = json.loads(response.content.decode('utf-8'))
+        assert 'results' in data
+        assert len(data['results']) == 1
+        assert data['results'][0]['text'] == ('test2 (P1)')
+
+        # Test instance handling - note3 is associated with the instance
+        note3 = self.note3
+        note3.quote = 'test3'
+        note3.save()
+        response = self.client.get(intervention_autocomplete_url,
+            {'forward': ('{"instance": "%s"}' % self.instance.pk)})
+        data = json.loads(response.content.decode('utf-8'))
+        assert response.status_code == 200
+        assert 'results' in data
+        # only note 3 should be returned
+        assert len(data['results']) == 1
+        assert data['results'][0]['text'] == ('test3 (P2)')

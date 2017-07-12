@@ -1,7 +1,7 @@
 from django.conf.urls import url
 from django.contrib.admin.views.decorators import staff_member_required
 
-from derrida.interventions.views import TagAutocomplete
+from derrida.interventions.views import TagAutocomplete, InterventionAutocomplete
 
 
 urlpatterns = [
@@ -9,4 +9,6 @@ urlpatterns = [
         staff_member_required(TagAutocomplete.as_view()), name='tag-autocomplete'),
     url(r'^tags/(?P<mode>(annotation|insertion))/autocomplete/$',
         staff_member_required(TagAutocomplete.as_view()), name='tag-autocomplete'),
+    url(r'^interventions/autocomplete/$',
+        InterventionAutocomplete.as_view(), name='autocomplete')
 ]

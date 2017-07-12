@@ -6,7 +6,8 @@ from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.db.models import Q
 from djiffy import views as djiffy_views
 
-from derrida.books.models import Language
+from derrida.books.models import Instance, Language
+from derrida.interventions.models import Intervention
 from .models import Tag
 
 
@@ -68,6 +69,11 @@ class CanvasAutocomplete(LoginPermissionRequired, djiffy_views.CanvasAutocomplet
     permission_required = 'djiffy.view_canvas'
 
     def get_queryset(self):
+        """Override the default
+        :class:`~djiffy.views.CanvasAutocomplete.get_queryset()` in order to
+        allow forms that specify an :class:`~derrida.books.models.Instance`
+        object to filter based on annotations associated only with that instance.
+        """
         query = super(CanvasAutocomplete, self).get_queryset()
         # Add an extra filter based on the forwarded value of 'instance',
         # if provided
@@ -75,3 +81,27 @@ class CanvasAutocomplete(LoginPermissionRequired, djiffy_views.CanvasAutocomplet
         if instance:
             query = query.filter(manifest__instance__pk=instance)
         return query
+
+
+class InterventionAutocomplete(LoginPermissionRequired, autocomplete.Select2QuerySetView):
+    permission_required = 'annotator_store.view_annotation'
+
+    def get_queryset(self):
+        """Allow autocomplete to search on several fields of
+        :class:`~derrida.books.models.Intervention` and filter by an instance
+        primary key provided by a form."""
+        interventions = Intervention.objects.all()
+        if self.q:
+            # Filter by quote, translations, languages, or (exact) tags
+            interventions = interventions.filter(
+                Q(quote__icontains=self.q) |
+                Q(text__icontains=self.q) |
+                Q(text_translation__icontains=self.q) |
+                Q(text_language__name__icontains=self.q) |
+                Q(quote_language__name__icontains=self.q) |
+                Q(tags__name__in=[self.q.lower()])
+            )
+        instance = self.forwarded.get('instance', None)
+        if instance:
+            interventions = interventions.filter(canvas__manifest__instance__pk=instance)
+        return interventions

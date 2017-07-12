@@ -73,8 +73,28 @@ class Intervention(BaseAnnotation):
     quote_language = models.ForeignKey(Language, null=True, blank=True,
             help_text='Language of the anchor text', related_name='+')
 
-    # todo
+    #: Associated author, TODO: add default to Derrida
     # author = models.ForeignKey(Person, null=True, blank=True)
+
+    def __str__(self):
+        """Override str to make sure that something is displayed
+        for Django admin and autocompletes"""
+        if not self.quote and not self.text:
+            string = '%s with no text' % self.get_intervention_type_display()
+            if self.tags.all():
+                tag_names = ', '.join(
+                    sorted([tag.name for tag in self.tags.all()])
+                )
+                string = '%s, tagged as %s' % (string, tag_names)
+        # Organize so that self.quote is set if it exists
+        if self.text:
+            string = self.text
+        if self.quote:
+            string = self.quote
+        # If there's an associated canvas, supply that
+        if self.canvas:
+            string = '%s (%s)' % (string, self.canvas.label)
+        return string
 
     def save(self, *args, **kwargs):
         # for image annotation, URI should be set to canvas URI; look up
