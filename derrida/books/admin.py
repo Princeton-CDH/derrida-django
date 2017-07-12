@@ -105,6 +105,15 @@ class ReferenceModelForm(forms.ModelForm):
                 },
                 forward=[forward.Field('instance')],
             ),
+            'interventions': autocomplete.ModelSelect2Multiple(
+                url='interventions:autocomplete',
+                attrs={
+                    'data-placeholder': 'Type an intervention text or tag '
+                                        '(exact) to search',
+                    'data-width': '900px'
+                },
+                forward=[forward.Field('instance')],
+            ),
         }
 
 
