@@ -428,6 +428,9 @@ class Reference(models.Model):
     #: ManyToManyField to :class:`djiffy.models.Canvas`
     canvases = models.ManyToManyField(Canvas, blank=True,
         help_text="Scanned images from Derrida's Library | ")
+    #: ManyToManyField to :class:`derrida.interventions.Intervention`
+    interventions = models.ManyToManyField('interventions.Intervention',
+        blank=True)  # Lazy reference to avoid a circular import
 
     class Meta:
         ordering = ['derridawork', 'derridawork_page', 'derridawork_pageloc']

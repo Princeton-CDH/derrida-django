@@ -89,6 +89,7 @@ class ReferenceModelForm(forms.ModelForm):
             'book_page',
             'instance',
             'canvases',
+            'interventions',
             'reference_type',
             'anchor_text'
         )
@@ -122,6 +123,7 @@ class ReferenceInline(admin.StackedInline):
                     'derridawork_pageloc',
                     'book_page',
                     'canvases',
+                    'interventions',
                     'reference_type',
                 )
         }),
@@ -151,6 +153,7 @@ class ReferenceAdmin(admin.ModelAdmin):
                     'derridawork_pageloc',
                     'instance',
                     'canvases',
+                    'interventions',
                     'book_page',
                     'reference_type',
                 )
