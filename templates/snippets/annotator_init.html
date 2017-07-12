@@ -30,7 +30,7 @@
 
 
 /** Django CSRF token handling for ajax put/post/delete requests.
-Based on https://docs.djangoproject.com/en/1.7/ref/contrib/csrf/#ajax
+Based on https://docs.djangoproject.com/en/1.11/ref/csrf/#ajax
 */
 // NOTE: could use jquery cookie plugin instead of this method
 // http://plugins.jquery.com/cookie/
@@ -55,22 +55,9 @@ function csrfSafeMethod(method) {
     // these HTTP methods do not require CSRF protection
     return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
 }
-function sameOrigin(url) {
-    // test that a given url is a same-origin URL
-    // url could be relative or scheme relative or absolute
-    var host = document.location.host; // host + port
-    var protocol = document.location.protocol;
-    var sr_origin = '//' + host;
-    var origin = protocol + sr_origin;
-    // Allow absolute or scheme relative URLs to same origin
-    return (url == origin || url.slice(0, origin.length + 1) == origin + '/') ||
-        (url == sr_origin || url.slice(0, sr_origin.length + 1) == sr_origin + '/') ||
-        // or any other URL that isn't scheme relative or absolute i.e relative.
-        !(/^(\/\/|http:|https:).*/.test(url));
-}
 $.ajaxSetup({
     beforeSend: function(xhr, settings) {
-        if (!csrfSafeMethod(settings.type) && sameOrigin(settings.url)) {
+        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
             // Send the token to same-origin, relative URLs only.
             // Send the token only if the method warrants CSRF protection
             // Using the CSRFToken value acquired earlier
@@ -80,7 +67,6 @@ $.ajaxSetup({
 });
 
 
-  var csrftoken = getCookie('csrftoken');
    $(document).ready(function () {
 
     // Use canvas URI to associate new annotations and load
@@ -105,7 +91,7 @@ $.ajaxSetup({
 
 var language_choices = {{ languages_js|safe }};
 
-var confs = [
+var fields = [
     {
       name: 'text_language',
       label: 'Language',
@@ -163,7 +149,7 @@ var confs = [
     }*/  {% endcomment %}
   ];
 
-  var interventions = annotatorInterventions(confs);
+  var interventions = annotatorInterventions(fields);
 
   var marginalia_opts = {
     show_author: true,
@@ -186,6 +172,21 @@ var confs = [
 
   // configuring marginalia here so it can be referenced in annotator search
   var _marginalia = annotatorMarginalia(marginalia_opts);
+
+/* custom authz policy based on current django user permissions
+  NOTE: django permissions are enforced by the api, but this allows
+  marginalia to only display edit and delete options based on what
+  the user should be able to do.
+*/
+{# FIXME: should this check annotator_store permissions since that is what the api checks? #}
+var user_permissions = {
+  update: {{ perms.interventions.change_intervention|lower }},
+  delete: {{ perms.interventions.delete_intervention|lower }},
+}
+annotator.authz.AclAuthzPolicy.prototype.permits = function (action, context, identity) {
+  return user_permissions[action];
+}
+
   var app = new annotator.App()
       .include(contentUri)
       .include(annotator.ui.main, {

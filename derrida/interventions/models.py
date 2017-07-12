@@ -96,6 +96,13 @@ class Intervention(BaseAnnotation):
             string = '%s (%s)' % (string, self.canvas.label)
         return string
 
+    class Meta:
+        # extend default permissions to add a view option
+        # change_annotation and delete_annotation provided by django
+        permissions = (
+            ('view_intervention', 'View intervention'),
+        )
+
     def save(self, *args, **kwargs):
         # for image annotation, URI should be set to canvas URI; look up
         # canvas by URI and associate with the record

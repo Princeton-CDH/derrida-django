@@ -23,7 +23,13 @@ def add_permissions(apps, schema_editor):
             'add_footnote', 'change_footnote', 'delete_footnote',
             'add_sourcetype', 'change_sourcetype', 'delete_sourcetype',
             # permissions to view iiif content
-            'view_manifest', 'view_canvas'
+            'view_manifest', 'view_canvas',
+            # permissions for intervention/annotation
+            'add_intervention', 'change_intervention', 'delete_intervention',
+            'view_intervention',
+            # annotation api views test against base annotation permissions
+            'add_annotation', 'change_annotation', 'delete_annotation',
+            'view_annotation',
         ]
 
         # NOTE: finding one by one rather than using in_list so that if a
@@ -43,6 +49,7 @@ class Migration(migrations.Migration):
         ('common', '0001_data_editor_group'),
         ('footnotes', '0001_initial'),
         ('djiffy', '0002_view_permissions'),
+        ('interventions', '0005_intervention_view_permission'),
     ]
 
     operations = [
