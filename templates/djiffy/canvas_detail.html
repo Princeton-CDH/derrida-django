@@ -2,8 +2,8 @@
 
 {% block javascript %}
     {{ block.super }}
-    {# enable annotation functionality if user has appropriate permissions #}
-    {% if perms.interventions.add_intervention or perms.interventions.view_intervention %}
+    {# enable annotation functionality only if user has appropriate permissions #}
+    {% if perms.annotator_store.add_annotation or perms.annotator_store.view_annotation %}
         {% include 'snippets/annotator_init.html' %}
     {% endif %}
 {% endblock %}

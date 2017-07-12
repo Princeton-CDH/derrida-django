@@ -178,10 +178,9 @@ var fields = [
   marginalia to only display edit and delete options based on what
   the user should be able to do.
 */
-{# FIXME: should this check annotator_store permissions since that is what the api checks? #}
 var user_permissions = {
-  update: {{ perms.interventions.change_intervention|lower }},
-  delete: {{ perms.interventions.delete_intervention|lower }},
+  update: {{ perms.annotator_store.change_annotation|lower }},
+  delete: {{ perms.annotator_store.delete_annotation|lower }},
 }
 annotator.authz.AclAuthzPolicy.prototype.permits = function (action, context, identity) {
   return user_permissions[action];
