@@ -247,6 +247,14 @@ class Instance(Notable):
         return self.alternate_title or self.work.short_title or '[no title]'
     display_title.short_description = 'Title'
 
+    def is_digitized(self):
+        '''boolean indicator if there is an associated digital edition'''
+        return bool(self.digital_edition)
+    # technically sorts on the foreign key, but that effectively filters
+    # instances with/without digital additions
+    is_digitized.admin_order_field = 'digital_edition'
+    is_digitized.boolean = True
+
     @property
     def item_type(self):
         '''item type: book, book section, or journal article'''
