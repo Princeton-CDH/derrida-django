@@ -18,6 +18,12 @@
     margin-right: $gutter-size;
     display: inline-block;
     margin-bottom: 10rem;
+    margin-top: 5rem;
+    transition: margin-top 0.5s ease;
+
+    @include grid-media($xlarge-viewport-grid) {
+      margin-top: 8rem;
+    }
   }
 
   h1 {
