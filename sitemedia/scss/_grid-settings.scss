@@ -1,16 +1,18 @@
 @import "neat/neat";
 
+$gutter-size: 2.9411764705882%;
+
 // Override default grid settings
 $neat-grid: (
   columns: 4,
-  gutter: 2.9411764705882%
+  gutter: $gutter-size
 );
 
 // Define grid for medium and large viewport
 $large-medium-viewport-grid: (
   columns: 12,
-  gutter: 2.9411764705882%,
   media: 735px
+  gutter: $gutter-size,
 );
 
 html, body {
