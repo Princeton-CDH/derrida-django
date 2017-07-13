@@ -1,25 +1,27 @@
 <footer class="mdl-mega-footer">
-  <div class="mdl-mega-footer__middle-section">
+  <div class="grid-container">
+    <div class="mdl-mega-footer__middle-section">
 
-    <div class="mdl-mega-footer__drop-down-section">
-      <input class="mdl-mega-footer__heading-checkbox" type="checkbox" checked>
-      <h1 class="mdl-mega-footer__heading">Test</h1>
-      <ul class="mdl-mega-footer__link-list">
-        <li><a href="">Test</a></li>
-        <li><a href="">Test</a></li>
-        <li><a href="">Test</a></li>
-        <li><a href="">Test</a></li>
-      </ul>
+      <div class="mdl-mega-footer__drop-down-section">
+        <input class="mdl-mega-footer__heading-checkbox" type="checkbox" checked>
+        <h1 class="mdl-mega-footer__heading">Test</h1>
+        <ul class="mdl-mega-footer__link-list">
+          <li><a href="">Test</a></li>
+          <li><a href="">Test</a></li>
+          <li><a href="">Test</a></li>
+          <li><a href="">Test</a></li>
+        </ul>
+      </div>
+
+      <div class="mdl-mega-footer__drop-down-section mdl-mega-footer__drop-down-section--multiple-topics">
+        <h1 class="mdl-mega-footer__heading">Test</h1>
+        <h1 class="mdl-mega-footer__heading">Test</h1>
+      </div>
     </div>
 
-    <div class="mdl-mega-footer__drop-down-section mdl-mega-footer__drop-down-section--multiple-topics">
-      <h1 class="mdl-mega-footer__heading">Test</h1>
-      <h1 class="mdl-mega-footer__heading">Test</h1>
+    <div class="mdl-mega-footer__bottom-section">
+      <p id="sw_version">{{ SW_VERSION }}</p>
+      {% block footer-content %}{% endblock %}
     </div>
-  </div>
-
-  <div class="mdl-mega-footer__bottom-section">
-    <p id="sw_version">{{ SW_VERSION }}</p>
-    {% block footer-content %}{% endblock %}
   </div>
 </footer>
