@@ -18,6 +18,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='intervention',
             name='author',
-            field=models.ForeignKey(blank=True, default=derrida.interventions.models.get_derrida, null=True, on_delete=django.db.models.deletion.CASCADE, to='people.Person'),
+            field=models.ForeignKey(blank=True, default=derrida.interventions.models.get_default_intervener, null=True, on_delete=django.db.models.deletion.CASCADE, to='people.Person'),
         ),
     ]

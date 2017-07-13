@@ -10,7 +10,7 @@ from djiffy.models import Canvas, Manifest
 
 from derrida.books.models import Instance, Language
 from derrida.people.models import Person
-from .models import Tag, INTERVENTION_TYPES, Intervention, get_derrida
+from .models import Tag, INTERVENTION_TYPES, Intervention, get_default_intervener
 
 
 class TestTagQuerySet(TestCase):
@@ -553,20 +553,20 @@ class TestInterventionAutocomplete(TestCase):
         assert data['results'][0]['text'] == ('test3 (P2)')
 
 
-class TestGetDerrida(TestCase):
+class TestGetDefaultIntervener(TestCase):
 
     def setUp(self):
         self.derrida = Person.objects.create(
                        authorized_name='Derrida, Jacques')
 
-    def test_get_derrida(self):
+    def test_get_default_intervener(self):
 
         # if Derrida exists, the function retrieves his Person object
-        derrida = get_derrida()
+        derrida = get_default_intervener()
         assert derrida
         assert derrida == self.derrida
 
         # if he does not, it returns None to use as a default on the model
         self.derrida.delete()
-        derrida = get_derrida()
+        derrida = get_default_intervener()
         assert not derrida

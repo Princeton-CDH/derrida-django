@@ -16,7 +16,7 @@ INTERVENTION_TYPES = AttrDict({
 })
 
 
-def get_derrida():
+def get_default_intervener():
     """Function to either return a :class:`~derrida.people.models.Person`
     object representing Jacques Derrida if he exists in the database or None"""
     try:
@@ -84,7 +84,7 @@ class Intervention(BaseAnnotation):
             help_text='Language of the anchor text', related_name='+')
     #: Associated author, instance of :class:`~derrida.people.models.Person`
     author = models.ForeignKey(Person, null=True, blank=True,
-        default=get_derrida)
+        default=get_default_intervener)
 
     def __str__(self):
         """Override str to make sure that something is displayed
@@ -185,7 +185,7 @@ class Intervention(BaseAnnotation):
                 self.author = None
         # If it doesn't exist, also explicitly set None to avoid default
         else:
-            self.author = None        
+            self.author = None
 
         # Set any tags that are passed if they already exist in the db
         # (tag vocabulary is enforced; unrecognized tags are ignored)

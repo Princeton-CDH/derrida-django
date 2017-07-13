@@ -8,7 +8,7 @@ from djiffy import views as djiffy_views
 
 from derrida.books.models import Instance, Language
 from derrida.interventions.models import Intervention
-from .models import Tag, get_derrida
+from .models import Tag, get_default_intervener
 
 
 class TagAutocomplete(autocomplete.Select2QuerySetView):
@@ -64,7 +64,7 @@ class CanvasDetail(LoginPermissionRequired, djiffy_views.CanvasDetail):
         context['languages_js'] = json.dumps(list(languages))
         # pass in default authorized name for Derrida, if he exists, else a
         # literal '' for annotator_init.html
-        derrida = get_derrida()
+        derrida = get_default_intervener()
         context['derrida_name'] = json.dumps('')
         if derrida:
             context['derrida_name'] = json.dumps(derrida.authorized_name)
