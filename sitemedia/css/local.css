@@ -759,11 +759,11 @@ hr {
   display: none; }
 
 @media only screen and (min-width: 1080px) {
-  .mdl-layout__header-row {
+  .mdl-layout__header .mdl-layout__header-row {
     background: none; }
-    .mdl-layout__header-row .mdl-navigation__link {
+    .mdl-layout__header .mdl-layout__header-row .mdl-navigation__link {
       display: none; }
-    .background-colored--dark .mdl-layout__header-row .mdl-textfield .mdl-button {
+    .background-colored--dark .mdl-layout__header .mdl-layout__header-row .mdl-textfield .mdl-button {
       color: #FFF; }
 
   .coordintate-navigation {
@@ -915,7 +915,12 @@ body {
 #homepage article {
   margin-right: 2.94118%;
   display: inline-block;
-  margin-bottom: 10rem; }
+  margin-bottom: 10rem;
+  margin-top: 5rem;
+  transition: margin-top 0.5s ease; }
+  @media only screen and (min-width: 1080px) {
+    #homepage article {
+      margin-top: 8rem; } }
 #homepage h1 {
   font-size: 3.5rem;
   margin-bottom: 4rem; }
