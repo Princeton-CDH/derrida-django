@@ -1,12 +1,12 @@
 from attrdict import AttrDict
 from annotator_store.models import BaseAnnotation
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from djiffy.models import Canvas
 
 from derrida.common.models import Named, Notable
 from derrida.books.models import Language
-# from derrida.people.models import Person
-
+from derrida.people.models import Person
 
 #: intervention type codes to distinguish annotations and insertions
 INTERVENTION_TYPES = AttrDict({
@@ -14,6 +14,16 @@ INTERVENTION_TYPES = AttrDict({
     'INSERTION': 'I',
     'BOTH': 'AI',
 })
+
+
+def get_derrida():
+    """Function to either return a :class:`~derrida.people.models.Person`
+    object representing Jacques Derrida if he exists in the database or None"""
+    try:
+        return Person.objects.get(authorized_name='Derrida, Jacques')
+    except ObjectDoesNotExist:
+        return None
+
 
 
 class TagQuerySet(models.QuerySet):
@@ -72,9 +82,9 @@ class Intervention(BaseAnnotation):
     #: language of the quoted text or anchor text (i.e. :attr:`quote`)
     quote_language = models.ForeignKey(Language, null=True, blank=True,
             help_text='Language of the anchor text', related_name='+')
-
-    #: Associated author, TODO: add default to Derrida
-    # author = models.ForeignKey(Person, null=True, blank=True)
+    #: Associated author, instance of :class:`~derrida.people.models.Person`
+    author = models.ForeignKey(Person, null=True, blank=True,
+        default=get_derrida)
 
     def __str__(self):
         """Override str to make sure that something is displayed

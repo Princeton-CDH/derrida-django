@@ -1,6 +1,5 @@
 from django.db import models
 from django.core.exceptions import ValidationError
-
 # abstract models with common fields to be
 # used as mix-ins
 
