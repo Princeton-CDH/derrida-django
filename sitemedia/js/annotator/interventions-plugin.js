@@ -58,13 +58,10 @@ function annotatorInterventions(confs) {
      * @param annotation
      * @param field_name
      * @param multiple (defaults to false)
-     * @param value (default value for field)
+     * @param value - default value for the field (defaults to empty string)
      */
-    field_display_value: function(annotation, field_name, multiple=false, value=false) {
-      var display_val = '';
-      if (value) {
-        display_val = value;
-      }
+    field_display_value: function(annotation, field_name, multiple=false, value=null) {
+       var display_val = value || '';
        if (annotation[field_name] || annotation[field_name] == 0) {
           display_val = annotation[field_name];
           // convert to comma-delimited if list is configured
@@ -167,14 +164,14 @@ function annotatorInterventions(confs) {
                   var value = annotation[config.name];
                   // clear out input data value if not set on the annotation
                   if (value == undefined) {
-                      $input.data('value', '');
+                      $input.data('value', config.default || '');
                   } else {
                     $input.data('value', annotation[config.name]);
                   }
 
-                  // set the input value
+                  // set the input display value
                   $input.val(interventions.field_display_value(annotation,
-                    config.name, config.list, config.value));
+                    config.name, config.list, config.default));
               },
               submit: function(field, annotation) {
                 // get the value from the form input and set it on the
@@ -250,20 +247,35 @@ function annotatorInterventions(confs) {
                     },
                 });
 
-                // multi-item autocompletes need special handling to
-                // add selected item to the list of existing values
-                if (config.list) {
-                  input.autocomplete({
+                input.autocomplete({
                     select: function(event, ui) {
-                      interventions.multival_select($(this), ui.item.value);
-                      event.preventDefault();
+                      // multi-item autocompletes need special handling to
+                      // add selected item to the list of existing values
+                      if (config.list) {
+                        interventions.multival_select($(this), ui.item.value);
+                        event.preventDefault();
+                      } else {
+                        // single-item select still needs to update data
+                        $(this).data('value', ui.item.value);
+                      }
                     }
                   });
-                }
 
                 // Trigger autocomplete start on focus
                 input.bind('focus', function() {
                   $(this).autocomplete("search");
+                });
+
+                // make it possible to deselect autocomplete items
+                // if input is empty on focusout, clear saved data value
+                input.on('focusout', function() {
+                   if (this.value == '') {
+                      if (config.list) {
+                         input.data('value', []);
+                      } else {
+                         input.data('value', '');
+                      }
+                   }
                 });
 
             } // end config autocomplete

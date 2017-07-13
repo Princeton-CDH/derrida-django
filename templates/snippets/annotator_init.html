@@ -90,12 +90,11 @@ $.ajaxSetup({
   };
 
 var language_choices = {{ languages_js|safe }};
-var default_intervener = {{ default_intervener|safe }};
 var fields = [
     {
       name: 'author',
       label: 'Author',
-      value: default_intervener,
+      default: {{ default_intervener|safe }},
       autocompleteURL: autocomplete_url.annotator
     },
     {
