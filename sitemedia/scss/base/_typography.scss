@@ -1,7 +1,8 @@
-html {
+html, body {
   color: $base-font-color;
   font-family: $base-font-family;
-  font-size: 100%;
+  font-size: $base-font-size;
+  font-weight: $base-font-weight;
   line-height: $base-line-height;
 }
 
