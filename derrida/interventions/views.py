@@ -60,8 +60,10 @@ class CanvasDetail(LoginPermissionRequired, djiffy_views.CanvasDetail):
     def get_context_data(self, **kwargs):
         context = super(CanvasDetail, self).get_context_data(**kwargs)
         # pass in list of languages for use in annotator edit form
-        languages = Language.objects.all().values_list('name', flat=True)
-        context['languages_js'] = json.dumps(list(languages))
+        languages = list(Language.objects.all().values_list('name', flat=True))
+        # insert a blank option, since language is optional
+        languages.insert(0, '')
+        context['languages_js'] = json.dumps(languages)
         # pass in default authorized name for Derrida, if he exists, else a
         # literal '' for annotator_init.html
         derrida = get_default_intervener()
