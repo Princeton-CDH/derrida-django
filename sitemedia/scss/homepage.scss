@@ -1,0 +1,56 @@
+#homepage {
+  .credits {
+    font-family: $heading-font-family;
+    font-size: 1.25rem;
+  }
+
+  .credits__role {
+    font-style: italic;
+  }
+
+  .credits__name {
+    & + .credits__role {
+        margin-top: 1em;
+    }
+  }
+
+  article {
+    margin-right: $gutter-size;
+    display: inline-block;
+  }
+
+  h1 {
+    font-size: 3.5rem;
+    margin-bottom: 4rem;
+  }
+
+  .lead {
+    font-size: 2rem;
+    margin-bottom: 4rem;
+  }
+
+  p {
+    max-width: 40rem;
+  }
+
+  header, section {
+    @include grid-column(4);
+  }
+
+  aside {
+    @include grid-column(4);
+  }
+
+  @include grid-media($large-medium-viewport-grid){
+    header, section {
+      @include grid-column(8);
+      @include grid-shift(4);
+    }
+
+    aside {
+      @include grid-push(3);
+      @include grid-column(2);
+      @include grid-shift(-7);
+    }
+  }
+}
