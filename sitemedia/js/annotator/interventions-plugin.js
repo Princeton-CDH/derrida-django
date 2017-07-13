@@ -106,8 +106,8 @@ function annotatorInterventions(confs) {
           // add the label for this field
           div.append($('<label/>').html(config.label));
           div.append($('<span/>'));
-          // insert before tag/footer
-          div.insertBefore(item.find('.annotator-tags'));
+
+          div.insertBefore(item.find('.annotator-tags, .annotation-footer')[0]);
         }
 
         span = div.find('span');
@@ -164,7 +164,13 @@ function annotatorInterventions(confs) {
                   var $input = $(field).find(config.type);
 
                   // store the field value in native form on input element data
-                  $input.data('value', annotation[config.name]);
+                  var value = annotation[config.name];
+                  // clear out input data value if not set on the annotation
+                  if (value == undefined) {
+                      $input.data('value', '');
+                  } else {
+                    $input.data('value', annotation[config.name]);
+                  }
 
                   // set the input value
                   $input.val(interventions.field_display_value(annotation,
@@ -237,7 +243,6 @@ function annotatorInterventions(confs) {
                       event.preventDefault();
                     },
                     open: function(event, ui) {
-                      console.log('open');
                       // annotator purposely sets the editor at a very high z-index;
                       // set autocomplete still higher so it isn't obscured by annotator buttons
                       $('.ui-autocomplete')
