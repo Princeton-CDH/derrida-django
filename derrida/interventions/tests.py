@@ -383,7 +383,7 @@ class TestInterventionViews(TestCase):
         assert 'languages_js' in response.context
 
         # check that derrida name is set in context
-        assert 'derrida_name' in response.context
+        assert 'default_intervener' in response.context
 
         self.assertContains(response, 'css/derrida-annotator.css',
             msg_prefix='canvas detail page includes local annotator styles')

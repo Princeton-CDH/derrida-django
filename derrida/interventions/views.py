@@ -65,33 +65,33 @@ class CanvasDetail(LoginPermissionRequired, djiffy_views.CanvasDetail):
         # pass in default authorized name for Derrida, if he exists, else a
         # literal '' for annotator_init.html
         derrida = get_default_intervener()
-        context['derrida_name'] = json.dumps('')
+        context['default_intervener'] = json.dumps('')
         if derrida:
-            context['derrida_name'] = json.dumps(derrida.authorized_name)
+            context['default_intervener'] = json.dumps(derrida.authorized_name)
         return context
 
 
 class CanvasAutocomplete(LoginPermissionRequired, djiffy_views.CanvasAutocomplete):
-        """Override the default
-        :class:`~djiffy.views.CanvasAutocomplete.get_queryset()` in order to
-        allow forms that specify an :class:`~derrida.books.models.Instance`
-        object to filter based on annotations associated only
-        with that instance.
+    """Override the default
+    :class:`~djiffy.views.CanvasAutocomplete.get_queryset()` in order to
+    allow forms that specify an :class:`~derrida.books.models.Instance`
+    object to filter based on annotations associated only
+    with that instance.
 
-        This lets instances of :class:`~django.forms.ModelForm` that have a
-        :class:`~djiffy.models.Canvas` autocomplete pass a set instance
-        value to restrict autocomplete results only to the Instance currently
-        being edited.
+    This lets instances of :class:`~django.forms.ModelForm` that have a
+    :class:`~djiffy.models.Canvas` autocomplete pass a set instance
+    value to restrict autocomplete results only to the Instance currently
+    being edited.
 
-        :class:`dal.autocomplete.Select2QuerySetView` allows a ``forward``
-        parameter that passes JSON object as a string after as a query string
-        named ``forward``.
-        :method:`dal.autocomplete.Select2QuerySetView.forwarded.get()` can
-        access those variables easily.
+    :class:`dal.autocomplete.Select2QuerySetView` allows a ``forward``
+    parameter that passes JSON object as a string after as a query string
+    named ``forward``.
+    :method:`dal.autocomplete.Select2QuerySetView.forwarded.get()` can
+    access those variables easily.
 
-        The autocomplete looks for an instance primary key passed with the key
-        ``instance`` in the JSON object.
-        """
+    The autocomplete looks for an instance primary key passed with the key
+    ``instance`` in the JSON object.
+    """
     permission_required = 'djiffy.view_canvas'
 
     def get_queryset(self):

@@ -90,12 +90,12 @@ $.ajaxSetup({
   };
 
 var language_choices = {{ languages_js|safe }};
-var derrida_name = {{ derrida_name|safe }};
+var default_intervener = {{ default_intervener|safe }};
 var fields = [
     {
       name: 'author',
       label: 'Author',
-      value: derrida_name
+      value: default_intervener
     },
     {
       name: 'text_language',
