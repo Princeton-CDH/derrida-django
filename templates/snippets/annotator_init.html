@@ -83,7 +83,7 @@ $.ajaxSetup({
 
   var autocomplete_url = {
     language: "{% url 'books:language-autocomplete' %}",
-{#    annotator: "{% url 'people:autocomplete' %}", #}
+    annotator: "{% url 'people:person-autocomplete' %}",
 {#    subject:  "{% url 'books:subject-autocomplete' %}", #}
 // NOTE: in future, mode will need to be set based on intervention type
     tag: "{% url 'interventions:tag-autocomplete' mode='annotation' %}"
@@ -95,7 +95,8 @@ var fields = [
     {
       name: 'author',
       label: 'Author',
-      value: default_intervener
+      value: default_intervener,
+      autocompleteURL: autocomplete_url.annotator
     },
     {
       name: 'text_language',
