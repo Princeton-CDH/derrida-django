@@ -6,7 +6,7 @@
  * 2. Prevent adjustments of font size after orientation changes in
  *    IE on Windows Phone and in iOS.
  */
-@import url("https://fonts.googleapis.com/css?family=Cormorant+Garamond|Fira+Sans");
+@import url("https://fonts.googleapis.com/css?family=Cormorant+Garamond:300,300i,400,700|Fira+Sans:300");
 html {
   line-height: 1.15;
   /* 1 */
