@@ -222,7 +222,8 @@ class Instance(Notable):
         blank=True)
 
     #: digital edition via IIIF as instance of :class:`djiffy.models.Manifest`
-    digital_edition = models.ForeignKey(Manifest, blank=True, null=True,
+    digital_edition = models.OneToOneField(Manifest, blank=True, null=True,
+        on_delete=models.SET_NULL,
         help_text='Digitized edition of this book, if available')
 
     # proof-of-concept generic relation to footnotes
