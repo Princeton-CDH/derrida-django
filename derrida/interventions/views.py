@@ -72,14 +72,29 @@ class CanvasDetail(LoginPermissionRequired, djiffy_views.CanvasDetail):
 
 
 class CanvasAutocomplete(LoginPermissionRequired, djiffy_views.CanvasAutocomplete):
-    permission_required = 'djiffy.view_canvas'
-
-    def get_queryset(self):
         """Override the default
         :class:`~djiffy.views.CanvasAutocomplete.get_queryset()` in order to
         allow forms that specify an :class:`~derrida.books.models.Instance`
-        object to filter based on annotations associated only with that instance.
+        object to filter based on annotations associated only
+        with that instance.
+
+        This lets instances of :class:`~django.forms.ModelForm` that have a
+        :class:`~djiffy.models.Canvas` autocomplete pass a set instance
+        value to restrict autocomplete results only to the Instance currently
+        being edited.
+
+        :class:`dal.autocomplete.Select2QuerySetView` allows a ``forward``
+        parameter that passes JSON object as a string after as a query string
+        named ``forward``.
+        :method:`dal.autocomplete.Select2QuerySetView.forwarded.get()` can
+        access those variables easily.
+
+        The autocomplete looks for an instance primary key passed with the key
+        ``instance`` in the JSON object.
         """
+    permission_required = 'djiffy.view_canvas'
+
+    def get_queryset(self):
         query = super(CanvasAutocomplete, self).get_queryset()
         # Add an extra filter based on the forwarded value of 'instance',
         # if provided
@@ -90,12 +105,28 @@ class CanvasAutocomplete(LoginPermissionRequired, djiffy_views.CanvasAutocomplet
 
 
 class InterventionAutocomplete(LoginPermissionRequired, autocomplete.Select2QuerySetView):
+    """Provides autocomplete to search on several fields of
+    :class:`~derrida.books.models.Intervention` and filter by an instance
+    primary key provided by a form.
+
+    This lets instances of :class:`~django.forms.ModelForm` that have a
+    :class:`~derrida.models.Intervention` autocomplete pass a set instance
+    value to restrict autocomplete results only to the Instance currently
+    being edited.
+
+    :class:`dal.autocomplete.Select2QuerySetView` allows a ``forward``
+    parameter that passes JSON object as a string after as a querystring
+    named ``forward``.
+    :method:`dal.autocomplete.Select2QuerySetView.forwarded.get()` can
+    access those variables easily.
+
+    The autocomplete looks for an instance primary key passed with the key
+    ``instance``.
+    """
+
     permission_required = 'annotator_store.view_annotation'
 
     def get_queryset(self):
-        """Allow autocomplete to search on several fields of
-        :class:`~derrida.books.models.Intervention` and filter by an instance
-        primary key provided by a form."""
         interventions = Intervention.objects.all()
         if self.q:
             # Filter by quote, translations, languages, or (exact) tags
@@ -109,5 +140,7 @@ class InterventionAutocomplete(LoginPermissionRequired, autocomplete.Select2Quer
             )
         instance = self.forwarded.get('instance', None)
         if instance:
-            interventions = interventions.filter(canvas__manifest__instance__pk=instance)
+            interventions = interventions.filter(
+                canvas__manifest__instance__pk=instance
+            )
         return interventions
