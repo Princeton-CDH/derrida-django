@@ -44,7 +44,6 @@ class TestTagQuerySet(TestCase):
         assert insertion_tags.filter(name='post-it note').exists()
 
 
-
 class TestIntervention(TestCase):
 
     # def setUp(self):
@@ -184,8 +183,6 @@ class TestIntervention(TestCase):
         # - if 'author' not in data, unset
         data = note.handle_extra_data({}, Mock())
         assert not note.author
-
-
 
     def test_info(self):
         note = Intervention.objects.create()
@@ -384,6 +381,9 @@ class TestInterventionViews(TestCase):
 
         # check that languages are passed in to template via context
         assert 'languages_js' in response.context
+
+        # check that derrida name is set in context
+        assert 'derrida_name' in response.context
 
         self.assertContains(response, 'css/derrida-annotator.css',
             msg_prefix='canvas detail page includes local annotator styles')
