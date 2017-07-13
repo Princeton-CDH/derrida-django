@@ -176,6 +176,17 @@ class TestIntervention(TestCase):
         note.handle_extra_data({}, Mock())
         assert note.text_translation == ''
 
+        ### author ###
+        author = Person.objects.create(authorized_name='Derrida, Jacques')
+        # - if authorized_name matches, set
+        data = note.handle_extra_data({'author': author.authorized_name}, Mock())
+        assert note.author == author
+        # - if 'author' not in data, unset
+        data = note.handle_extra_data({}, Mock())
+        assert not note.author
+
+
+
     def test_info(self):
         note = Intervention.objects.create()
 
@@ -208,6 +219,15 @@ class TestIntervention(TestCase):
         note.text_translation = 'some translated text goes here'
         info = note.info()
         assert info['text_translation'] == note.text_translation
+
+        # author
+        # - not set, not included
+        info = note.info()
+        assert 'author' not in info
+        # - included when set
+        note.author = Person.objects.create(authorized_name='Derrida, Jacques')
+        info = note.info()
+        assert info['author'] == 'Derrida, Jacques'
 
     def test_iiif_image_selection(self):
         annotation = Intervention()

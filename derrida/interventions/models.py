@@ -177,6 +177,16 @@ class Intervention(BaseAnnotation):
         if self._state.adding:
             super(Intervention, self).save()
 
+        # Add author if in the annotation
+        if 'author' in data:
+            try:
+                self.author = Person.objects.get(authorized_name=data['author'])
+            except ObjectDoesNotExist:
+                self.author = None
+        # If it doesn't exist, also explicitly set None to avoid default
+        else:
+            self.author = None        
+
         # Set any tags that are passed if they already exist in the db
         # (tag vocabulary is enforced; unrecognized tags are ignored)
         if 'tags' in data:
@@ -223,5 +233,8 @@ class Intervention(BaseAnnotation):
             info['quote_language'] = self.quote_language.name
         if self.text_translation:
             info['text_translation'] = self.text_translation
+        # author - display author name
+        if self.author:
+            info['author'] = self.author.authorized_name
 
         return info

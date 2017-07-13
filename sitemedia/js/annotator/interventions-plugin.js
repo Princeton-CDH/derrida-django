@@ -58,9 +58,13 @@ function annotatorInterventions(confs) {
      * @param annotation
      * @param field_name
      * @param multiple (defaults to false)
+     * @param value (default value for field)
      */
-    field_display_value: function(annotation, field_name, multiple=false) {
+    field_display_value: function(annotation, field_name, multiple=false, value=false) {
       var display_val = '';
+      if (value) {
+        display_val = value;
+      }
        if (annotation[field_name] || annotation[field_name] == 0) {
           display_val = annotation[field_name];
           // convert to comma-delimited if list is configured
@@ -145,7 +149,6 @@ function annotatorInterventions(confs) {
           $.each(confs, function(index, config) {
             // update config with default field type
             config = $.extend({'type': 'input'}, config);
-
             // create new annotation editor field based on the config
             var field = editor.addField({
               // set input name based on field name
@@ -165,7 +168,7 @@ function annotatorInterventions(confs) {
 
                   // set the input value
                   $input.val(interventions.field_display_value(annotation,
-                    config.name, config.list));
+                    config.name, config.list, config.value));
               },
               submit: function(field, annotation) {
                 // get the value from the form input and set it on the

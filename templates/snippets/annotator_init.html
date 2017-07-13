@@ -83,15 +83,20 @@ $.ajaxSetup({
 
   var autocomplete_url = {
     language: "{% url 'books:language-autocomplete' %}",
-{#    annotator: "{% url 'people:autocomplete' 'annotator' %}", #}
+{#    annotator: "{% url 'people:autocomplete' %}", #}
 {#    subject:  "{% url 'books:subject-autocomplete' %}", #}
 // NOTE: in future, mode will need to be set based on intervention type
     tag: "{% url 'interventions:tag-autocomplete' mode='annotation' %}"
   };
 
 var language_choices = {{ languages_js|safe }};
-
+var derrida_name = {{ derrida_name|safe }};
 var fields = [
+    {
+      name: 'author',
+      label: 'Author',
+      value: derrida_name
+    },
     {
       name: 'text_language',
       label: 'Language',
