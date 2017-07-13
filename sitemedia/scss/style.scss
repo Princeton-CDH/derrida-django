@@ -7,8 +7,16 @@
 
 @import "fonts/development";
 
+// Background Colors
 body {
 	background: $base-background-color;
+}
+
+.background-colored--light-navy {
+	background-color: $light-navy;
+	& > main {
+		color: $white;
+	}
 }
 
 .mdl-layout__header {
