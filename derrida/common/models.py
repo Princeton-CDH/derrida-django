@@ -4,6 +4,7 @@ from django.core.exceptions import ValidationError
 # abstract models with common fields to be
 # used as mix-ins
 
+
 class Named(models.Model):
     '''Abstract model with a 'name' field; by default, name is used as
     the string display.'''
