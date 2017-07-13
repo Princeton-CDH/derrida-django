@@ -17,10 +17,10 @@ INTERVENTION_TYPES = AttrDict({
 
 
 def get_default_intervener():
-    """Function to either return a :class:`~derrida.people.models.Person`
+    """Function to either return a the pk of a :class:`~derrida.people.models.Person`
     object representing Jacques Derrida if he exists in the database or None"""
     try:
-        return Person.objects.get(authorized_name='Derrida, Jacques')
+        return (Person.objects.get(authorized_name='Derrida, Jacques')).pk
     except ObjectDoesNotExist:
         return None
 

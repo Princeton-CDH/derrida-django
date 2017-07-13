@@ -6,8 +6,9 @@ from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.db.models import Q
 from djiffy import views as djiffy_views
 
-from derrida.books.models import Instance, Language
+from derrida.books.models import Language
 from derrida.interventions.models import Intervention
+from derrida.people.models import Person
 from .models import Tag, get_default_intervener
 
 
@@ -66,10 +67,11 @@ class CanvasDetail(LoginPermissionRequired, djiffy_views.CanvasDetail):
         context['languages_js'] = json.dumps(languages)
         # pass in default authorized name for Derrida, if he exists, else a
         # literal '' for annotator_init.html
-        derrida = get_default_intervener()
+        default_intervener_pk = get_default_intervener()
         context['default_intervener'] = json.dumps('')
-        if derrida:
-            context['default_intervener'] = json.dumps(derrida.authorized_name)
+        if default_intervener_pk:
+            context['default_intervener'] = json.dumps(
+                (Person.objects.get(pk=default_intervener_pk)).authorized_name)
         return context
 
 

@@ -564,7 +564,7 @@ class TestGetDefaultIntervener(TestCase):
         # if Derrida exists, the function retrieves his Person object
         derrida = get_default_intervener()
         assert derrida
-        assert derrida == self.derrida
+        assert derrida == self.derrida.pk
 
         # if he does not, it returns None to use as a default on the model
         self.derrida.delete()
