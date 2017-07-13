@@ -46,6 +46,12 @@ by default; use page_rdf_type to override with a webpage subclass.
         </div>
       </div>
     </header>
+    <div class="mdl-layout__drawer">
+      <span class="mdl-layout-title">Home</span>
+      <nav class="mdl-navigation">
+        <a class="mdl-navigation__link" href="{% url 'djiffy:list' %}">Books</a></li>
+      </nav>
+    </div>
 
   {% block message %}
     {% if messages %} {# default display of django messages, when present #}
