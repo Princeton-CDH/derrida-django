@@ -65,7 +65,7 @@ function annotatorInterventions(confs) {
        if (annotation[field_name] || annotation[field_name] == 0) {
           display_val = annotation[field_name];
           // convert to comma-delimited if list is configured
-          if (multiple) {
+          if (multiple && display_val.length) {
             display_val = display_val.join(', ') + ', ';
           }
         }
