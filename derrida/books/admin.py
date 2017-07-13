@@ -276,7 +276,7 @@ class PersonBookInline(CollapsibleTabularInline):
 
 class InstanceAdminForm(forms.ModelForm):
     '''Custom model form for Instance editing, used to add autocomplete
-    for publication place  lookup.'''
+    for publication place lookup.'''
     # override print date field to allow entering just year or year-month
     print_date = forms.DateField(
             input_formats=["%Y", "%Y-%m", "%Y-%m-%d"],
@@ -301,7 +301,7 @@ class InstanceAdmin(admin.ModelAdmin):
     date_hierarchy = 'print_date'
     list_display = ('display_title', 'author_names', 'copyright_year',
         'item_type', 'catalogue_call_numbers', 'is_extant', 'is_annotated',
-        'is_translation', 'has_notes')
+        'is_digitized', 'is_translation', 'has_notes')
     # NOTE: fields are specified here so that notes input will be displayed last
     fields = ('work', 'alternate_title', 'journal', 'publisher',
         'pub_place', 'copyright_year', 'print_date',
@@ -314,7 +314,7 @@ class InstanceAdmin(admin.ModelAdmin):
         'collected_in', 'digital_edition', 'notes')
     search_fields = ('alternate_title', 'work__primary_title',
         'work__authors__authorized_name', 'instancecatalogue__call_number',
-        'notes', 'publisher__name')
+        'notes', 'publisher__name', 'uri')
     # TODO: how to display sections collected by an instance?
     inlines = [ReferenceInline, InstanceCreatorInline, InstanceLanguageInline,
         InstanceCatalogueInline, PersonBookInline, FootnoteInline]

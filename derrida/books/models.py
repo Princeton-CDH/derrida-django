@@ -222,7 +222,8 @@ class Instance(Notable):
         blank=True)
 
     #: digital edition via IIIF as instance of :class:`djiffy.models.Manifest`
-    digital_edition = models.ForeignKey(Manifest, blank=True, null=True,
+    digital_edition = models.OneToOneField(Manifest, blank=True, null=True,
+        on_delete=models.SET_NULL,
         help_text='Digitized edition of this book, if available')
 
     # proof-of-concept generic relation to footnotes
@@ -246,6 +247,14 @@ class Instance(Notable):
         '''display title - alternate title or work short title'''
         return self.alternate_title or self.work.short_title or '[no title]'
     display_title.short_description = 'Title'
+
+    def is_digitized(self):
+        '''boolean indicator if there is an associated digital edition'''
+        return bool(self.digital_edition)
+    # technically sorts on the foreign key, but that effectively filters
+    # instances with/without digital additions
+    is_digitized.admin_order_field = 'digital_edition'
+    is_digitized.boolean = True
 
     @property
     def item_type(self):

@@ -17,6 +17,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='instance',
             name='digital_edition',
-            field=models.ForeignKey(blank=True, help_text='Digitized edition of this book, if available', null=True, on_delete=django.db.models.deletion.CASCADE, to='djiffy.Manifest'),
+            field=models.OneToOneField(blank=True, help_text='Digitized edition of this book, if available', null=True, on_delete=django.db.models.deletion.SET_NULL, to='djiffy.Manifest'),
         ),
     ]
