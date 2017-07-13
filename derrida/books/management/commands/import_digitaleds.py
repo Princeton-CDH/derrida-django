@@ -53,7 +53,7 @@ class DerridaManifestImporter(ManifestImporter):
         # link; for archival items, this is the finding aid url.
         findingaid_url = None
         for url in db_manifest.extra_data.keys():
-            if url.startswith('https://findingaids.princeton.edu'):
+            if 'findingaids.princeton.edu' in url:
                 findingaid_url = url
                 break
 
@@ -77,7 +77,7 @@ class DerridaManifestImporter(ManifestImporter):
                     (items.count(), findingaid_url))
                 self.stats['nomatch'] += 1
             else:
-                self.error_msg('. No matching instance for %s (%s)' % \
+                self.error_msg('No matching instance for %s (%s)' % \
                     (short_id, findingaid_url))
                 self.stats['nomatch'] += 1
 
@@ -108,13 +108,15 @@ class Command(BaseCommand):
         dmi = DerridaManifestImporter(stdout=self.stdout, stderr=self.stderr,
                                      style=self.style)
         dmi.import_paths(manifest_paths)
+        self.summarize(dmi.stats)
 
+    def summarize(self, stats):
         # briefly summarize what was done
-        print('\nURLs processed: %(urls)d' % dmi.stats)
-        if dmi.stats['manifests']:
-            print('Manifests imported: %(manifests)d' % dmi.stats)
-            if dmi.stats['nomatch']:
-                print('Manifests not matched to library work instances: %(nomatch)d' \
-                    % dmi.stats)
+        self.stdout.write('\nURLs processed: %(urls)d' % stats)
+        if stats['manifests']:
+            self.stdout.write('Manifests imported: %(manifests)d' % stats)
+            if stats['nomatch']:
+                self.stdout.write('Manifests not matched to library work instances: %(nomatch)d' \
+                    % stats)
 
 
