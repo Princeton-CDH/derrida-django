@@ -20,18 +20,16 @@ by default; use page_rdf_type to override with a webpage subclass.
     {% block javascript %}{% endblock %} {# add any additional javascript here #}
     {% block head_extras %}{% endblock %}  {# any header metadata, etc #}
   </head>
-  <body class="{% block body_class %}{% endblock %}"{% block body_attrs %}{% endblock %}>
-
-    <header class="mdl-layout__header mdl-layout__header--with-logo mdl-layout__header--transparent {{ headerClass }}">
+  <body class="mdl-layout mdl-js-layout has-drawer is-small-screen is-upgraded {% block body_class %}{% endblock %}"{% block body_attrs %}{% endblock %}>
+    <header class="mdl-layout__header mdl-layout__header--transparent {{ headerClass }}">
       <div class="mdl-layout__header-row">
-        <!-- Title -->
-        <a class="mdl-layout-title" href="{% url 'site-index' %}">{% block nav-title %}Home{% endblock %}</a>
-        <!-- Add spacer, to align navigation to the right -->
-        <div class="mdl-layout-spacer"></div>
+        <!-- Logo -->
+          <a class="mdl-layout-logo" href="{% url 'site-index' %}"><img src="{% static "img/margin-logo.png" %}"</a>
         <!-- Navigation -->
         <nav class="mdl-navigation">
+          <a class="mdl-navigation__link" href="{% url 'site-index' %}">{% block nav-title %}Home{% endblock %}</a>
           {% block navlinks %}
-          <a class="mdl-navigation__link" href="{% url 'djiffy:list' %}">Books</a></li>
+          <a class="mdl-navigation__link" href="{% url 'djiffy:list' %}">Books</a>
           {% endblock %}
           {% block admin-navlink %} {# adding block to allow override/disable #}
             {% if user.is_staff %}
