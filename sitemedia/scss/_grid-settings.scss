@@ -8,11 +8,12 @@ $neat-grid: (
   gutter: $gutter-size
 );
 
+$breakpoint: 650px;
 // Define grid for medium and large viewport
 $large-medium-viewport-grid: (
   columns: 12,
-  media: 735px
   gutter: $gutter-size,
+  media: $breakpoint
 );
 
 html, body {
