@@ -1,3 +1,37 @@
+// Site Navigation
+.mdl-layout__header {
+    display: block;
+		box-shadow: none;
+    background-color: $header-background-color;
+    color: $header-text-color;
+
+    &.mdl-layout__header--transparent {
+      background-color: transparent;
+    }
+
+    &, .mdl-layout-title {
+      font-family: $base-font-family;
+    }
+
+    &.mdl-layout__header--with-logo {
+        & ~ .mdl-layout__drawer-button {
+            opacity: 0;
+        }
+
+        &:before {
+            $logoSize: 56px;
+            content: '';
+            background-image: url(../img/margin-logo.png);
+            background-position: center;
+            background-size: contain;
+            background-repeat: no-repeat;
+            position: absolute;
+            width: $logoSize;
+            height: $logoSize;
+        }
+    }
+}
+
 .nav>li>a {
 	font-family: $heading-font-family;
 }
@@ -12,7 +46,6 @@
 }
 
 .mdl-layout__header-row {
-  background-color: $white;
   justify-content: space-between;
 }
 
@@ -70,8 +103,8 @@
 }
 
 @include grid-media($xlarge-viewport-grid) {
-	.mdl-layout__header .mdl-layout__header-row {
-		background: none;
+	.mdl-layout__header{
+		background-color: transparent;
 
 		.mdl-navigation__link {
 			display: none;
