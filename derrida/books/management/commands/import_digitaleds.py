@@ -71,9 +71,9 @@ class DerridaManifestImporter(ManifestImporter):
                 instance = items.first()
                 instance.digital_edition = db_manifest
                 instance.save()
-                self.output('. Associated %s with "%s"' % (short_id, instance))
+                self.output('  Associated %s with "%s"' % (short_id, instance))
             elif items.count() > 1:
-                self.error_msg('. Found %d matching instances for %s' % \
+                self.error_msg('  Found %d matching instances for %s' % \
                     (items.count(), findingaid_url))
                 self.stats['nomatch'] += 1
             else:
