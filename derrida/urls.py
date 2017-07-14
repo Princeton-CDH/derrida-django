@@ -14,6 +14,9 @@ urlpatterns = [
     # for now, since there is not yet any public-facing site,
     # redirect base url to admin index page
     url(r'^$', RedirectView.as_view(pattern_name='admin:index'), name='site-index'),
+    # placeholders for new design
+    url(r'^library/$', RedirectView.as_view(pattern_name='admin:index'), name='library'),
+    url(r'^citations/$', RedirectView.as_view(pattern_name='admin:index'), name='citations-list'),
     # # grappelli URLS for admin related lookups & autocompletes
     url(r'^grappelli/', include('grappelli.urls')),
 
