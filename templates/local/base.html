@@ -21,16 +21,14 @@ by default; use page_rdf_type to override with a webpage subclass.
     {% block head_extras %}{% endblock %}  {# any header metadata, etc #}
   </head>
   <body class="mdl-layout mdl-js-layout has-drawer is-small-screen is-upgraded {% block body_class %}{% endblock %}"{% block body_attrs %}{% endblock %}>
-    <header class="mdl-layout__header mdl-layout__header--transparent {{ headerClass }}">
+    <header class="mdl-layout__header {{ headerClass }}{% block header_class%}{% endblock %}">
       <div class="mdl-layout__header-row">
         <!-- Logo -->
-          <a class="mdl-layout-logo" href="{% url 'site-index' %}"><img src="{% static "img/margin-logo.png" %}"/></a>
+          <a class="mdl-layout-logo" href="{% url 'home' %}"><img src="{% static "img/margin-logo.png" %}"/></a>
         <!-- Navigation -->
         <nav class="mdl-navigation">
-          <a class="mdl-navigation__link" href="{% url 'site-index' %}">{% block nav-title %}Home{% endblock %}</a>
           {% block navlinks %}
-          <a class="mdl-navigation__link" href="{% url 'djiffy:list' %}">Visualization</a>
-          <a class="mdl-navigation__link" href="{% url 'djiffy:list' %}">Citation List</a>
+          {% include 'components/navlinks.html' %}
           {% endblock %}
           {% block admin-navlink %} {# adding block to allow override/disable #}
             {% if user.is_staff %}
@@ -48,15 +46,12 @@ by default; use page_rdf_type to override with a webpage subclass.
     <div class="mdl-layout__drawer">
       <span class="mdl-layout-title">Home</span>
       <nav class="mdl-navigation">
-        <a class="mdl-navigation__link" href="{% url 'djiffy:list' %}">Books</a></li>
+        {% include 'components/navlinks.html' %}
       </nav>
     </div>
 
     <div class="coordintate-navigation">
-      <a class="mdl-navigation__link" href="{% url 'site-index' %}">Derrida's Margins</a>
-      <a class="mdl-navigation__link" href="{% url 'djiffy:list' %}">Visualization</a>
-      <a class="mdl-navigation__link" href="{% url 'djiffy:list' %}">Citation List</a>
-      <a class="mdl-navigation__link" href="{% url 'djiffy:list' %}">Outwork</a>
+      {% include 'components/navlinks.html' %}
     </div>
 
   {% block message %}
