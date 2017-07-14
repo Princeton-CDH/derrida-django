@@ -8,7 +8,12 @@ from django.db import migrations, models
 import django.db.models.deletion
 import jsonfield.fields
 import uuid
+from django.core.management import call_command
 
+
+def load_initial_tags(apps, schema_editor):
+    call_command('loaddata', 'initial_tags', app_label='interventions',
+                 verbose=0)
 
 class Migration(migrations.Migration):
 
@@ -69,5 +74,10 @@ class Migration(migrations.Migration):
             model_name='intervention',
             name='user',
             field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL),
+        ),
+        # load an initial set of intervention tags
+        migrations.RunPython(
+            code=load_initial_tags,
+            reverse_code=migrations.RunPython.noop,
         ),
     ]
