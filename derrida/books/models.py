@@ -4,7 +4,7 @@ from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
 from django.urls import reverse
 from django.utils.safestring import mark_safe
-from djiffy.models import Manifest
+from djiffy.models import Canvas, Manifest
 from sortedm2m.fields import SortedManyToManyField
 
 from derrida.common.models import Named, Notable, DateRange
@@ -222,7 +222,8 @@ class Instance(Notable):
         blank=True)
 
     #: digital edition via IIIF as instance of :class:`djiffy.models.Manifest`
-    digital_edition = models.ForeignKey(Manifest, blank=True, null=True,
+    digital_edition = models.OneToOneField(Manifest, blank=True, null=True,
+        on_delete=models.SET_NULL,
         help_text='Digitized edition of this book, if available')
 
     # proof-of-concept generic relation to footnotes
@@ -246,6 +247,14 @@ class Instance(Notable):
         '''display title - alternate title or work short title'''
         return self.alternate_title or self.work.short_title or '[no title]'
     display_title.short_description = 'Title'
+
+    def is_digitized(self):
+        '''boolean indicator if there is an associated digital edition'''
+        return bool(self.digital_edition)
+    # technically sorts on the foreign key, but that effectively filters
+    # instances with/without digital additions
+    is_digitized.admin_order_field = 'digital_edition'
+    is_digitized.boolean = True
 
     @property
     def item_type(self):
@@ -425,10 +434,15 @@ class Reference(models.Model):
     reference_type = models.ForeignKey(ReferenceType)
     #: anchor text
     anchor_text = models.TextField(blank=True)
+    #: ManyToManyField to :class:`djiffy.models.Canvas`
+    canvases = models.ManyToManyField(Canvas, blank=True,
+        help_text="Scanned images from Derrida's Library | ")
+    #: ManyToManyField to :class:`derrida.interventions.Intervention`
+    interventions = models.ManyToManyField('interventions.Intervention',
+        blank=True)  # Lazy reference to avoid a circular import
 
     class Meta:
         ordering = ['derridawork', 'derridawork_page', 'derridawork_pageloc']
-
 
     def __str__(self):
         return "%s, %s%s: %s, %s, %s" % (

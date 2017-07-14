@@ -87,8 +87,9 @@ class TestBookViews(TestCase):
             msg_prefix='canvas url should be included once for each associated intervention')
         self.assertContains(response, 'Annotation', count=2,
             msg_prefix='intervention type should display for each item')
-        self.assertContains(response, 'Intervention', count=1,
-            msg_prefix='intervention type should display for each item')
+        self.assertContains(response, 'Intervention', count=3,
+            msg_prefix='intervention type should display for each item, once in'
+            ' the reference inline, and once in the hidden reference inline')
 
         for intervention in ivtns:
             self.assertContains(response, intervention.admin_thumbnail(),
@@ -98,7 +99,3 @@ class TestBookViews(TestCase):
             self.assertContains(response,
                 reverse('admin:interventions_intervention_change', args=[intervention.id]),
                 msg_prefix='should link to intervention edit page')
-
-
-
-

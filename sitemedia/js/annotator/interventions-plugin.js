@@ -58,13 +58,14 @@ function annotatorInterventions(confs) {
      * @param annotation
      * @param field_name
      * @param multiple (defaults to false)
+     * @param value - default value for the field (defaults to empty string)
      */
-    field_display_value: function(annotation, field_name, multiple=false) {
-      var display_val = '';
+    field_display_value: function(annotation, field_name, multiple=false, value=null) {
+       var display_val = value || '';
        if (annotation[field_name] || annotation[field_name] == 0) {
           display_val = annotation[field_name];
           // convert to comma-delimited if list is configured
-          if (multiple) {
+          if (multiple && display_val.length) {
             display_val = display_val.join(', ') + ', ';
           }
         }
@@ -102,8 +103,8 @@ function annotatorInterventions(confs) {
           // add the label for this field
           div.append($('<label/>').html(config.label));
           div.append($('<span/>'));
-          // insert before tag/footer
-          div.insertBefore(item.find('.annotator-tags'));
+
+          div.insertBefore(item.find('.annotator-tags, .annotation-footer')[0]);
         }
 
         span = div.find('span');
@@ -145,7 +146,6 @@ function annotatorInterventions(confs) {
           $.each(confs, function(index, config) {
             // update config with default field type
             config = $.extend({'type': 'input'}, config);
-
             // create new annotation editor field based on the config
             var field = editor.addField({
               // set input name based on field name
@@ -161,11 +161,17 @@ function annotatorInterventions(confs) {
                   var $input = $(field).find(config.type);
 
                   // store the field value in native form on input element data
-                  $input.data('value', annotation[config.name]);
+                  var value = annotation[config.name];
+                  // clear out input data value if not set on the annotation
+                  if (value == undefined) {
+                      $input.data('value', config.default || '');
+                  } else {
+                    $input.data('value', annotation[config.name]);
+                  }
 
-                  // set the input value
+                  // set the input display value
                   $input.val(interventions.field_display_value(annotation,
-                    config.name, config.list));
+                    config.name, config.list, config.default));
               },
               submit: function(field, annotation) {
                 // get the value from the form input and set it on the
@@ -191,14 +197,23 @@ function annotatorInterventions(confs) {
             input.before($('<label/>').html(config.label));
 
             // load select choices if configured
-            if (config.type == 'select' && config.choicesURL) {
-              // For now, choices are loaded via same json data used
-              // for autocomplete views
-              $.getJSON(config.choicesURL, function(data) {
-                  $.each(data.results, function(index, item) {
-                   input.append($('<option>', {value: item.text, text: item.text}))
+            if (config.type == 'select') {
+              // check first for a list of choices passed in
+              if (config.choices) {
+                $.each(config.choices, function(index, item) {
+                   input.append($('<option>', {value: item, text: item}))
                  });
-              });
+              // otherwise, load choices via url
+              } else if (config.choicesURL) {
+                // For now, choices are loaded via same json data used
+                // for autocomplete views
+                $.getJSON(config.choicesURL, function(data) {
+                    $.each(data.results, function(index, item) {
+                     input.append($('<option>', {value: item.text, text: item.text}))
+                   });
+                });
+              }
+
               // update stored data value when the selected value changes
               input.on('change', function() {
                  input.data('value', this.value);
@@ -225,7 +240,6 @@ function annotatorInterventions(confs) {
                       event.preventDefault();
                     },
                     open: function(event, ui) {
-                      console.log('open');
                       // annotator purposely sets the editor at a very high z-index;
                       // set autocomplete still higher so it isn't obscured by annotator buttons
                       $('.ui-autocomplete')
@@ -233,20 +247,35 @@ function annotatorInterventions(confs) {
                     },
                 });
 
-                // multi-item autocompletes need special handling to
-                // add selected item to the list of existing values
-                if (config.list) {
-                  input.autocomplete({
+                input.autocomplete({
                     select: function(event, ui) {
-                      interventions.multival_select($(this), ui.item.value);
-                      event.preventDefault();
+                      // multi-item autocompletes need special handling to
+                      // add selected item to the list of existing values
+                      if (config.list) {
+                        interventions.multival_select($(this), ui.item.value);
+                        event.preventDefault();
+                      } else {
+                        // single-item select still needs to update data
+                        $(this).data('value', ui.item.value);
+                      }
                     }
                   });
-                }
 
                 // Trigger autocomplete start on focus
                 input.bind('focus', function() {
                   $(this).autocomplete("search");
+                });
+
+                // make it possible to deselect autocomplete items
+                // if input is empty on focusout, clear saved data value
+                input.on('focusout', function() {
+                   if (this.value == '') {
+                      if (config.list) {
+                         input.data('value', []);
+                      } else {
+                         input.data('value', '');
+                      }
+                   }
                 });
 
             } // end config autocomplete

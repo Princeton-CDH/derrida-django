@@ -1,13 +1,16 @@
 import json
 from unittest.mock import Mock, patch
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Permission
 from django.test import TestCase
 from django.urls import reverse
 from djiffy.models import Canvas, Manifest
 
-from derrida.books.models import Language
-from .models import Tag, INTERVENTION_TYPES, Intervention
+from derrida.books.models import Instance, Language
+from derrida.people.models import Person
+from .models import Tag, INTERVENTION_TYPES, Intervention, get_default_intervener
 
 
 class TestTagQuerySet(TestCase):
@@ -41,7 +44,6 @@ class TestTagQuerySet(TestCase):
         assert insertion_tags.filter(name='post-it note').exists()
 
 
-
 class TestIntervention(TestCase):
 
     # def setUp(self):
@@ -51,6 +53,25 @@ class TestIntervention(TestCase):
         # self.author = Person.objects.create(authorized_name='Bar, Foo')
         # self.pb = PersonBook.objects.create(book=book, person=self.author,
         #     relationship_type=PersonBookRelationshipType.objects.get(pk=1))
+
+    def test_str(self):
+        # canvas automatically associated by uri on save
+        manif = Manifest.objects.create()
+        canvas = Canvas.objects.create(uri='http://so.me/iiif/id/',
+            order=0, manifest=manif, label='foo')
+        note = Intervention.objects.create(uri=canvas.uri)
+        # Minimum possible information, canvas
+        assert str(note) == 'Annotation with no text (foo)'
+        note.tags.set(Tag.objects.filter(name__in=['underlining', 'arrow']))
+        # Add tags
+        assert str(note) == ('Annotation with no text, tagged as '
+                             'arrow, underlining (foo)')
+        # Add text
+        note.text = 'text'
+        assert str(note) == 'text (foo)'
+        # Add quote
+        note.quote = 'quote'
+        assert str(note) == 'quote (foo)'
 
     def test_save(self):
         # canvas automatically associated by uri on save
@@ -154,6 +175,15 @@ class TestIntervention(TestCase):
         note.handle_extra_data({}, Mock())
         assert note.text_translation == ''
 
+        ### author ###
+        author = Person.objects.create(authorized_name='Derrida, Jacques')
+        # - if authorized_name matches, set
+        data = note.handle_extra_data({'author': author.authorized_name}, Mock())
+        assert note.author == author
+        # - if 'author' not in data, unset
+        data = note.handle_extra_data({}, Mock())
+        assert not note.author
+
     def test_info(self):
         note = Intervention.objects.create()
 
@@ -186,6 +216,15 @@ class TestIntervention(TestCase):
         note.text_translation = 'some translated text goes here'
         info = note.info()
         assert info['text_translation'] == note.text_translation
+
+        # author
+        # - not set, not included
+        info = note.info()
+        assert 'author' not in info
+        # - included when set
+        note.author = Person.objects.create(authorized_name='Derrida, Jacques')
+        info = note.info()
+        assert info['author'] == 'Derrida, Jacques'
 
     def test_iiif_image_selection(self):
         annotation = Intervention()
@@ -242,6 +281,11 @@ class TestInterventionViews(TestCase):
         self.admin = get_user_model().objects.create_superuser('testadmin',
             'test@example.com', self.password)
 
+        # create staff user to test logged in but no perms
+        self.staffer = get_user_model().objects.create_user('tester',
+            'tester@example.com', self.password, is_staff=True)
+
+
     def test_tag_autocomplete(self):
         tag_autocomplete_url = reverse('interventions:tag-autocomplete')
         result = self.client.get(tag_autocomplete_url,
@@ -275,7 +319,46 @@ class TestInterventionViews(TestCase):
         data = json.loads(result.content.decode('utf-8'))
         assert not data['results']
 
+    def test_iiif_permissions(self):
+        # iiif views of digitized content are restricted to users
+        # with appropriate permissions due to copyright concerns
+
+        manifest = Manifest.objects.create(short_id='foo')
+        canvas = Canvas.objects.create(short_id='bar', manifest=manifest,
+            order=0)
+
+        iiif_urls = [
+            reverse('djiffy:list'),
+            reverse('djiffy:manifest', kwargs={'id': manifest.short_id}),
+            reverse('djiffy:canvas',
+                kwargs={'manifest_id': manifest.short_id,
+                        'id': canvas.short_id}),
+            reverse('djiffy:canvas-autocomplete'),
+        ]
+
+        # without logging in, should get redirect to login page
+        for url in iiif_urls:
+            response = self.client.get(url)
+            assert response.status_code == 302
+            assert response.url == '%s?next=%s' % (settings.LOGIN_URL, url)
+
+        # logged in but insufficient privileges - 403 permission denied
+        self.client.login(username=self.staffer.username, password=self.password)
+        for url in iiif_urls:
+            assert self.client.get(url).status_code == 403
+
+        # logged in as admin - should be able to access the content
+        self.client.login(username=self.admin.username, password=self.password)
+        for url in iiif_urls:
+            assert self.client.get(url).status_code == 200
+
     def test_canvas_detail(self):
+        # login as an staff user without permission to view canvas
+        # but not add annotations
+        self.staffer.user_permissions.add(Permission.objects.get(codename='view_canvas'))
+
+        self.client.login(username=self.staffer.username, password=self.password)
+
         # canvas detail logic is tested in djiffy,
         # but test local customization to catch any
         # breaks in the template rendering
@@ -287,6 +370,7 @@ class TestInterventionViews(TestCase):
         canvas_url = reverse('djiffy:canvas',
             kwargs={'manifest_id': canvas.manifest.short_id, 'id': canvas.short_id})
         response = self.client.get(canvas_url)
+        assert response.status_code == 200
         self.assertTemplateUsed(response, 'djiffy/canvas_detail.html')
         self.assertNotContains(response, 'annotator.min.js',
             msg_prefix='Annotator not enabled for user without annotation add permission')
@@ -294,6 +378,13 @@ class TestInterventionViews(TestCase):
         # login as an admin user
         self.client.login(username=self.admin.username, password=self.password)
         response = self.client.get(canvas_url)
+
+        # check that languages are passed in to template via context
+        assert 'languages_js' in response.context
+
+        # check that derrida name is set in context
+        assert 'default_intervener' in response.context
+
         self.assertContains(response, 'css/derrida-annotator.css',
             msg_prefix='canvas detail page includes local annotator styles')
         self.assertContains(response, 'interventions-plugin.js',
@@ -312,4 +403,170 @@ class TestInterventionViews(TestCase):
             msg_prefix='annotator init includes language autocomplete url')
 
 
+class TestExtendedCanvasAutocomplete(TestCase):
 
+    fixtures = ['sample_work_data.json']
+
+    def setUp(self):
+        self.manif1 = Manifest.objects.create(short_id='bk123', label='Foobar')
+        self.pages = Canvas.objects.bulk_create([
+            Canvas(label='P1', short_id='pg1', order=0, manifest=self.manif1),
+            Canvas(label='P2', short_id='pg2', order=1, manifest=self.manif1),
+            Canvas(label='P3', short_id='pg3', order=2, manifest=self.manif1)
+        ])
+        self.manif2 = Manifest.objects.create(short_id='bk456', label='Book 2')
+        self.instance = Instance.objects.get(work__short_title__contains="La vie")
+
+        # create an admin user to test autocomplete views
+        self.password = 'pass!@#$'
+        self.admin = get_user_model().objects.create_superuser('testadmin',
+            'test@example.com', self.password)
+
+    def test_canvas_autocomplete(self):
+        canvas_autocomplete_url = reverse('djiffy:canvas-autocomplete')
+        # normal functionality NOT broken
+        self.client.login(username=self.admin.username, password=self.password)
+        response = self.client.get(canvas_autocomplete_url, {'q': 'p1'})
+        assert response.status_code == 200
+        data = json.loads(response.content.decode('utf-8'))
+        assert 'results' in data
+        assert data['results'][0]['text'] == str(self.pages[0])
+        # add a book instance pk to the result
+        # avoid params so as to simulate the get string that
+        # dal expects
+        response = self.client.get(
+            canvas_autocomplete_url,
+            {'q': 'p1', 'forward': ('{"instance": "%s"}' % self.instance.pk)}
+        )
+        assert response.status_code == 200
+
+        data = json.loads(response.content.decode('utf-8'))
+        # key exists
+        assert 'results' in data
+        # but it is empty because no instance is associated
+        assert not data['results']
+        # now try with an association set
+        self.instance.digital_edition = self.manif1
+        self.instance.save()
+        response = self.client.get(
+            canvas_autocomplete_url,
+            {'q': 'p1', 'forward': '{"instance": "%s"}' % self.instance.pk}
+        )
+        data = json.loads(response.content.decode('utf-8'))
+        assert 'results' in data
+        assert data['results'][0]['text'] == str(self.pages[0])
+
+
+class TestInterventionAutocomplete(TestCase):
+
+    fixtures = ['sample_work_data.json']
+
+    def setUp(self):
+        self.manif = Manifest.objects.create(short_id='bk123', label='Foobar')
+        self.manif2 = Manifest.objects.create(short_id='bk456', label='Baz')
+        self.canvas = Canvas.objects.create(
+            label='P1',
+            short_id='pg1',
+            order=0,
+            manifest=self.manif,
+            uri='http://so.me/iiif/id')
+        self.canvas2 = Canvas.objects.create(
+            label='P2',
+            short_id='pg2',
+            order=1,
+            manifest=self.manif2,
+            uri='http://so.me/iiif/id2',
+        )
+        self.instance = Instance.objects.get(work__short_title__contains="La vie")
+        self.instance.digital_edition = self.manif2
+        self.instance.save()
+        # create an admin user to test autocomplete views
+        self.password = 'pass!@#$'
+        self.admin = get_user_model().objects.create_superuser('testadmin',
+            'test@example.com', self.password)
+
+        self.note1 = Intervention.objects.create(uri=self.canvas.uri, canvas=self.canvas)
+        self.note2 = Intervention.objects.create(uri=self.canvas.uri, canvas=self.canvas)
+        self.note3 = Intervention.objects.create(uri=self.canvas2.uri, canvas=self.canvas2)
+
+    def test_intervention_autocomplete(self):
+
+        note1 = self.note1
+        note2 = self.note2
+        intervention_autocomplete_url = reverse('interventions:autocomplete')
+
+        # not logged in client can't have permissions
+        response = self.client.get(intervention_autocomplete_url)
+        assert response.status_code == 302
+
+        # logged in client has permission as superuser
+        self.client.login(username=self.admin.username, password=self.password)
+        response = self.client.get(intervention_autocomplete_url)
+        data = json.loads(response.content.decode('utf-8'))
+        assert response.status_code == 200
+        assert 'results' in data
+        # both notes should be returned
+        assert len(data['results']) == 3
+
+        # filterable notes, testing the text field lookups
+        note1.quote = 'test'
+        note2.quote = 'foo2'
+        note2.text_language = Language.objects.get(name='French')
+        note1.save()
+        note2.save()
+        # 'test' should return note1 but not note2
+        response = self.client.get(intervention_autocomplete_url, {'q': 'test'})
+        data = json.loads(response.content.decode('utf-8'))
+        assert 'results' in data
+        assert len(data['results']) == 1
+        assert data['results'][0]['text'] == 'test (P1)'
+
+        # testing fk lookups: 'French' should return note2 but not note 1
+        response = self.client.get(intervention_autocomplete_url, {'q': 'French'})
+        data = json.loads(response.content.decode('utf-8'))
+        assert 'results' in data
+        assert len(data['results']) == 1
+        assert str(data['results'][0]['text']) == 'foo2 (P1)'
+
+        # Test tag handling since it's a more complicated query
+        note1.quote = 'test2'
+        note1.save()
+        tags = Tag.objects.filter(name__in=['underlining', 'arrow'])
+        note1.tags.set(tags)
+        response = self.client.get(intervention_autocomplete_url, {'q': 'underlining'})
+        data = json.loads(response.content.decode('utf-8'))
+        assert 'results' in data
+        assert len(data['results']) == 1
+        assert data['results'][0]['text'] == ('test2 (P1)')
+
+        # Test instance handling - note3 is associated with the instance
+        note3 = self.note3
+        note3.quote = 'test3'
+        note3.save()
+        response = self.client.get(intervention_autocomplete_url,
+            {'forward': ('{"instance": "%s"}' % self.instance.pk)})
+        data = json.loads(response.content.decode('utf-8'))
+        assert response.status_code == 200
+        assert 'results' in data
+        # only note 3 should be returned
+        assert len(data['results']) == 1
+        assert data['results'][0]['text'] == ('test3 (P2)')
+
+
+class TestGetDefaultIntervener(TestCase):
+
+    def setUp(self):
+        self.derrida = Person.objects.create(
+                       authorized_name='Derrida, Jacques')
+
+    def test_get_default_intervener(self):
+
+        # if Derrida exists, the function retrieves his Person object
+        derrida = get_default_intervener()
+        assert derrida
+        assert derrida == self.derrida.pk
+
+        # if he does not, it returns None to use as a default on the model
+        self.derrida.delete()
+        derrida = get_default_intervener()
+        assert not derrida

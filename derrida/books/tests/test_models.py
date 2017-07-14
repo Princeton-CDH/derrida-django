@@ -2,9 +2,10 @@
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 from django.urls import reverse
+from djiffy.models import Manifest
 import pytest
 
-# All the models
+
 from derrida.places.models import Place
 from derrida.people.models import Person
 # Common models between projects and associated new types
@@ -176,6 +177,12 @@ class TestInstance(TestCase):
             la_vie.clean()
         assert 'Cannot belong to both a journal and a collection' in str(err)
 
+    def test_is_digitized(self):
+        la_vie = Instance.objects.get(work__short_title__contains="La vie")
+        assert not la_vie.is_digitized()
+
+        la_vie.digital_edition = Manifest()
+        assert la_vie.is_digitized()
 
 class TestWorkLanguage(TestCase):
     fixtures = ['sample_work_data.json']

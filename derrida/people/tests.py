@@ -19,6 +19,7 @@ except ImportError:
 # Get the fixtures dir for this app
 FIXTURES_PATH = os.path.join(settings.BASE_DIR, 'derrida/people/fixtures')
 
+
 class TestPerson(TestCase):
     def setUp(self):
         """Load the sample XML file and pass to the TestCase object"""
@@ -51,6 +52,7 @@ class TestPerson(TestCase):
             viaf_id='http://notviaf/viaf/0000/')
         assert pers.birth == 1800
         assert pers.death == 1900
+
 
 class TestResidence(TestCase):
 
@@ -118,7 +120,6 @@ class TestRelationship(TestCase):
 
         query = son.from_relationships.all()
         assert not query
-
 
 
 class TestViafAPI(TestCase):
@@ -196,12 +197,12 @@ class TestPersonAutocomplete(TestCase):
 
     def setUp(self):
         User = get_user_model()
-        user = User.objects.create_superuser(
+        User.objects.create_superuser(
             username='test',
             password='secret',
             email='foo@bar.com'
         )
-        person = Person.objects.create(
+        Person.objects.create(
             authorized_name='Mr. Author'
         )
 

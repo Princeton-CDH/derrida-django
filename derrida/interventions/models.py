@@ -1,12 +1,12 @@
 from attrdict import AttrDict
 from annotator_store.models import BaseAnnotation
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from djiffy.models import Canvas
 
 from derrida.common.models import Named, Notable
 from derrida.books.models import Language
-# from derrida.people.models import Person
-
+from derrida.people.models import Person
 
 #: intervention type codes to distinguish annotations and insertions
 INTERVENTION_TYPES = AttrDict({
@@ -14,6 +14,16 @@ INTERVENTION_TYPES = AttrDict({
     'INSERTION': 'I',
     'BOTH': 'AI',
 })
+
+
+def get_default_intervener():
+    """Function to either return a the pk of a :class:`~derrida.people.models.Person`
+    object representing Jacques Derrida if he exists in the database or None"""
+    try:
+        return (Person.objects.get(authorized_name='Derrida, Jacques')).pk
+    except ObjectDoesNotExist:
+        return None
+
 
 
 class TagQuerySet(models.QuerySet):
@@ -55,7 +65,7 @@ class Intervention(BaseAnnotation):
         default=INTERVENTION_TYPES.ANNOTATION,
     )
 
-    #: associated IIIF :cjass:`djiffy.models.Canvas` for interventions
+    #: associated IIIF :class:`djiffy.models.Canvas` for interventions
     #: related to an image
     canvas = models.ForeignKey(Canvas, null=True, blank=True)
     #: Tags to describe the intervention and its characteristics;
@@ -72,9 +82,36 @@ class Intervention(BaseAnnotation):
     #: language of the quoted text or anchor text (i.e. :attr:`quote`)
     quote_language = models.ForeignKey(Language, null=True, blank=True,
             help_text='Language of the anchor text', related_name='+')
+    #: Associated author, instance of :class:`~derrida.people.models.Person`
+    author = models.ForeignKey(Person, null=True, blank=True,
+        default=get_default_intervener)
 
-    # todo
-    # author = models.ForeignKey(Person, null=True, blank=True)
+    def __str__(self):
+        """Override str to make sure that something is displayed
+        for Django admin and autocompletes"""
+        if not self.quote and not self.text:
+            string = '%s with no text' % self.get_intervention_type_display()
+            if self.tags.all():
+                tag_names = ', '.join(
+                    sorted([tag.name for tag in self.tags.all()])
+                )
+                string = '%s, tagged as %s' % (string, tag_names)
+        # Organize so that self.quote is set if it exists
+        if self.text:
+            string = self.text
+        if self.quote:
+            string = self.quote
+        # If there's an associated canvas, supply that
+        if self.canvas:
+            string = '%s (%s)' % (string, self.canvas.label)
+        return string
+
+    class Meta:
+        # extend default permissions to add a view option
+        # change_annotation and delete_annotation provided by django
+        permissions = (
+            ('view_intervention', 'View intervention'),
+        )
 
     def save(self, *args, **kwargs):
         # for image annotation, URI should be set to canvas URI; look up
@@ -140,6 +177,16 @@ class Intervention(BaseAnnotation):
         if self._state.adding:
             super(Intervention, self).save()
 
+        # Add author if in the annotation
+        if 'author' in data:
+            try:
+                self.author = Person.objects.get(authorized_name=data['author'])
+            except ObjectDoesNotExist:
+                self.author = None
+        # If it doesn't exist, also explicitly set None to avoid default
+        else:
+            self.author = None
+
         # Set any tags that are passed if they already exist in the db
         # (tag vocabulary is enforced; unrecognized tags are ignored)
         if 'tags' in data:
@@ -186,5 +233,8 @@ class Intervention(BaseAnnotation):
             info['quote_language'] = self.quote_language.name
         if self.text_translation:
             info['text_translation'] = self.text_translation
+        # author - display author name
+        if self.author:
+            info['author'] = self.author.authorized_name
 
         return info
