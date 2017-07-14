@@ -2,9 +2,9 @@
 
 ## Requirements
 These are the requirements needed to compile the styles used by this project.
-* Sass
-* Bourbon
-* Neat
+* [Sass](http://sass-lang.com/)
+* [Bourbon](https://github.com/thoughtbot/bourbon)
+* [Neat](https://github.com/thoughtbot/neat)
 
 ### File Structure
 This project depends on Bourbon and Neat libraries to be installed and located in the `sitemedia/scss` folder.
@@ -36,3 +36,12 @@ To generate a compressed version of the styles, use the command:
 `sass --scss -t compressed site.scss ../css/local.min.css`
 
 This will compile the scss file `style.scss` into css, minify the css, and move it to the css folder. Changes made to the scss file will not be reflected until that command is executed.
+
+
+## Conventions for Development
+
+### Structure 
+The scaffold styles, variables, and other Sass resources are located in the `base` directory and follows the conventions defined by [Bitters](https://github.com/thoughtbot/bitters). The base directory contain styles for all the basic elements used throughout the project and is accessed by importing `base/base` on the main stylesheet.
+
+### Naming
+This project follows the [Block-Element-Modifier, or BEM](http://getbem.com/introduction/) methodology for delcaring CSS names and structuring style rules. In general, BEM recommends avoiding nested, global, and compound selectors unless they are reasonablely reusable. Classes use a single hyphen (`-`) for single block class names (e.g. `my-block`), two underlines `__` to indicate children relationships (e.g. `my-block__button`), and two hyphens for modifiers (e.g. `my-block__button--success`).
