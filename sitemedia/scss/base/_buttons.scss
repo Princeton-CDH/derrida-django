@@ -42,9 +42,6 @@ $_button-background-color-hover: shade($action-color, 20%);
   }
 }
 
-/*
- * MDL Buttons
- *
-*/
- 
-.mdl-button--fab.mdl-button--colored {    background-color: $_button-background-color;    &:hover, &:active, &:focus, &:focus:not(:active) {        background-color: $_button-background-color-hover;    }}
+// MDL Buttons
+
+.mdl-button--fab.mdl-button--colored {  background-color: $_button-background-color;  &:hover,  &:active,  &:focus,  &:focus:not(:active) {    background-color: $_button-background-color-hover;  }}

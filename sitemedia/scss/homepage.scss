@@ -10,14 +10,14 @@
 
   .credits__name {
     & + .credits__role {
-        margin-top: 1em;
+      margin-top: 1em;
     }
   }
 
   article {
-    margin-right: $gutter-size;
     display: inline-block;
     margin-bottom: 10rem;
+    margin-right: $gutter-size;
     margin-top: 5rem;
     transition: margin-top 0.5s ease;
 
@@ -40,7 +40,8 @@
     max-width: 40rem;
   }
 
-  header, section {
+  header,
+  section {
     @include grid-column(4);
   }
 
@@ -49,7 +50,8 @@
   }
 
   @include grid-media($large-medium-viewport-grid) {
-    header, section {
+    header,
+    section {
       @include grid-column(8);
       @include grid-shift(4);
     }

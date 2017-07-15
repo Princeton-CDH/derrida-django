@@ -9,24 +9,25 @@
 
 // Background Colors
 body {
-	background: $base-background-color;
+  background: $base-background-color;
 }
 
 .background-colored--light-navy {
-	background-color: $light-navy;
-	& > main {
-		color: $white;
-	}
+  background-color: $light-navy;
+
+  & > main {
+    color: $white;
+  }
 }
 
 .mdl-layout__header {
-	margin-bottom: 0.7em;
+  margin-bottom: 0.7em;
 }
 
 .grid-container {
-	& > .container {
-		min-height: 50vh;
-	}
+  & > .container {
+    min-height: 50vh;
+  }
 }
 
 // Home Page style
