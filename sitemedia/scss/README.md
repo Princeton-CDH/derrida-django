@@ -45,3 +45,6 @@ The scaffold styles, variables, and other Sass resources are located in the `bas
 
 ### Naming
 This project follows the [Block-Element-Modifier, or BEM](http://getbem.com/introduction/) methodology for delcaring CSS names and structuring style rules. In general, BEM recommends avoiding nested, global, and compound selectors unless they are reasonablely reusable. Classes use a single hyphen (`-`) for single block class names (e.g. `my-block`), two underlines `__` to indicate children relationships (e.g. `my-block__button`), and two hyphens for modifiers (e.g. `my-block__button--success`).
+
+### Scss Linter
+[scss-lint](https://github.com/brigade/scss-lint) is used to help keep the SCSS files clean and readable. The linting rules for this project can be found in the configuration file `.scss-lint.yml` within the `scss` folder.
