@@ -38,6 +38,7 @@
 }
 
 .mdl-navigation__link {
+  font-family: $heading-font-family;
   opacity: 0.8;
 
   &:hover,
@@ -125,7 +126,6 @@
     }
 
     .mdl-navigation__link {
-      font-family: $heading-font-family;
       font-weight: bold;
       -webkit-font-smoothing: antialiased;
       opacity: 1;
