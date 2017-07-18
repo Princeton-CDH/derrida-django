@@ -2,21 +2,6 @@
 
 {% load admin_static i18n admin_modify admin_urls grp_tags %}
 
-
-{% block stylesheets %}
-  {{ block.super }}
-  <style>
-    /* Manifest targets placeholder text of canvases' input */
-    input[placeholder~="manifest"] {
-        width: 898px !important;
-    }
-
-    input[placeholder~="intervention"] {
-        width: 898px !important;
-    }
-  </style>
-{% endblock %}
-
 {% block after_related_objects %}
 
 <div class="inline-group grp-group grp-tabular">
