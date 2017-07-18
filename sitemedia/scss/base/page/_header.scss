@@ -26,21 +26,14 @@
   color: $base-font-color;
   background: $white;
   font-size: 0.75rem;
-  max-width: 35em;
-  width: 100%;
   padding: 1.5em 2em 0;
-  margin-left: 0;
+  align-self: flex-start;
   position: absolute;
   bottom: 3rem;
-
-  transition: margin-left 0.5s ease;
+  @include grid-column(3);
 
   @include grid-media($large-medium-viewport-grid) {
-    margin-left: -8rem;
-  }
-
-  @media only screen and (min-width: $xl-breakpoint) {
-    margin-left: -15rem;
+    @include grid-column(6);
   }
 
   .lead {
