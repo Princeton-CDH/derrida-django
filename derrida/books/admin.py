@@ -131,10 +131,17 @@ class ReferenceInline(admin.StackedInline):
                     'derridawork_page',
                     'derridawork_pageloc',
                     'book_page',
-                    'canvases',
-                    'interventions',
                     'reference_type',
                 )
+        }),
+        ('Inteventions and Annotations', {
+            'fields': (
+                'canvases',
+                'interventions',
+                ),
+            'description': ('<strong>Canvases and interventions are associated'
+                            ' with the selected digital volume'
+                            ' only.</strong>'),
         }),
         ('Anchor Text', {
             'fields': ('anchor_text',)
@@ -161,11 +168,18 @@ class ReferenceAdmin(admin.ModelAdmin):
                     'derridawork_page',
                     'derridawork_pageloc',
                     'instance',
-                    'canvases',
-                    'interventions',
                     'book_page',
                     'reference_type',
                 )
+        }),
+        ('Inteventions and Annotations', {
+            'fields': (
+                'canvases',
+                'interventions',
+                ),
+            'description': ('<strong>Canvases and interventions are associated'
+                            ' with the selected digital volume'
+                            ' only.</strong>'),
         }),
         ('Anchor Text', {
             'fields': ('anchor_text',)
