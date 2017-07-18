@@ -1,0 +1,45 @@
+.collection {
+  background: transparent;
+}
+
+.collection__item {
+  @include grid-column(2);
+  color: $base-font-color;
+  font-family: $heading-font-family;
+  margin-bottom: 5em;
+
+  @include grid-media($large-medium-viewport-grid) {
+    @include grid-column(3);
+  }
+
+  @include grid-media($xlarge-viewport-grid) {
+    @include grid-column(3);
+  }
+}
+
+.item__heading {
+  font-size: 1.4rem;
+  font-weight: 700;
+  font-style: italic;
+  margin-top: 0.6em;
+}
+
+.item__heading,
+.item__author {
+  margin-bottom: 0;
+}
+
+.item__author,
+.item__date {
+  font-size: 1.3rem;
+}
+
+.item__date {
+  line-height: 1;
+  margin-bottom: 1.2em;
+}
+
+.item__image {
+  width: 100%;
+  height: auto;
+}
