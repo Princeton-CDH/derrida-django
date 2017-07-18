@@ -101,7 +101,7 @@ class ReferenceModelForm(forms.ModelForm):
                 attrs={
                     'data-placeholder': 'Type a page or manifest label to '
                                         'search',
-                    'data-width': '900px'
+                    'data-width': '900px',
                 },
                 forward=[forward.Field('instance')],
             ),
@@ -134,7 +134,7 @@ class ReferenceInline(admin.StackedInline):
                     'reference_type',
                 )
         }),
-        ('Inteventions and Annotations', {
+        ('Inteventions and Canvases', {
             'fields': (
                 'canvases',
                 'interventions',
@@ -172,7 +172,7 @@ class ReferenceAdmin(admin.ModelAdmin):
                     'reference_type',
                 )
         }),
-        ('Inteventions and Annotations', {
+        ('Inteventions and Canvases', {
             'fields': (
                 'canvases',
                 'interventions',
