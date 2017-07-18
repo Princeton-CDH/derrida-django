@@ -1,5 +1,7 @@
 .collection {
-  background: transparent;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
 }
 
 .collection__item {
