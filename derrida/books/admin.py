@@ -117,6 +117,12 @@ class ReferenceModelForm(forms.ModelForm):
         }
 
 
+REFERENCE_LOOKUP_TEXT = ('<strong>Lookup is restricted to items associated'
+                         ' with the digital edition for the referenced'
+                         ' work. If the work has no digital edition,'
+                         ' lookup is disabled.</strong>')
+
+
 class ReferenceInline(admin.StackedInline):
     '''Stacked inline for reference to give adequate room for the anchor_text
     editor'''
@@ -134,14 +140,12 @@ class ReferenceInline(admin.StackedInline):
                     'reference_type',
                 )
         }),
-        ('Inteventions and Canvases', {
+        ('Interventions and Canvases', {
             'fields': (
                 'canvases',
                 'interventions',
                 ),
-            'description': ('<strong>Canvases and interventions are associated'
-                            ' with the selected digital volume'
-                            ' only.</strong>'),
+            'description': REFERENCE_LOOKUP_TEXT,
         }),
         ('Anchor Text', {
             'fields': ('anchor_text',)
@@ -172,14 +176,12 @@ class ReferenceAdmin(admin.ModelAdmin):
                     'reference_type',
                 )
         }),
-        ('Inteventions and Canvases', {
+        ('Interventions and Canvases', {
             'fields': (
                 'canvases',
                 'interventions',
                 ),
-            'description': ('<strong>Canvases and interventions are associated'
-                            ' with the selected digital volume'
-                            ' only.</strong>'),
+            'description': REFERENCE_LOOKUP_TEXT,
         }),
         ('Anchor Text', {
             'fields': ('anchor_text',)
