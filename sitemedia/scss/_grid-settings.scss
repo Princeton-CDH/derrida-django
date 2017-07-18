@@ -11,13 +11,6 @@ $neat-grid: (
 $medium-breakpoint: 650px;
 $xl-breakpoint: 1080px;
 
-// Define grid for small viewport
-$small-viewport-grid: (
-  columns: 4,
-  gutter: $gutter-size,
-  media: $medium-breakpoint
-);
-
 // Medium and large viewport
 $large-medium-viewport-grid: (
   columns: 12,

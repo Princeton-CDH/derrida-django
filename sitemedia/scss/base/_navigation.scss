@@ -77,7 +77,7 @@
   text-align: center;
 }
 
-@include grid-media($small-viewport-grid) {
+@include grid-media($large-medium-viewport-grid) {
   .mdl-layout-logo {
     flex-grow: 0;
   }
