@@ -5,18 +5,9 @@
 }
 
 .collection__item {
-  @include grid-column(2);
   color: $base-font-color;
   font-family: $heading-font-family;
   margin-bottom: 5em;
-
-  @include grid-media($large-medium-viewport-grid) {
-    @include grid-column(3);
-  }
-
-  @include grid-media($xlarge-viewport-grid) {
-    @include grid-column(3);
-  }
 }
 
 .item__heading {
@@ -44,4 +35,24 @@
 .item__image {
   width: 100%;
   height: auto;
+}
+
+.collection {
+  .collection__item {
+    @include grid-column(4);
+
+    @include grid-media($large-medium-viewport-grid) {
+      @include grid-column(6);
+    }
+  }
+}
+
+.collection--condensed {
+  .collection__item {
+    @include grid-column(2);
+
+    @include grid-media($large-medium-viewport-grid) {
+      @include grid-column(3);
+    }
+  }
 }
