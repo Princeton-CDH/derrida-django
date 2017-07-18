@@ -1,0 +1,51 @@
+.page-header {
+  background: $grey-200;
+
+  @include grid-media($xlarge-viewport-grid) {
+    margin-top: -$header-row-height;
+    transition: margin-top 0.5s ease;
+  }
+}
+
+.page-header__container {
+  min-height: 50vh;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  position: relative;
+}
+
+.page-header__heading {
+  font-size: 1.6rem;
+  margin-top: 1rem;
+  color: $blue;
+  font-weight: 700;
+}
+
+.page-header__callout {
+  color: $base-font-color;
+  background: $white;
+  font-size: 0.75rem;
+  max-width: 35em;
+  width: 100%;
+  padding: 1.5em 2em 0;
+  margin-left: 0;
+  position: absolute;
+  bottom: 3rem;
+
+  transition: margin-left 0.5s ease;
+
+  @include grid-media($large-medium-viewport-grid) {
+    margin-left: -8rem;
+  }
+
+  @media only screen and (min-width: $xl-breakpoint) {
+    margin-left: -15rem;
+  }
+
+  .lead {
+    line-height: 1.2;
+    font-weight: 700;
+    font-size: 1.6em;
+  }
+}
