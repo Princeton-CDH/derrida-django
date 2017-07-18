@@ -14,20 +14,11 @@ body {
 
 .background-colored--light-navy {
   background-color: $light-navy;
-
-  & > main {
-    color: $white;
-  }
 }
 
-.mdl-layout__header {
-  margin-bottom: 0.7em;
-}
-
-.grid-container {
-  & > .container {
-    min-height: 50vh;
-  }
+main {
+  color: $white;
+  flex-grow: 2;
 }
 
 // Home Page style
