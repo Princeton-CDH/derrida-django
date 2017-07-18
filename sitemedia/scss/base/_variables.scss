@@ -44,6 +44,7 @@ $secondary-background-color: tint($base-border-color, 75%);
 // Header and Tab Colors
 $header-background-color: $white;$header-text-color: $dark-grey;
 $header-accent-color: $cdh-blue;
+$header-row-height: 64px;
 
 // Focus
 $focus-outline-color: transparentize($action-color, 0.4);

@@ -49,6 +49,7 @@
 }
 
 .mdl-layout__header-row {
+  height: $header-row-height;
   justify-content: space-between;
 
   & > .mdl-navigation {
