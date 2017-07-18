@@ -24,12 +24,12 @@
 
 
 {% block extrastyle %}
-    <link rel="stylesheet" type="text/css" href="{% static "css/local.css" %}" />
+    {% include 'snippets/local_styles.html' %}
     <link rel="stylesheet" type="text/css" href="{% static "css/test-banner.css" %}" />
 {% endblock %}
 
 {% block extrahead %}
     {{ block.super }}
+    <script src="{% static 'js/material.min.js' %}"></script>
     <script src="{% static 'js/local.js' %}"></script>
 {% endblock %}
-

@@ -1,0 +1,162 @@
+// Site Navigation
+.mdl-layout__header {
+  display: block;
+  box-shadow: none;
+  background-color: $header-background-color;
+  color: $header-text-color;
+
+  &.mdl-layout__header--transparent {
+    background-color: transparent;
+  }
+
+  &,
+  .mdl-layout-title {
+    font-family: $base-font-family;
+  }
+
+  &.mdl-layout__header--with-logo {
+    & ~ .mdl-layout__drawer-button {
+      opacity: 0;
+    }
+
+    &::before {
+      $logo-size: 56px;
+      content: "";
+      background-image: url("../img/margin-logo.png");
+      background-position: center;
+      background-size: contain;
+      background-repeat: no-repeat;
+      position: absolute;
+      width: $logo-size;
+      height: $logo-size;
+    }
+  }
+}
+
+.nav>li>a {
+  font-family: $heading-font-family;
+}
+
+.mdl-navigation__link {
+  opacity: 0.8;
+
+  &:hover,
+  &:active {
+    opacity: 1;
+    text-decoration: none;
+  }
+}
+
+.mdl-layout__header-row {
+  justify-content: space-between;
+
+  & > .mdl-navigation {
+    display: none;
+  }
+}
+
+.mdl-layout__drawer-button,
+.mdl-layout__header-row .mdl-navigation__link {
+  color: $header-text-color;
+  font-size: 1.15em;
+  font-weight: 600;
+}
+
+.mdl-layout__header-row--aligned-left {
+  .mdl-layout-spacer {
+    display: none;
+  }
+}
+
+.mdl-layout__tab-bar-button {
+  background: none;
+}
+
+.mdl-layout-logo {
+  flex-grow: 2;
+  text-align: center;
+}
+
+@include grid-media($small-viewport-grid) {
+  .mdl-layout-logo {
+    flex-grow: 0;
+  }
+
+  .mdl-layout__drawer-button {
+    display: none;
+  }
+
+  .mdl-layout__header-row {
+    padding: 0 $gutter-size;
+
+    & > .mdl-navigation {
+      display: flex;
+      justify-content: center;
+    }
+  }
+}
+
+.coordintate-navigation {
+  display: none;
+}
+
+@include grid-media($xlarge-viewport-grid) {
+  .mdl-layout__header {
+    background-color: transparent;
+
+    .mdl-navigation__link {
+      display: none;
+    }
+
+    .background-colored--dark & {
+      .mdl-textfield .mdl-button {
+        color: $white;
+      }
+    }
+  }
+
+  .coordintate-navigation {
+    display: block;
+
+    .background-colored--dark & {
+      .mdl-navigation__link {
+        color: $white;
+      }
+    }
+
+    .mdl-navigation__link {
+      font-family: $heading-font-family;
+      font-weight: bold;
+      -webkit-font-smoothing: antialiased;
+      opacity: 1;
+      padding: 0;
+      font-size: 1.6em;
+      position: absolute;
+      width: 12rem;
+      white-space: nowrap;
+
+      &:nth-child(1),
+      &:nth-child(2) {
+        left: 0;
+        transform: rotateZ(-90deg) translate(-6rem, -4rem);
+      }
+
+      &:nth-child(3),
+      &:nth-child(4) {
+        right: 0;
+        text-align: right;
+        transform: rotateZ(90deg) translate(2rem, -4rem);
+      }
+
+      &:nth-child(1),
+      &:nth-child(3) {
+        top: 10%;
+      }
+
+      &:nth-child(2),
+      &:nth-child(4) {
+        top: 60%;
+      }
+    }
+  }
+}

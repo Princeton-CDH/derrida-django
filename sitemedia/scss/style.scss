@@ -1,0 +1,34 @@
+@import "normalize";
+@import "bourbon/bourbon";
+@import "grid-settings";
+@import "neat/neat";
+@import "base/base";
+@import "version";
+
+@import "fonts/development";
+
+// Background Colors
+body {
+  background: $base-background-color;
+}
+
+.background-colored--light-navy {
+  background-color: $light-navy;
+
+  & > main {
+    color: $white;
+  }
+}
+
+.mdl-layout__header {
+  margin-bottom: 0.7em;
+}
+
+.grid-container {
+  & > .container {
+    min-height: 50vh;
+  }
+}
+
+// Home Page style
+@import "homepage";

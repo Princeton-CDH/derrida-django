@@ -1,0 +1,40 @@
+{% extends 'djiffy/base.html' %}
+{% load static %}
+
+{% block body_class %}background-colored--light-navy background-colored--dark{% endblock %}
+
+{% block content %}
+<div class="container" id="homepage">
+  <article>
+    <header>
+      <h1>Derrida’s Margins</h1>
+      <p class="lead">An online research tool for Derrida’s annotations that provides a behind-the-scenes look at his reading practices and the philosophy of deconstruction</p>
+    </header>
+    <section>
+      <p>“Derrida’s Margins” aims to create a website and online research tool for annotations from the Library of Jacques Derrida, housed at Princeton University Library. Jacques Derrida is one of the major figures of twentieth-century thought, and his library – which bears the traces of decades of close reading--represents a major intellectual archive. This phase focuses on annotations related to Derrida’s landmark 1967 work De la grammatologie (Of Grammatology). It was in Of Grammatology that Derrida first articulated a new style of critical reading, which would become the foundation of the philosophy of “deconstruction.”</p>
+      <p>Our online research tool will enable scholars to study the development of this philosophy in an unprecedented way by providing comprehensive digital access to the material annotations, marginalia, bookmarks, and other notes from Derrida’s library that correspond to each quotation and citation in Of Grammatology. We begin by identifying all quotations and references in Of Grammatology; we then locate these references in Derrida’s copies the works, transcribing all marginal annotations and other markings, and limiting ourselves to the parts of those works that are explicitly referenced. Digital images and transcriptions of these annotated pages will form the basis of the website, allowing users to go “behind the scenes” of Derrida’s reading practices. This corpus will also serve as a pilot data set for future work, allowing us to establish protocols, workflow, and a relational database model.</p>
+    </section>
+
+    <aside>
+      <dl class="credits">
+        <dt class="credits__role">Project Director</dt>
+        <dd class="credits__name">Katie Chenoweth</dd>
+
+        <dt class="credits__role">Project Manager</dt>
+        <dd class="credits__name">Alex Raiffe</dd>
+
+        <dt class="credits__role">Consultant</dt>
+        <dd class="credits__name">Jean Bauer</dd>
+
+        <dt class="credits__role">Graduate Research Assistant</dt>
+        <dd class="credits__name">Chloé Vettier</dd>
+        <dd class="credits__name">Chad Cordova</dd>
+
+        <dt class="credits__role">Advisor</dt>
+        <dd class="credits__name">Avital Ronell</dd>
+        <dd class="credits__name">Eduardo Cadava</dd>
+      </dl>
+    </aside>
+  </article>
+</div>
+{% endblock %}

@@ -1,9 +1,10 @@
-{% extends 'djiffy/base.html' %}
+{% extends 'local/base.html' %}
 {% load static %}
 
 {% block head_extras %}
-    <link rel="stylesheet" type="text/css" href="{% static "css/local.css" %}" />
+    {% include 'snippets/local_styles.html' %}
     <link rel="stylesheet" type="text/css" href="{% static "css/test-banner.css" %}" />
+    <script src="{% static 'js/material.min.js' %}"></script>
     {# Include analytics if INCLUDE_ANALYTICS is set to True #}
     {# {% include 'snippets/analytics.html' %} #}
 {% endblock %}
