@@ -34,6 +34,8 @@ urlpatterns = [
     url(r'^annotations/api', annotator_views.AnnotationIndex.as_view(), name='annotation-api-prefix'),
 
     url(r'^index', TemplateView.as_view(template_name='public/index.html'), name="home"),
+    url(r'^library', TemplateView.as_view(template_name='public/library.html'), name="library"),
+    url(r'^citations', TemplateView.as_view(template_name='public/citations.html'), name="citations-list"),
 ]
 
 # NOTE: for some reason this isn't getting added automatically
