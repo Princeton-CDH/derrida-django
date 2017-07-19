@@ -1,3 +1,5 @@
+import json
+
 from django.db import models
 from django.contrib.contenttypes.fields import GenericRelation
 from django.core.validators import RegexValidator
@@ -462,3 +464,15 @@ class Reference(models.Model):
         return snippet
     anchor_text_snippet.short_description = 'Anchor Text'
     anchor_text.admin_order_field = 'anchor_text'
+
+
+    def get_autocomplete_instances(self):
+        '''Returns a list of :class:`Instance` primary keys as JSON for
+        jQuery use disabling or enabling the autocompletes for
+        :class:`~derrida.interventions.models.Canvas` and
+        :class:`~derrida.interventions.models.Interventions`
+        '''
+        valid_instance_pks = Instance.objects.exclude(
+                                digital_edition__isnull=True
+                             ).values_list('id', flat=True).order_by('id')
+        return json.dumps(valid_instance_pks[::1])

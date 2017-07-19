@@ -4,7 +4,7 @@ from django.test import TestCase
 from django.urls import reverse
 from djiffy.models import Manifest
 import pytest
-
+import json
 
 from derrida.places.models import Place
 from derrida.people.models import Person
@@ -13,7 +13,7 @@ from derrida.books.models import CreatorType, Publisher, OwningInstitution, \
     Journal, DerridaWork, Reference, \
     ReferenceType, Work, Instance, InstanceCatalogue, WorkLanguage, \
     InstanceLanguage, Language, WorkSubject, Subject
-
+from derrida.interventions.models import Canvas
 
 class TestOwningInstitution(TestCase):
     fixtures = ['sample_work_data.json']
@@ -77,23 +77,47 @@ class TestDerridaWork(TestCase):
 class TestReference(TestCase):
     fixtures = ['sample_work_data.json']
 
+    def setUp(self):
+        self.manif = Manifest.objects.create()
+        self.la_vie = Instance.objects.get(work__short_title__contains="La vie")
+        self.dg = DerridaWork.objects.get(pk=1)
+        self.quotation = ReferenceType.objects.get(name='Quotation')
+
     def test_str(self):
-        la_vie = Instance.objects.get(work__short_title__contains="La vie")
-        dg = DerridaWork.objects.get(pk=1)
-        quotation = ReferenceType.objects.get(name='Quotation')
         # Writing this out because complicated output
         desired_output = 'De la grammatologie, 110a: %s, 10s, Quotation' % \
-            la_vie.display_title()
+            self.la_vie.display_title()
         reference = Reference.objects.create(
-            instance=la_vie,
-            derridawork=dg,
+            instance=self.la_vie,
+            derridawork=self.dg,
             derridawork_page='110',
             derridawork_pageloc='a',
             book_page='10s',
-            reference_type=quotation
+            reference_type=self.quotation
         )
         assert str(reference) == desired_output
 
+    def test_valid_autocompletes(self):
+        la_vie = self.la_vie
+        reference = Reference.objects.create(
+            instance=la_vie,
+            derridawork=self.dg,
+            derridawork_page='110',
+            derridawork_pageloc='a',
+            book_page='10s',
+            reference_type=self.quotation
+        )
+
+        # no instances have associated canvases so this should return an
+        # empty list as a JSON string
+        data = reference.get_autocomplete_instances()
+        assert json.loads(data) == []
+
+        # add a canvas to la_vie, then it should appear in the list
+        la_vie.digital_edition = self.manif
+        la_vie.save()
+        data = reference.get_autocomplete_instances()
+        assert json.loads(data) == [la_vie.pk]
 
 class TestWork(TestCase):
     fixtures = ['sample_work_data.json']
@@ -252,7 +276,3 @@ class TestInstanceCatalogue(TestCase):
         # with dates
         inst_cat.start_year = 1891
         assert str(inst_cat) == '%s / %s (1891-)' % (la_vie, inst_cat.institution)
-
-
-
-
