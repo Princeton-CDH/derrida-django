@@ -27,6 +27,10 @@
   margin-bottom: 5em;
   padding-bottom: 2rem;
   border-bottom: 1px solid $blue;
+
+  .collection--condensed & {
+    border-bottom: 0;
+  }
 }
 
 .item__heading {
