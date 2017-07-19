@@ -20,3 +20,25 @@ textarea {
 .mdl-textfield__input {
   border-bottom-color: $action-color;
 }
+
+.mdl-switch__track {
+  width: 32px;
+  height: 18px;
+}
+
+.mdl-switch__thumb {
+  left: 1px;
+  top: 6px;
+  height: 16px;
+  width: 16px;
+
+  &,
+  .mdl-switch.is-checked & {
+    background: $white;
+    box-shadow: none;
+  }
+
+  .mdl-switch.is-checked & {
+    left: 15px;
+  }
+}
