@@ -4,28 +4,6 @@
 
 {% block javascripts %}
  {{ block.super }}
-<script>
-  // Shim to disable canvases and interventions if instance is not selected
-  function toggleReferenceAutocompletes() {
-    // Check if there is an instance selected
-    if ($('#id_instance option:selected').val() == "") {
-      // If not, disable canvas and intervention fields
-      $('#id_canvases').attr('disabled', true);
-      $('#id_interventions').attr('disabled', true);
-    } else {
-      // If so, enable them
-      $('#id_canvases').removeAttr('disabled', true);
-      $('#id_interventions').removeAttr('disabled', true);
-    }
-  }
-
-  $(document).ready(function() {
-      toggleReferenceAutocompletes()
-      $("#id_instance").change(function() {
-        toggleReferenceAutocompletes()
-      })
-  });
-</script>
-
-
+ {# include shim to disable autocompletes that depend on a digital edition #}
+<script src='/static/js/reference-instance-canvas-toggle.js'></script>
 {% endblock %}

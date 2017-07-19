@@ -91,7 +91,7 @@ class ReferenceModelForm(forms.ModelForm):
             'canvases',
             'interventions',
             'reference_type',
-            'anchor_text'
+            'anchor_text',
         )
         widgets = {
             'anchor_text': MeltdownTextAreaWidget(attrs={'class':
@@ -122,6 +122,8 @@ REFERENCE_LOOKUP_TEXT = ('<strong>Lookup is restricted to items associated'
                          ' work. If the work has no digital edition,'
                          ' lookup is disabled.</strong>')
 
+INSTANCE_ADDITION = ('<br /> <strong>Please add a digital edition and save'
+                     ' first to enable editing.</strong>')
 
 class ReferenceInline(admin.StackedInline):
     '''Stacked inline for reference to give adequate room for the anchor_text
@@ -130,6 +132,7 @@ class ReferenceInline(admin.StackedInline):
     form = ReferenceModelForm
     extra = 1
     classes = ('grp-collapse grp-open',)
+    readonly_fields = ('get_autocomplete_instances', )
     fieldsets = (
         ('Citation Information', {
                 'fields': (
@@ -145,7 +148,7 @@ class ReferenceInline(admin.StackedInline):
                 'canvases',
                 'interventions',
                 ),
-            'description': REFERENCE_LOOKUP_TEXT,
+            'description': REFERENCE_LOOKUP_TEXT + INSTANCE_ADDITION,
         }),
         ('Anchor Text', {
             'fields': ('anchor_text',)
@@ -165,6 +168,7 @@ class ReferenceAdmin(admin.ModelAdmin):
     list_filter = ['derridawork', 'reference_type']
     search_fields = ['anchor_text']
     # *almost* the same as ReferenceInline.fieldsets (adds instance)
+    readonly_fields = ('get_autocomplete_instances', )
     fieldsets = (
         ('Citation Information', {
                 'fields': (
@@ -186,8 +190,16 @@ class ReferenceAdmin(admin.ModelAdmin):
         ('Anchor Text', {
             'fields': ('anchor_text',)
         }),
+        # This field set provides hidden info for the reference admin to search
+        # for instances by their primary key in jQuery as a hidden field and
+        # applies a local CSS class to hide it.
+        # NOTE: This field is a callable, so it can't be included in the
+        # ModelForm so as to be given a HiddenInput
+        ('Hidden Info', {
+            'fields': ('get_autocomplete_instances', ),
+            'classes': ('hidden-admin-info', ),
+        })
     )
-
 
 class PersonBookAdmin(admin.ModelAdmin):
     # NOTE: person-book is editable on the book page, but exposing as a

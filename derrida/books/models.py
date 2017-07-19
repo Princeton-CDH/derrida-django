@@ -465,14 +465,17 @@ class Reference(models.Model):
     anchor_text_snippet.short_description = 'Anchor Text'
     anchor_text.admin_order_field = 'anchor_text'
 
-
     def get_autocomplete_instances(self):
         '''Returns a list of :class:`Instance` primary keys as JSON for
-        jQuery use disabling or enabling the autocompletes for
+        jQuery use in disabling or enabling the autocompletes for
         :class:`~derrida.interventions.models.Canvas` and
-        :class:`~derrida.interventions.models.Interventions`
+        :class:`~derrida.interventions.models.Interventions` on the change_form
+        for :class:`Reference`.
+
+        :return: Returns a JSON formatted array
+        :rtype: str
         '''
         valid_instance_pks = Instance.objects.exclude(
                                 digital_edition__isnull=True
                              ).values_list('id', flat=True).order_by('id')
-        return json.dumps(valid_instance_pks[::1])
+        return json.dumps(list(valid_instance_pks))

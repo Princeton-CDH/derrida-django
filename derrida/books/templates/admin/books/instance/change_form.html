@@ -2,14 +2,19 @@
 
 {% load admin_static i18n admin_modify admin_urls grp_tags %}
 
-{% block after_related_objects %}
-
-{% block styles %}
+{% block stylesheets %}
   {{ block.super }}
   <link rel="stylesheet" type="text/css" href="/static/css/book-reference-local.css" />
 {% endblock %}
 
+{% block javascripts %}
+{{ block.super }}
+ {# include shim to disable autocompletes that depend on a digital edition #}
+ <script src='/static/js/reference-instance-canvas-toggle.js'></script>
+{% endblock %}
 
+
+{% block after_related_objects %}
 <div class="inline-group grp-group grp-tabular">
     <h2 class="grp-collapse-handler">Interventions</h2>
 
