@@ -8,11 +8,15 @@
 }
 
 .page-header__container {
-  min-height: 60vh;
+  min-height: 300px;
   display: flex;
   align-items: center;
   flex-direction: column;
   position: relative;
+
+  @media screen and (min-height: 500px) {
+    min-height: 60vh;
+  }
 }
 
 .page-header__heading {
