@@ -24,11 +24,12 @@
 
 .collection__item {
   color: $base-font-color;
-  margin-bottom: 5em;
-  padding-bottom: 2rem;
+  margin-bottom: 2rem;
+  padding-bottom: 2.5rem;
   border-bottom: 1px solid $blue;
 
   .collection--condensed & {
+    padding-bottom: 2rem;
     border-bottom: 0;
   }
 }
