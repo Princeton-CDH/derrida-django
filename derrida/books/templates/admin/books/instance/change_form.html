@@ -4,6 +4,12 @@
 
 {% block after_related_objects %}
 
+{% block styles %}
+  {{ block.super }}
+  <link rel="stylesheet" type="text/css" href="/static/css/book-reference-local.css" />
+{% endblock %}
+
+
 <div class="inline-group grp-group grp-tabular">
     <h2 class="grp-collapse-handler">Interventions</h2>
 
