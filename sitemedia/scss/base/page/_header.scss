@@ -36,6 +36,18 @@
     @include grid-column(6);
   }
 
+  .callout__link {
+    color: $medium-grey;
+    opacity: 0.8;
+    text-decoration: none;
+    border-bottom: 3px solid lighten($base-font-color, 50%);
+
+    &:hover,
+    &:active {
+      opacity: 1;
+    }
+  }
+
   .lead {
     line-height: 1.2;
     font-weight: 700;
