@@ -52,9 +52,5 @@ $(document).ready(function() {
   // bind to the change event on #id_instance for the Reference change_form
   $("#id_instance").change(function() {
     toggleReferenceAutocompletes();
-  })
-  // bind to the change event on #digital_edition for the Instance change_form
-  $("#id_digital_edition").change(function() {
-    toggleReferenceAutocompletes();
-  })
+  });
 });
