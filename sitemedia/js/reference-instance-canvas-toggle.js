@@ -55,7 +55,7 @@ function toggleReferenceAutocompletes() {
     */
     // if #id_instance exists and is in the array or check or
     // if #digital_edition exists and is set
-    if (pkInArray == 0 || (digitalEdFlag != "" && digitalEdFlag != undefined)) {
+    if (pkInArray != -1 || (digitalEdFlag != "" && digitalEdFlag != undefined)) {
       $('select[id*="canvases"]').removeAttr('disabled', true);
       $('select[id*="interventions"]').removeAttr('disabled', true);
     }
@@ -70,5 +70,5 @@ $(document).ready(function() {
     toggleReferenceAutocompletes();
   });
   // Do NOT bind on page load for Instance change_form, since autocompletes need
-  // a saved instance to be accruate. 
+  // a saved instance to be accruate.
 });
