@@ -130,6 +130,13 @@ class Intervention(BaseAnnotation):
                 pass
         super(Intervention, self).save()
 
+    def is_verbal(self):
+        return bool(self.text)
+    # Sorts on the binary of whether an intervention does or does not
+    # have text
+    is_verbal.boolean = True
+    is_verbal.admin_order_field = 'text'
+
     def is_annotation(self):
         return self.intervention_type == TYPES.ANNOTATION
 
