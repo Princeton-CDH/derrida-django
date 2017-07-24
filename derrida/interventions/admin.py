@@ -68,8 +68,8 @@ class InterventionAdminForm(forms.ModelForm):
 class InterventionAdmin(AnnotationAdmin):
     form = InterventionAdminForm
     filter_horizontal = ('tags', )
-    list_display = ('admin_thumbnail', 'intervention_type', 'text_preview',
-        'canvas', 'is_verbal')
+    list_display = ('admin_thumbnail', 'intervention_type', 'is_verbal',
+     'text_preview', 'canvas')
     # NOTE: 'quote' == anchor text, and should be editable
     readonly_fields = ('uri', 'extra_data')
 
