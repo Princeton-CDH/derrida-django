@@ -1,0 +1,6 @@
+vars:
+  gitref: "{{ ref | default('master') }}"
+  prod: '/srv/www/prod'
+  repo: 'derrida-django'
+  djangoapp: 'derrida'
+  deploy: '{{ prod }}/{{ shorthash.stdout }}'
