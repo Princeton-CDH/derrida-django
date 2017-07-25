@@ -1,0 +1,77 @@
+{% load static %} {% comment %}
+NOTE: This site uses RDFa and schema.org vocabulary.  Every page will be declared as schema:Webpage
+by default; use page_rdf_type to override with a webpage subclass.
+{% endcomment %}
+<!DOCTYPE html>
+<html lang="en" xmlns:schema="http://schema.org/" xmlns:og="http://ogp.me/ns#">
+  <head>
+    <title>{% block page-title %}{% block page-subtitle %}{% endblock %}{% endblock %}</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    {% block metadata %}{% endblock %}
+
+    <!-- styles -->
+    {% block css %}{% endblock %} {# add any local css here #}
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery.min.js"></script>
+
+    {% block javascript %}{% endblock %} {# add any additional javascript here #}
+    {% block head_extras %}{% endblock %}  {# any header metadata, etc #}
+  </head>
+  <body class="mdl-layout mdl-js-layout has-drawer is-small-screen is-upgraded {% block body_class %}{% endblock %}"{% block body_attrs %}{% endblock %}>
+    <header class="mdl-layout__header {{ headerClass }}{% block header_class%}{% endblock %}">
+      <div class="mdl-layout__header-row">
+        <!-- Logo -->
+          <a class="mdl-layout-logo" href="{% url 'home' %}"><img src="{% static "img/margin-logo.png" %}"/></a>
+        <!-- Navigation -->
+        <nav class="mdl-navigation">
+          {% block navlinks %}
+          {% include 'components/navlinks.html' %}
+          {% endblock %}
+          {% block admin-navlink %} {# adding block to allow override/disable #}
+            {% if user.is_staff %}
+              <a class="mdl-navigation__link admin-link" href="{% block admin-url %}{% url 'admin:index' %}{% endblock %}"><span>Admin</span></a>
+            {% endif %}
+          {% endblock %}
+          {% block navbar-extra %}{% endblock %}
+        </nav>
+        <!-- Search Form -->
+        <div class="header__search-form">
+          {% include "components/search-bar.html" %}
+        </div>
+      </div>
+    </header>
+    <div class="mdl-layout__drawer">
+      <span class="mdl-layout-title">Home</span>
+      <nav class="mdl-navigation">
+        {% include 'components/navlinks.html' %}
+      </nav>
+    </div>
+
+    <div class="coordintate-navigation">
+      {% include 'components/navlinks.html' %}
+    </div>
+
+  {% block message %}
+    {% if messages %} {# default display of django messages, when present #}
+    <div class="messages">
+        {% for message in messages %} {# should work for success, info, warning #}
+        {% if message.level_tag %} {# since django 1.7 #}
+        <p {% if message.tags %} class="{{ message.level_tag }}"{% endif %}>{{ message|safe }}</p>
+        {% else %}
+        <p {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message|safe }}</p>
+        {% endif %}
+        {% endfor %}
+    </div>
+    {% endif %}
+  {% endblock %}
+
+    <main class="grid-container">
+      {% block content %}{% endblock %}
+    </main>
+
+  {% include 'components/footer.html' %}
+  </body>
+</html>

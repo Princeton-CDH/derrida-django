@@ -1,0 +1,88 @@
+html, body {
+  color: $base-font-color;
+  font-family: $base-font-family;
+  font-size: $base-font-size;
+  font-weight: $base-font-weight;
+  line-height: $base-line-height;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: $heading-font-family;
+  font-weight: $heading-font-weight;
+  font-size: modular-scale(1);
+  line-height: $heading-line-height;
+  margin: 0 0 $small-spacing;
+
+  .dashboard & {
+    font-family: $base-font-family;
+  }
+}
+
+h1 {
+  font-size: modular-scale(5);
+}
+
+h2 {
+  font-size: modular-scale(4);
+}
+
+h3 {
+  font-size: modular-scale(3);
+}
+
+h4 {
+  font-size: modular-scale(2);
+}
+
+h5,
+h6 {
+  font-family: $base-font-family;
+}
+
+h6 {
+  font-weight: 600;
+}
+
+h6, p {
+  line-height: $base-line-height;
+}
+
+p {
+  font-size: modular-scale(0);
+  margin: 0 0 $small-spacing;
+}
+
+.lead {
+  font-size: modular-scale(2);
+  font-family: $heading-font-family;
+  font-style: italic;
+  font-weight: $heading-font-weight;
+}
+
+a {
+  color: $action-color;
+  text-decoration-skip: ink;
+  transition: color $base-duration $base-timing;
+
+  &:hover {
+    color: shade($action-color, 25%);
+  }
+
+  &:focus {
+    outline: $focus-outline;
+    outline-offset: $focus-outline-offset;
+  }
+}
+
+hr {
+  border-bottom: $base-border;
+  border-left: 0;
+  border-right: 0;
+  border-top: 0;
+  margin: $base-spacing 0;
+}

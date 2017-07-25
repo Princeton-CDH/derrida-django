@@ -1,0 +1,7 @@
+img,
+picture,
+.image {
+  margin: 0;
+  max-width: 100%;
+}.image--pull-left {  float: left;  margin-right: 1em;}.image--pull-right {  float: right;  margin-left: 1em;}figure {
+  margin: 0;  display: block;  text-align: center;  figcaption {    font-style: italic;    opacity: 0.6;  }}
