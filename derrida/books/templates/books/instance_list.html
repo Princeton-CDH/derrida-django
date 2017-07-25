@@ -1,0 +1,43 @@
+{% extends 'djiffy/base.html' %}
+{% load static %}
+{% block content %}
+  <div class="container" id="book-list">
+    <article>
+    <h1>Browse the Works</h1>
+    {% for instance in object_list %}
+    <header>
+        <h3>{{ instance.work.primary_title }}</h3>
+        {% if instance.digital_edition %}
+          <a class="pull-left" href="{{ instance.digital_edition.get_absolute_url }}">
+        {% if instance.digital_edition.thumbnail %}
+          <img class="media-object cover-mini-thumb" src="{{ instance.digital_edition.thumbnail.image.mini_thumbnail }}"/>
+        {% endif %}
+          </a>
+        {% endif %}
+    </header>
+      <br />
+      <dl class='credits'>
+
+      <dt class='credits__role'>Author(s)</dt>
+      <dr class='credits__name'>
+          {% for author in instance.work.authors.all %}
+            {% if not forloop.last %}
+              {{ author.authorized_name }};
+            {% else %}
+              {{ author.authorized_name }}
+            {% endif %}
+          {% endfor %}
+      </dr>
+      {% if instance.copyright_year %}
+      <dt class='credits__role'>Year</dt>
+      <dr class='credits__name'>{{ instance.copyright_year }}<dr>
+      {% endif %}
+      {# Include copy once that field is added to Instance #}
+    </dl>
+    <br />
+  {% endfor %}
+</article>
+</div>
+
+
+{% endblock %}
