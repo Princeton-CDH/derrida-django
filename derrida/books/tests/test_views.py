@@ -9,6 +9,32 @@ from derrida.books.models import Publisher, Instance
 from derrida.interventions.models import Intervention, INTERVENTION_TYPES
 
 
+class TestInstanceViews(TestCase):
+    fixtures = ['sample_work_data.json']
+
+    def setUp(self):
+
+        la_vie = Instance.objects.get(work__primary_title__icontains='la vie')
+        for i in range(1, 20):
+            la_vie.pk = None
+            la_vie.save()
+
+    def test_instance_list_view(self):
+        list_view_url = reverse('books:list')
+        # an anonymous user can see the view
+        response = self.client.get(list_view_url)
+        assert response.status_code == 200
+        # an object list is returned
+        assert 'object_list' in response.context
+        # Should find 16 objects and a paginator in context
+        assert len(response.context['object_list']) == 16
+        assert 'page_obj' in response.context
+        page_obj = response.context['page_obj']
+        assert page_obj
+        assert page_obj.paginator.page_range == range(1, 3)
+        assert page_obj.number == 1
+
+
 class TestBookViews(TestCase):
     fixtures = ['sample_work_data.json', 'test_canvas_data.json']
 
