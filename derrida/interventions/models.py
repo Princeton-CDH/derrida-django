@@ -25,7 +25,6 @@ def get_default_intervener():
         return None
 
 
-
 class TagQuerySet(models.QuerySet):
     '''Custom :class:`~django.db.models.QuerySet` for :class`Tag` to
     make it easy to find tags that apply to a particular kind of

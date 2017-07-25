@@ -15,15 +15,12 @@ urlpatterns = [
     # redirect base url to admin index page
     url(r'^$', RedirectView.as_view(pattern_name='admin:index'), name='site-index'),
     # placeholders for new design
-    url(r'^library/$', RedirectView.as_view(pattern_name='admin:index'), name='library'),
     url(r'^citations/$', RedirectView.as_view(pattern_name='admin:index'), name='citations-list'),
     # # grappelli URLS for admin related lookups & autocompletes
     url(r'^grappelli/', include('grappelli.urls')),
 
     url(r'^admin/', admin.site.urls),
     url(r'^accounts/', include('pucas.cas_urls')),
-    url(r'^books/', include('derrida.books.urls', namespace='books')),
-    # QUESTION: Do we want to replace books or just duplicate the routes or...?
     url(r'^library/', include('derrida.books.urls', namespace='books')),
     url(r'^people/', include('derrida.people.urls', namespace='people')),
     url(r'^places/', include('derrida.places.urls', namespace='places')),
