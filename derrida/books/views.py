@@ -25,7 +25,9 @@ class LanguageAutocomplete(autocomplete.Select2QuerySetView):
 
 class InstanceListView(ListView):
     '''View that provides a paginated, potentially filterable list of
-    :class:`~derrida.books.models.Instance`'''
+    :class:`~derrida.books.models.Instance`. Users pagination functionality
+    provided by :class:`~django.views.generic.ListView` to provide pagination
+    by query string `?page=`'''
 
     model = Instance
     paginate_by = 16
