@@ -48,7 +48,7 @@ $header-accent-color: $cdh-blue;
 $header-row-height: 64px;
 
 // Focus
-$focus-outline-color: transparentize($action-color, 0.4);
+$focus-outline-color: rgba($action-color, 0.4);
 $focus-outline-width: 3px;
 $focus-outline: $focus-outline-width solid $focus-outline-color;
 $focus-outline-offset: 2px;
@@ -56,3 +56,21 @@ $focus-outline-offset: 2px;
 // Animations
 $base-duration: 150ms;
 $base-timing: ease;
+
+// Text Fields
+$input-text-background-color: transparent;
+$input-text-label-color: rgba($black, 0.26);
+$input-text-bottom-border-color: rgba($black, 0.1);
+$input-text-highlight-color: $primary-color;
+$input-text-disabled-color: $input-text-bottom-border-color;
+$input-text-disabled-text-color: $input-text-label-color;
+$input-text-error-color: $error-red;
+
+$input-text-font-size: 1em;
+$input-text-width: 100%;
+$input-text-padding: em(4px);
+$input-text-vertical-spacing: 1.1em;
+
+$input-text-button-size: em(32px);
+$input-text-floating-label-fontsize: 0.8em;
+$input-text-expandable-icon-top: 1em;
