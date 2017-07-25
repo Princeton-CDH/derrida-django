@@ -6,7 +6,7 @@ from djiffy.models import Manifest
 import json
 
 from derrida.people.models import Person
-from derrida.books.models import Publisher, Instance, Work
+from derrida.books.models import Instance, Work
 from derrida.interventions.models import Intervention, INTERVENTION_TYPES
 
 

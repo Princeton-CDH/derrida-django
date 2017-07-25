@@ -4,6 +4,7 @@ from .models import Publisher, Language, Instance
 
 from django.views.generic import ListView
 
+
 class PublisherAutocomplete(autocomplete.Select2QuerySetView):
     '''Basic publisher autocomplete lookup, for use with
     django-autocomplete-light.  Restricted to staff only.'''
@@ -30,4 +31,5 @@ class InstanceListView(ListView):
     paginate_by = 16
 
     def get_queryset(self):
-        return super(InstanceListView, self).get_queryset().order_by('work__authors__authorized_name')
+        instances = super(InstanceListView, self).get_queryset()
+        return instances.order_by('work__authors__authorized_name')
