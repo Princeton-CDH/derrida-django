@@ -1,0 +1,29 @@
+.pagination {
+  padding: 0 $gutter-size 8em;
+
+  .step-links {
+    float: right;
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: row;
+    align-items: center;
+    color: $base-font-color;
+  }
+}
+
+.pagination__page-link {
+  text-decoration: none;
+  color: $base-font-color;
+  padding: 5px 2px 0;
+}
+
+.pagination__page-link--current {
+  color: $primary-color;
+  border-bottom: 3px solid;
+}
+
+.pagination__nav-link .md-icon {
+  font-size: 1em;
+  line-height: 2em;
+  padding: 0 0.5em;
+}
