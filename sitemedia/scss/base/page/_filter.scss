@@ -1,4 +1,80 @@
 .page-filter {
   background: $white;
   color: $base-font-color;
+
+  .container {
+    width: 80%;
+    margin: auto;
+  }
+}
+
+.filter__section {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  padding-bottom: 1em;
+}
+
+.filter__selector {
+  padding: 0 1rem;
+  flex-grow: 2;
+  flex-basis: 200px;
+
+  @include grid-media($large-medium-viewport-grid) {
+    max-width: 50%;
+  }
+
+  &.filter__selector--condensed {
+    flex-grow: 1;
+    flex-basis: 130px;
+  }
+}
+
+.page-filter__header {
+  padding: 1rem 1rem 0;
+  color: $medium-grey;
+
+  p {
+    font-weight: 300;
+  }
+}
+
+.page-filter__footer {
+  background-color: $base-background-color;
+  border-top: 0.5em solid $white;
+  text-align: center;
+}
+
+.toggle-button {
+  background: $white;
+  padding: 0 2em;
+  margin-bottom: 1.2rem;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  color: $blue;
+
+  &:focus {
+    outline: 0;
+  }
+
+  &:hover,
+  &:active {
+    background: $light-grey;
+  }
+
+  .md-icon--hide {
+    display: show;
+
+    .is-visible & {
+      display: none;
+    }
+  }
+
+  .md-icon--show {
+    display: none;
+
+    .is-visible & {
+      display: block;
+    }
+  }
 }
