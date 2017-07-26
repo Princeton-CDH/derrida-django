@@ -1,0 +1,22 @@
+@mixin page-navigation-links() {
+  font-weight: 300;
+  color: $medium-grey;
+  opacity: 0.8;
+  line-height: 1;
+  text-decoration: none;
+  border-bottom: 3px solid lighten($base-font-color, 50%);
+
+  transition: color $base-duration $base-timing, border-color $base-duration $base-timing;
+
+  &:hover,
+  &:active {
+    opacity: 1;
+    border-color: rgba($primary-color, 0.5);
+  }
+
+  @at-root #{&}--active {
+    opacity: 1;
+    color: $base-font-color;
+    border-color: $primary-color;
+  }
+}
