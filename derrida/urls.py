@@ -36,6 +36,12 @@ urlpatterns = [
     url(r'^index', TemplateView.as_view(template_name='public/index.html'), name="home"),
     url(r'^library', TemplateView.as_view(template_name='public/library.html'), name="library"),
     url(r'^visualization', TemplateView.as_view(template_name='public/visualization.html'), name="visualization"),
+
+    url(r'^book/bibliography', TemplateView.as_view(template_name='public/item/bibliography.html'), name="bibliography"),
+    url(r'^book/image-gallery', TemplateView.as_view(template_name='public/item/image-gallery.html'), name="image-gallery"),
+    url(r'^book/citation-view', TemplateView.as_view(template_name='public/item/citation-list.html'), name="citation-view"),
+    url(r'^book', TemplateView.as_view(template_name='public/item/bibliography.html'), name="book"),
+
     url(r'^citations', TemplateView.as_view(template_name='public/citations.html'), name="citations-list"),
 ]
 

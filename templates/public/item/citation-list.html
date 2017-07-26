@@ -1,0 +1,29 @@
+{% extends 'djiffy/base.html' %}
+{% load static %}
+
+{% block nav-title %} Derrida's Library {% endblock %}
+
+{% block page-context-id %}item{% endblock %}
+
+{% block content %}
+  <header class="page-header page-header--link">
+    <div class="container">
+      <h1 class="page-header__heading"><a href="{% url 'library' %}"><i class="material-icons">arrow_back</i> Derrida's Library</a></h1>
+    </div>
+  </header>
+  <article class="item">
+    <div class="container">
+      <header class="item-header">
+        <img class="item-header__image" src="{% static "img/margin-logo.png" %}" />
+        <h1 class="item-title">La pensée sauvage</h1>
+        <p class="item-author">Claude Lévi-Strauss</p>
+        <p class="item-pages">1962 · A</p>
+      </header>
+
+      <section class="item-section">
+        {% include "components/item-navigation-tabs.html" with is_citation=True %}
+        <p>Citation View</p>
+      </section>
+    </div>
+  </article>
+{% endblock %}
