@@ -10,6 +10,10 @@ $selectize-padding-x: 4px;
 $selectize-padding-dropdown-item-y: 5px;
 $selectize-color-dropdown-border-top: #eee;
 
+.selectize-control {
+  height: 2.2em;
+}
+
 .selectize-dropdown {
   .optgroup-header {
     padding-top: 5px;
@@ -34,7 +38,7 @@ $selectize-color-dropdown-border-top: #eee;
   width: 100%;
   max-width: 100%;
   margin: 0;
-  padding: $input-text-vertical-spacing 0;
+  padding: 1.3em 0 0.2em;
 }
 
 .selectize-control.single .selectize-input.input-active input {
@@ -61,6 +65,10 @@ $selectize-color-dropdown-border-top: #eee;
   -moz-appearance: none;
   appearance: none;
 
+  &.full {
+    background: none
+  }
+
   &.has-items {
     $padding-x: $selectize-padding-x - 3px;
     padding-left: $padding-x;
@@ -82,7 +90,9 @@ $selectize-color-dropdown-border-top: #eee;
     }
   }
 
-  &.input-active {
+  &.input-active,
+  &.focus {
+    box-shadow: none;
     outline: none;
   }
 }
@@ -103,22 +113,18 @@ $selectize-color-dropdown-border-top: #eee;
   white-space: nowrap;
   text-align: left;
 
-  .mdl-selectfield.has-items  & {
-    visibility: hidden;
-  }
-
   // Floating Label
   .mdl-selectfield--floating-label & {
     @include material-animation-default();
   }
 
-  .mdl-selectfield.has-items  &::after {
+  .mdl-selectfield.is-dirty  &::after {
     bottom: -2px;
   }
 
-  .mdl-selectfield--floating-label.input-active &,
-  .mdl-selectfield--floating-label.has-items & {
-    color: $base-font-color;
+  .mdl-selectfield--floating-label.is-dirty &,
+  .mdl-selectfield--floating-label.is-active & {
+    color: $medium-grey;
     font-size: $input-text-floating-label-fontsize;
     top: $input-text-vertical-spacing - ($input-text-floating-label-fontsize + $input-text-padding);
     visibility: visible;
@@ -136,33 +142,20 @@ $selectize-color-dropdown-border-top: #eee;
     width: 10px;
   }
 
-  .mdl-selectfield.input-active &::after {
+  .mdl-selectfield.is-active &::after {
     left: 0;
     visibility: visible;
     width: 100%;
   }
 }
 
-
-.mdl-selectfield__placeholder {
-  bottom: 0;
-  cursor: pointer;
-  color: $input-text-label-color;
-  left: 0;
-  padding: 2px 0;
-  position: absolute;
-  text-align: right;
-  top: $input-text-vertical-spacing;
-  width: 100%;
-}
-
-.mdl-js-selectfield.mdl-selectfield--floating-label.input-active {
+.mdl-js-selectfield.mdl-selectfield--floating-label.is-active {
   border-bottom: 2px solid;
   color: $light-grey;
   padding: 20px 0 0;
   margin-bottom: 10px;
 
-  &.has-items {
+  &.is-dirty {
     color: $medium-grey;
   }
 }
