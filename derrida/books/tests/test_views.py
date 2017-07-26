@@ -20,6 +20,22 @@ class TestInstanceViews(TestCase):
             la_vie.pk = None
             la_vie.save()
 
+    def test_instance_detail_view(self):
+
+        # get one of the la_vie copies
+        la_vie = Instance.objects.filter(work__primary_title__icontains='la vie')[3]
+        # pass its pk to detail view
+        detail_view_url = reverse('books:detail', kwargs={'pk': la_vie.pk})
+        response = self.client.get(detail_view_url)
+        # should return a response
+        assert response.status_code == 200
+        # should have a context object called instance that's a copy of Instance
+        assert 'instance' in response.context
+        # it should be the copy of la_view we looked up
+        assert response.context['instance'] == la_vie
+
+
+
     def test_instance_list_view(self):
         list_view_url = reverse('books:list')
         # an anonymous user can see the view
