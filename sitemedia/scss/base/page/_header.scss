@@ -7,6 +7,24 @@
   }
 }
 
+.page-header--link {
+  text-align: center;
+  background: none;
+  padding-bottom: 3em;
+
+  .page-header__heading {
+    &,
+    .material-icons {
+      line-height: 2;
+      vertical-align: sub;
+    }
+
+    a {
+      text-decoration: none;
+    }
+  }
+}
+
 .page-header__container {
   min-height: 300px;
   display: flex;
