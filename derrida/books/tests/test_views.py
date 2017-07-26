@@ -5,8 +5,74 @@ from django.urls import reverse
 from djiffy.models import Manifest
 import json
 
-from derrida.books.models import Publisher, Instance
+from derrida.people.models import Person
+from derrida.books.models import Instance, Work
 from derrida.interventions.models import Intervention, INTERVENTION_TYPES
+
+
+class TestInstanceViews(TestCase):
+    fixtures = ['sample_work_data.json']
+
+    def setUp(self):
+
+        la_vie = Instance.objects.get(work__primary_title__icontains='la vie')
+        for i in range(1, 20):
+            la_vie.pk = None
+            la_vie.save()
+
+    def test_instance_list_view(self):
+        list_view_url = reverse('books:list')
+        # an anonymous user can see the view
+        response = self.client.get(list_view_url)
+        assert response.status_code == 200
+        # an object list is returned
+        assert 'object_list' in response.context
+        # Should find 16 objects and a paginator in context
+        assert len(response.context['object_list']) == 16
+        assert 'page_obj' in response.context
+        page_obj = response.context['page_obj']
+        assert page_obj
+        # Paginator 1 indexes this rather than 0, it's 2 pages!
+        assert page_obj.paginator.page_range == range(1, 3)
+        assert page_obj.number == 1
+
+    def test_get_queryset(self):
+        list_view_url = reverse('books:list')
+
+        # - testing that query set is alpha by author of work
+        # Make one more work, and give it an author
+        testwork = Work.objects.create(
+            primary_title="Un livre d'unittest",
+            short_title="Un livre"
+        )
+        # author starts with 'a' so it should come first
+        pers = Person.objects.create(authorized_name='Adespota', birth=1800,
+            death=1845)
+        testwork.authors.add(pers)
+        testwork.save()
+        # make an instance from that work
+        inst = Instance.objects.create(work=testwork)
+        # check the context to ensure it is there and firstß
+        response = self.client.get(list_view_url)
+        assert response.status_code == 200
+        assert 'object_list' in response.context
+        assert response.context['object_list'][0] == inst
+        # still 16 items
+        assert len(response.context['object_list']) == 16
+        # still page 1
+        page_obj = response.context['page_obj']
+        assert page_obj
+        assert page_obj.paginator.page_range == range(1, 3)
+        assert page_obj.number == 1
+        # now pick a different page via query string
+        response = self.client.get(list_view_url, {'page': 2})
+        assert response.status_code == 200
+        page_obj = response.context['page_obj']
+        assert page_obj
+        assert page_obj.paginator.page_range == range(1, 3)
+        assert page_obj.number == 2
+        # only 5 of 21 items on pg. 2
+        assert len(response.context['object_list']) == 5
 
 
 class TestBookViews(TestCase):

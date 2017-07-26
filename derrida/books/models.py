@@ -89,6 +89,7 @@ class Journal(Named, Notable):
     '''List of associated journals for use with "book" objects'''
     pass
 
+
 class Work(Notable):
     '''A platonic work.  Stores common information about multiple
     instances, copies, or editions of the same work.  Aggregates one
