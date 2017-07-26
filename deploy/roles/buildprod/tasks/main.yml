@@ -5,7 +5,7 @@
       mode: "u+rwx,g+rwx,o-rw"
       setype: httpd_sys_script_exec_t
 - name: Build a virtualenvironment
-  command: virtualenv "{{ deploy }}/env"
+  command: "virtualenv --system-site-packages {{ deploy }}/env"
 - name: Upgrade pip to latest in virtualenv
   pip:
     name: pip
