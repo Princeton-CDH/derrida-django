@@ -9,13 +9,22 @@
 
   .item-header__image {
     width: 100%;
+    max-width: 200px;
+    float: left;
+    margin: 0 1em 1em 0;
+
+    @include grid-media($large-medium-viewport-grid) {
+      margin: 0;
+      max-width: 100%;
+      float: none;
+    }
   }
 }
 
 .item-title {
   font-style: italic;
   font-size: 1.6em;
-  margin: 0;
+  margin: 1em 0 0.25em;
 }
 
 .item-author {
@@ -46,6 +55,7 @@
 .item-nav {
   display: flex;
   align-items: center;
+  padding-bottom: 2em;
 }
 
 .item-nav__link {
@@ -56,6 +66,7 @@
   border-bottom: 1px solid $primary-color;
   background: $light-grey;
   height: 2.6em;
+  white-space: nowrap;
 
   &:active {
     outline: none;
@@ -80,4 +91,86 @@
 .item-nav__spacer--end {
   flex-grow: 4;
   padding-left: 4em;
+}
+
+.item-term {
+  color: $base-font-color;
+  width: 100%;
+  padding-bottom: 1.2em;
+  display: block;
+
+  .item-term__label {
+    font-family: $base-font-family;
+    font-size: 1.1em;
+    font-weight: 400;
+    margin-top: 1em;
+
+    @include grid-column(4);
+
+    @include grid-media($large-medium-viewport-grid) {
+      @include grid-column(12);
+      margin-left: 0;
+    }
+  }
+
+  .item-term__value {
+    font-weight: 300;
+    font-style: italic;
+    @include grid-column(4);
+
+    &.item-term__value--aside {
+      font-style: normal;
+    }
+
+    @include grid-media($large-medium-viewport-grid) {
+      @include grid-column(9);
+      margin-left: 0;
+
+      &.collection {
+        @include grid-column(12);
+        margin-left: - $gutter-size;
+        font-size: 0.75rem;
+      }
+
+      &.item-term__value--aside {
+        margin-left: inherit;
+        @include grid-column(3);
+      }
+    }
+  }
+
+  &.item-term--callout {
+    border-top: 1px solid rgba($black, 0.2);
+    border-bottom: 1px solid rgba($black, 0.2);
+    padding-bottom: 0.6em;
+    padding-top: 0.6em;
+    margin-bottom: 0.6em;
+  }
+
+  &.item-term--inline {
+    display: flex;
+    align-items: baseline;
+
+    .item-term__label {
+      margin-bottom: 0;
+      margin-top: 0;
+      @include grid-column(4);
+
+      @include grid-media($large-medium-viewport-grid) {
+        @include grid-column(4);
+        margin-left: inherit;
+      }
+    }
+
+    .item-term__value {
+      margin-bottom: 0;
+      font-style: normal;
+      @include grid-column(4);
+
+      @include grid-media($large-medium-viewport-grid) {
+        @include grid-column(6);
+        margin-left: inherit;
+      }
+    }
+  }
 }

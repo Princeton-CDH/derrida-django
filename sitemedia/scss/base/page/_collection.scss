@@ -35,13 +35,13 @@
 }
 
 .item__heading {
-  font-size: 1.6rem;
+  font-size: 1.6em;
   font-weight: 700;
   font-style: italic;
   margin-top: 0.4em;
 
   .collection--condensed & {
-    font-size: 1.4rem;
+    font-size: 1.4em;
     margin-top: 0.6em;
   }
 }
@@ -56,7 +56,7 @@
   font-size: 1.5em;
 
   .collection--condensed & {
-    font-size: 1.3rem;
+    font-size: 1.3em;
   }
 }
 
@@ -64,12 +64,12 @@
 .item__location {
   display: inline-block;
   margin-right: 1rem;
-  font-size: 0.9rem;
+  font-size: 0.9em;
   line-height: 1;
   margin-bottom: 1.2em;
 
   .collection--condensed & {
-    font-size: 1rem;
+    font-size: 1em;
   }
 }
 
@@ -92,7 +92,7 @@
 
 .item__excerpt,
 .item__citation {
-  font-size: 1rem;
+  font-size: 1em;
 }
 
 .item__excerpt {
