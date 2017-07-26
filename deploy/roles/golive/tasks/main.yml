@@ -1,27 +1,27 @@
-tasks:
-  - name: Make a database dump to /tmp just in case
-    mysql_db:
-      state: dump
-      login_host: cdh-db.princeton.edu
-      name: "{{db_name}}"
-      target: "{{backup_location}}"
-  - name: check for old symlink
-    command: "ls /var/www/{{ repo }}"
-    register: result
-    ignore_errors: True
-  - name: Copy old symlink path from /var/www to "{{ qa }}/{{ repo }}/old"
-    file:
-      src: /var/www/{{ repo }}
-      dest: "{{ qa }}/{{ repo }}/old"
-      state: link
-    when: result|succeeded
-  - name: New symlink path
-    file:
-      src: "{{ deploy }}"
-      dest: /var/www/{{ repo }}
-      state: link
-  - name: Create courtesy symlink in {{ qa }}/{{ repo }}/current
-    file:
-      src: "{{ deploy }}"
-      dest: "{{ prod }}/{{ repo }}/current"
-      state: link
+- name: Make a database dump to /tmp just in case
+  mysql_db:
+    state: dump
+    login_host: cdh-db.princeton.edu
+    name: "{{ db_name }}"
+    target: "{{backup_location}}"
+- name: check for old symlink
+  command: "ls /var/www/{{ symlink }}"
+  register: result
+  ignore_errors: True
+  check_mode: no
+- name: Copy old symlink path from /var/www to "{{ prod }}/old"
+  file:
+    src: /var/www/{{ symlink }}
+    dest: "{{ prod }}/old"
+    state: link
+  when: result|succeeded
+- name: New symlink path
+  file:
+    src: "{{ deploy }}"
+    dest: "/var/www/{{ symlink }}"
+    state: link
+- name: Create courtesy symlink in
+  file:
+    src: "{{ deploy }}"
+    dest: "{{ prod }}/current"
+    state: link
