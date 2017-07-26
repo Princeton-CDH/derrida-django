@@ -78,6 +78,10 @@
   float: right;
   height: 100%;
 
+  &.item__image--gallery {
+    float: left;
+  }
+
   .img {
     width: 100%;
     height: auto;
@@ -88,6 +92,13 @@
     height: auto;
     margin-bottom: 1em;
   }
+}
+
+.item__image-caption {
+  color: $base-font-color;
+  font-style: normal;
+  padding-top: 0.3em;
+  padding-bottom: 1.7em;
 }
 
 .item__excerpt,

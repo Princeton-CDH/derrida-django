@@ -28,7 +28,70 @@
 
       <section class="item-section">
         {% include "components/item-navigation-tabs.html" with is_gallery=True %}
-        <p>Image Gallery</p>
+        <div class="item-gallery">
+          <header class="item-gallery__heading">
+            <h2 class="item-gallery__title">Overview Images</h2>
+          </header>
+          <figure class="item__image item__image--gallery">
+            <img class="img" src="{% static "img/margin-logo.png" %}" />
+            <figcaption class="item__image-caption">
+              <p>Cover</p>
+            </figcaption>
+          </figure>
+          <figure class="item__image item__image--gallery">
+            <img class="img" src="{% static "img/margin-logo.png" %}" />
+            <figcaption class="item__image-caption">
+              <p>Spine</p>
+            </figcaption>
+          </figure>
+          <figure class="item__image item__image--gallery">
+            <img class="img" src="{% static "img/margin-logo.png" %}" />
+            <figcaption class="item__image-caption">
+              <p>Back</p>
+            </figcaption>
+          </figure>
+          <figure class="item__image item__image--gallery">
+            <img class="img" src="{% static "img/margin-logo.png" %}" />
+            <figcaption class="item__image-caption">
+              <p>Side View</p>
+            </figcaption>
+          </figure>
+          <figure class="item__image item__image--gallery">
+            <img class="img" src="{% static "img/margin-logo.png" %}" />
+            <figcaption class="item__image-caption">
+              <p>Page 1</p>
+            </figcaption>
+          </figure>
+          <figure class="item__image item__image--gallery">
+            <img class="img" src="{% static "img/margin-logo.png" %}" />
+            <figcaption class="item__image-caption">
+              <p>Page 2</p>
+            </figcaption>
+          </figure>
+
+          <header class="item-gallery__heading">
+            <h2 class="item-gallery__title">Annotated Page</h2>
+            <p>Only pages that are cited in De la grammatologie are displayed here.</p>
+          </header>
+          <figure class="item__image item__image--gallery">
+            <img class="img" src="{% static "img/margin-logo.png" %}" />
+            <figcaption class="item__image-caption">
+              <p>Cover</p>
+            </figcaption>
+          </figure>
+          <figure class="item__image item__image--gallery">
+            <img class="img" src="{% static "img/margin-logo.png" %}" />
+            <figcaption class="item__image-caption">
+              <p>Spine</p>
+            </figcaption>
+          </figure>
+          <figure class="item__image item__image--gallery">
+            <img class="img" src="{% static "img/margin-logo.png" %}" />
+            <figcaption class="item__image-caption">
+              <p>Back</p>
+            </figcaption>
+          </figure>
+        </div>
       </section>
     </div>
   </article>

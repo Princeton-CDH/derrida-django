@@ -174,3 +174,34 @@
     }
   }
 }
+
+.item-gallery__heading {
+  width: 100%;
+  float: left;
+  color: $base-font-color;
+  padding: 0 $gutter-size 1em;
+
+  p {
+    font-weight: 300;
+    margin: 0;
+  }
+}
+
+.item-gallery__title {
+  font-size: 1.2em;
+  font-weight: 400;
+  margin: 0 0 0.5em;
+  font-family: $base-font-family;
+}
+
+.citation-list {
+  .collection .collection__item {
+    @include grid-column(4);
+    margin-left: 0;
+
+    @include grid-media($large-medium-viewport-grid) {
+      @include grid-column(12);
+      margin-left: 0;
+    }
+  }
+}
