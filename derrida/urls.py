@@ -35,6 +35,7 @@ urlpatterns = [
 
     url(r'^index', TemplateView.as_view(template_name='public/index.html'), name="home"),
     url(r'^library', TemplateView.as_view(template_name='public/library.html'), name="library"),
+    url(r'^visualization', TemplateView.as_view(template_name='public/visualization.html'), name="visualization"),
     url(r'^citations', TemplateView.as_view(template_name='public/citations.html'), name="citations-list"),
 ]
 

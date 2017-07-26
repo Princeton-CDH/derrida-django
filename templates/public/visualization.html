@@ -1,0 +1,89 @@
+{% extends 'djiffy/base.html' %}
+{% load static %}
+
+{% block nav-title %} Derrida's Library {% endblock %}
+
+{% block header_class %}mdl-layout__header--transparent{% endblock %}
+
+{% block page-context-id %}visualizations{% endblock %}
+
+{% block content %}
+<header class="page-header page-header--condensed">
+  <div class="container page-header__container">
+    <h1 class="page-header__heading">Visualization</h1>
+    <div class="page-header__callout">
+      <p class="lead">Explore all quotations and references in Derrida’s works</p>
+      <p><a class="callout__link" href="/">Export Complete List to Zotero</a></p>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+  <section class="page-sort">
+    <header class="page-sort__header">
+      <p class="sort-label">View By</p>
+      <a class="sort-link sort-link--active" href="#">Instance of Citation</a>
+      <a class="sort-link" href="#">Author of cited work</a>
+    </header>
+  </section>
+
+  <script>
+    $(function() {
+      $('.visualization-chapter-marker').on('click', function(event) {
+        event.preventDefault();
+        var $this = $(this),
+            $wrap = $this.next(".wrap");
+        $(".wrap.active").not($wrap).removeClass('active');
+        $(".visualization-chapter-marker.active").not($this).removeClass('active');
+        $this.toggleClass('active');
+        $wrap.toggleClass('active');
+      })
+    });
+  </script>
+
+  <article class="visualizations">
+    <h2 class="visualization-part-header">Part I</h2>
+    <section class="visualization-section">
+      <h3 class="visualization-chapter-header">Exergue</h3>
+      {% include "components/visualization-markers.html" with number=8 %}
+    </section>
+
+    <section class="visualization-section">
+      <h3 class="visualization-chapter-header">Chapter I</h3>
+      {% include "components/visualization-markers.html" with number=25 %}
+    </section>
+
+    <section class="visualization-section">
+      <h3 class="visualization-chapter-header">Chapter 2</h3>
+      {% include "components/visualization-markers.html" with number=60 %}
+    </section>
+
+    <h2 class="visualization-part-header">Part II</h2>
+    <section class="visualization-section">
+      <h3 class="visualization-chapter-header">Introduction</h3>
+      {% include "components/visualization-markers.html" with number=30 %}
+    </section>
+
+    <section class="visualization-section">
+      <h3 class="visualization-chapter-header">Chapter I</h3>
+      {% include "components/visualization-markers.html" with number=55 %}
+    </section>
+
+    <section class="visualization-section">
+      <h3 class="visualization-chapter-header">Chapter 2</h3>
+      {% include "components/visualization-markers.html" with number=18 %}
+    </section>
+
+    <section class="visualization-section">
+      <h3 class="visualization-chapter-header">Chapter 3</h3>
+      {% include "components/visualization-markers.html" with number=10 %}
+    </section>
+
+    <section class="visualization-section">
+      <h3 class="visualization-chapter-header">Chapter 4</h3>
+      {% include "components/visualization-markers.html" with number=100 %}
+    </section>
+
+  </article>
+</div>
+{% endblock %}
