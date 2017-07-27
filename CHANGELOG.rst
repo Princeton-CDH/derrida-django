@@ -3,6 +3,23 @@
 CHANGELOG
 =========
 
+0.8 (Interventions Phase I)
+--------------------------
+Release implementing the first part of the interventions interface, allowing
+data editors to note Derrida's annotation-style interventions on digital editions
+of his library works.
+
+Access
+~~~~~~
+
+* As a record editor, I can only view digitized materials from Derrida's library when I am logged in so that copyrighted materials are not exposed to the general public.
+* As a logged in record editor, I should be able to create an intervention record so that I can document Derrida's interventions in the works in his library.
+* As a logged in record editor, I should be able to view, edit, and delete all intervention records (no matter who created them) so that I can manage all documented interventions in Derrida's library.
+* Logged in record editors or anyone with greater permissions should be able to view the books; anonymous users or logged in users without those permissions should not.
+* As an admin, I want to see the history of all edits to an intervention, including edits made via the canvas image interface, so that I can track who has contributed and made changes to the data.
+
+
+
 0.7
 ---
 
@@ -82,4 +99,3 @@ Zotero Import
 * As a record editor, I want a one-time import of People from Zotero data into the system so that I can refine and augment the initial data that’s already been collected.
 * As a record editor, I want publishing places associated with their GeoNames ID so that I can document publishing locations more clearly.
 * As a record editor, I want citations imported and associated with their works based on the tagging system implemented by the team.
-

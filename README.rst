@@ -72,7 +72,6 @@ Run tests using py.test::
     py.test
 
 
-
 Documentation
 ~~~~~~~~~~~~~
 
