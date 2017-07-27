@@ -1132,9 +1132,15 @@ hr {
 .mdl-navigation__link {
   font-family: "Cormorant Garamond", "Georgia", serif;
   opacity: 0.8; }
+  .mdl-navigation__link .navigation-title {
+    border-bottom: 0 solid transparent;
+    transition: border 150ms ease; }
+  .mdl-navigation__link:hover .navigation-title, .mdl-navigation__link:active .navigation-title, .mdl-navigation__link.mdl-navigation__link--active .navigation-title {
+    border-bottom: 3px solid #3ca1ff; }
   .mdl-navigation__link:hover, .mdl-navigation__link:active {
     opacity: 1;
-    text-decoration: none; }
+    text-decoration: none;
+    color: #424242; }
 
 .mdl-layout__header-row {
   height: 64px;
@@ -1200,12 +1206,14 @@ hr {
         transform: rotateZ(-90deg) translate(-6rem, -4rem); }
       .coordintate-navigation .mdl-navigation__link:nth-child(3), .coordintate-navigation .mdl-navigation__link:nth-child(4) {
         right: 0;
-        text-align: right;
-        transform: rotateZ(90deg) translate(2rem, -4rem); }
+        transform: rotateZ(90deg) translate(6rem, -4rem); }
+      .coordintate-navigation .mdl-navigation__link:nth-child(4) {
+        transform: rotateZ(90deg) translate(9.5rem, -4rem);
+        padding-left: 1.3em; }
       .coordintate-navigation .mdl-navigation__link:nth-child(1), .coordintate-navigation .mdl-navigation__link:nth-child(3) {
         top: 10%; }
       .coordintate-navigation .mdl-navigation__link:nth-child(2), .coordintate-navigation .mdl-navigation__link:nth-child(4) {
-        top: 45%; } }
+        top: calc(100vh - 17rem); } }
 .mdl-layout__tab {
   color: #424242;
   border-bottom: 1px solid #eee; }
