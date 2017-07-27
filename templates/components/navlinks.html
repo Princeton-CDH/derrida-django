@@ -1,4 +1,19 @@
-<a class="mdl-navigation__link" href="{% url 'library' %}">Derrida's Library</a>
-<a class="mdl-navigation__link" href="{% url 'visualization' %}">Visualization</a>
-<a class="mdl-navigation__link" href="{% url 'citations-list' %}">Citation List</a>
-<a class="mdl-navigation__link" href="{% url 'djiffy:list' %}">Outwork</a>
+{% url 'library' as lib_url %}
+<a class="mdl-navigation__link {% if request.path == lib_url %}mdl-navigation__link--active{% endif %}" href="{{ lib_url }}">
+  <span class="navigation-title">Derrida's Library</span>
+</a>
+
+{% url 'visualization' as vis_url %}
+<a class="mdl-navigation__link {% if request.path == vis_url %}mdl-navigation__link--active{% endif %}" href="{{ vis_url }}">
+  <span class="navigation-title">Visualization<span>
+</a>
+
+{% url 'citations-list' as cit_url %}
+<a class="mdl-navigation__link {% if request.path == cit_url %}mdl-navigation__link--active{% endif %}" href="{{ cit_url }}">
+  <span class="navigation-title">Citation List</span>
+</a>
+
+{% url 'djiffy:list' as out_url %}
+<a class="mdl-navigation__link {% if request.path == out_url %}mdl-navigation__link--active{% endif %}" href="{{ out_url }}">
+  <span class="navigation-title">Outwork</span>
+</a>
