@@ -1172,7 +1172,7 @@ hr {
     display: none; }
 
   .mdl-layout__header-row {
-    padding: 0 2.94118%; }
+    padding: 0 1em; }
     .mdl-layout__header-row > .mdl-navigation {
       display: flex;
       justify-content: center; } }
