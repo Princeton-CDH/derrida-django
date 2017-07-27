@@ -2,7 +2,7 @@ from dal import autocomplete
 
 from .models import Publisher, Language, Instance
 
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView
 
 
 class PublisherAutocomplete(autocomplete.Select2QuerySetView):
@@ -21,13 +21,6 @@ class LanguageAutocomplete(autocomplete.Select2QuerySetView):
 
     def get_queryset(self):
         return Language.objects.filter(name__icontains=self.q)
-
-
-class InstanceDetailView(DetailView):
-    ''':class:`~django.views.generic.DetailView` for
-    :class:`~derrida.books.models.Instance`.'''
-
-    model = Instance
 
 
 class InstanceListView(ListView):

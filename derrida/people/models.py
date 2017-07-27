@@ -76,7 +76,6 @@ class RelationshipType(Named, Notable):
     '''Types of relationships between people'''
     is_symmetric = models.BooleanField(default=False)
 
-
 class Relationship(Notable, DateRange):
     '''A specific relationship between two people.'''
     from_person = models.ForeignKey(Person, related_name='from_relationships')
