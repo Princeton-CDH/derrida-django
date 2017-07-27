@@ -6,20 +6,20 @@ derrida-django
 Django web application for the `Derrida's Margins Project
 <https://cdh.princeton.edu/projects/derridas-margins/>`_.
 
-.. image:: https://travis-ci.org/Princeton-CDH/derrida-django.svg?branch=develop
+.. image:: https://travis-ci.org/Princeton-CDH/derrida-django.svg?branch=master
    :target: https://travis-ci.org/Princeton-CDH/derrida-django
    :alt: Build status
 
-.. image:: https://landscape.io/github/Princeton-CDH/derrida-django/develop/landscape.svg?style=flat
-  :target: https://landscape.io/github/Princeton-CDH/derrida-django/develop
+.. image:: https://landscape.io/github/Princeton-CDH/derrida-django/master/landscape.svg?style=flat
+  :target: https://landscape.io/github/Princeton-CDH/derrida-django/master
   :alt: Code Health
 
-.. image:: https://codecov.io/gh/Princeton-CDH/derrida-django/branch/develop/graph/badge.svg
+.. image:: https://codecov.io/gh/Princeton-CDH/derrida-django/branch/master/graph/badge.svg
    :target: https://codecov.io/gh/Princeton-CDH/derrida-django
    :alt: Code coverage
 
-.. image:: https://requires.io/github/Princeton-CDH/derrida-django/requirements.svg?branch=develop
-   :target: https://requires.io/github/Princeton-CDH/derrida-django/requirements/?branch=develop
+.. image:: https://requires.io/github/Princeton-CDH/derrida-django/requirements.svg?branch=master
+   :target: https://requires.io/github/Princeton-CDH/derrida-django/requirements/?branch=master
    :alt: Requirements Status
 
 `Current release documentation <https://princeton-cdh.github.io/derrida-django/>`_.
@@ -104,4 +104,3 @@ directory::
 
 When building documentation for a production release, use `make docs` to
 update the published documentation on GitHub Pages.
-
