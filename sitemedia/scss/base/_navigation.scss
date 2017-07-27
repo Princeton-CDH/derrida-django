@@ -41,10 +41,24 @@
   font-family: $heading-font-family;
   opacity: 0.8;
 
+  .navigation-title {
+    border-bottom: 0 solid transparent;
+    transition: border $base-duration $base-timing;
+  }
+
+  &:hover,
+  &:active,
+  &.mdl-navigation__link--active {
+    .navigation-title {
+      border-bottom: 3px solid $primary-color;
+    }
+  }
+
   &:hover,
   &:active {
     opacity: 1;
     text-decoration: none;
+    color: $base-font-color;
   }
 }
 
