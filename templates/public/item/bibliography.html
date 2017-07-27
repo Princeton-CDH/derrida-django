@@ -42,7 +42,9 @@
           <div class="collection collection--condensed item-term__value">
             <section class="collection__item">
               <figure class="item__image">
-                <img class="img" src="{% static "img/bookimg/cover2.png" %}">
+                <a class="item__image-link" href="{% url 'book' %}">
+                  <img class="img" src="{% static "img/bookimg/cover2.png" %}">
+                </a>
               </figure>
               <h4 class="item__heading">La pensée sauvage</h3>
               <p class="item__author">Claude Lévi-Strauss</p>
@@ -51,7 +53,9 @@
 
             <section class="collection__item">
               <figure class="item__image">
-                <img class="img" src="{% static "img/bookimg/cover3.png" %}">
+                <a class="item__image-link" href="{% url 'book' %}">
+                  <img class="img" src="{% static "img/bookimg/cover3.png" %}" />
+                </a>
               </figure>
               <h4 class="item__heading">La pensée sauvage</h3>
               <p class="item__author">Claude Lévi-Strauss</p>
