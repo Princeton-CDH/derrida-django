@@ -14,6 +14,7 @@ Derrida documentation
    architecture
    codedocs
    Change Log <changelog>
+   deploynotes
 
 
 .. include:: ../README.rst
