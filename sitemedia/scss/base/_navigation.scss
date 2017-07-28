@@ -44,6 +44,7 @@
   .navigation-title {
     border-bottom: 0 solid transparent;
     transition: border $base-duration $base-timing;
+    padding: 0 10px;
   }
 
   &:hover,
@@ -59,6 +60,12 @@
     opacity: 1;
     text-decoration: none;
     color: $base-font-color;
+  }
+}
+
+.coordinate-navigation--background-light-navy {
+  .navigation-title {
+    background: $light-navy;
   }
 }
 
@@ -112,7 +119,7 @@
   }
 }
 
-.coordintate-navigation {
+.coordinate-navigation {
   display: none;
 }
 
@@ -131,7 +138,7 @@
     }
   }
 
-  .coordintate-navigation {
+  .coordinate-navigation {
     display: block;
 
     .background-colored--dark & {

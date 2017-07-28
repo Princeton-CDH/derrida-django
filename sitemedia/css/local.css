@@ -1134,13 +1134,17 @@ hr {
   opacity: 0.8; }
   .mdl-navigation__link .navigation-title {
     border-bottom: 0 solid transparent;
-    transition: border 150ms ease; }
+    transition: border 150ms ease;
+    padding: 0 10px; }
   .mdl-navigation__link:hover .navigation-title, .mdl-navigation__link:active .navigation-title, .mdl-navigation__link.mdl-navigation__link--active .navigation-title {
     border-bottom: 3px solid #3ca1ff; }
   .mdl-navigation__link:hover, .mdl-navigation__link:active {
     opacity: 1;
     text-decoration: none;
     color: #424242; }
+
+.coordinate-navigation--background-light-navy .navigation-title {
+  background: #175498; }
 
 .mdl-layout__header-row {
   height: 64px;
@@ -1176,7 +1180,7 @@ hr {
     .mdl-layout__header-row > .mdl-navigation {
       display: flex;
       justify-content: center; } }
-.coordintate-navigation {
+.coordinate-navigation {
   display: none; }
 
 @media only screen and (min-width: 1080px) {
@@ -1187,11 +1191,11 @@ hr {
     .background-colored--dark .mdl-layout__header .mdl-textfield .mdl-button {
       color: #fff; }
 
-  .coordintate-navigation {
+  .coordinate-navigation {
     display: block; }
-    .background-colored--dark .coordintate-navigation .mdl-navigation__link {
+    .background-colored--dark .coordinate-navigation .mdl-navigation__link {
       color: #fff; }
-    .coordintate-navigation .mdl-navigation__link {
+    .coordinate-navigation .mdl-navigation__link {
       font-family: "Cormorant Garamond", "Georgia", serif;
       font-weight: bold;
       -webkit-font-smoothing: antialiased;
@@ -1201,18 +1205,18 @@ hr {
       position: fixed;
       width: 12rem;
       white-space: nowrap; }
-      .coordintate-navigation .mdl-navigation__link:nth-child(1), .coordintate-navigation .mdl-navigation__link:nth-child(2) {
+      .coordinate-navigation .mdl-navigation__link:nth-child(1), .coordinate-navigation .mdl-navigation__link:nth-child(2) {
         left: 0;
         transform: rotateZ(-90deg) translate(-6rem, -4rem); }
-      .coordintate-navigation .mdl-navigation__link:nth-child(3), .coordintate-navigation .mdl-navigation__link:nth-child(4) {
+      .coordinate-navigation .mdl-navigation__link:nth-child(3), .coordinate-navigation .mdl-navigation__link:nth-child(4) {
         right: 0;
         transform: rotateZ(90deg) translate(6rem, -4rem); }
-      .coordintate-navigation .mdl-navigation__link:nth-child(4) {
+      .coordinate-navigation .mdl-navigation__link:nth-child(4) {
         transform: rotateZ(90deg) translate(9.5rem, -4rem);
         padding-left: 1.3em; }
-      .coordintate-navigation .mdl-navigation__link:nth-child(1), .coordintate-navigation .mdl-navigation__link:nth-child(3) {
+      .coordinate-navigation .mdl-navigation__link:nth-child(1), .coordinate-navigation .mdl-navigation__link:nth-child(3) {
         top: 10%; }
-      .coordintate-navigation .mdl-navigation__link:nth-child(2), .coordintate-navigation .mdl-navigation__link:nth-child(4) {
+      .coordinate-navigation .mdl-navigation__link:nth-child(2), .coordinate-navigation .mdl-navigation__link:nth-child(4) {
         top: calc(100vh - 17rem); } }
 .mdl-layout__tab {
   color: #424242;
