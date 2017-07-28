@@ -1118,7 +1118,7 @@ hr {
     opacity: 0; }
   .mdl-layout__header.mdl-layout__header--with-logo::before {
     content: "";
-    background-image: url("../img/margin-logo.png");
+    background-image: url("../img/derrida_VI_logo.svg");
     background-position: center;
     background-size: contain;
     background-repeat: no-repeat;
