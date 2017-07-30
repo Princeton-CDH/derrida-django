@@ -20,6 +20,14 @@
       @include grid-column(3);
     }
   }
+
+  .text-badge,
+  .item__location,
+  .item__excerpt,
+  .item__citation {
+    display: none;
+    visibility: hidden;
+  }
 }
 
 .collection__item {
@@ -31,6 +39,15 @@
   .collection--condensed & {
     padding-bottom: 2rem;
     border-bottom: 0;
+  }
+}
+
+.item__body {
+  @include grid-column(2);
+
+  .collection--condensed & {
+    @include grid-column(4);
+    float: none;
   }
 }
 
@@ -75,7 +92,7 @@
 
 .item__image {
   position: relative;
-  @include grid-column(1);
+  @include grid-column(2);
   float: right;
   height: 100%;
   z-index: 2;
@@ -88,8 +105,17 @@
 
   .img {
     position: relative;
-    width: 100%;
-    height: auto;
+    width: auto;
+    max-height: 200px;
+
+    &.img--placeholder {
+      height: 200px;
+      background: $blue;
+    }
+
+    .collection--condensed & {
+      max-height: none;
+    }
   }
 
   .collection--condensed & {
@@ -100,14 +126,19 @@
 }
 
 .item__image-link {
-  height: auto;
-  width: 100%;
   top: 0;
-  left: 0;
+  right: 0;
   background-color: transparent;
   transition: background-color 0.3s $base-timing;
+  position: absolute;
+  width: auto;
+  display: inline-table;
 
-  img {
+  .collection--condensed & {
+    position: relative;
+  }
+
+  .img {
     opacity: 1;
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
@@ -119,12 +150,12 @@
     cursor: pointer;
     content: "zoom_in";
     position: absolute;
-    top: 0;
+    top: 45%;
     left: 0;
     height: 100%;
     width: 100%;
     font-size: 2.5rem;
-    line-height: 5.5;
+    line-height: 1;
     color: $white;
     opacity: 0;
     transition: opacity 0.3s $base-timing;
@@ -133,7 +164,7 @@
   &:hover {
     background-color: $primary-color;
 
-    img {
+    .img {
       opacity: 0.3;
     }
 
@@ -157,6 +188,5 @@
 }
 
 .item__excerpt {
-  font-style: italic;
   opacity: 0.8;
 }

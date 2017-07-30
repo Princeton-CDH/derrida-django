@@ -49,6 +49,15 @@
   display: block;
   width: 10px;
   height: 10px;
+
+  .item__body {
+    @include grid-column(3);
+  }
+
+  .item__image {
+    @include grid-column(1);
+    float: right;
+  }
 }
 
 .visualization-chapter-marker {
