@@ -29,15 +29,16 @@
 
   <script>
     $(function() {
-      $('.visualization-chapter-marker').on('click', function(event) {
-        event.preventDefault();
-        var $this = $(this),
-            $wrap = $this.next(".wrap");
-        $(".wrap.active").not($wrap).removeClass('active');
-        $(".visualization-chapter-marker.active").not($this).removeClass('active');
-        $this.toggleClass('active');
-        $wrap.toggleClass('active');
-      })
+      $('.visualization-chapter-marker').webuiPopover({
+        trigger:'hover',
+        animation:'fade',
+        placement:'auto-top',
+        arrow: true,
+        delay: {
+          show: 300,
+          hide: 1000
+        }
+      });
     });
   </script>
 
