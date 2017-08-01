@@ -15,6 +15,14 @@
     <div id="sw-version">v. {{ SW_VERSION }}</div>
 {% endblock %}
 
+ {% block userlinks %}
+ {% if perms.djiffy.view_manifest %}
+ <li id='iif-books-link'><a href="{% url 'djiffy:list' %}">View Digital Books</a></li>
+ {% endif %}
+    {{ block.super }}
+ {% endblock %}
+
+
 {% block extrastyle %}
     <link rel="stylesheet" type="text/css" href="{% static "css/local.css" %}" />
     <link rel="stylesheet" type="text/css" href="{% static "css/test-banner.css" %}" />

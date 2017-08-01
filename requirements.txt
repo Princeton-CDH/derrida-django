@@ -5,6 +5,9 @@ django-autocomplete-light
 requests
 rdflib
 django-sortedm2m
-# unidecode dependency can be removed once squashed book migrations are removed
-unidecode
-git+https://github.com/Princeton-CDH/django-pucas.git@0.5#egg=pucas
+attrdict
+pucas>=0.5
+# unreleased py3 piffle currently needs to be required explicitly
+git+https://github.com/Princeton-CDH/piffle.git@feature/python3-compatibility#egg=piffle
+djiffy>=0.2
+annotator_store>=0.6

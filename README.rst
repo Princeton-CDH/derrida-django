@@ -71,22 +71,6 @@ Run tests using py.test::
 
     py.test
 
-Deploy
-~~~~~~
-
-We include sample deploy scripts in the form of a short `Ansible <http://docs.ansible.com/>`__ playbook
-and associated configuration files. In the current usage, assuming Ansible
-is installed and the appropriate server key is loaded via `ssh-add`::
-
-    cd derrida-django/deploy/
-    ansible-playbook prod_derrida-django_.yml <-e github reference>
-
-Any valid Github tag type is accepted, but the script defaults to ``master``. ``ansible.cfg`` and ``hosts`` set up the host group and configuration used in the commands.
-
-The production deploy does not involve itself with Apache configuration, because
-that is handled server side and currently assumes that migrations and symbolic
-linking are handled by hand.
-
 
 Documentation
 ~~~~~~~~~~~~~
@@ -104,4 +88,3 @@ directory::
 
 When building documentation for a production release, use `make docs` to
 update the published documentation on GitHub Pages.
-

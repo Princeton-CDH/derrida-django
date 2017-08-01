@@ -32,9 +32,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
+    'django.contrib.sites',
     'django_cas_ng',
     'sortedm2m',
     'pucas',
+    'djiffy',
+    'annotator_store',
     # local apps
     'derrida.apps.DerridaConfig',
     'derrida.books',
@@ -42,6 +46,7 @@ INSTALLED_APPS = [
     'derrida.people',
     'derrida.footnotes',
     'derrida.common',
+    'derrida.interventions',
 ]
 
 MIDDLEWARE = [
@@ -132,6 +137,8 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'sitemedia'),
 ]
 
+SITE_ID = 1
+
 # pucas configuration that is not expected to change across deploys
 # and does not reference local server configurations or fields
 PUCAS_LDAP = {
@@ -143,6 +150,9 @@ PUCAS_LDAP = {
         'email': 'mail',
     },
 }
+
+
+ANNOTATOR_ANNOTATION_MODEL = 'interventions.Intervention'
 
 ##################
 # LOCAL SETTINGS #

@@ -1,0 +1,16 @@
+- name: Clone the repo if doesn't already exist and make sure it's on gitref
+  git:
+    repo: https://github.com/Princeton-CDH/{{ repo }}.git
+    dest: /home/deploy/checkouts/{{ repo }}
+    version: '{{ gitref }}'
+- name: Get repo short hash
+  command: git rev-parse --short HEAD
+  args:
+      chdir: '/home/deploy/checkouts/{{ repo }}'
+  register: shorthash
+  check_mode: no
+- name: Sync checkout to production
+  synchronize:
+    src: /home/deploy/checkouts/{{ repo }}/
+    dest: '{{ prod }}/{{ shorthash.stdout }}'
+  delegate_to: "{{ inventory_hostname }}"

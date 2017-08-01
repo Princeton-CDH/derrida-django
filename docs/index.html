@@ -1,20 +1,17 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>Derrida documentation &#8212; Derrida 0.7.0 documentation</title>
-    
+    <title>Derrida documentation &#8212; Derrida 0.8.0 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.7.0',
+        VERSION:     '0.8.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -34,7 +31,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <body role="document">
+  <body>
   
 
     <div class="document">
@@ -49,11 +46,11 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture</a></li>
 <li class="toctree-l1"><a class="reference internal" href="codedocs.html">Code Documentation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="changelog.html">CHANGELOG</a></li>
-<li class="toctree-l1"><a class="reference internal" href="changelog.html#known-issues">KNOWN ISSUES</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Change Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="deploynotes.html">Deploy and Upgrade notes</a></li>
 </ul>
 </div>
-<p>Django web application for the <a class="reference external" href="https://cdh.princeton.edu/projects/derridas-margins/">Derrida&#8217;s Margins Project</a>.</p>
+<p>Django web application for the <a class="reference external" href="https://cdh.princeton.edu/projects/derridas-margins/">Derrida’s Margins Project</a>.</p>
 <a class="reference external image-reference" href="https://travis-ci.org/Princeton-CDH/derrida-django"><img alt="Build status" src="https://travis-ci.org/Princeton-CDH/derrida-django.svg?branch=master" /></a>
 <a class="reference external image-reference" href="https://landscape.io/github/Princeton-CDH/derrida-django/master"><img alt="Code Health" src="https://landscape.io/github/Princeton-CDH/derrida-django/master/landscape.svg?style=flat" /></a>
 <a class="reference external image-reference" href="https://codecov.io/gh/Princeton-CDH/derrida-django"><img alt="Code coverage" src="https://codecov.io/gh/Princeton-CDH/derrida-django/branch/master/graph/badge.svg" /></a>
@@ -92,20 +89,6 @@ things easier. To run them, first install development requirements:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">py</span><span class="o">.</span><span class="n">test</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="deploy">
-<h3>Deploy<a class="headerlink" href="#deploy" title="Permalink to this headline">¶</a></h3>
-<p>We include sample deploy scripts in the form of a short <a class="reference external" href="http://docs.ansible.com/">Ansible</a> playbook
-and associated configuration files. In the current usage, assuming Ansible
-is installed and the appropriate server key is loaded via <cite>ssh-add</cite>:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">derrida</span><span class="o">-</span><span class="n">django</span><span class="o">/</span><span class="n">deploy</span><span class="o">/</span>
-<span class="n">ansible</span><span class="o">-</span><span class="n">playbook</span> <span class="n">prod_derrida</span><span class="o">-</span><span class="n">django_</span><span class="o">.</span><span class="n">yml</span> <span class="o">&lt;-</span><span class="n">e</span> <span class="n">github</span> <span class="n">reference</span><span class="o">&gt;</span>
-</pre></div>
-</div>
-<p>Any valid Github tag type is accepted, but the script defaults to <code class="docutils literal"><span class="pre">master</span></code>. <code class="docutils literal"><span class="pre">ansible.cfg</span></code> and <code class="docutils literal"><span class="pre">hosts</span></code> set up the host group and configuration used in the commands.</p>
-<p>The production deploy does not involve itself with Apache configuration, because
-that is handled server side and currently assumes that migrations and symbolic
-linking are handled by hand.</p>
 </div>
 <div class="section" id="documentation">
 <h3>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h3>
@@ -187,8 +170,8 @@ update the published documentation on GitHub Pages.</p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture</a></li>
 <li class="toctree-l1"><a class="reference internal" href="codedocs.html">Code Documentation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="changelog.html">CHANGELOG</a></li>
-<li class="toctree-l1"><a class="reference internal" href="changelog.html#known-issues">KNOWN ISSUES</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Change Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="deploynotes.html">Deploy and Upgrade notes</a></li>
 </ul>
 
 
@@ -198,7 +181,6 @@ update the published documentation on GitHub Pages.</p>
 <li><a class="reference internal" href="#current-development-status">Current development status</a></li>
 <li><a class="reference internal" href="#development-instructions">Development instructions</a><ul>
 <li><a class="reference internal" href="#unit-tests">Unit Tests</a></li>
-<li><a class="reference internal" href="#deploy">Deploy</a></li>
 <li><a class="reference internal" href="#documentation">Documentation</a></li>
 </ul>
 </li>
@@ -225,7 +207,7 @@ update the published documentation on GitHub Pages.</p>
       &copy;2017, CDH @ Princeton & Trustees of Princeotn University.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.5</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
       
       |

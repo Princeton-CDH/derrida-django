@@ -1,0 +1,32 @@
+- name: Make a database dump to /tmp just in case
+  mysql_db:
+    state: dump
+    login_host: cdh-db.princeton.edu
+    name: "{{ db_name }}"
+    target: "{{backup_location}}"
+- name: Run database migrations
+  django_manage:
+    command: migrate
+    app_path: "{{ deploy }}"
+    virtualenv: "{{ deploy }}/env"
+- name: check for old symlink
+  command: "ls /var/www/{{ symlink }}"
+  register: result
+  ignore_errors: True
+  check_mode: no
+- name: Copy old symlink path from /var/www to "{{ prod }}/old"
+  file:
+    src: /var/www/{{ symlink }}
+    dest: "{{ prod }}/old"
+    state: link
+  when: result|succeeded
+- name: New symlink path
+  file:
+    src: "{{ deploy }}"
+    dest: "/var/www/{{ symlink }}"
+    state: link
+- name: Create courtesy symlink in
+  file:
+    src: "{{ deploy }}"
+    dest: "{{ prod }}/current"
+    state: link

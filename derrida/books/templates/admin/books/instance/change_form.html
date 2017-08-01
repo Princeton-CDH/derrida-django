@@ -1,0 +1,59 @@
+{% extends "admin/change_form.html" %}
+
+{% load admin_static i18n admin_modify admin_urls grp_tags %}
+
+{% block stylesheets %}
+  {{ block.super }}
+  <link rel="stylesheet" type="text/css" href="/static/css/book-reference-local.css" />
+{% endblock %}
+
+{% block javascripts %}
+{{ block.super }}
+ {# include shim to disable autocompletes that depend on a digital edition #}
+ <script src='/static/js/reference-instance-canvas-toggle.js'></script>
+{% endblock %}
+
+
+{% block after_related_objects %}
+<div class="inline-group grp-group grp-tabular">
+    <h2 class="grp-collapse-handler">Interventions</h2>
+
+    <!-- container -->
+    <div class="tabular inline-related grp-module grp-table">
+        <div class="module grp-module grp-thead">
+            <div class="grp-tr">
+                <div class="grp-th">Thumbnail</div>
+                <div class="grp-th">Canvas</div>
+                <div class='grp-th'>Type</div>
+                <div class="grp-th">Text</div>
+                <div class="grp-th">Edit in Django Admin</div>
+            </div>
+        </div>
+        <!-- element -->
+        <div class="form-row grp-module grp-tbody"
+                id="to-relationship-read-only">
+
+            {% for canvas in original.digital_edition.canvases.all %}
+                {% for intervention in canvas.intervention_set.all %}
+                  <div class="grp-tr">
+                    <div class="grp-td">
+                        {# TODO: add anchor link logic to link directly to intervention #}
+                        <a href="{{ intervention.canvas.get_absolute_url }}"
+                            title="View on canvas">{{ intervention.admin_thumbnail|safe }}</a>
+                    </div>
+                    <div class="grp-td">{{ canvas.label }}</div>
+                    <div class="grp-td">{{ intervention.get_intervention_type_display }}</div>
+                    <div class="grp-td">{{ intervention.text_preview }}</div>
+                    <div class="grp-td">
+                        <a href="{% url 'admin:interventions_intervention_change' intervention.id %}" class="grp-state-focus">Edit</a>
+                    </div>
+                </div>
+                {% endfor %}
+            {% endfor %}
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

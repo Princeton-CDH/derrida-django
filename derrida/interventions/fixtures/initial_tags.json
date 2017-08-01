@@ -1,0 +1,119 @@
+[
+{
+  "model": "interventions.tag",
+  "pk": 1,
+  "fields": {
+    "name": "underlining",
+    "notes": "",
+    "applies_to": "A"
+  }
+},
+{
+  "model": "interventions.tag",
+  "pk": 2,
+  "fields": {
+    "name": "circling",
+    "notes": "",
+    "applies_to": "A"
+  }
+},
+{
+  "model": "interventions.tag",
+  "pk": 3,
+  "fields": {
+    "name": "arrow",
+    "notes": "",
+    "applies_to": "A"
+  }
+},
+{
+  "model": "interventions.tag",
+  "pk": 4,
+  "fields": {
+    "name": "bracket(s)",
+    "notes": "",
+    "applies_to": "A"
+  }
+},
+{
+  "model": "interventions.tag",
+  "pk": 5,
+  "fields": {
+    "name": "line",
+    "notes": "",
+    "applies_to": "A"
+  }
+},
+{
+  "model": "interventions.tag",
+  "pk": 6,
+  "fields": {
+    "name": "correction",
+    "notes": "",
+    "applies_to": "A"
+  }
+},
+{
+  "model": "interventions.tag",
+  "pk": 7,
+  "fields": {
+    "name": "marginal mark",
+    "notes": "",
+    "applies_to": "A"
+  }
+},
+{
+  "model": "interventions.tag",
+  "pk": 8,
+  "fields": {
+    "name": "punctuation mark",
+    "notes": "",
+    "applies_to": "A"
+  }
+},
+{
+  "model": "interventions.tag",
+  "pk": 9,
+  "fields": {
+    "name": "flyleaf note",
+    "notes": "",
+    "applies_to": "A"
+  }
+},
+{
+  "model": "interventions.tag",
+  "pk": 10,
+  "fields": {
+    "name": "text illegible",
+    "notes": "",
+    "applies_to": "AI"
+  }
+},
+{
+  "model": "interventions.tag",
+  "pk": 11,
+  "fields": {
+    "name": "transcription uncertain",
+    "notes": "",
+    "applies_to": "AI"
+  }
+},
+{
+  "model": "interventions.tag",
+  "pk": 12,
+  "fields": {
+    "name": "blue ink",
+    "notes": "",
+    "applies_to": "A"
+  }
+},
+{
+  "model": "interventions.tag",
+  "pk": 13,
+  "fields": {
+    "name": "black ink",
+    "notes": "",
+    "applies_to": "A"
+  }
+}
+]

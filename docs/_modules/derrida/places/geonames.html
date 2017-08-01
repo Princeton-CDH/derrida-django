@@ -1,20 +1,17 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>derrida.places.geonames &#8212; Derrida 0.7.0 documentation</title>
-    
+    <title>derrida.places.geonames &#8212; Derrida 0.8.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.7.0',
+        VERSION:     '0.8.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -33,7 +30,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <body role="document">
+  <body>
   
 
     <div class="document">
@@ -66,8 +63,8 @@
         <span class="c1"># return the list of results (present even when empty)</span>
         <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s1">&#39;geonames&#39;</span><span class="p">]</span></div>
 
-    <span class="nd">@classmethod</span>
-<div class="viewcode-block" id="GeoNamesAPI.uri_from_id"><a class="viewcode-back" href="../../../codedocs.html#derrida.places.geonames.GeoNamesAPI.uri_from_id">[docs]</a>    <span class="k">def</span> <span class="nf">uri_from_id</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">geonames_id</span><span class="p">):</span>
+<div class="viewcode-block" id="GeoNamesAPI.uri_from_id"><a class="viewcode-back" href="../../../codedocs.html#derrida.places.geonames.GeoNamesAPI.uri_from_id">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">uri_from_id</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">geonames_id</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Convert a GeoNames id into a GeoNames URI&#39;&#39;&#39;</span>
         <span class="k">return</span> <span class="s1">&#39;http://sws.geonames.org/</span><span class="si">%d</span><span class="s1">/&#39;</span> <span class="o">%</span> <span class="n">geonames_id</span></div></div>
 </pre></div>
@@ -124,8 +121,8 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../architecture.html">Architecture</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../codedocs.html">Code Documentation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">CHANGELOG</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html#known-issues">KNOWN ISSUES</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Change Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../deploynotes.html">Deploy and Upgrade notes</a></li>
 </ul>
 
 
@@ -147,7 +144,7 @@
       &copy;2017, CDH @ Princeton & Trustees of Princeotn University.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.5</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
       
     </div>

@@ -1,0 +1,53 @@
+/* local overrides for annotator.js editor and annotator marginalia display */
+
+/* tweak some djiffy/annotator styles for display */
+.inner {
+  display: inline-block; /* match page image size exactly */
+}
+.margin-container-show aside.margin-container { right: -5px;}
+.marginalia-item > div {
+    padding-left: 20px;
+}
+.marginalia-item label {
+    padding-right: 5px;
+}
+
+/* Grab hand over editor control so that you know it can be used to move */
+.annotator-controls {
+  cursor: move;
+}
+/* override default style for editor labels */
+.annotator-editor .annotator-item label {
+  cursor: default;
+  color: black;
+  font-weight: bold;
+  background-color: lightgray;
+  margin: 2px;
+  padding: 2px;
+  display: inline-block;
+  width: 95%;
+}
+
+.annotator-widget {
+  min-width: 375px;
+}
+
+/* marginalia card display labels */
+.marginalia-item label {
+  background-color: lightgray;
+  display: inline-block;
+  width: 95%;
+  margin-top: 5px;
+  margin-bottom: 0;
+  text-align: right;
+}
+
+/*
+  Override for jQuery autocomplete menu. Creates a box-shadow to highlight the
+  autocomplete menu when it appears.
+*/
+.ui-menu {
+      box-shadow: 0px 0px 10px blue;
+      -moz-box-shadow: 0px 0px 10px blue;
+      -webkit-box-shadow: 0px 0px 10px blue;
+}

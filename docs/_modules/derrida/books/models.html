@@ -1,20 +1,17 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>derrida.books.models &#8212; Derrida 0.7.0 documentation</title>
-    
+    <title>derrida.books.models &#8212; Derrida 0.8.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.7.0',
+        VERSION:     '0.8.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -33,7 +30,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <body role="document">
+  <body>
   
 
     <div class="document">
@@ -42,12 +39,15 @@
           <div class="body" role="main">
             
   <h1>Source code for derrida.books.models</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">django.db</span> <span class="k">import</span> <span class="n">models</span>
+<span></span><span class="kn">import</span> <span class="nn">json</span>
+
+<span class="kn">from</span> <span class="nn">django.db</span> <span class="k">import</span> <span class="n">models</span>
 <span class="kn">from</span> <span class="nn">django.contrib.contenttypes.fields</span> <span class="k">import</span> <span class="n">GenericRelation</span>
 <span class="kn">from</span> <span class="nn">django.core.validators</span> <span class="k">import</span> <span class="n">RegexValidator</span>
 <span class="kn">from</span> <span class="nn">django.core.exceptions</span> <span class="k">import</span> <span class="n">ValidationError</span>
 <span class="kn">from</span> <span class="nn">django.urls</span> <span class="k">import</span> <span class="n">reverse</span>
 <span class="kn">from</span> <span class="nn">django.utils.safestring</span> <span class="k">import</span> <span class="n">mark_safe</span>
+<span class="kn">from</span> <span class="nn">djiffy.models</span> <span class="k">import</span> <span class="n">Canvas</span><span class="p">,</span> <span class="n">Manifest</span>
 <span class="kn">from</span> <span class="nn">sortedm2m.fields</span> <span class="k">import</span> <span class="n">SortedManyToManyField</span>
 
 <span class="kn">from</span> <span class="nn">derrida.common.models</span> <span class="k">import</span> <span class="n">Named</span><span class="p">,</span> <span class="n">Notable</span><span class="p">,</span> <span class="n">DateRange</span>
@@ -264,6 +264,11 @@
         <span class="n">help_text</span><span class="o">=</span><span class="s1">&#39;Derrida works that cite this edition or instance&#39;</span><span class="p">,</span>
         <span class="n">blank</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
+    <span class="c1">#: digital edition via IIIF as instance of :class:`djiffy.models.Manifest`</span>
+    <span class="n">digital_edition</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">OneToOneField</span><span class="p">(</span><span class="n">Manifest</span><span class="p">,</span> <span class="n">blank</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">on_delete</span><span class="o">=</span><span class="n">models</span><span class="o">.</span><span class="n">SET_NULL</span><span class="p">,</span>
+        <span class="n">help_text</span><span class="o">=</span><span class="s1">&#39;Digitized edition of this book, if available&#39;</span><span class="p">)</span>
+
     <span class="c1"># proof-of-concept generic relation to footnotes</span>
     <span class="c1">#: generic relation to :class:~`derrida.footnotes.models.Footnote`</span>
     <span class="n">footnotes</span> <span class="o">=</span> <span class="n">GenericRelation</span><span class="p">(</span><span class="n">Footnote</span><span class="p">)</span>
@@ -285,6 +290,14 @@
         <span class="sd">&#39;&#39;&#39;display title - alternate title or work short title&#39;&#39;&#39;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">alternate_title</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">work</span><span class="o">.</span><span class="n">short_title</span> <span class="ow">or</span> <span class="s1">&#39;[no title]&#39;</span></div>
     <span class="n">display_title</span><span class="o">.</span><span class="n">short_description</span> <span class="o">=</span> <span class="s1">&#39;Title&#39;</span>
+
+<div class="viewcode-block" id="Instance.is_digitized"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.models.Instance.is_digitized">[docs]</a>    <span class="k">def</span> <span class="nf">is_digitized</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;boolean indicator if there is an associated digital edition&#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">digital_edition</span><span class="p">)</span></div>
+    <span class="c1"># technically sorts on the foreign key, but that effectively filters</span>
+    <span class="c1"># instances with/without digital additions</span>
+    <span class="n">is_digitized</span><span class="o">.</span><span class="n">admin_order_field</span> <span class="o">=</span> <span class="s1">&#39;digital_edition&#39;</span>
+    <span class="n">is_digitized</span><span class="o">.</span><span class="n">boolean</span> <span class="o">=</span> <span class="kc">True</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">item_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -464,10 +477,15 @@
     <span class="n">reference_type</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">ReferenceType</span><span class="p">)</span>
     <span class="c1">#: anchor text</span>
     <span class="n">anchor_text</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">TextField</span><span class="p">(</span><span class="n">blank</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1">#: ManyToManyField to :class:`djiffy.models.Canvas`</span>
+    <span class="n">canvases</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ManyToManyField</span><span class="p">(</span><span class="n">Canvas</span><span class="p">,</span> <span class="n">blank</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">help_text</span><span class="o">=</span><span class="s2">&quot;Scanned images from Derrida&#39;s Library | &quot;</span><span class="p">)</span>
+    <span class="c1">#: ManyToManyField to :class:`derrida.interventions.Intervention`</span>
+    <span class="n">interventions</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ManyToManyField</span><span class="p">(</span><span class="s1">&#39;interventions.Intervention&#39;</span><span class="p">,</span>
+        <span class="n">blank</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># Lazy reference to avoid a circular import</span>
 
     <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
         <span class="n">ordering</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;derridawork&#39;</span><span class="p">,</span> <span class="s1">&#39;derridawork_page&#39;</span><span class="p">,</span> <span class="s1">&#39;derridawork_pageloc&#39;</span><span class="p">]</span>
-
 
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">, </span><span class="si">%s%s</span><span class="s2">: </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span>
@@ -486,7 +504,22 @@
             <span class="k">return</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">snippet</span><span class="p">,</span> <span class="s1">&#39; ...&#39;</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">snippet</span></div>
     <span class="n">anchor_text_snippet</span><span class="o">.</span><span class="n">short_description</span> <span class="o">=</span> <span class="s1">&#39;Anchor Text&#39;</span>
-    <span class="n">anchor_text</span><span class="o">.</span><span class="n">admin_order_field</span> <span class="o">=</span> <span class="s1">&#39;anchor_text&#39;</span></div>
+    <span class="n">anchor_text</span><span class="o">.</span><span class="n">admin_order_field</span> <span class="o">=</span> <span class="s1">&#39;anchor_text&#39;</span>
+
+<div class="viewcode-block" id="Reference.get_autocomplete_instances"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.models.Reference.get_autocomplete_instances">[docs]</a>    <span class="k">def</span> <span class="nf">get_autocomplete_instances</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Returns a list of :class:`Instance` primary keys as JSON for</span>
+<span class="sd">        jQuery use in disabling or enabling the autocompletes for</span>
+<span class="sd">        :class:`~derrida.interventions.models.Canvas` and</span>
+<span class="sd">        :class:`~derrida.interventions.models.Interventions` on the change_form</span>
+<span class="sd">        for :class:`Reference`.</span>
+
+<span class="sd">        :return: Returns a JSON formatted array</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">valid_instance_pks</span> <span class="o">=</span> <span class="n">Instance</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">exclude</span><span class="p">(</span>
+                                <span class="n">digital_edition__isnull</span><span class="o">=</span><span class="kc">True</span>
+                             <span class="p">)</span><span class="o">.</span><span class="n">values_list</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="n">flat</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">valid_instance_pks</span><span class="p">))</span></div></div>
 </pre></div>
 
           </div>
@@ -541,8 +574,8 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../architecture.html">Architecture</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../codedocs.html">Code Documentation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">CHANGELOG</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html#known-issues">KNOWN ISSUES</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Change Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../deploynotes.html">Deploy and Upgrade notes</a></li>
 </ul>
 
 
@@ -564,7 +597,7 @@
       &copy;2017, CDH @ Princeton & Trustees of Princeotn University.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.5</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
       
     </div>

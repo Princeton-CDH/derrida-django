@@ -1,9 +1,12 @@
+import json
+
 from django.db import models
 from django.contrib.contenttypes.fields import GenericRelation
 from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
 from django.urls import reverse
 from django.utils.safestring import mark_safe
+from djiffy.models import Canvas, Manifest
 from sortedm2m.fields import SortedManyToManyField
 
 from derrida.common.models import Named, Notable, DateRange
@@ -220,6 +223,11 @@ class Instance(Notable):
         help_text='Derrida works that cite this edition or instance',
         blank=True)
 
+    #: digital edition via IIIF as instance of :class:`djiffy.models.Manifest`
+    digital_edition = models.OneToOneField(Manifest, blank=True, null=True,
+        on_delete=models.SET_NULL,
+        help_text='Digitized edition of this book, if available')
+
     # proof-of-concept generic relation to footnotes
     #: generic relation to :class:~`derrida.footnotes.models.Footnote`
     footnotes = GenericRelation(Footnote)
@@ -241,6 +249,14 @@ class Instance(Notable):
         '''display title - alternate title or work short title'''
         return self.alternate_title or self.work.short_title or '[no title]'
     display_title.short_description = 'Title'
+
+    def is_digitized(self):
+        '''boolean indicator if there is an associated digital edition'''
+        return bool(self.digital_edition)
+    # technically sorts on the foreign key, but that effectively filters
+    # instances with/without digital additions
+    is_digitized.admin_order_field = 'digital_edition'
+    is_digitized.boolean = True
 
     @property
     def item_type(self):
@@ -420,10 +436,15 @@ class Reference(models.Model):
     reference_type = models.ForeignKey(ReferenceType)
     #: anchor text
     anchor_text = models.TextField(blank=True)
+    #: ManyToManyField to :class:`djiffy.models.Canvas`
+    canvases = models.ManyToManyField(Canvas, blank=True,
+        help_text="Scanned images from Derrida's Library | ")
+    #: ManyToManyField to :class:`derrida.interventions.Intervention`
+    interventions = models.ManyToManyField('interventions.Intervention',
+        blank=True)  # Lazy reference to avoid a circular import
 
     class Meta:
         ordering = ['derridawork', 'derridawork_page', 'derridawork_pageloc']
-
 
     def __str__(self):
         return "%s, %s%s: %s, %s, %s" % (
@@ -443,3 +464,18 @@ class Reference(models.Model):
         return snippet
     anchor_text_snippet.short_description = 'Anchor Text'
     anchor_text.admin_order_field = 'anchor_text'
+
+    def get_autocomplete_instances(self):
+        '''Returns a list of :class:`Instance` primary keys as JSON for
+        jQuery use in disabling or enabling the autocompletes for
+        :class:`~derrida.interventions.models.Canvas` and
+        :class:`~derrida.interventions.models.Interventions` on the change_form
+        for :class:`Reference`.
+
+        :return: Returns a JSON formatted array
+        :rtype: str
+        '''
+        valid_instance_pks = Instance.objects.exclude(
+                                digital_edition__isnull=True
+                             ).values_list('id', flat=True).order_by('id')
+        return json.dumps(list(valid_instance_pks))

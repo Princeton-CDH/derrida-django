@@ -1,0 +1,9 @@
+{% extends "admin/change_form.html" %}
+
+{% load admin_static i18n admin_modify admin_urls grp_tags %}
+
+{% block javascripts %}
+ {{ block.super }}
+ {# include shim to disable autocompletes that depend on a digital edition #}
+<script src='/static/js/reference-instance-canvas-toggle.js'></script>
+{% endblock %}

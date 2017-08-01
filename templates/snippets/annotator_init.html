@@ -1,0 +1,239 @@
+{% load static %}
+  {# include jquery-ui for autocomplete #}
+  <script type="text/javascript" src="{% static 'js/jquery-ui.min.js' %}"></script>
+  <link rel="stylesheet" type="text/css" href="{% static 'js/jquery-ui.min.css' %}"/>
+  {# local copy of annotator; currently v2.0.0-alpha.2 #}
+  <script type="text/javascript" src="{% static 'ext/annotator/annotator.min.js' %}"></script>
+
+  <link rel="stylesheet" type="text/css" href="//emory-lits-labs.github.io/annotator-marginalia/build/0.4.0/annotator.marginalia.min.css" />
+  <script type="text/javascript" src="//emory-lits-labs.github.io/annotator-marginalia/build/0.4.0/annotator.marginalia.min.js"></script>
+ {# <script type="text/javascript" src="//emory-lits-labs.github.io/annotator-meltdown/build/0.3.0/annotator.meltdown.min.js"></script> #}
+{# <script type="text/javascript" src="//emory-lits-labs.github.io/annotator-meltdown-zotero/build/0.1.0/annotator.meltdown.zotero.min.js"></script> <!-- includes for jquery-ui autocomplete --> #}
+
+<!--   <script type="text/javascript" src="{% static 'js/annotator/annotator.permissions.js' %}"></script> -->
+
+  {# // <script type="text/javascript" src="{% static 'js/annotator/tag-lookup.js' %}"></script> #}
+  <link rel="stylesheet" type="text/css" href="//emory-lits-labs.github.io/annotator-imgselect/src/jquery.imgareaselect-0.9.10/css/imgareaselect-default.css" />
+  <script type="text/javascript" src="//emory-lits-labs.github.io/annotator-imgselect/build/0.2.2/annotator.imgselect.min.js"></script>
+  <script type="text/javascript" src="{% static 'js/annotator/interventions-plugin.js' %}"></script>
+
+  <link rel="stylesheet" type="text/css" href="{% static 'ext/annotator/annotator.min.css' %}"/>
+  {# <link rel="stylesheet" type="text/css" href="//emory-lits-labs.github.io/annotator-meltdown/build/0.3.0/annotator.meltdown.min.css" /> #}
+   <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+
+  {# Include local style overrides for the annotator in Winthrop #}
+  <link rel='stylesheet' type='text/css' href='{% static "css/derrida-annotator.css" %}' />
+
+
+{# Initialize annotator.js *#}
+<script type="text/javascript" charset="utf-8">
+
+
+/** Django CSRF token handling for ajax put/post/delete requests.
+Based on https://docs.djangoproject.com/en/1.11/ref/csrf/#ajax
+*/
+// NOTE: could use jquery cookie plugin instead of this method
+// http://plugins.jquery.com/cookie/
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+var csrftoken = getCookie('csrftoken');
+
+function csrfSafeMethod(method) {
+    // these HTTP methods do not require CSRF protection
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
+$.ajaxSetup({
+    beforeSend: function(xhr, settings) {
+        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+            // Send the token to same-origin, relative URLs only.
+            // Send the token only if the method warrants CSRF protection
+            // Using the CSRFToken value acquired earlier
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        }
+    }
+});
+
+
+   $(document).ready(function () {
+
+    // Use canvas URI to associate new annotations and load
+    // existing ones.
+    var content_uri = "{{ canvas.uri }}";
+
+    var contentUri = function () {
+        return {
+            beforeAnnotationCreated: function (annotation) {
+                annotation.uri = content_uri;
+            }
+        };
+    };
+
+  var autocomplete_url = {
+    language: "{% url 'books:language-autocomplete' %}",
+    annotator: "{% url 'people:person-autocomplete' %}",
+{#    subject:  "{% url 'books:subject-autocomplete' %}", #}
+// NOTE: in future, mode will need to be set based on intervention type
+    tag: "{% url 'interventions:tag-autocomplete' mode='annotation' %}"
+  };
+
+var language_choices = {{ languages_js|safe }};
+var fields = [
+    {
+      name: 'author',
+      label: 'Author',
+      default: {{ default_intervener|safe }},
+      autocompleteURL: autocomplete_url.annotator
+    },
+    {
+      name: 'text_language',
+      label: 'Language',
+      type: 'select',
+      choices: language_choices
+      // NOTE: could also use choicesURL to load choices, e.g.
+      // choicesURL: autocomplete_url.language
+    },
+    {
+      name: 'text_translation',
+      label: 'Translation',
+      type: 'textarea',
+      placeholder: 'Translation of annotation text (optional)'
+    },
+    {
+      name: 'quote',
+      label: 'Anchor Text',
+      type: 'textarea'
+    },
+    {
+      name: 'quote_language',
+      label: 'Anchor Text Language',
+      type: 'select',
+      choices: language_choices
+    },
+    {
+      name: 'tags',
+      label: 'Tags',
+      list: true,
+      autocompleteURL: autocomplete_url.tag
+    }
+  {% comment %}
+/*    { name: 'translation',
+      label: 'Translation',
+      size: 'textarea'
+    },
+    {
+      name: 'subjects',
+      label: 'Subjects',
+      placeholder: 'Type or click to select subjects',
+      list: true,
+      autocompleteUrl: autocomplete_url.subject
+    },
+    {
+      name: 'author',
+      label: 'Annotator',
+      placeholder: 'Type or click to select annotator',
+      autocompleteUrl: autocomplete_url.annotator
+    },
+    {
+      name: 'quote',
+      label: 'Anchor text',
+      size: 'textarea'
+    },
+    {
+      name: 'anchor_translation',
+      label: 'Anchor text translation',
+      size: 'textarea'
+    },
+    }*/  {% endcomment %}
+  ];
+
+  var interventions = annotatorInterventions(fields);
+
+  var marginalia_opts = {
+    show_author: true,
+     viewer: interventions.viewer,
+    renderExtensions: [
+        // annotation_permissions.renderExtension,
+        interventions.renderExtension,
+    ],
+    toggle: {
+      class: 'btn btn-green',
+      show: function(){
+        $(".carousel-control").fadeOut();
+      },
+      hide: function(){
+        $(".carousel-control").fadeIn();
+      }
+    }
+  };
+
+
+  // configuring marginalia here so it can be referenced in annotator search
+  var _marginalia = annotatorMarginalia(marginalia_opts);
+
+/* custom authz policy based on current django user permissions
+  NOTE: django permissions are enforced by the api, but this allows
+  marginalia to only display edit and delete options based on what
+  the user should be able to do.
+*/
+var user_permissions = {
+  update: {{ perms.annotator_store.change_annotation|lower }},
+  delete: {{ perms.annotator_store.delete_annotation|lower }},
+}
+annotator.authz.AclAuthzPolicy.prototype.permits = function (action, context, identity) {
+  return user_permissions[action];
+}
+
+  var app = new annotator.App()
+      .include(contentUri)
+      .include(annotator.ui.main, {
+          element: document.querySelector('.content .inner'),
+          {% comment %}/*  {# not using default viewer, so these don't matter, see marginalia #}
+          viewerExtensions: [
+              annotatormeltdown.viewerExtension,
+              annotator.ui.tags.viewerExtension
+          ],
+          */
+          {% endcomment %}
+          editorExtensions: [
+            interventions.editorExtension,
+          ]
+      })
+      .include(annotatorImageSelect, {
+        element: $('.content .inner img'),
+      })
+      .include(annotator.storage.http, {
+          prefix: '{% url "annotation-api-prefix" %}',
+          headers: {"X-CSRFToken": csrftoken}
+      })
+      .include(annotatorMarginalia, marginalia_opts)
+
+  app.start()
+      .then(function () {
+          // {# {% if mode = 'full' %} #}
+           app.annotations.load({uri: content_uri});
+          //{#  {% endif %} #}
+      });
+  {# set user identity to allow for basic permission checking #}
+  app.ident.identity = "{{ user.username }}";
+  // set superuser status to allow auth checking
+  // (enforced at application level, only affects what is displayed)
+  app.ident.is_superuser = {{ request.user.is_superuser|lower }}
+
+});
+
+
+
+</script>
