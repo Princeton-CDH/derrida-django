@@ -4,7 +4,7 @@ CHANGELOG
 =========
 
 0.8 (Interventions Phase I)
---------------------------
+---------------------------
 Release implementing the first part of the interventions interface, allowing
 data editors to note Derrida's annotation-style interventions on digital editions
 of his library works.
