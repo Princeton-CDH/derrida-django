@@ -272,6 +272,13 @@ class TestIntervention(TestCase):
         assert annotation.admin_thumbnail() == \
             '<img src="%s" />' % annotation.iiif_image_selection().mini_thumbnail()
 
+    def test_is_verbal(self):
+
+        note = Intervention()
+        assert not note.is_verbal()
+        note.text = 'foobar'
+        assert note.is_verbal()
+
 
 class TestInterventionViews(TestCase):
 

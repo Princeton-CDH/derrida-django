@@ -112,16 +112,21 @@ var fields = [
       placeholder: 'Translation of annotation text (optional)'
     },
     {
-      name: 'tags',
-      label: 'Tags',
-      list: true,
-      autocompleteURL: autocomplete_url.tag
+      name: 'quote',
+      label: 'Anchor Text',
+      type: 'textarea'
     },
     {
       name: 'quote_language',
       label: 'Anchor Text Language',
       type: 'select',
       choices: language_choices
+    },
+    {
+      name: 'tags',
+      label: 'Tags',
+      list: true,
+      autocompleteURL: autocomplete_url.tag
     }
   {% comment %}
 /*    { name: 'translation',

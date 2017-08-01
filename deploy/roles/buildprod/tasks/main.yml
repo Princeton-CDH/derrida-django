@@ -1,0 +1,39 @@
+- name: Make a directory for virtualenv
+  file:
+      path: "{{ deploy }}/env"
+      state: directory
+      mode: "u+rwx,g+rwx,o-rw"
+      setype: httpd_sys_script_exec_t
+- name: Build a virtualenvironment
+  command: "virtualenv --system-site-packages {{ deploy }}/env"
+- name: Upgrade pip to latest in virtualenv
+  pip:
+    name: pip
+    state: latest
+    virtualenv: "{{ deploy }}/env"
+- name: Install requirements via pip
+  pip:
+    virtualenv: "{{ deploy }}/env"
+    requirements: "{{ deploy }}/requirements.txt"
+- name: Copy local_settings.py from /root/
+  synchronize:
+    src: /home/deploy/local_settings.py
+    dest: '{{ prod }}/{{ shorthash.stdout }}/{{ djangoapp }}'
+  delegate_to: "{{ inventory_hostname }}"
+- name: Run ./manage.py collectstatic
+  django_manage:
+    command: collectstatic
+    app_path: "{{ deploy }}"
+    virtualenv: "{{ deploy }}/env"
+- name: Copy over robots.txt
+  synchronize:
+    src: /home/deploy/robots.txt
+    dest: '{{ prod }}/{{ shorthash.stdout }}/static/'
+  delegate_to: "{{ inventory_hostname }}"
+- name: Set ownership recursively
+  file:
+    path: "{{ prod }}/{{ shorthash.stdout }}"
+    state: directory
+    owner: deploy
+    group: apache
+    recurse: yes

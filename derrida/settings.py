@@ -137,6 +137,8 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'sitemedia'),
 ]
 
+SITE_ID = 1
+
 # pucas configuration that is not expected to change across deploys
 # and does not reference local server configurations or fields
 PUCAS_LDAP = {

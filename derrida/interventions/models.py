@@ -17,7 +17,7 @@ INTERVENTION_TYPES = AttrDict({
 
 
 def get_default_intervener():
-    """Function to either return a the pk of a :class:`~derrida.people.models.Person`
+    """Function to either return the pk of a :class:`~derrida.people.models.Person`
     object representing Jacques Derrida if he exists in the database or None"""
     try:
         return (Person.objects.get(authorized_name='Derrida, Jacques')).pk
@@ -128,6 +128,13 @@ class Intervention(BaseAnnotation):
             except Canvas.DoesNotExist:
                 pass
         super(Intervention, self).save()
+
+    def is_verbal(self):
+        return bool(self.text)
+    # Sorts on the binary of whether an intervention does or does not
+    # have text
+    is_verbal.boolean = True
+    is_verbal.admin_order_field = 'text'
 
     def is_annotation(self):
         return self.intervention_type == TYPES.ANNOTATION

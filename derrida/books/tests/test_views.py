@@ -169,9 +169,10 @@ class TestBookViews(TestCase):
             msg_prefix='canvas url should be included once for each associated intervention')
         self.assertContains(response, 'Annotation', count=2,
             msg_prefix='intervention type should display for each item')
-        self.assertContains(response, 'Intervention', count=3,
+        self.assertContains(response, 'Intervention', count=5,
             msg_prefix='intervention type should display for each item, once in'
-            ' the reference inline, and once in the hidden reference inline')
+            ' the reference inline, and once in the hidden reference inline, and'
+            ' the inline fieldset.')
 
         for intervention in ivtns:
             self.assertContains(response, intervention.admin_thumbnail(),
