@@ -4,6 +4,11 @@
     login_host: cdh-db.princeton.edu
     name: "{{ db_name }}"
     target: "{{backup_location}}"
+- name: Run database migrations
+  django_manage:
+    command: migrate
+    app_path: "{{ deploy }}"
+    virtualenv: "{{ deploy }}/env"
 - name: check for old symlink
   command: "ls /var/www/{{ symlink }}"
   register: result
