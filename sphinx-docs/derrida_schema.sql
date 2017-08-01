@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 5.7.17, for osx10.12 (x86_64)
 --
--- Host: localhost    Database: test_derrida
+-- Host: localhost    Database: testderrida
 -- ------------------------------------------------------
 -- Server version	5.7.17
 
@@ -14,6 +14,63 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `annotator_store_annotation`
+--
+
+DROP TABLE IF EXISTS `annotator_store_annotation`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `annotator_store_annotation` (
+  `id` char(32) NOT NULL,
+  `created` datetime(6) NOT NULL,
+  `updated` datetime(6) NOT NULL,
+  `text` longtext NOT NULL,
+  `quote` longtext NOT NULL,
+  `uri` varchar(200) NOT NULL,
+  `extra_data` longtext NOT NULL,
+  `user_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `annotator_store_annotation_user_id_0eb79fc4_fk_auth_user_id` (`user_id`),
+  CONSTRAINT `annotator_store_annotation_user_id_0eb79fc4_fk_auth_user_id` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `annotator_store_annotation`
+--
+
+LOCK TABLES `annotator_store_annotation` WRITE;
+/*!40000 ALTER TABLE `annotator_store_annotation` DISABLE KEYS */;
+/*!40000 ALTER TABLE `annotator_store_annotation` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `annotator_store_annotationgroup`
+--
+
+DROP TABLE IF EXISTS `annotator_store_annotationgroup`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `annotator_store_annotationgroup` (
+  `group_ptr_id` int(11) NOT NULL,
+  `notes` longtext NOT NULL,
+  `created` datetime(6) NOT NULL,
+  `updated` datetime(6) NOT NULL,
+  PRIMARY KEY (`group_ptr_id`),
+  CONSTRAINT `annotator_store_anno_group_ptr_id_b4c67cb8_fk_auth_grou` FOREIGN KEY (`group_ptr_id`) REFERENCES `auth_group` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `annotator_store_annotationgroup`
+--
+
+LOCK TABLES `annotator_store_annotationgroup` WRITE;
+/*!40000 ALTER TABLE `annotator_store_annotationgroup` DISABLE KEYS */;
+/*!40000 ALTER TABLE `annotator_store_annotationgroup` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `auth_group`
@@ -56,7 +113,7 @@ CREATE TABLE `auth_group_permissions` (
   KEY `auth_group_permissio_permission_id_84c5c92e_fk_auth_perm` (`permission_id`),
   CONSTRAINT `auth_group_permissio_permission_id_84c5c92e_fk_auth_perm` FOREIGN KEY (`permission_id`) REFERENCES `auth_permission` (`id`),
   CONSTRAINT `auth_group_permissions_group_id_b120cbf9_fk_auth_group_id` FOREIGN KEY (`group_id`) REFERENCES `auth_group` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=73 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=92 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -65,7 +122,7 @@ CREATE TABLE `auth_group_permissions` (
 
 LOCK TABLES `auth_group_permissions` WRITE;
 /*!40000 ALTER TABLE `auth_group_permissions` DISABLE KEYS */;
-INSERT INTO `auth_group_permissions` VALUES (1,1,13),(2,1,14),(3,1,15),(4,1,25),(5,1,26),(6,1,27),(7,1,28),(8,1,29),(9,1,30),(10,1,31),(11,1,32),(12,1,33),(13,1,34),(14,1,35),(15,1,36),(16,1,37),(17,1,38),(18,1,39),(19,1,40),(20,1,41),(21,1,42),(22,1,43),(23,1,44),(24,1,45),(25,1,46),(26,1,47),(27,1,48),(28,1,49),(29,1,50),(30,1,51),(31,1,52),(32,1,53),(33,1,54),(34,1,55),(35,1,56),(36,1,57),(37,1,58),(38,1,59),(39,1,60),(40,1,61),(41,1,62),(42,1,63),(43,1,64),(44,1,65),(45,1,66),(46,1,67),(47,1,68),(48,1,69),(49,1,70),(50,1,71),(51,1,72),(52,1,73),(53,1,74),(54,1,75),(55,1,76),(56,1,77),(57,1,78),(58,1,79),(59,1,80),(60,1,81),(61,1,82),(62,1,83),(63,1,84),(64,1,85),(65,1,86),(66,1,87),(67,1,88),(68,1,89),(69,1,90),(70,1,91),(71,1,92),(72,1,93);
+INSERT INTO `auth_group_permissions` VALUES (88,1,4),(89,1,5),(90,1,6),(91,1,7),(1,1,21),(2,1,22),(3,1,23),(4,1,24),(5,1,25),(6,1,26),(7,1,27),(8,1,28),(9,1,29),(10,1,30),(11,1,31),(12,1,32),(13,1,33),(14,1,34),(15,1,35),(16,1,36),(17,1,37),(18,1,38),(19,1,39),(20,1,40),(21,1,41),(22,1,42),(23,1,43),(24,1,44),(25,1,45),(26,1,46),(27,1,47),(28,1,48),(29,1,49),(30,1,50),(31,1,51),(32,1,52),(33,1,53),(34,1,54),(35,1,55),(36,1,56),(37,1,57),(38,1,58),(39,1,59),(40,1,60),(41,1,61),(42,1,62),(43,1,63),(44,1,64),(45,1,65),(46,1,66),(47,1,67),(48,1,68),(49,1,69),(50,1,70),(51,1,71),(52,1,72),(53,1,73),(54,1,74),(55,1,75),(56,1,76),(57,1,77),(82,1,81),(83,1,85),(73,1,86),(74,1,87),(75,1,88),(79,1,89),(80,1,90),(81,1,91),(76,1,92),(77,1,93),(78,1,94),(84,1,98),(85,1,99),(86,1,100),(87,1,101),(58,1,102),(59,1,103),(60,1,104),(61,1,105),(62,1,106),(63,1,107),(64,1,108),(65,1,109),(66,1,110),(67,1,111),(68,1,112),(69,1,113),(70,1,114),(71,1,115),(72,1,116);
 /*!40000 ALTER TABLE `auth_group_permissions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -84,7 +141,7 @@ CREATE TABLE `auth_permission` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `auth_permission_content_type_id_codename_01ab375a_uniq` (`content_type_id`,`codename`),
   CONSTRAINT `auth_permission_content_type_id_2f476e4b_fk_django_co` FOREIGN KEY (`content_type_id`) REFERENCES `django_content_type` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=103 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=129 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -93,7 +150,7 @@ CREATE TABLE `auth_permission` (
 
 LOCK TABLES `auth_permission` WRITE;
 /*!40000 ALTER TABLE `auth_permission` DISABLE KEYS */;
-INSERT INTO `auth_permission` VALUES (1,'Can add log entry',1,'add_logentry'),(2,'Can change log entry',1,'change_logentry'),(3,'Can delete log entry',1,'delete_logentry'),(4,'Can add permission',2,'add_permission'),(5,'Can change permission',2,'change_permission'),(6,'Can delete permission',2,'delete_permission'),(7,'Can add user',3,'add_user'),(8,'Can change user',3,'change_user'),(9,'Can delete user',3,'delete_user'),(10,'Can add group',4,'add_group'),(11,'Can change group',4,'change_group'),(12,'Can delete group',4,'delete_group'),(13,'Can add content type',5,'add_contenttype'),(14,'Can change content type',5,'change_contenttype'),(15,'Can delete content type',5,'delete_contenttype'),(16,'Can add session',6,'add_session'),(17,'Can change session',6,'change_session'),(18,'Can delete session',6,'delete_session'),(19,'Can add proxy granting ticket',7,'add_proxygrantingticket'),(20,'Can change proxy granting ticket',7,'change_proxygrantingticket'),(21,'Can delete proxy granting ticket',7,'delete_proxygrantingticket'),(22,'Can add session ticket',8,'add_sessionticket'),(23,'Can change session ticket',8,'change_sessionticket'),(24,'Can delete session ticket',8,'delete_sessionticket'),(25,'Can add owning institution',9,'add_owninginstitution'),(26,'Can change owning institution',9,'change_owninginstitution'),(27,'Can delete owning institution',9,'delete_owninginstitution'),(28,'Can add Catalogue',10,'add_instancecatalogue'),(29,'Can change Catalogue',10,'change_instancecatalogue'),(30,'Can delete Catalogue',10,'delete_instancecatalogue'),(31,'Can add Person/Book Interaction',11,'add_personbook'),(32,'Can change Person/Book Interaction',11,'change_personbook'),(33,'Can delete Person/Book Interaction',11,'delete_personbook'),(34,'Can add creator type',12,'add_creatortype'),(35,'Can change creator type',12,'change_creatortype'),(36,'Can delete creator type',12,'delete_creatortype'),(37,'Can add derrida work',13,'add_derridawork'),(38,'Can change derrida work',13,'change_derridawork'),(39,'Can delete derrida work',13,'delete_derridawork'),(40,'Can add reference type',14,'add_referencetype'),(41,'Can change reference type',14,'change_referencetype'),(42,'Can delete reference type',14,'delete_referencetype'),(43,'Can add person book relationship type',15,'add_personbookrelationshiptype'),(44,'Can change person book relationship type',15,'change_personbookrelationshiptype'),(45,'Can delete person book relationship type',15,'delete_personbookrelationshiptype'),(46,'Can add Derrida library work instance',16,'add_instance'),(47,'Can change Derrida library work instance',16,'change_instance'),(48,'Can delete Derrida library work instance',16,'delete_instance'),(49,'Can add journal',17,'add_journal'),(50,'Can change journal',17,'change_journal'),(51,'Can delete journal',17,'delete_journal'),(52,'Can add Language',18,'add_instancelanguage'),(53,'Can change Language',18,'change_instancelanguage'),(54,'Can delete Language',18,'delete_instancelanguage'),(55,'Can add language',19,'add_language'),(56,'Can change language',19,'change_language'),(57,'Can delete language',19,'delete_language'),(58,'Can add publisher',20,'add_publisher'),(59,'Can change publisher',20,'change_publisher'),(60,'Can delete publisher',20,'delete_publisher'),(61,'Can add Subject',21,'add_worksubject'),(62,'Can change Subject',21,'change_worksubject'),(63,'Can delete Subject',21,'delete_worksubject'),(64,'Can add subject',22,'add_subject'),(65,'Can change subject',22,'change_subject'),(66,'Can delete subject',22,'delete_subject'),(67,'Can add Language',23,'add_worklanguage'),(68,'Can change Language',23,'change_worklanguage'),(69,'Can delete Language',23,'delete_worklanguage'),(70,'Can add Derrida library work',24,'add_work'),(71,'Can change Derrida library work',24,'change_work'),(72,'Can delete Derrida library work',24,'delete_work'),(73,'Can add reference',25,'add_reference'),(74,'Can change reference',25,'change_reference'),(75,'Can delete reference',25,'delete_reference'),(76,'Can add instance creator',26,'add_instancecreator'),(77,'Can change instance creator',26,'change_instancecreator'),(78,'Can delete instance creator',26,'delete_instancecreator'),(79,'Can add place',27,'add_place'),(80,'Can change place',27,'change_place'),(81,'Can delete place',27,'delete_place'),(82,'Can add relationship',28,'add_relationship'),(83,'Can change relationship',28,'change_relationship'),(84,'Can delete relationship',28,'delete_relationship'),(85,'Can add person',29,'add_person'),(86,'Can change person',29,'change_person'),(87,'Can delete person',29,'delete_person'),(88,'Can add residence',30,'add_residence'),(89,'Can change residence',30,'change_residence'),(90,'Can delete residence',30,'delete_residence'),(91,'Can add relationship type',31,'add_relationshiptype'),(92,'Can change relationship type',31,'change_relationshiptype'),(93,'Can delete relationship type',31,'delete_relationshiptype'),(94,'Can add source type',32,'add_sourcetype'),(95,'Can change source type',32,'change_sourcetype'),(96,'Can delete source type',32,'delete_sourcetype'),(97,'Can add bibliography',33,'add_bibliography'),(98,'Can change bibliography',33,'change_bibliography'),(99,'Can delete bibliography',33,'delete_bibliography'),(100,'Can add footnote',34,'add_footnote'),(101,'Can change footnote',34,'change_footnote'),(102,'Can delete footnote',34,'delete_footnote');
+INSERT INTO `auth_permission` VALUES (1,'Can add log entry',1,'add_logentry'),(2,'Can change log entry',1,'change_logentry'),(3,'Can delete log entry',1,'delete_logentry'),(4,'Can add annotation',2,'add_annotation'),(5,'Can change annotation',2,'change_annotation'),(6,'Can delete annotation',2,'delete_annotation'),(7,'View annotation',2,'view_annotation'),(8,'Manage annotation',2,'admin_annotation'),(9,'Can add annotation group',3,'add_annotationgroup'),(10,'Can change annotation group',3,'change_annotationgroup'),(11,'Can delete annotation group',3,'delete_annotationgroup'),(12,'Can add permission',4,'add_permission'),(13,'Can change permission',4,'change_permission'),(14,'Can delete permission',4,'delete_permission'),(15,'Can add user',5,'add_user'),(16,'Can change user',5,'change_user'),(17,'Can delete user',5,'delete_user'),(18,'Can add group',6,'add_group'),(19,'Can change group',6,'change_group'),(20,'Can delete group',6,'delete_group'),(21,'Can add creator type',7,'add_creatortype'),(22,'Can change creator type',7,'change_creatortype'),(23,'Can delete creator type',7,'delete_creatortype'),(24,'Can add instance creator',8,'add_instancecreator'),(25,'Can change instance creator',8,'change_instancecreator'),(26,'Can delete instance creator',8,'delete_instancecreator'),(27,'Can add reference type',9,'add_referencetype'),(28,'Can change reference type',9,'change_referencetype'),(29,'Can delete reference type',9,'delete_referencetype'),(30,'Can add Language',10,'add_instancelanguage'),(31,'Can change Language',10,'change_instancelanguage'),(32,'Can delete Language',10,'delete_instancelanguage'),(33,'Can add Person/Book Interaction',11,'add_personbook'),(34,'Can change Person/Book Interaction',11,'change_personbook'),(35,'Can delete Person/Book Interaction',11,'delete_personbook'),(36,'Can add Catalogue',12,'add_instancecatalogue'),(37,'Can change Catalogue',12,'change_instancecatalogue'),(38,'Can delete Catalogue',12,'delete_instancecatalogue'),(39,'Can add reference',13,'add_reference'),(40,'Can change reference',13,'change_reference'),(41,'Can delete reference',13,'delete_reference'),(42,'Can add journal',14,'add_journal'),(43,'Can change journal',14,'change_journal'),(44,'Can delete journal',14,'delete_journal'),(45,'Can add Language',15,'add_worklanguage'),(46,'Can change Language',15,'change_worklanguage'),(47,'Can delete Language',15,'delete_worklanguage'),(48,'Can add owning institution',16,'add_owninginstitution'),(49,'Can change owning institution',16,'change_owninginstitution'),(50,'Can delete owning institution',16,'delete_owninginstitution'),(51,'Can add publisher',17,'add_publisher'),(52,'Can change publisher',17,'change_publisher'),(53,'Can delete publisher',17,'delete_publisher'),(54,'Can add subject',18,'add_subject'),(55,'Can change subject',18,'change_subject'),(56,'Can delete subject',18,'delete_subject'),(57,'Can add person book relationship type',19,'add_personbookrelationshiptype'),(58,'Can change person book relationship type',19,'change_personbookrelationshiptype'),(59,'Can delete person book relationship type',19,'delete_personbookrelationshiptype'),(60,'Can add derrida work',20,'add_derridawork'),(61,'Can change derrida work',20,'change_derridawork'),(62,'Can delete derrida work',20,'delete_derridawork'),(63,'Can add Derrida library work instance',21,'add_instance'),(64,'Can change Derrida library work instance',21,'change_instance'),(65,'Can delete Derrida library work instance',21,'delete_instance'),(66,'Can add Derrida library work',22,'add_work'),(67,'Can change Derrida library work',22,'change_work'),(68,'Can delete Derrida library work',22,'delete_work'),(69,'Can add Subject',23,'add_worksubject'),(70,'Can change Subject',23,'change_worksubject'),(71,'Can delete Subject',23,'delete_worksubject'),(72,'Can add language',24,'add_language'),(73,'Can change language',24,'change_language'),(74,'Can delete language',24,'delete_language'),(75,'Can add content type',25,'add_contenttype'),(76,'Can change content type',25,'change_contenttype'),(77,'Can delete content type',25,'delete_contenttype'),(78,'Can add IIIF Canvas',26,'add_canvas'),(79,'Can change IIIF Canvas',26,'change_canvas'),(80,'Can delete IIIF Canvas',26,'delete_canvas'),(81,'Can view IIIF Canvas',26,'view_manifest'),(82,'Can add IIIF Manifest',27,'add_manifest'),(83,'Can change IIIF Manifest',27,'change_manifest'),(84,'Can delete IIIF Manifest',27,'delete_manifest'),(85,'Can view IIIF Manifest',27,'view_canvas'),(86,'Can add bibliography',28,'add_bibliography'),(87,'Can change bibliography',28,'change_bibliography'),(88,'Can delete bibliography',28,'delete_bibliography'),(89,'Can add source type',29,'add_sourcetype'),(90,'Can change source type',29,'change_sourcetype'),(91,'Can delete source type',29,'delete_sourcetype'),(92,'Can add footnote',30,'add_footnote'),(93,'Can change footnote',30,'change_footnote'),(94,'Can delete footnote',30,'delete_footnote'),(95,'Can add tag',31,'add_tag'),(96,'Can change tag',31,'change_tag'),(97,'Can delete tag',31,'delete_tag'),(98,'Can add intervention',32,'add_intervention'),(99,'Can change intervention',32,'change_intervention'),(100,'Can delete intervention',32,'delete_intervention'),(101,'View intervention',32,'view_intervention'),(102,'Can add residence',33,'add_residence'),(103,'Can change residence',33,'change_residence'),(104,'Can delete residence',33,'delete_residence'),(105,'Can add relationship type',34,'add_relationshiptype'),(106,'Can change relationship type',34,'change_relationshiptype'),(107,'Can delete relationship type',34,'delete_relationshiptype'),(108,'Can add relationship',35,'add_relationship'),(109,'Can change relationship',35,'change_relationship'),(110,'Can delete relationship',35,'delete_relationship'),(111,'Can add person',36,'add_person'),(112,'Can change person',36,'change_person'),(113,'Can delete person',36,'delete_person'),(114,'Can add place',37,'add_place'),(115,'Can change place',37,'change_place'),(116,'Can delete place',37,'delete_place'),(117,'Can add session',38,'add_session'),(118,'Can change session',38,'change_session'),(119,'Can delete session',38,'delete_session'),(120,'Can add site',39,'add_site'),(121,'Can change site',39,'change_site'),(122,'Can delete site',39,'delete_site'),(123,'Can add session ticket',40,'add_sessionticket'),(124,'Can change session ticket',40,'change_sessionticket'),(125,'Can delete session ticket',40,'delete_sessionticket'),(126,'Can add proxy granting ticket',41,'add_proxygrantingticket'),(127,'Can change proxy granting ticket',41,'change_proxygrantingticket'),(128,'Can delete proxy granting ticket',41,'delete_proxygrantingticket');
 /*!40000 ALTER TABLE `auth_permission` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -269,12 +326,15 @@ CREATE TABLE `books_instance` (
   `journal_id` int(11) DEFAULT NULL,
   `publisher_id` int(11) DEFAULT NULL,
   `work_id` int(11) NOT NULL,
+  `digital_edition_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
+  UNIQUE KEY `digital_edition_id` (`digital_edition_id`),
   KEY `books_instance_collected_in_id_dbb43376_fk_books_instance_id` (`collected_in_id`),
   KEY `books_instance_journal_id_dfbd8d81_fk_books_journal_id` (`journal_id`),
   KEY `books_instance_publisher_id_749c6e79_fk_books_publisher_id` (`publisher_id`),
   KEY `books_instance_work_id_c6e78f6b_fk_books_work_id` (`work_id`),
   CONSTRAINT `books_instance_collected_in_id_dbb43376_fk_books_instance_id` FOREIGN KEY (`collected_in_id`) REFERENCES `books_instance` (`id`),
+  CONSTRAINT `books_instance_digital_edition_id_aecd5704_fk_djiffy_manifest_id` FOREIGN KEY (`digital_edition_id`) REFERENCES `djiffy_manifest` (`id`),
   CONSTRAINT `books_instance_journal_id_dfbd8d81_fk_books_journal_id` FOREIGN KEY (`journal_id`) REFERENCES `books_journal` (`id`),
   CONSTRAINT `books_instance_publisher_id_749c6e79_fk_books_publisher_id` FOREIGN KEY (`publisher_id`) REFERENCES `books_publisher` (`id`),
   CONSTRAINT `books_instance_work_id_c6e78f6b_fk_books_work_id` FOREIGN KEY (`work_id`) REFERENCES `books_work` (`id`)
@@ -911,7 +971,7 @@ CREATE TABLE `django_content_type` (
   `model` varchar(100) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `django_content_type_app_label_model_76bd3d3b_uniq` (`app_label`,`model`)
-) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=42 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -920,7 +980,7 @@ CREATE TABLE `django_content_type` (
 
 LOCK TABLES `django_content_type` WRITE;
 /*!40000 ALTER TABLE `django_content_type` DISABLE KEYS */;
-INSERT INTO `django_content_type` VALUES (1,'admin','logentry'),(4,'auth','group'),(2,'auth','permission'),(3,'auth','user'),(12,'books','creatortype'),(13,'books','derridawork'),(16,'books','instance'),(10,'books','instancecatalogue'),(26,'books','instancecreator'),(18,'books','instancelanguage'),(17,'books','journal'),(19,'books','language'),(9,'books','owninginstitution'),(11,'books','personbook'),(15,'books','personbookrelationshiptype'),(20,'books','publisher'),(25,'books','reference'),(14,'books','referencetype'),(22,'books','subject'),(24,'books','work'),(23,'books','worklanguage'),(21,'books','worksubject'),(5,'contenttypes','contenttype'),(7,'django_cas_ng','proxygrantingticket'),(8,'django_cas_ng','sessionticket'),(33,'footnotes','bibliography'),(34,'footnotes','footnote'),(32,'footnotes','sourcetype'),(29,'people','person'),(28,'people','relationship'),(31,'people','relationshiptype'),(30,'people','residence'),(27,'places','place'),(6,'sessions','session');
+INSERT INTO `django_content_type` VALUES (1,'admin','logentry'),(2,'annotator_store','annotation'),(3,'annotator_store','annotationgroup'),(6,'auth','group'),(4,'auth','permission'),(5,'auth','user'),(7,'books','creatortype'),(20,'books','derridawork'),(21,'books','instance'),(12,'books','instancecatalogue'),(8,'books','instancecreator'),(10,'books','instancelanguage'),(14,'books','journal'),(24,'books','language'),(16,'books','owninginstitution'),(11,'books','personbook'),(19,'books','personbookrelationshiptype'),(17,'books','publisher'),(13,'books','reference'),(9,'books','referencetype'),(18,'books','subject'),(22,'books','work'),(15,'books','worklanguage'),(23,'books','worksubject'),(25,'contenttypes','contenttype'),(41,'django_cas_ng','proxygrantingticket'),(40,'django_cas_ng','sessionticket'),(26,'djiffy','canvas'),(27,'djiffy','manifest'),(28,'footnotes','bibliography'),(30,'footnotes','footnote'),(29,'footnotes','sourcetype'),(32,'interventions','intervention'),(31,'interventions','tag'),(36,'people','person'),(35,'people','relationship'),(34,'people','relationshiptype'),(33,'people','residence'),(37,'places','place'),(38,'sessions','session'),(39,'sites','site');
 /*!40000 ALTER TABLE `django_content_type` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -937,7 +997,7 @@ CREATE TABLE `django_migrations` (
   `name` varchar(255) NOT NULL,
   `applied` datetime(6) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=54 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -946,7 +1006,7 @@ CREATE TABLE `django_migrations` (
 
 LOCK TABLES `django_migrations` WRITE;
 /*!40000 ALTER TABLE `django_migrations` DISABLE KEYS */;
-INSERT INTO `django_migrations` VALUES (1,'contenttypes','0001_initial','2017-07-03 18:41:22.866356'),(2,'auth','0001_initial','2017-07-03 18:41:23.075720'),(3,'admin','0001_initial','2017-07-03 18:41:23.124646'),(4,'admin','0002_logentry_remove_auto_add','2017-07-03 18:41:23.145978'),(5,'contenttypes','0002_remove_content_type_name','2017-07-03 18:41:23.194179'),(6,'auth','0002_alter_permission_name_max_length','2017-07-03 18:41:23.215670'),(7,'auth','0003_alter_user_email_max_length','2017-07-03 18:41:23.240547'),(8,'auth','0004_alter_user_username_opts','2017-07-03 18:41:23.251602'),(9,'auth','0005_alter_user_last_login_null','2017-07-03 18:41:23.278154'),(10,'auth','0006_require_contenttypes_0002','2017-07-03 18:41:23.279683'),(11,'auth','0007_alter_validators_add_error_messages','2017-07-03 18:41:23.290267'),(12,'auth','0008_alter_user_username_max_length','2017-07-03 18:41:23.315596'),(13,'places','0001_initial','2017-07-03 18:41:23.331258'),(14,'people','0001_initial','2017-07-03 18:41:23.492161'),(15,'people','0002_allow_neg_years_bc','2017-07-03 18:41:23.638861'),(16,'books','0001_initial','2017-07-03 18:41:25.079878'),(17,'books','0002_add_citationality_models','2017-07-03 18:41:25.081578'),(18,'books','0003_citationality_postmeeting_revisions','2017-07-03 18:41:25.083396'),(19,'books','0004_make_uri_optional_creator_type','2017-07-03 18:41:25.085058'),(20,'books','0005_optional_uri_fields_language_subject','2017-07-03 18:41:25.086834'),(21,'books','0006_initial_languages','2017-07-03 18:41:25.088442'),(22,'books','0007_fix_pluralizatition_citationality','2017-07-03 18:41:25.089979'),(23,'books','0008_add_str_referencetype_derridawork','2017-07-03 18:41:25.091476'),(24,'books','0009_ref_type_use_common','2017-07-03 18:41:25.092989'),(25,'books','0010_initial_reftypes','2017-07-03 18:41:25.094461'),(26,'books','0011_add_foreign_key_ref_reftype','2017-07-03 18:41:25.095888'),(27,'books','0012_template_derrida_work','2017-07-03 18:41:25.097276'),(28,'books','0013_add_journal_type_item_type_dates','2017-07-03 18:41:25.098910'),(29,'books','0014_add_flags_pub_date','2017-07-03 18:41:25.100583'),(30,'books','0015_add_uri_book','2017-07-03 18:41:25.102207'),(31,'books','0016_allow_neg_years_bc','2017-07-03 18:41:25.103754'),(32,'books','0017_additional_derrida_flags','2017-07-03 18:41:25.105395'),(33,'books','0018_add_page_range','2017-07-03 18:41:25.107000'),(34,'books','0019_rename_journal_id_journal','2017-07-03 18:41:25.108579'),(35,'books','0020_add_initial_item_types','2017-07-03 18:41:25.110216'),(36,'books','0021_add_initial_item_types','2017-07-03 18:41:25.111997'),(37,'books','0022_help_text_pub_date','2017-07-03 18:41:25.113525'),(38,'books','0023_raise_char_limit_book_page','2017-07-03 18:41:25.115049'),(39,'books','0024_expand_larger_title_space_improve_admin_clarity','2017-07-03 18:41:25.116691'),(40,'books','0025_help_text_catatalogue','2017-07-03 18:41:25.118650'),(41,'books','0026_book_many_to_many_self','2017-07-03 18:41:25.120463'),(42,'books','0027_remove_symmetrical_flag_associated_books','2017-07-03 18:41:25.123064'),(43,'books','0028_add_derrida_workbook','2017-07-03 18:41:25.124806'),(44,'books','0029_add_anchor_text_reference','2017-07-03 18:41:25.126377'),(45,'books','0030_split_book_into_work_instance','2017-07-03 18:41:25.127936'),(46,'books','0031_migrate_books_to_works_instances','2017-07-03 18:41:25.129557'),(47,'books','0032_cited_in_optional_subject_default_not_primary','2017-07-03 18:41:25.131166'),(48,'books','0033_remove_book_models','2017-07-03 18:41:25.133029'),(49,'common','0001_data_editor_group_init','2017-07-03 18:41:25.184324'),(50,'django_cas_ng','0001_initial','2017-07-03 18:41:25.259909'),(51,'footnotes','0001_initial','2017-07-03 18:41:25.376133'),(52,'sessions','0001_initial','2017-07-03 18:41:25.398561'),(53,'books','0001_squashed_0033_remove_book_models','2017-07-03 18:41:25.402560');
+INSERT INTO `django_migrations` VALUES (1,'contenttypes','0001_initial','2017-08-01 18:18:25.649327'),(2,'auth','0001_initial','2017-08-01 18:18:25.997238'),(3,'admin','0001_initial','2017-08-01 18:18:26.063357'),(4,'admin','0002_logentry_remove_auto_add','2017-08-01 18:18:26.099865'),(5,'contenttypes','0002_remove_content_type_name','2017-08-01 18:18:26.172792'),(6,'auth','0002_alter_permission_name_max_length','2017-08-01 18:18:26.194811'),(7,'auth','0003_alter_user_email_max_length','2017-08-01 18:18:26.226546'),(8,'auth','0004_alter_user_username_opts','2017-08-01 18:18:26.240635'),(9,'auth','0005_alter_user_last_login_null','2017-08-01 18:18:26.268551'),(10,'auth','0006_require_contenttypes_0002','2017-08-01 18:18:26.270765'),(11,'annotator_store','0001_initial','2017-08-01 18:18:26.403009'),(12,'annotator_store','0002_annotation_quote_text_optional','2017-08-01 18:18:26.422020'),(13,'auth','0007_alter_validators_add_error_messages','2017-08-01 18:18:26.432561'),(14,'auth','0008_alter_user_username_max_length','2017-08-01 18:18:26.461287'),(15,'djiffy','0001_initial','2017-08-01 18:18:26.594838'),(16,'places','0001_initial','2017-08-01 18:18:26.615968'),(17,'people','0001_initial','2017-08-01 18:18:26.842160'),(18,'people','0002_allow_neg_years_bc','2017-08-01 18:18:26.993890'),(19,'books','0001_squashed_0033_remove_book_models','2017-08-01 18:18:28.841543'),(20,'books','0002_connect_book_references_canvases_manifests','2017-08-01 18:18:28.912179'),(21,'djiffy','0002_view_permissions','2017-08-01 18:18:28.937848'),(22,'interventions','0001_initial','2017-08-01 18:18:29.355642'),(23,'footnotes','0001_initial','2017-08-01 18:18:29.571434'),(24,'common','0001_data_editor_group','2017-08-01 18:18:29.833189'),(25,'common','0002_data_editors_footnotes_iiif_interventions','2017-08-01 18:18:29.979968'),(26,'django_cas_ng','0001_initial','2017-08-01 18:18:30.100782'),(27,'sessions','0001_initial','2017-08-01 18:18:30.142596'),(28,'sites','0001_initial','2017-08-01 18:18:30.167652'),(29,'sites','0002_alter_domain_unique','2017-08-01 18:18:30.194797');
 /*!40000 ALTER TABLE `django_migrations` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -973,6 +1033,94 @@ CREATE TABLE `django_session` (
 LOCK TABLES `django_session` WRITE;
 /*!40000 ALTER TABLE `django_session` DISABLE KEYS */;
 /*!40000 ALTER TABLE `django_session` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `django_site`
+--
+
+DROP TABLE IF EXISTS `django_site`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `django_site` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `domain` varchar(100) NOT NULL,
+  `name` varchar(50) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `django_site_domain_a2e37b91_uniq` (`domain`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `django_site`
+--
+
+LOCK TABLES `django_site` WRITE;
+/*!40000 ALTER TABLE `django_site` DISABLE KEYS */;
+INSERT INTO `django_site` VALUES (1,'example.com','example.com');
+/*!40000 ALTER TABLE `django_site` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `djiffy_canvas`
+--
+
+DROP TABLE IF EXISTS `djiffy_canvas`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `djiffy_canvas` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `label` longtext NOT NULL,
+  `short_id` varchar(255) NOT NULL,
+  `uri` varchar(200) NOT NULL,
+  `iiif_image_id` varchar(200) NOT NULL,
+  `thumbnail` tinyint(1) NOT NULL,
+  `order` int(10) unsigned NOT NULL,
+  `manifest_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `djiffy_canvas_short_id_manifest_id_904833bf_uniq` (`short_id`,`manifest_id`),
+  KEY `djiffy_canvas_manifest_id_3d28dbb6_fk_djiffy_manifest_id` (`manifest_id`),
+  CONSTRAINT `djiffy_canvas_manifest_id_3d28dbb6_fk_djiffy_manifest_id` FOREIGN KEY (`manifest_id`) REFERENCES `djiffy_manifest` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `djiffy_canvas`
+--
+
+LOCK TABLES `djiffy_canvas` WRITE;
+/*!40000 ALTER TABLE `djiffy_canvas` DISABLE KEYS */;
+/*!40000 ALTER TABLE `djiffy_canvas` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `djiffy_manifest`
+--
+
+DROP TABLE IF EXISTS `djiffy_manifest`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `djiffy_manifest` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `label` longtext NOT NULL,
+  `short_id` varchar(255) NOT NULL,
+  `uri` varchar(200) NOT NULL,
+  `metadata` longtext NOT NULL,
+  `created` date NOT NULL,
+  `last_modified` date NOT NULL,
+  `extra_data` longtext NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `short_id` (`short_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `djiffy_manifest`
+--
+
+LOCK TABLES `djiffy_manifest` WRITE;
+/*!40000 ALTER TABLE `djiffy_manifest` DISABLE KEYS */;
+/*!40000 ALTER TABLE `djiffy_manifest` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -1058,6 +1206,106 @@ CREATE TABLE `footnotes_sourcetype` (
 LOCK TABLES `footnotes_sourcetype` WRITE;
 /*!40000 ALTER TABLE `footnotes_sourcetype` DISABLE KEYS */;
 /*!40000 ALTER TABLE `footnotes_sourcetype` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `interventions_intervention`
+--
+
+DROP TABLE IF EXISTS `interventions_intervention`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `interventions_intervention` (
+  `id` char(32) NOT NULL,
+  `created` datetime(6) NOT NULL,
+  `updated` datetime(6) NOT NULL,
+  `text` longtext NOT NULL,
+  `quote` longtext NOT NULL,
+  `uri` varchar(200) NOT NULL,
+  `extra_data` longtext NOT NULL,
+  `intervention_type` varchar(2) NOT NULL,
+  `text_translation` longtext NOT NULL,
+  `author_id` int(11) DEFAULT NULL,
+  `canvas_id` int(11) DEFAULT NULL,
+  `quote_language_id` int(11) DEFAULT NULL,
+  `text_language_id` int(11) DEFAULT NULL,
+  `user_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `interventions_interv_author_id_66406b29_fk_people_pe` (`author_id`),
+  KEY `interventions_interv_canvas_id_4bb99c18_fk_djiffy_ca` (`canvas_id`),
+  KEY `interventions_interv_quote_language_id_f8eb4116_fk_books_lan` (`quote_language_id`),
+  KEY `interventions_interv_text_language_id_9ac4e3a9_fk_books_lan` (`text_language_id`),
+  KEY `interventions_intervention_user_id_ce2f9cca_fk_auth_user_id` (`user_id`),
+  CONSTRAINT `interventions_interv_author_id_66406b29_fk_people_pe` FOREIGN KEY (`author_id`) REFERENCES `people_person` (`id`),
+  CONSTRAINT `interventions_interv_canvas_id_4bb99c18_fk_djiffy_ca` FOREIGN KEY (`canvas_id`) REFERENCES `djiffy_canvas` (`id`),
+  CONSTRAINT `interventions_interv_quote_language_id_f8eb4116_fk_books_lan` FOREIGN KEY (`quote_language_id`) REFERENCES `books_language` (`id`),
+  CONSTRAINT `interventions_interv_text_language_id_9ac4e3a9_fk_books_lan` FOREIGN KEY (`text_language_id`) REFERENCES `books_language` (`id`),
+  CONSTRAINT `interventions_intervention_user_id_ce2f9cca_fk_auth_user_id` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `interventions_intervention`
+--
+
+LOCK TABLES `interventions_intervention` WRITE;
+/*!40000 ALTER TABLE `interventions_intervention` DISABLE KEYS */;
+/*!40000 ALTER TABLE `interventions_intervention` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `interventions_intervention_tags`
+--
+
+DROP TABLE IF EXISTS `interventions_intervention_tags`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `interventions_intervention_tags` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `intervention_id` char(32) NOT NULL,
+  `tag_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `interventions_interventi_intervention_id_tag_id_6938eead_uniq` (`intervention_id`,`tag_id`),
+  KEY `interventions_interv_tag_id_107f3917_fk_intervent` (`tag_id`),
+  CONSTRAINT `interventions_interv_intervention_id_092efd64_fk_intervent` FOREIGN KEY (`intervention_id`) REFERENCES `interventions_intervention` (`id`),
+  CONSTRAINT `interventions_interv_tag_id_107f3917_fk_intervent` FOREIGN KEY (`tag_id`) REFERENCES `interventions_tag` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `interventions_intervention_tags`
+--
+
+LOCK TABLES `interventions_intervention_tags` WRITE;
+/*!40000 ALTER TABLE `interventions_intervention_tags` DISABLE KEYS */;
+/*!40000 ALTER TABLE `interventions_intervention_tags` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `interventions_tag`
+--
+
+DROP TABLE IF EXISTS `interventions_tag`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `interventions_tag` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `notes` longtext NOT NULL,
+  `applies_to` varchar(2) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`)
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `interventions_tag`
+--
+
+LOCK TABLES `interventions_tag` WRITE;
+/*!40000 ALTER TABLE `interventions_tag` DISABLE KEYS */;
+INSERT INTO `interventions_tag` VALUES (1,'underlining','','A'),(2,'circling','','A'),(3,'arrow','','A'),(4,'bracket(s)','','A'),(5,'line','','A'),(6,'correction','','A'),(7,'marginal mark','','A'),(8,'punctuation mark','','A'),(9,'flyleaf note','','A'),(10,'text illegible','','AI'),(11,'transcription uncertain','','AI'),(12,'blue ink','','A'),(13,'black ink','','A');
+/*!40000 ALTER TABLE `interventions_tag` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -1217,4 +1465,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-07-03 14:41:32
+-- Dump completed on 2017-08-01 14:18:51
