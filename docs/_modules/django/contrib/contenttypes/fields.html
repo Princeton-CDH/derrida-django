@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>django.contrib.contenttypes.fields &#8212; Derrida 0.8.0 documentation</title>
+    <title>django.contrib.contenttypes.fields &#8212; Derrida 0.8.1 documentation</title>
     <link rel="stylesheet" href="../../../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '0.8.0',
+        VERSION:     '0.8.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -409,7 +409,7 @@
         <span class="c1"># generating a join to the parent model, then generating joins to the</span>
         <span class="c1"># child models.</span>
         <span class="n">path</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">opts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">remote_field</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">_meta</span>
+        <span class="n">opts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">remote_field</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">concrete_model</span><span class="o">.</span><span class="n">_meta</span>
         <span class="n">parent_opts</span> <span class="o">=</span> <span class="n">opts</span><span class="o">.</span><span class="n">get_field</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">object_id_field_name</span><span class="p">)</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">_meta</span>
         <span class="n">target</span> <span class="o">=</span> <span class="n">parent_opts</span><span class="o">.</span><span class="n">pk</span>
         <span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">PathInfo</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">_meta</span><span class="p">,</span> <span class="n">parent_opts</span><span class="p">,</span> <span class="p">(</span><span class="n">target</span><span class="p">,),</span> <span class="bp">self</span><span class="o">.</span><span class="n">remote_field</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
