@@ -27,7 +27,17 @@ class TestInstanceViews(TestCase):
         # pass its pk to detail view
         detail_view_url = reverse('books:detail', kwargs={'pk': la_vie.pk})
         response = self.client.get(detail_view_url)
+        # doesn't have a manifest, should 404
         # should return a response
+        assert response.status_code == 404
+
+        # make a manifest and associate it
+        manif = Manifest.objects.create()
+        la_vie.digital_edition = manif
+        la_vie.save()
+
+        response = self.client.get(detail_view_url)
+        # should return correctly
         assert response.status_code == 200
         # should have a context object called instance that's a copy of Instance
         assert 'instance' in response.context
