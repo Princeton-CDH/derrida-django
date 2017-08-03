@@ -68,11 +68,12 @@
   border-radius: 50%;
   color: transparent;
   background: $primary-color;
+  opacity: 0.8;
 
   &:hover,
   &.active {
     color: transparent;
-    background: $pink;
+    opacity: 1;
   }
 }
 
