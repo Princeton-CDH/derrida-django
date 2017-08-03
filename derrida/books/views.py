@@ -2,7 +2,7 @@ from dal import autocomplete
 
 from .models import Publisher, Language, Instance
 
-from django.views.generic import ListView
+from django.views.generic import DetailView, ListView
 
 
 class PublisherAutocomplete(autocomplete.Select2QuerySetView):
