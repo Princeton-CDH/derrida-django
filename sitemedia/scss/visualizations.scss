@@ -147,7 +147,14 @@
   box-shadow: none;
   border-color: $primary-color;
   max-width: 100%;
-  width: 500px;
+  min-width: 400px;
+  @include grid-column(4);
+  margin-left: 0;
+
+  @include grid-media($large-medium-viewport-grid) {
+    @include grid-column(6);
+    margin-left: 0;
+  }
 
   .text-badge {
     display: none;
