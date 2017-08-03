@@ -1,5 +1,5 @@
 import json
-
+import re
 from django.db import models
 from django.contrib.contenttypes.fields import GenericRelation
 from django.core.validators import RegexValidator
@@ -258,6 +258,19 @@ class Instance(Notable):
     # instances with/without digital additions
     is_digitized.admin_order_field = 'digital_edition'
     is_digitized.boolean = True
+
+    @property
+    def location(self):
+        '''Parse the location indicator from the canvas title, if digitized'''
+        if self.is_digitized():
+            # Get the manifest label
+            manifest_title = self.digital_edition.label
+            # Split out the labeling, which includes annotation info
+            labeling = manifest_title.split(' - ')[0:2]
+            # rejoin them
+            loc = ' - '.join(labeling)
+            # strip the Gift . . . Items odd outside
+            return re.sub(r' - Gift.+Items', '', loc)
 
     @property
     def item_type(self):

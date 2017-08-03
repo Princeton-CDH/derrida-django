@@ -208,6 +208,21 @@ class TestInstance(TestCase):
         la_vie.digital_edition = Manifest()
         assert la_vie.is_digitized()
 
+    def test_location(self):
+        la_vie = Instance.objects.get(work__short_title__contains="La vie")
+        # grabs first two dashed segments
+        la_vie.digital_edition = Manifest(
+            label='Shelf - By the Cupboard - Title'
+        )
+        assert la_vie.location == 'Shelf - By the Cupboard'
+        # test the one variation in the pattern
+        la_vie.digital_edition = Manifest(
+            label='House - Gift and ... Items - Title'
+        )
+        assert la_vie.location == 'House'
+
+
+
 class TestWorkLanguage(TestCase):
     fixtures = ['sample_work_data.json']
 
