@@ -39,7 +39,7 @@ function annotatorInterventions(confs) {
      */
     multival_select: function(input, value) {
       // store values as a list on the input data
-      if (input.data('value') == undefined) {
+      if (input.data('value') == '') {
         // initialize as empty list if not set
         input.data('value', []);
       }

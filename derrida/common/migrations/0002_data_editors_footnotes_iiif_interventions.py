@@ -35,9 +35,11 @@ def add_permissions(apps, schema_editor):
         # NOTE: finding one by one rather than using in_list so that if a
         # permission is not found we get an error
         for codename in new_permissions:
-            perm = Permission.objects.get(codename=codename)
-            data_editor_group.permissions.add(perm)
-
+            try:
+                perm = Permission.objects.get(codename=codename)
+                data_editor_group.permissions.add(perm)
+            except:
+                pass
     except Group.DoesNotExist:
         # if group has somehow been removed, then do nothing
         pass

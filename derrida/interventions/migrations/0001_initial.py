@@ -20,7 +20,7 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('books', '0003_reference_canvases'),
+        ('books', '0002_connect_book_references_canvases_manifests'),
         ('djiffy', '0002_view_permissions'),
         ('people', '0002_allow_neg_years_bc'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),

@@ -44,6 +44,10 @@ GEONAMES_USERNAME = ''
 # mapbox access token
 MAPBOX_ACCESS_TOKEN = ''
 
+# tokens for Djiffy to access secure PUL resources
+# dict of urls and tokens in key value format.
+DJIFFY_AUTH_TOKENS = {}
+
 # CAS login configuration
 CAS_SERVER_URL = ''
 
@@ -52,5 +56,3 @@ PUCAS_LDAP.update({
     'SEARCH_BASE': '',
     'SEARCH_FILTER': "(uid=%(user)s)",
 })
-
-

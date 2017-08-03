@@ -2112,4 +2112,13 @@ main {
   border-color: #fff transparent transparent;
   z-index: 1; }
 
+#sw-version {
+  color: #efefef;
+  padding: 10px 0;
+  margin-left: 200px;
+  font-style: small; }
+
+.hidden-admin-info {
+  display: none; }
+
 /*# sourceMappingURL=local.css.map */

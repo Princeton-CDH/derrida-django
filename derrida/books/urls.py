@@ -12,6 +12,6 @@ urlpatterns = [
         name='publisher-autocomplete'),
     url(r'^languages/autocomplete/$', staff_member_required(LanguageAutocomplete.as_view()),
         name='language-autocomplete'),
-    url(r'^$', InstanceListView.as_view(), name='list')
-
+    url(r'^(?P<pk>\d+)/$', InstanceDetailView.as_view(), name='detail'),
+    url(r'^$', InstanceListView.as_view(), name='list'),
 ]

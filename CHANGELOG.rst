@@ -3,6 +3,53 @@
 CHANGELOG
 =========
 
+0.8 (Interventions Phase I)
+---------------------------
+Release implementing the first part of the interventions interface, allowing
+data editors to note Derrida's annotation-style interventions on digital editions
+of his library works.
+
+Access
+~~~~~~
+
+* As a record editor, I can only view digitized materials from Derrida's library when I am logged in so that copyrighted materials are not exposed to the general public.
+* As a logged in record editor, I should be able to create an intervention record so that I can document Derrida's interventions in the works in his library.
+* As a logged in record editor, I should be able to view, edit, and delete all intervention records (no matter who created them) so that I can manage all documented interventions in Derrida's library.
+* Logged in record editors or anyone with greater permissions should be able to view the books; anonymous users or logged in users without those permissions should not.
+* As an admin, I want to see the history of all edits to an intervention, including edits made via the canvas image interface, so that I can track who has contributed and made changes to the data.
+
+Books
+~~~~~
+
+* As a record editor, when I’m editing a book record I want to see a list of all the interventions (annotations and insertions) associated with that book so that I can review and update interventions by related book.
+* As a record editor, when I’m editing a book I want to be able to view the associated digitized materials so I can see pictures of the book, annotations, insertions, and other relevant markings.
+* As a record editor, I want to see an indicator if a library instance has a digital edition associated and be able to sort on the presence of a digital edition so that I can easily get to volumes that have been digitized.
+
+Citations
+~~~~~~~~~
+
+* As a record editor, I want to be able to associate a citation with one or more interventions (annotations or insertions) so that I can identify instances where citations relate in an explicit way to interventions (for example, a passage is quoted in the Derrida text and underlined in the book from the library).
+* As a record editor, when editing this field in the Django admin, I want it to automatically filter to only those intervetions associated with the digital edition of the book (i.e. if a reference is set to BookA, only interventions associated with BookA show up).
+
+Interventions
+~~~~~~~~~~~~~
+
+* As an intervention data editor, I want the option of leaving all fields blank so that I can accurately describe non-verbal interventions or interventions that don't relate to anchor text.
+* As an intervention data editor, I want to be able to add and edit the color if the ink type is “pen," so that I can see if there are patterns in Derrida's pen usage and whether he revisited the same text.
+* As an interventions data editor, I want to select non-verbal interventions (underlining, circling, etc.) on a page image so I can transcribe anchor text and document the intervention and where it occurs.
+* As an intervention data editor, I want to edit any of the text fields (transcription, translation, anchor text, tags etc) so that I can correct mistakes or make updates.
+* As an intervention data editor, I want to select verbal interventions on a page image and enter a transcription of the text so I can document the intervention and where it occurs.
+* As a data editor, I want to see an indicator on the Django admin site that shows whether an intervention is verbal or non-verbal, so I can more easily distinguish these important categories.
+* As an intervention data editor, I would like to be able to tag part or all of transcribed verbal intervention text as “uncertain.”
+* As an intervention data editor, I would like to be able to tag a verbal intervention as “illegible” so that I can clearly indicate when the text is unreadable.
+* As an interventions data editor, I want the option to enter a translation of verbal intervention text so that I can provide an English version when the original is in another language.
+* As an interventions data editor, I want to associate an intervention with the person who wrote it so that I can document the author when that information is known; I want “Derrida, Jacques” to be the default intervention author, and I want to be able to add or edit this information.
+* As an interventions data editor, I want to document the language of anchor text and annotation text so that I can track use of languages across interventions.
+* As an intervention data editor, I want to transcribe the anchor text (if there is any) for an annotation so I can document the text the intervener is referencing.
+* As an intervention data editor, I want to tag interventions from a pre-defined list so that I can describe the characteristics and type of intervention.
+* As a record editor I want to view, edit, and create tags to describe and annotations and insertions so that I can manage the tags available for interventions.
+
+
 0.7
 ---
 
@@ -60,8 +107,8 @@ Biographic Data (People)
 * As a record editor, I want to be able to associate roles and relationships to people so that I can document how they interacted with each other and the Derrida Library.
 * As a record editor, I want to be able to automatically associate authors with their VIAF URI, so that I can better document individuals associated with Derrida Library.
 
-Footnotes **(Included under book fields in GitHub issues)**
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Footnotes
+~~~~~~~~~
 
 * As a data editor, I want to add a new or edit an existing source type so that I can track the kinds of source documents used as evidence in the system.
 * As a data editor, I want to add a new or edit an existing footnote and associate it with any other kind of record in the system so that I can document evidence related to assertions made elsewhere in the data.
@@ -82,8 +129,3 @@ Zotero Import
 * As a record editor, I want a one-time import of People from Zotero data into the system so that I can refine and augment the initial data that’s already been collected.
 * As a record editor, I want publishing places associated with their GeoNames ID so that I can document publishing locations more clearly.
 * As a record editor, I want citations imported and associated with their works based on the tagging system implemented by the team.
-
-KNOWN ISSUES
-============
-
-* Not all content types currently work for the footnote object number lookup in admin.

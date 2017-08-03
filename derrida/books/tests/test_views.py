@@ -20,6 +20,31 @@ class TestInstanceViews(TestCase):
             la_vie.pk = None
             la_vie.save()
 
+    def test_instance_detail_view(self):
+
+        # get one of the la_vie copies
+        la_vie = Instance.objects.filter(work__primary_title__icontains='la vie')[3]
+        # pass its pk to detail view
+        detail_view_url = reverse('books:detail', kwargs={'pk': la_vie.pk})
+        response = self.client.get(detail_view_url)
+        # doesn't have a manifest, should 404
+        # should return a response
+        assert response.status_code == 404
+
+        # make a manifest and associate it
+        manif = Manifest.objects.create()
+        la_vie.digital_edition = manif
+        la_vie.save()
+
+        response = self.client.get(detail_view_url)
+        # should return correctly
+        assert response.status_code == 200
+        # should have a context object called instance that's a copy of Instance
+        assert 'instance' in response.context
+        # it should be the copy of la_view we looked up
+        assert response.context['instance'] == la_vie
+
+
     def test_instance_list_view(self):
         list_view_url = reverse('books:list')
         # an anonymous user can see the view
@@ -153,9 +178,10 @@ class TestBookViews(TestCase):
             msg_prefix='canvas url should be included once for each associated intervention')
         self.assertContains(response, 'Annotation', count=2,
             msg_prefix='intervention type should display for each item')
-        self.assertContains(response, 'Intervention', count=3,
+        self.assertContains(response, 'Intervention', count=5,
             msg_prefix='intervention type should display for each item, once in'
-            ' the reference inline, and once in the hidden reference inline')
+            ' the reference inline, and once in the hidden reference inline, and'
+            ' the inline fieldset.')
 
         for intervention in ivtns:
             self.assertContains(response, intervention.admin_thumbnail(),

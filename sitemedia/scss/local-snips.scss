@@ -1,0 +1,13 @@
+#sw-version {
+  color: #efefef;
+  padding: 10px 0;
+  margin-left: 200px;
+  font-style: small;
+}
+
+// Style for admin fields that need to be created at the
+// ModelAdmin level, and so can't be given the HiddenInput
+// Widget
+.hidden-admin-info {
+  display: none;
+}

@@ -37,6 +37,31 @@
     <br />
   {% endfor %}
 </article>
+{% if is_paginated %}
+<p class='pagination'>
+  {% if page_obj.has_previous %}<a href='?page={{ page_obj.previous_page_number }}'>←</a>{% endif %}
+
+  {% for number in page_obj.paginator.page_range %}
+    {# Make sure we get the first page #}
+    {% if forloop.first %} <a href='?page={{ number }}'>{{ number }}</a> ... {% endif %}
+
+    {% if number|add:"3" >= page_obj.number and number <= page_obj.number|add:"4" and number != page_obj.number  %}
+      <a href='?page={{ number }}'>{{ number }}</a>
+    {% endif %}
+
+    {% if number == page_obj.number %}
+      <a href='?page={{ number}}' style='color: black'>{{ number }}</a>
+    {% endif %}
+
+    {# Make sure we get the last page#}
+    {% if forloop.last %} ... <a href='?page={{ number }}'>{{ number}}</a> {% endif%}
+
+  {% endfor %}
+
+  {% if page_obj.has_next %}<a href='?page={{ page_obj.next_page_number }}'>→</a>{% endif %}
+
+</p>
+{% endif %}
 </div>
 
 

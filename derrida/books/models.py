@@ -1,3 +1,5 @@
+import json
+import re
 from django.db import models
 from django.contrib.contenttypes.fields import GenericRelation
 from django.core.validators import RegexValidator
@@ -258,6 +260,19 @@ class Instance(Notable):
     is_digitized.boolean = True
 
     @property
+    def location(self):
+        '''Parse the location indicator from the canvas title, if digitized'''
+        if self.is_digitized():
+            # Get the manifest label
+            manifest_title = self.digital_edition.label
+            # Split out the labeling, which includes annotation info
+            labeling = manifest_title.split(' - ')[0:2]
+            # rejoin them
+            loc = ' - '.join(labeling)
+            # strip the Gift . . . Items odd outside
+            return re.sub(r' - Gift.+Items', '', loc)
+
+    @property
     def item_type(self):
         '''item type: book, book section, or journal article'''
         if self.journal:
@@ -463,3 +478,18 @@ class Reference(models.Model):
         return snippet
     anchor_text_snippet.short_description = 'Anchor Text'
     anchor_text.admin_order_field = 'anchor_text'
+
+    def get_autocomplete_instances(self):
+        '''Returns a list of :class:`Instance` primary keys as JSON for
+        jQuery use in disabling or enabling the autocompletes for
+        :class:`~derrida.interventions.models.Canvas` and
+        :class:`~derrida.interventions.models.Interventions` on the change_form
+        for :class:`Reference`.
+
+        :return: Returns a JSON formatted array
+        :rtype: str
+        '''
+        valid_instance_pks = Instance.objects.exclude(
+                                digital_edition__isnull=True
+                             ).values_list('id', flat=True).order_by('id')
+        return json.dumps(list(valid_instance_pks))

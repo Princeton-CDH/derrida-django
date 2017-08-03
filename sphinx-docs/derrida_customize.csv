@@ -28,6 +28,10 @@ module|citation|#A9A9A9|books_reference
 module|footnotes|#342140|footnotes_footnote
 module|people|#BFA778|people_person
 module|places|#422E14|places_place
+module|interventions|#C70039|interventions_intervention
+module|djiffy|#0EE1D1|djiffy_manifest
+module|annotatorstore|#6E5E8F|annotator_store_annotation
+
 
 #This next line lets you license your diagram under the copyright(or copyleft) of your choice
 #The license will display in the bottom left corner
@@ -38,6 +42,9 @@ license|This work is licensed under the Creative Commons Attribution-Share-Alike
 #The following lines assign a module and an annotation to each entity in the database
 #The structure is as follows
 #ENTITY NAME(*exactly* as it appears in your schema)|MODULE NAME|BRIEF DESCRIPTION OF ENTITY
+annotator_store_annotation|annotatorstore|
+annotator_store_annotationgroup|annotatorstore|
+annotation_tag|annotatorstore|
 auth_group|django|
 auth_group_permissions|django|
 auth_permission|django|
@@ -67,13 +74,19 @@ books_reference|citation|
 books_referencetype|citation|
 django_admin_log|django|
 django_cas_ng_proxygrantingticket|django|
+django_site|django|
 django_cas_ng_sessionticket|django|
 django_content_type|django|
 django_migrations|django|
 django_session|django|
+djiffy_canvas|djiffy|
+djiffy_manifest|djiffy|
 footnotes_bibliography|footnotes|
 footnotes_footnote|footnotes|
 footnotes_sourcetype|footnotes|
+interventions_intervention|interventions|
+interventions_intervention_tags|interventions|
+interventions_tag|interventions|
 people_person|people|
 people_relationship|people|
 people_relationshiptype|people|

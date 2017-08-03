@@ -6,9 +6,8 @@ requests
 rdflib
 django-sortedm2m
 attrdict
-git+https://github.com/Princeton-CDH/django-pucas.git@0.5#egg=pucas
+pucas>=0.5
 # unreleased py3 piffle currently needs to be required explicitly
 git+https://github.com/Princeton-CDH/piffle.git@feature/python3-compatibility#egg=piffle
-git+https://github.com/Princeton-CDH/djiffy.git@develop#egg=djiffy
-# require develop version of annotator-store, next release should be 0.6
-git+https://github.com/Princeton-CDH/django-annotator-store.git@develop#egg=annotator_store
+djiffy>=0.2
+annotator_store>=0.6

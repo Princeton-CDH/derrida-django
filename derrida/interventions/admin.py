@@ -33,7 +33,6 @@ class CanvasLinkWidget(autocomplete.ModelSelect2):
             </li></ul>''' % (widget, canvas.get_absolute_url()))
 
 
-
 class InterventionAdminForm(forms.ModelForm):
     '''Custom model form for Intervention editing; used to configure
     autocomplete lookups.'''
@@ -65,11 +64,12 @@ class InterventionAdminForm(forms.ModelForm):
         #           'subjects', 'author', 'quote', 'anchor_translation',
         #           'anchor_languages', 'user', 'extra_data', 'uri')
 
+
 class InterventionAdmin(AnnotationAdmin):
     form = InterventionAdminForm
     filter_horizontal = ('tags', )
-    list_display = ('admin_thumbnail', 'intervention_type', 'text_preview',
-        'canvas')
+    list_display = ('admin_thumbnail', 'intervention_type', 'is_verbal',
+     'text_preview', 'canvas')
     # NOTE: 'quote' == anchor text, and should be editable
     readonly_fields = ('uri', 'extra_data')
 
