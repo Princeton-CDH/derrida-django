@@ -20,7 +20,7 @@
   <div class="container">
     <article class="collection collection--condensed">
       {% for instance in object_list %}
-        {% include 'components/books/item.html' with href='books:detail' book=instance %}
+        {% include 'components/books-list-item.html' with href='books:detail' book=instance %}
       {% endfor %}
     </article>
     {% if is_paginated %}

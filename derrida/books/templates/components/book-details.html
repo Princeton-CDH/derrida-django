@@ -1,0 +1,103 @@
+{% load static %}
+<header class="item-header">
+  {% if book.work.thumbnail %}
+  <img class="item-header__image" src="{{ book.work.thumbnail.image.thumbnail }}" />
+  {% else %}
+  <span class="item-header__image img--placeholder"></span>
+  {% endif %}
+  <h1 class="item-title">{{ book.work.primary_title }}</h1>
+  <p class="item-author">
+    {% for author in book.work.authors.all %}
+      {% if not forloop.last %}
+        {{ author.authorized_name }};
+      {% else %}
+        {{ author.authorized_name }}
+      {% endif %}
+    {% endfor %}
+  </p>
+  {% if book.start_page %}
+  <p class="item-pages">{{book.start_page}}</p>
+  {% endif %}
+</header>
+
+<section class="item-section">
+  {% include "components/navigation-tabs.html" with book=instance is_biblio=True %}
+  <div class="item-term item-term--inline">
+    <h3 class="item-term__label">Place{{ book.pub_place.count|pluralize }} of Publication</h3>
+    <p class="item-term__value">
+      {% for place in book.pub_place.all %}
+        {% if not forloop.last %}
+          {{ place }};&nbsp;
+        {% else %}
+          {{ place }}
+        {% endif %}
+      {% endfor %}
+    </p>
+  </div>
+
+  <div class="item-term item-term--inline">
+    <h3 class="item-term__label">Publisher</h3>
+    <p class="item-term__value">{{ book.publisher.name }}</p>
+  </div>
+
+  <div class="item-term item-term--inline">
+    <h3 class="item-term__label">Publication Year</h3>
+    <p class="item-term__value">{{ book.copyright_year }}</p>
+  </div>
+
+  {% if book.languages.count %}
+  <div class="item-term item-term--inline">
+    <h3 class="item-term__label">Language{{ book.languages.count|pluralize }}</h3>
+    <p class="item-term__value">
+      {% for language in book.languages.all %}
+        {% if not forloop.last %}
+          {{ language }};&nbsp;
+        {% else %}
+          {{ language }}
+        {% endif %}
+      {% endfor %}
+    </p>
+  </div>
+  {% endif %}
+
+  <div class="item-term item-term--inline">
+    <h3 class="item-term__label">Location</h3>
+    <p class="item-term__value">{{ book.location }}</p>
+  </div>
+
+  {% if book.uri %}
+  <div class="item-term item-term--inline item-term--callout">
+    <h3 class="item-term__label">Where to find it</h3>
+    <p class="item-term__value"><a class="item-term__link" href="{{ book.uri }}">{{ book.uri }}</a></p>
+  </div>
+  {% endif %}
+
+  {% if book.collected_in %}
+  <div class="item-term">
+    <h3 class="item-term__label">Book Sections</h3>
+    {% for section in book.collected_in %}
+    <p class="item-term__value">{{ section.display_title }}</p>
+    <p class="item-term__value item-term__value--aside">
+      {% for author in book.work.authors.all %}
+        {% if not forloop.last %}
+          {{ author.authorized_name }};
+        {% else %}
+          {{ author.authorized_name }}
+        {% endif %}
+      {% endfor %}
+    </p>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {% if book.cited_in.count %}
+  <div class="item-term">
+    <h3 class="item-term__label">Other Copies and Editions</h3>
+    <div class="collection collection--condensed item-term__value">
+      {% for cited in book.cited_in.all %}
+        {% include 'components/books-list-item.html' with book=cited %}
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+</section>
