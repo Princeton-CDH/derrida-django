@@ -18,6 +18,12 @@
       max-width: 100%;
       float: none;
     }
+
+    &.img--placeholder {
+      background: $light-grey;
+      height: 250px;
+      display: inherit;
+    }
   }
 }
 
