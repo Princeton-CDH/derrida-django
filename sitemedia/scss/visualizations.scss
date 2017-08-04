@@ -152,7 +152,7 @@
   margin-left: 0;
 
   @include grid-media($large-medium-viewport-grid) {
-    @include grid-column(6);
+    @include grid-column(8);
     margin-left: 0;
   }
 
