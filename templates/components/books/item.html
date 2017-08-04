@@ -1,0 +1,38 @@
+{% load static %}
+
+<section class="collection__item book">
+  <figure class="item__image">
+    {% if book.instance.digital_edition %}
+    <a class="item__image-link" href="{% url book.digital_edition.get_absolute_url %}">
+      {% if book.digital_edition.thumbnail %}
+      <img class="img" src="{{ book.digital_edition.thumbnail.image.mini_thumbnail }}" />
+      {% else %}
+      <span class="img img--placeholder"></span>
+      {% endif %}
+    </a>
+    {% else %}
+    <span class="img img--placeholder"></span>
+    {% endif %}
+  </figure>
+  <div class="item__body">
+    <a class="text-badge text-badge--blue text-badge--link" href="#">Reference</a>
+    <h3 class="item__heading">
+      <a class="item__link" href="{% url 'books:detail' pk=book.id %}">{{ book.work.primary_title }}</a>
+    </h3>
+    <p class="item__author">
+      {% for author in book.work.authors.all %}
+        {% if not forloop.last %}
+          {{ author.authorized_name }};
+        {% else %}
+          {{ author.authorized_name }}
+        {% endif %}
+      {% endfor %}
+    </p>
+    {% if book.copyright_year %}
+    <p class="item__date">{{ book.copyright_year }}</p>
+    {% endif %}
+    <p class="item__location">pp 169-280</p>
+    <p class="item__excerpt">Je ne sais comment cela se fait, mais je sais bien que les opérations dont on tient le plus de registres et de livres de compte sont précisément celles où l’on friponne le plus.</p>
+    <p class="item__citation">Cited in De la grammatologie  p. 401</p>
+  </div>
+</section>
