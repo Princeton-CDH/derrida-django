@@ -121,6 +121,14 @@
     font-style: italic;
     @include grid-column(4);
 
+    .item-term__link {
+      @include faded-link();
+    }
+
+    .item__link {
+      border: 0;
+    }
+
     &.item-term__value--aside {
       font-style: normal;
     }
@@ -141,6 +149,7 @@
       }
     }
   }
+
 
   &.item-term--callout {
     border-top: 1px solid rgba($black, 0.2);
