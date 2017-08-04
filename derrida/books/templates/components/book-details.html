@@ -1,24 +1,5 @@
 {% load static %}
-<header class="item-header">
-  {% if book.work.thumbnail %}
-  <img class="item-header__image" src="{{ book.work.thumbnail.image.thumbnail }}" />
-  {% else %}
-  <span class="item-header__image img--placeholder"></span>
-  {% endif %}
-  <h1 class="item-title">{{ book.work.primary_title }}</h1>
-  <p class="item-author">
-    {% for author in book.work.authors.all %}
-      {% if not forloop.last %}
-        {{ author.authorized_name }};
-      {% else %}
-        {{ author.authorized_name }}
-      {% endif %}
-    {% endfor %}
-  </p>
-  {% if book.start_page %}
-  <p class="item-pages">{{book.start_page}}</p>
-  {% endif %}
-</header>
+{% include "components/book-header.html" with book=instance %}
 
 <section class="item-section">
   {% include "components/navigation-tabs.html" with book=instance is_biblio=True %}
