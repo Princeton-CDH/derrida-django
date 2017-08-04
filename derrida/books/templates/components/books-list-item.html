@@ -15,14 +15,14 @@
     {% endif %}
   </figure>
   <div class="item__body">
-    <a class="text-badge text-badge--blue text-badge--link" href="#">Reference</a>
+    <a class="text-badge text-badge--blue text-badge--link" href="#">{{ book.item_type }}</a>
     <h3 class="item__heading">
       <a class="item__link" href="{% url 'books:detail' pk=book.id %}">{{ book.work.primary_title }}</a>
     </h3>
     <p class="item__author">
       {% for author in book.work.authors.all %}
         {% if not forloop.last %}
-          {{ author.authorized_name }};
+          {{ author.authorized_name }};&nbsp;
         {% else %}
           {{ author.authorized_name }}
         {% endif %}
