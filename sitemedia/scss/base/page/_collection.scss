@@ -110,7 +110,8 @@
 
     &.img--placeholder {
       height: 200px;
-      background: $blue;
+      min-width: 200px;
+      background: $light-grey;
     }
 
     .collection--condensed & {
