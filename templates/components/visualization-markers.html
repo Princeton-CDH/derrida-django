@@ -3,7 +3,7 @@
   {% with ''|center:number as range %}
   {% for _ in range %}
     <div class="visualization-marker-container">
-      <a class="visualization-chapter-marker" href="{% url 'book' %}" id="tt{{ forloop.counter }}">{{ forloop.counter }}</a>
+      <a class="visualization-chapter-marker" href="{% url 'books:list' %}" id="tt{{ forloop.counter }}">{{ forloop.counter }}</a>
       <div class="webui-popover-content">
          {% include 'components/collection-item.html' %}
       </div>
