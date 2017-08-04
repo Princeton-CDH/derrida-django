@@ -60,14 +60,15 @@
 
 .item-nav__link {
   flex-grow: 3;
+  font-weight: 600;
   text-decoration: none;
   padding: 0.5em 2em;
   text-align: center;
   border-bottom: 1px solid $primary-color;
-  background: $light-grey;
+  background: darken($light-grey, 10%);
   height: 2.6em;
   white-space: nowrap;
-  color: $medium-grey;
+  color: darken($medium-grey, 20%);
 
   &:active {
     outline: none;
