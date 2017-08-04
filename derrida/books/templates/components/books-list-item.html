@@ -14,6 +14,7 @@
     <span class="img img--placeholder"></span>
     {% endif %}
   </figure>
+
   <div class="item__body">
     <a class="text-badge text-badge--blue text-badge--link" href="#">{{ book.item_type }}</a>
     <h3 class="item__heading">
@@ -31,8 +32,19 @@
     {% if book.copyright_year %}
     <p class="item__date">{{ book.copyright_year }}</p>
     {% endif %}
-    <p class="item__location">pp 169-280</p>
-    <p class="item__excerpt">Je ne sais comment cela se fait, mais je sais bien que les opérations dont on tient le plus de registres et de livres de compte sont précisément celles où l’on friponne le plus.</p>
-    <p class="item__citation">Cited in De la grammatologie  p. 401</p>
+    <p class="item__location">{{ book.location }}</p>
+    <p class="item__excerpt">---</p>
+    {% if book.cited_in %}
+    <p class="item__citation">
+      Cited in:
+      {% for cited in book.cited_in.all %}
+        {% if not forloop.last %}
+          {{ cited.work.primary_title }};&nbsp;
+        {% else %}
+          {{ author.work.primary_title }}
+        {% endif %}
+      {% endfor %}
+    </p>
+    {% endif %}
   </div>
 </section>
