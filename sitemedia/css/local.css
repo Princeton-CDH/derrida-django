@@ -2135,7 +2135,7 @@ main {
   margin-left: 0; }
   @media only screen and (min-width: 650px) {
     .webui-popover {
-      width: calc(50% - 4.41176%);
+      width: calc(66.66667% - 4.90196%);
       float: left;
       margin-left: 2.94118%;
       margin-left: 0; } }
