@@ -1,0 +1,19 @@
+{% extends 'djiffy/base.html' %}
+{% load static %}
+
+{% block nav-title %} Derrida's Library {% endblock %}
+
+{% block page-context-id %}books-list{% endblock %}
+
+{% block content %}
+  <header class="page-header page-header--link">
+    <div class="container">
+      <h1 class="page-header__heading"><a href="{% url 'books:list' %}"><i class="material-icons">arrow_back</i> Derrida's Library</a></h1>
+    </div>
+  </header>
+  <article class="item">
+    <div class="container">
+      {% include 'components/book-gallery.html' with book=instance %}
+    </div>
+  </article>
+{% endblock %}

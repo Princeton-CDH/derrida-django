@@ -1,8 +1,8 @@
 <nav class="item-nav">
-  <a href="{% url 'books:list' %}" class="item-nav__link {% if is_biblio %}item-nav__link--active{% endif %}">Bibliography</a>
+  <a href="{% url 'books:detail' pk=book.id %}" class="item-nav__link {% if is_biblio %}item-nav__link--active{% endif %}">Bibliography</a>
   <span class="item-nav__spacer"></span>
-  <a href="{% url 'home' %}" class="item-nav__link {% if is_gallery %}item-nav__link--active{% endif %}">Image Gallery</a>
+  <a href="{% url 'books:detail-gallery' pk=book.id %}" class="item-nav__link {% if is_gallery %}item-nav__link--active{% endif %}">Image Gallery</a>
   <span class="item-nav__spacer"></span>
-  <a href="{% url 'home' %}" class="item-nav__link {% if is_citation %}item-nav__link--active{% endif %}">Citation View</a>
+  <a href="{% url 'books:detail-citations' pk=book.id %}" class="item-nav__link {% if is_citations %}item-nav__link--active{% endif %}">Citation View</a>
   <span class="item-nav__spacer item-nav__spacer--end"></span>
 </nav>

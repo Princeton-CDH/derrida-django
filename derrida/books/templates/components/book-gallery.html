@@ -1,0 +1,22 @@
+{% load static %}
+{% include "components/book-header.html" with book=instance %}
+
+<section class="item-section">
+  {% include "components/navigation-tabs.html" with book=instance is_gallery=True %}
+  <div class="item-gallery">
+    <header class="item-gallery__heading">
+      <h2 class="item-gallery__title">Overview Images</h2>
+    </header>
+
+    {% for de in book.digital_edition.all %}
+    <figure class="item__image item__image--gallery">
+      <a class="item__image-link" href="#">
+        <img class="img" src="{% static "img/bookimg/cover2.png" %}" />
+      </a>
+      <figcaption class="item__image-caption">
+        <p>Cover</p>
+      </figcaption>
+    </figure>
+    {% endfor %}
+  </div>
+</section>

@@ -15,6 +15,12 @@ urlpatterns = [
     url(r'^languages/autocomplete/$',
         staff_member_required(LanguageAutocomplete.as_view()),
         name='language-autocomplete'),
+    url(r'^(?P<pk>\d+)/citaitons$',
+        InstanceDetailView.as_view(template_name='books/detail/citations.html'),
+        name='detail-citations'),
+    url(r'^(?P<pk>\d+)/gallery$',
+        InstanceDetailView.as_view(template_name='books/detail/gallery.html'),
+        name='detail-gallery'),
     url(r'^(?P<pk>\d+)/$', InstanceDetailView.as_view(), name='detail'),
     url(r'^$', InstanceListView.as_view(), name='list'),
 ]

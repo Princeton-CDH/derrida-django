@@ -1,0 +1,25 @@
+{% extends 'djiffy/base.html' %}
+{% load static %}
+
+{% block nav-title %} Derrida's Library {% endblock %}
+
+{% block page-context-id %}books-list{% endblock %}
+
+{% block content %}
+  <header class="page-header page-header--link">
+    <div class="container">
+      <h1 class="page-header__heading"><a href="{% url 'books:list' %}"><i class="material-icons">arrow_back</i> Derrida's Library</a></h1>
+    </div>
+  </header>
+  <div class="container citation-list">
+    <article class="collection">
+      {% include "components/book-header.html" with book=instance %}
+      <section class="item-section">
+        {% include "components/navigation-tabs.html" with book=instance is_citations=True %}
+        {% for citation in instance.cited_in.all %}
+          {% include 'components/books-list-item.html' with href='books:detail' book=citation %}
+        {% endfor %}
+      </section>
+    </article>
+  </div>
+{% endblock %}
