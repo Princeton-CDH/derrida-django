@@ -6,9 +6,10 @@
     </header>
     <header class="page-sort__header">
       <p class="sort-label">Sort By</p>
-      <a class="sort-link sort-link--active" href="#">Page Order in Derrida work</a>
-      <a class="sort-link" href="#">Author of cited work</a>
-      <a class="sort-link" href="#">Title of cited work</a>
+
+      <a class="sort-link {% if 'work__authors__authorized_name' == orderBy or orderBy == null %}sort-link--active{% endif %}" href="?orderBy=work__authors__authorized_name">Author of cited work</a>
+      <a class="sort-link {% if 'work__instance__start_page' == orderBy %}sort-link--active{% endif %}" href="?orderBy=work__instance__start_page">Page Order in Derrida work</a>
+      <a class="sort-link {% if 'work__primary_title' == orderBy %}sort-link--active{% endif %}" href="?orderBy=work__primary_title">Title of cited work</a>
     </header>
   </div>
 </section>

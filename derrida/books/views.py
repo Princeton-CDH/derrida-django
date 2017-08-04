@@ -46,9 +46,12 @@ class InstanceListView(ListView):
 
     def get_queryset(self):
         instances = super(InstanceListView, self).get_queryset()
-        return instances.order_by('work__authors__authorized_name')
+        order = self.request.GET.get('orderBy', 'work__authors__authorized_name')
+        return instances.order_by(order)
 
     def get_context_data(self, **kwargs):
         context = super(InstanceListView, self).get_context_data(**kwargs)
         context['count'] = self.get_queryset().count()
+        context['orderBy'] = self.request.GET.get('orderBy', 'work__authors__authorized_name')
+
         return context

@@ -16,7 +16,7 @@
     </div>
   </header>
   {% include "components/page-filter.html" with show_filter=False %}
-  {% include "components/page-sort.html" with number=count %}
+  {% include "components/page-sort.html" with number=count orderBy=orderBy %}
   <div class="container">
     <article class="collection collection--condensed">
       {% for instance in object_list %}
