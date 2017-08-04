@@ -18,6 +18,14 @@
   }
 }
 
+.mdl-mega-footer__logos .logo + .logo {
+  padding-left: 2rem;
+}
+
+.mdl-mega-footer__legal {
+  padding-top: 2rem;
+}
+
 .mdl-mega-footer--heading,
 .mdl-mega-footer__heading {
   color: $dark-grey;
