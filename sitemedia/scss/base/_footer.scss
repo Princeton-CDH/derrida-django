@@ -24,6 +24,11 @@
   text-decoration: none;
   margin-bottom: 0;
   font-size: 0.9em;
+
+  &:hover,
+  &:active {
+    color: $primary-color;
+  }
 }
 
 .mdl-mega-footer__middle-section {
