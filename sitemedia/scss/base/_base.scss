@@ -22,3 +22,7 @@
 @import "page/item";
 @import "page/sort";
 @import "page/pagination";
+
+.mdl-layout {
+  min-height: 120vh;
+}
