@@ -67,6 +67,7 @@
   background: $light-grey;
   height: 2.6em;
   white-space: nowrap;
+  color: $medium-grey;
 
   &:active {
     outline: none;
@@ -76,6 +77,7 @@
     background: none;
     border: 1px solid $primary-color;
     border-bottom-color: transparent;
+    color: $primary-color;
   }
 }
 
