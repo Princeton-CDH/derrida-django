@@ -10,6 +10,7 @@
   &:hover,
   &:active {
     opacity: 1;
+    color: $color;
     border-color: $primary-color;
   }
 }

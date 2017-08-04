@@ -1412,6 +1412,7 @@ hr {
     transition: border-color 150ms ease, opacity 150ms ease; }
     .page-header__callout .callout__link:hover, .page-header__callout .callout__link:active {
       opacity: 1;
+      color: #424242;
       border-color: #3ca1ff; }
   .page-header__callout .lead {
     line-height: 1.2;
@@ -1541,6 +1542,7 @@ hr {
   color: inherit; }
   .item__link:hover, .item__link:active {
     opacity: 1;
+    color: #424242;
     border-color: #3ca1ff; }
 
 .item__heading,
@@ -1792,6 +1794,7 @@ hr {
       transition: border-color 150ms ease, opacity 150ms ease; }
       .item-term .item-term__value .item-term__link:hover, .item-term .item-term__value .item-term__link:active {
         opacity: 1;
+        color: #424242;
         border-color: #3ca1ff; }
     .item-term .item-term__value .item__link {
       border: 0; }
