@@ -3,6 +3,10 @@
 CHANGELOG
 =========
 
+0.8.1
+-----
+Maintenance release to provide needed migration
+
 0.8 (Interventions Phase I)
 ---------------------------
 Release implementing the first part of the interventions interface, allowing
