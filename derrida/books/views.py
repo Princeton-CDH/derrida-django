@@ -1,6 +1,6 @@
 from dal import autocomplete
 
-from .models import Publisher, Language, Instance
+from .models import Publisher, Language, Instance, Reference
 
 from django.views.generic import DetailView, ListView
 
@@ -55,3 +55,25 @@ class InstanceListView(ListView):
         context['orderBy'] = self.request.GET.get('orderBy', 'work__authors__authorized_name')
 
         return context
+
+class ReferenceListView(ListView):
+    # full citation/reference list; eventually will have filter/sort options
+    # (sticking with 'reference' for now until project team confirms
+    # which term is more general / preferred for public site)
+    model = Reference
+    paginate_by = 16
+
+    # default ordering by derrida work, page, page location
+    # matches default ordering for this view
+
+class ReferenceHistogramView(ListView):
+    template_name = 'books/reference_histogram.html'
+    model = Reference
+
+    def get_queryset(self):
+        refs = super(ReferenceHistogramView, self).get_queryset()
+        # for now, returning references by author; eventually
+        # we'll also want references by section of derrida work
+        # return a values list that can be regrouped in the template
+        return refs.order_by('instance__work__authors__authorized_name') \
+                   .values('id', 'instance__work__authors__authorized_name')
