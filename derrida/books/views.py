@@ -76,4 +76,5 @@ class ReferenceHistogramView(ListView):
         # we'll also want references by section of derrida work
         # return a values list that can be regrouped in the template
         return refs.order_by('instance__work__authors__authorized_name') \
-                   .values('id', 'instance__work__authors__authorized_name')
+                   .values('id', 'instance__work__authors__authorized_name',
+                           'instance')

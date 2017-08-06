@@ -150,6 +150,7 @@
   min-width: 400px;
   @include grid-column(4);
   margin-left: 0;
+  position: fixed;
 
   @include grid-media($large-medium-viewport-grid) {
     @include grid-column(8);
