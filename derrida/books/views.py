@@ -1,6 +1,6 @@
 from dal import autocomplete
 
-from .models import Publisher, Language, Instance
+from .models import Publisher, Language, Instance, Reference
 
 from django.views.generic import ListView, DetailView
 
@@ -47,3 +47,14 @@ class InstanceListView(ListView):
     def get_queryset(self):
         instances = super(InstanceListView, self).get_queryset()
         return instances.order_by('work__authors__authorized_name')
+
+
+class ReferenceListView(ListView):
+    # full citation/reference list; eventually will have filter/sort options
+    # (sticking with 'reference' for now until project team confirms
+    # which term is more general / preferred for public site)
+    model = Reference
+    paginate_by = 16
+
+    # default ordering by derrida work, page, page location
+    # matches default ordering for this view

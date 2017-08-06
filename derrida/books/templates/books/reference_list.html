@@ -1,0 +1,27 @@
+{# placeholder reference list template to show where to access fields in the design #}
+
+{% for reference in object_list %}
+<div>
+{{ reference.reference_type }}
+{% with instance=reference.instance %}
+{% if instance.digital_edition and instance.digital_edition.thumbnail %}
+    <img style="float:right" src="{{ instance.digital_edition.thumbnail.image.thumbnail }}"/>
+{% endif %}
+<p><i>{{ instance.display_title }}</i></p>
+<p>{{ instance.work.authors.all|join:', ' }}</p> {# authorized format for now #}
+{# date: is this copyright year or print date? #}
+<p>{{ instance.copyright_year|default:'' }} {# optional, might not be set #}
+  {# copy of edition (A, B, etc) not yet in the database #}
+  p. {{ reference.book_page }}
+</p>
+{% endwith %}
+
+{# NOTE: none of the anchor text has been added to the database yet  #}
+<p>{{ reference.anchor_text }}</p>
+
+<p>Cited in <i>{{ reference.derridawork }}</i>
+p. {{ reference.derridawork_page }} {{ reference.derridawork_pageloc }}</p>
+<hr style="clear:both"/>
+</div>
+
+{% endfor %}

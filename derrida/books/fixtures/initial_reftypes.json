@@ -30,13 +30,5 @@
         "name": "Footnote",
         "notes": ""
     }
-},
-{
-    "model": "books.referencetype",
-    "pk": 5,
-    "fields": {
-        "name": "Unset",
-        "notes": ""
-    }
 }
 ]

@@ -21,7 +21,8 @@ urlpatterns = [
 
     url(r'^admin/', admin.site.urls),
     url(r'^accounts/', include('pucas.cas_urls')),
-    url(r'^library/', include('derrida.books.urls', namespace='books')),
+    url(r'^', include('derrida.books.urls', namespace='books')),
+
     url(r'^people/', include('derrida.people.urls', namespace='people')),
     url(r'^places/', include('derrida.places.urls', namespace='places')),
     url(r'^interventions/', include('derrida.interventions.urls', namespace='interventions')),

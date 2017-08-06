@@ -3,7 +3,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 
 from derrida.books.views import (
     PublisherAutocomplete, LanguageAutocomplete, InstanceDetailView,
-    InstanceListView
+    InstanceListView, ReferenceListView
 )
 
 
@@ -13,6 +13,7 @@ urlpatterns = [
         name='publisher-autocomplete'),
     url(r'^languages/autocomplete/$', staff_member_required(LanguageAutocomplete.as_view()),
         name='language-autocomplete'),
-    url(r'^(?P<pk>\d+)/$', InstanceDetailView.as_view(), name='detail'),
-    url(r'^$', InstanceListView.as_view(), name='list'),
+    url(r'^library/(?P<pk>\d+)/$', InstanceDetailView.as_view(), name='detail'),
+    url(r'^library/$', InstanceListView.as_view(), name='list'),
+    url(r'^references/$', ReferenceListView.as_view(), name='reference-list'),
 ]
