@@ -1,0 +1,15 @@
+{# placeholder reference histogram template to provide data for citation visualization design #}
+
+{# group queryset values list of reference pk and author name to group references by author#}
+{% regroup object_list by instance__work__authors__authorized_name as references_by_author %}
+
+<ul>
+{% for work in references_by_author %}
+    <li>{{ work.grouper|default:'[no author]' }}:
+        {% for ref in work.list %}
+            {# eventually this will use ajax to load the reference card, but that view doesn't exist yet #}
+            <span title="{{ ref.id }}">•</span>
+        {% endfor %}
+    </li>
+{% endfor %}
+</ul>

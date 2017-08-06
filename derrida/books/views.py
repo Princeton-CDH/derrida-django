@@ -58,3 +58,15 @@ class ReferenceListView(ListView):
 
     # default ordering by derrida work, page, page location
     # matches default ordering for this view
+
+class ReferenceHistogramView(ListView):
+    template_name = 'books/reference_histogram.html'
+    model = Reference
+
+    def get_queryset(self):
+        refs = super(ReferenceHistogramView, self).get_queryset()
+        # for now, returning references by author; eventually
+        # we'll also want references by section of derrida work
+        # return a values list that can be regrouped in the template
+        return refs.order_by('instance__work__authors__authorized_name') \
+                   .values('id', 'instance__work__authors__authorized_name')
