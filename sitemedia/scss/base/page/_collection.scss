@@ -120,9 +120,10 @@
 
     &.img--placeholder {
       height: 200px;
-      width: 200px;
+      width: 150px;
       max-width: 100%;
       background: $light-grey;
+      align-self: flex-end;
     }
 
     .collection--condensed & {

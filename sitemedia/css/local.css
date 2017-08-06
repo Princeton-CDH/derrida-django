@@ -1592,9 +1592,10 @@ hr {
     max-height: 200px; }
     .item__image .img.img--placeholder {
       height: 200px;
-      width: 200px;
+      width: 150px;
       max-width: 100%;
-      background: #eee; }
+      background: #eee;
+      align-self: flex-end; }
     .collection--condensed .item__image .img {
       max-height: none; }
   .collection--condensed .item__image {
@@ -1974,7 +1975,6 @@ body {
   background-color: #175498; }
 
 main {
-  color: #fff;
   flex-grow: 2; }
 
 #homepage .credits {
