@@ -17,3 +17,33 @@
     </div>
   </article>
 {% endblock %}
+
+{% block page-js %}
+  <script type="text/javascript">
+    $(function() {
+      $("#book-header").stickySidebar({
+        topSpacing: 20
+      });
+
+      var $navLinks = $(".item-navigation-link"),
+          activeClass = "item-navigation-link--active";
+
+      $navLinks.on('click', function(e) {
+        var $this = $(this),
+            hash = $this.attr('href'),
+            $target = $('[name=' + hash.slice(1) + ']');
+
+        if ($target.length) {
+          e.preventDefault();
+          $this.siblings().removeClass(activeClass);
+          $this.addClass(activeClass);
+          $this.blur();
+
+          $('body').animate({
+            scrollTop: $target.position().top
+          }, 500);
+        }
+      });
+    });
+  </script>
+{% endblock %}
