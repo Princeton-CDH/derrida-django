@@ -210,6 +210,12 @@
   font-weight: 400;
   margin: 0 0 0.5em;
   font-family: $base-font-family;
+
+  a {
+    color: inherit;
+    font-weight: inherit;
+    text-decoration: inherit;
+  }
 }
 
 .citation-list {
