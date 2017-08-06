@@ -1,5 +1,7 @@
 {% load static %}
-{% include "components/book-header.html" with book=instance %}
+<header class="item-header" id="book-header">
+  {% include "components/book-header.html" with book=instance %}
+</header>
 
 <section class="item-section">
   {% include "components/navigation-tabs.html" with book=instance is_biblio=True %}

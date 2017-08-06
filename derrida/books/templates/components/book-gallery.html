@@ -1,5 +1,14 @@
 {% load static %}
-{% include "components/book-header.html" with book=instance %}
+
+<header class="item-header" id="book-header">
+  {% include "components/book-header.html" with book=instance %}
+  <nav class="item-navigation">
+    <a class="item-navigation-link item-navigation-link--active" href="#overview">Overview Images</a>
+    <a class="item-navigation-link" href="#annotated">Annotated Pages</a>
+    <a class="item-navigation-link" href="#relevant">Relevant Markings</a>
+    <a class="item-navigation-link" href="#insertions">Insertions</a>
+  </nav>
+</header>
 
 <section class="item-section">
   {% include "components/navigation-tabs.html" with book=instance is_gallery=True %}
