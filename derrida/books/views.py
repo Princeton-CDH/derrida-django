@@ -77,4 +77,24 @@ class ReferenceHistogramView(ListView):
         # return a values list that can be regrouped in the template
         return refs.order_by('instance__work__authors__authorized_name') \
                    .values('id', 'instance__work__authors__authorized_name',
-                           'instance')
+                           'instance',
+                           'derridawork__abbreviation', 'derridawork_page',
+                           'derridawork_pageloc')
+
+
+class ReferenceDetailView(DetailView):
+    # reference detail view for loading via ajax
+
+    model = Reference
+    template_name = 'components/citation-list-item.html'
+
+    def get_object(self, queryset=None):
+        if queryset is None:
+            queryset = self.get_queryset()
+        # FIXME: this is returning two results for some cases
+        # (must be an error in the data)
+        return queryset.get(derridawork_page=self.kwargs['page'],
+            derridawork_pageloc=self.kwargs['pageloc'],
+            derridawork__abbreviation=self.kwargs['derridawork_abbrev'])
+
+

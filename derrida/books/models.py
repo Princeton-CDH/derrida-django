@@ -423,6 +423,9 @@ class DerridaWork(Notable):
     full_citation = models.TextField()
     #: boolean indicator for primary work
     is_primary = models.BooleanField()
+    #: abbreviation
+    abbreviation = models.SlugField(
+        help_text='abbreviation for use in URLs')
 
     def __str__(self):
         return self.short_title
@@ -440,7 +443,8 @@ class Reference(models.Model):
     instance = models.ForeignKey(Instance, blank=True, null=True)
     #: :class:`DerridaWork` that references the item
     derridawork = models.ForeignKey(DerridaWork)
-    #: page in the Derrida work
+    #: page in the Derrida work.
+    # FIXME: does this have to be char and not integer?
     derridawork_page = models.CharField(max_length=10)
     #: location/identifier on the page
     derridawork_pageloc = models.CharField(max_length=2)

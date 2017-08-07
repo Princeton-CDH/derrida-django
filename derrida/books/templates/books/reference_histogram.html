@@ -37,7 +37,9 @@
         delay: {
           show: 300,
           hide: 1000
-        }
+        },
+        type: 'async',
+        url: '/references/dg101b/' {# placeholder to test #}
       });
     });
   </script>
@@ -52,7 +54,10 @@
         <div class="visualization-chapter-markers">
           {% for ref in work.list %}
             <div class="visualization-marker-container">
-              <a class="visualization-chapter-marker" href="{% url 'books:detail' pk=ref.instance %}" id="tt{{ ref.id }}">
+              <a class="visualization-chapter-marker"
+              data-href="{% url 'books:reference' derridawork_abbrev=ref.derridawork__abbreviation page=ref.derridawork_page pageloc=ref.derridawork_pageloc %}"
+              href="{% url 'books:detail' pk=ref.instance %}"
+              id="tt{{ ref.id }}">
                 {{ forloop.counter }}
               </a>
               <div class="webui-popover-content">

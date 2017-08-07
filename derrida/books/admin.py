@@ -215,8 +215,9 @@ class PersonBookAdmin(admin.ModelAdmin):
 class DerridaWorkAdmin(admin.ModelAdmin):
     '''Creating a custom admin with inlines for Derrida Work to ease associating
     a specific book edition with it'''
-    fields = ('short_title', 'full_citation', 'is_primary', 'notes')
-
+    fields = ('short_title', 'abbreviation', 'full_citation', 'is_primary',
+              'notes')
+    list_display = ('short_title', 'abbreviation', 'is_primary', 'has_notes')
 
 ### refactored work/instance model admin
 
