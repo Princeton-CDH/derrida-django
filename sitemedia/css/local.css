@@ -1352,11 +1352,29 @@ hr {
   .mdl-mega-footer__drop-down-section:nth-child(4) {
     width: 15%; } }
 .page-header {
-  background: #eee; }
+  background-color: #eee;
+  background-position: center;
+  background-size: cover; }
   @media only screen and (min-width: 1080px) {
     .page-header {
       margin-top: -64px;
       transition: margin-top 0.5s ease; } }
+  #citations-list .page-header, #visualizations .page-header {
+    background-image: url("../img/banner/citation_small_2x.png"); }
+    @media only screen and (min-width: 650px) {
+      #citations-list .page-header, #visualizations .page-header {
+        background-image: url("../img/banner/citation_medium_2x.png"); } }
+    @media only screen and (min-width: 1080px) {
+      #citations-list .page-header, #visualizations .page-header {
+        background-image: url("../img/banner/citation_large_2x.png"); } }
+  #books-list .page-header {
+    background-image: url("../img/banner/lib_small_2x.png"); }
+    @media only screen and (min-width: 650px) {
+      #books-list .page-header {
+        background-image: url("../img/banner/lib_medium_2x.png"); } }
+    @media only screen and (min-width: 1080px) {
+      #books-list .page-header {
+        background-image: url("../img/banner/lib_large_2x.png"); } }
 
 .page-header--link {
   text-align: center;

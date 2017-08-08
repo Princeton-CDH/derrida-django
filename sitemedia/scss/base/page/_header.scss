@@ -1,9 +1,36 @@
 .page-header {
-  background: $grey-200;
+  background-color: $grey-200;
+  background-position: center;
+  background-size: cover;
 
   @include grid-media($xlarge-viewport-grid) {
     margin-top: -$header-row-height;
     transition: margin-top 0.5s ease;
+  }
+
+  #citations-list &,
+  #visualizations & {
+    background-image: url("../img/banner/citation_small_2x.png");
+
+    @include grid-media($large-medium-viewport-grid) {
+      background-image: url("../img/banner/citation_medium_2x.png");
+    }
+
+    @include grid-media($xlarge-viewport-grid) {
+      background-image: url("../img/banner/citation_large_2x.png");
+    }
+  }
+
+  #books-list & {
+    background-image: url("../img/banner/lib_small_2x.png");
+
+    @include grid-media($large-medium-viewport-grid) {
+      background-image: url("../img/banner/lib_medium_2x.png");
+    }
+
+    @include grid-media($xlarge-viewport-grid) {
+      background-image: url("../img/banner/lib_large_2x.png");
+    }
   }
 }
 
