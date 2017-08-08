@@ -176,6 +176,20 @@
     background-position: center;
     left: 0;
     opacity: 0.33;
+
+    &.error {
+      background-image: url("../img/error-icon.png");
+
+      &::after {
+        content: "Sorry, there was an error loading this citation.";
+        position: absolute;
+        bottom: 1.4rem;
+        text-align: center;
+        width: 100%;
+        font-size: 1.2rem;
+        color: $orange-red;
+      }
+    }
   }
 
   .text-badge {

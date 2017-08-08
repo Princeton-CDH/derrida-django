@@ -2176,6 +2176,16 @@ main {
     background-position: center;
     left: 0;
     opacity: 0.33; }
+    .webui-popover i.icon-refresh.error {
+      background-image: url("../img/error-icon.png"); }
+      .webui-popover i.icon-refresh.error::after {
+        content: "Sorry, there was an error loading this citation.";
+        position: absolute;
+        bottom: 1.4rem;
+        text-align: center;
+        width: 100%;
+        font-size: 1.2rem;
+        color: #ff470f; }
   .webui-popover .text-badge {
     display: none; }
   .webui-popover .collection__item {
