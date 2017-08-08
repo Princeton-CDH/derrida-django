@@ -17,7 +17,7 @@ creators|Katie Chenoweth, Rebecca Koeser, Jean Bauer, Ben Hicks
 
 #This next group of lines allows you to color code your modules and indicate which entity is the central node of that module
 #The central node allows you to choose whether to display all the entities in the module, or just the central entity and module name to save space
-#If you don't want to indicate a central module, make sure there is "|" immediately after the hex color, otherwise the parser will throw an
+#If you don't want to indicate a central module, make sure there is '|' immediately after the hex color, otherwise the parser will throw an
 #Array Out of Bounds exception
 #Probably best to limit your diagram to 5 or 6 modules, otherwise it can get confusing
 #module|NAME OF MODULE|HEX COLOR|CENTRAL ENTITY OF THAT MODULE
