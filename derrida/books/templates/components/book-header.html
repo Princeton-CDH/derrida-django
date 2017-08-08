@@ -1,6 +1,6 @@
 {% load static %}
-{% if book.work.thumbnail %}
-<img class="item-header__image" src="{{ book.work.thumbnail.image.thumbnail }}" />
+{% if book.digital_edition.thumbnail %}
+<img class="item-header__image" src="{{ book.digital_edition.thumbnail.image.thumbnail }}" />
 {% else %}
 <span class="item-header__image img--placeholder"></span>
 {% endif %}
