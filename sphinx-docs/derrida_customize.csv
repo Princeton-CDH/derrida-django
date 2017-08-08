@@ -1,6 +1,6 @@
 #This is the DAVILA customization file for Derrida's Margins
 
-#It is a pipe ("|") separated CSV file
+#It is a pipe ('|') separated CSV file
 
 #make sure you remove any quotation marks or unnecessary spaces from the csv file, they will confuse the parser!
 #These lines set the metadata for your diagram, the information will display in the top left corner, in bold
