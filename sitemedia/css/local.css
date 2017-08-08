@@ -2028,6 +2028,8 @@ main {
 
 #visualizations {
   padding-bottom: 6em; }
+  #visualizations > .container {
+    padding: 0 2.94118%; }
   #visualizations .page-sort__header {
     padding: 0.5rem 0 0; }
 
@@ -2068,15 +2070,17 @@ main {
   display: block;
   width: 10px;
   height: 10px; }
-  .visualization-marker-container .item__body {
-    width: calc(75% - 5.14706%);
-    float: left;
-    margin-left: 2.94118%; }
-  .visualization-marker-container .item__image {
-    width: calc(25% - 3.67647%);
-    float: left;
-    margin-left: 2.94118%;
-    float: right; }
+
+.webui-popover-visualization .item__body {
+  width: calc(75% - 5.14706%);
+  float: left;
+  margin-left: 2.94118%;
+  min-height: 200px; }
+.webui-popover-visualization .item__image {
+  width: calc(25% - 3.67647%);
+  float: left;
+  margin-left: 2.94118%;
+  float: right; }
 
 .visualization-chapter-marker {
   width: 10px;

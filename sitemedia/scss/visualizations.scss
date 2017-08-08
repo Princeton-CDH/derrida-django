@@ -1,6 +1,10 @@
 #visualizations {
   padding-bottom: 6em;
 
+  & > .container {
+    padding: 0 $gutter-size;
+  }
+
   .page-sort__header {
     padding: 0.5rem 0 0;
   }
@@ -49,9 +53,12 @@
   display: block;
   width: 10px;
   height: 10px;
+}
 
+.webui-popover-visualization {
   .item__body {
     @include grid-column(3);
+    min-height: 200px;
   }
 
   .item__image {

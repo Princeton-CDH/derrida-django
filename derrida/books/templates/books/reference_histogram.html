@@ -29,17 +29,17 @@
 
   <script>
     $(function() {
-      $('.visualization-chapter-marker').webuiPopover({
-        trigger:'hover',
-        animation:'fade',
-        placement:'auto-top',
+      $(".visualization-chapter-marker").webuiPopover({
+        trigger: "hover",
+        animation: "fade",
+        placement: "auto-top",
         arrow: true,
         delay: {
           show: 300,
           hide: 1000
         },
-        type: 'async',
-        url: '/references/dg101b/' {# placeholder to test #}
+        style: "visualization",
+        type: "async"
       });
     });
   </script>
@@ -55,17 +55,11 @@
           {% for ref in work.list %}
             <div class="visualization-marker-container">
               <a class="visualization-chapter-marker"
-              data-href="{% url 'books:reference' derridawork_abbrev=ref.derridawork__abbreviation page=ref.derridawork_page pageloc=ref.derridawork_pageloc %}"
-              href="{% url 'books:detail' pk=ref.instance %}"
-              id="tt{{ ref.id }}">
+                 href="{% url 'books:detail' pk=ref.instance %}"
+                 id="tt{{ ref.id }}"
+                 data-url="{% url 'books:reference' derridawork_abbrev=ref.derridawork__abbreviation page=ref.derridawork_page pageloc=ref.derridawork_pageloc %}">
                 {{ forloop.counter }}
               </a>
-              <div class="webui-popover-content">
-                <section class="collection__item reference">
-
-                  <p>BookId: {{ref.instance}}</p>
-                </section>
-              </div>
             </div>
           {% endfor %}
         </div>
