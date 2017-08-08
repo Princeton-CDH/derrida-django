@@ -2153,6 +2153,7 @@ main {
   border-color: #3ca1ff;
   max-width: 100%;
   min-width: 400px;
+  min-height: 205px;
   width: calc(100% - 5.88235%);
   float: left;
   margin-left: 2.94118%;
@@ -2164,6 +2165,17 @@ main {
       float: left;
       margin-left: 2.94118%;
       margin-left: 0; } }
+  .webui-popover i.icon-refresh {
+    display: block;
+    position: absolute;
+    width: 100%;
+    margin: 0;
+    top: 0;
+    height: 200px;
+    background-size: 75px;
+    background-position: center;
+    left: 0;
+    opacity: 0.33; }
   .webui-popover .text-badge {
     display: none; }
   .webui-popover .collection__item {

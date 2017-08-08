@@ -155,6 +155,7 @@
   border-color: $primary-color;
   max-width: 100%;
   min-width: 400px;
+  min-height: 205px;
   @include grid-column(4);
   margin-left: 0;
   position: fixed;
@@ -162,6 +163,19 @@
   @include grid-media($large-medium-viewport-grid) {
     @include grid-column(8);
     margin-left: 0;
+  }
+
+  i.icon-refresh {
+    display: block;
+    position: absolute;
+    width: 100%;
+    margin: 0;
+    top: 0;
+    height: 200px;
+    background-size: 75px;
+    background-position: center;
+    left: 0;
+    opacity: 0.33;
   }
 
   .text-badge {
