@@ -39,7 +39,12 @@
           hide: 1000
         },
         style: "visualization",
-        type: "async"
+        type: "async",
+        async: {
+           error: function(that, xhr, data) {
+             that.$contentElement.children('.icon-refresh').addClass("error");
+           }
+        }
       });
     });
   </script>
