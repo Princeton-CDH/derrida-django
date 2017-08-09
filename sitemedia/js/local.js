@@ -10,5 +10,4 @@ $(document).ready(function(){
             sessionStorage.setItem('fade-test-banner', true);
         });
     }
-
 });
