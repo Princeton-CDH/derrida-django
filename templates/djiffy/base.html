@@ -8,6 +8,37 @@
     <script src="{% static 'js//lib/webui-popover.min.js' %}"></script>
     <script src="{% static 'js/lib/sticky-sidebar.js' %}"></script>
     <script src="{% static 'js/lib/selectize.min.js' %}"></script>
+    <script>
+      $(function() {
+        $(".mdl-selectfield__select").selectize({
+          allowEmptyOption: true,
+          onFocus: function() {
+            var $this = this.$control,
+                $select_field = $this.parents('.mdl-selectfield');
+            $select_field.addClass('is-active')
+          },
+          onBlur: function() {
+            var $this = this.$control,
+                $select_field = $this.parents('.mdl-selectfield');
+            $select_field.removeClass('is-active')
+          },
+          onChange: function(value) {
+            var $this = this.$control,
+                $select_field = $this.parents('.mdl-selectfield');
+            if (value.length) {
+              $select_field.addClass('is-dirty');
+            } else {
+              $select_field.removeClass('is-dirty');
+            }
+          }
+        });
+        var $searchForm = $(".search-form-header .container");
+        $searchForm.slideUp(0).removeClass('hide-on-load');
+        $("#toggle-search-form").on('click', function() {
+          $searchForm.stop(false, false).slideToggle(500);
+        });
+      });
+    </script>
     {# Include analytics if INCLUDE_ANALYTICS is set to True #}
     {# {% include 'snippets/analytics.html' %} #}
 {% endblock %}

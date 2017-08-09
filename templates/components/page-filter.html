@@ -17,29 +17,6 @@
         $container.slideDown(500);
       }
     });
-
-    $(".mdl-selectfield__select").selectize({
-      allowEmptyOption: true,
-      onFocus: function() {
-        var $this = this.$control,
-            $select_field = $this.parents('.mdl-selectfield');
-        $select_field.addClass('is-active')
-      },
-      onBlur: function() {
-        var $this = this.$control,
-            $select_field = $this.parents('.mdl-selectfield');
-        $select_field.removeClass('is-active')
-      },
-      onChange: function(value) {
-        var $this = this.$control,
-            $select_field = $this.parents('.mdl-selectfield');
-        if (value.length) {
-          $select_field.addClass('is-dirty');
-        } else {
-          $select_field.removeClass('is-dirty');
-        }
-      }
-    });
   });
 </script>
 
