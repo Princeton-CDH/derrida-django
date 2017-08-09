@@ -1978,9 +1978,6 @@ hr {
   line-height: 2em;
   padding: 0 0.5em; }
 
-.mdl-layout {
-  min-height: 120vh; }
-
 #sw-version {
   color: #eee;
   padding: 10px 0;
@@ -1994,6 +1991,7 @@ body {
   background-color: #175498; }
 
 main {
+  min-height: 90vh;
   flex-grow: 2; }
 
 #homepage {
