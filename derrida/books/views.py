@@ -1,6 +1,6 @@
 from dal import autocomplete
 
-from .models import Publisher, Language, Instance, Reference
+from .models import Publisher, Language, Instance, Reference, Section
 
 from django.views.generic import DetailView, ListView
 
@@ -75,11 +75,26 @@ class ReferenceHistogramView(ListView):
         # for now, returning references by author; eventually
         # we'll also want references by section of derrida work
         # return a values list that can be regrouped in the template
-        return refs.order_by('instance__work__authors__authorized_name') \
+        if self.kwargs.get('mode', None) == 'section':
+            sort = 'derridawork_page'
+        else:
+            sort = 'instance__work__authors__authorized_name'
+
+        return refs.order_by(sort) \
                    .values('id', 'instance__work__authors__authorized_name',
                            'instance',
                            'derridawork__abbreviation', 'derridawork_page',
                            'derridawork_pageloc')
+
+    def get_context_data(self):
+        context = super(ReferenceHistogramView, self).get_context_data()
+        if self.kwargs.get('mode', None) == 'section':
+            context.update({
+                'mode': self.kwargs['mode'],
+                'sections': Section.objects.filter(derridawork__abbreviation=self.kwargs['derridawork_abbrev'])
+            })
+
+        return context
 
 
 class ReferenceDetailView(DetailView):
@@ -93,8 +108,11 @@ class ReferenceDetailView(DetailView):
             queryset = self.get_queryset()
         # FIXME: this is returning two results for some cases
         # (must be an error in the data)
-        return queryset.get(derridawork_page=self.kwargs['page'],
+        # return queryset.get(derridawork_page=self.kwargs['page'],
+        return queryset.filter(
+            derridawork_page=self.kwargs['page'],
             derridawork_pageloc=self.kwargs['pageloc'],
-            derridawork__abbreviation=self.kwargs['derridawork_abbrev'])
+            derridawork__abbreviation=self.kwargs['derridawork_abbrev']
+            ).first()
 
 

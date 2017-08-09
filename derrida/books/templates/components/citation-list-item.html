@@ -38,14 +38,14 @@
         <p class="item__date">{{ instance.copyright_year }}</p>
       {% endif %}
 
-      {% if instance.book_page %}
-        <p class="item__location">pp. {{ instance.book_page }}</p>
+      {% if reference.book_page %}
+        <p class="item__location">pp. {{ reference.book_page }}</p>
       {% endif %}
 
-      <p class="item__excerpt">{{ instance.anchor_text }}</p>
+      <p class="item__excerpt">{{ reference.anchor_text }}</p>
 
       <p class="item__citation">
-        Cited in: {{ reference.derridawork }}
+        Cited in <em>{{ reference.derridawork }}</em> p.{{ reference.derridawork_page }}{{ reference.derridawork_pageloc }}
       </p>
 
     {% endwith %}

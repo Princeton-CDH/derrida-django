@@ -15,7 +15,11 @@ urlpatterns = [
     url(r'^references/$', views.ReferenceListView.as_view(), name='reference-list'),
     url(r'^references/histogram/$', views.ReferenceHistogramView.as_view(),
         name='reference-histogram'),
-    url(r'^references/(?P<derridawork_abbrev>[a-z009-]+)(?P<page>[\dA-Z]+)(?P<pageloc>[a-z]+)?/$',
+    url(r'^references/histogram/(?P<derridawork_abbrev>[a-z]+)/$',
+        views.ReferenceHistogramView.as_view(), {'mode': 'section'},
+        name='reference-histogram'),
+
+    url(r'^references/(?P<derridawork_abbrev>[a-z]+)(?P<page>[\dA-Z]+)(?P<pageloc>[a-z]+)?/$',
         views.ReferenceDetailView.as_view(), name='reference'),
 
     url(r'^library/$', views.InstanceListView.as_view(), name='list'),
@@ -23,7 +27,7 @@ urlpatterns = [
     url(r'^library/(?P<pk>\d+)/gallery$',
         views.InstanceDetailView.as_view(template_name='books/detail/gallery.html'),
         name='detail-gallery'),
-    url(r'^library/(?P<pk>\d+)/citaitons$',
+    url(r'^library/(?P<pk>\d+)/citations$',
         views.InstanceDetailView.as_view(template_name='books/detail/citations.html'),
         name='detail-citations'),
 ]
