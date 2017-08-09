@@ -1,0 +1,122 @@
+.search-form-header {
+  @include grid-column(4);
+  z-index: 10;
+
+  @include grid-media($large-medium-viewport-grid) {
+    @include grid-column(12);
+    .background-colored--dark & {
+      color: $light-grey;
+    }
+  }
+
+  .mdl-button {
+    color: $medium-grey;
+    align-self: center;
+
+    .background-colored--dark & {
+      color: $white;
+      opacity: 0.8;
+    }
+  }
+
+  .hide-on-load {
+    visibility: hidden;
+    position: absolute;
+    top: -100%;
+  }
+}
+
+.search-form-header__form {
+  display: flex;
+
+  .mdl-textfield {
+    width: 100%;
+  }
+
+  .mdl-selectfield {
+    width: 150px;
+    padding-bottom: 0;
+    padding-top: 1.7rem;
+
+    .selectize-input,
+    .selectize-input.has-options,
+    .selectize-input.has-items {
+      padding-bottom: 0.4rem;
+      color: $base-font-color;
+      border-bottom-color: $primary-color;
+
+      input {
+        display: none !important;
+      }
+
+      .background-colored--dark & {
+        color: $white;
+        border-bottom-color: rgba($white, 0.6);
+      }
+    }
+  }
+
+  .selectize-control.single .selectize-input.input-active {
+    background: transparent;
+    padding-bottom: 0.6rem;
+  }
+
+  .selectize-control.single .selectize-input::after {
+    border: 0;
+    @include material-icons();
+    content: "keyboard_arrow_down";
+    width: 30px;
+    height: 30px;
+    margin-top: -15px;
+    line-height: 1;
+  }
+
+  .mdl-selectfield.is-active .selectize-control.single .selectize-input::after {
+    content: "keyboard_arrow_up";
+  }
+
+  .selectize-dropdown {
+    border: 1px solid $primary-color;
+    margin-top: -4px;
+    border-radius: 0;
+
+    .option {
+      font-size: 0.9rem;
+      padding: 14px 10px;
+    }
+  }
+}
+
+
+.full-width-input {
+  width: 100%;
+}
+
+.mdl-textfield--floating-label.is-upgraded {
+  .mdl-textfield__label {
+    color: $base-font-color;
+    opacity: 0.4;
+  }
+
+  &.is-focused .mdl-textfield__label {
+    opacity: 0.8;
+
+    &::after {
+      background-color: $primary-color;
+    }
+  }
+
+  .background-colored--dark & {
+    .mdl-textfield__label {
+      color: $white;
+    }
+
+    .mdl-textfield__input {
+      border-bottom-color: rgba($white, 0.6);
+    }
+
+    &.is-focused .mdl-textfield__label::after {
+      background-color: $white;
+    }
+  }
+}

@@ -1,11 +1,19 @@
-<div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable
-            mdl-textfield--floating-label mdl-textfield--align-right">
-  <label class="mdl-button mdl-js-button mdl-button--icon"
-         for="waterfall-exp">
-    <i class="material-icons">search</i>
-  </label>
-  <div class="mdl-textfield__expandable-holder">
-    <input class="mdl-textfield__input" type="text" name="sample"
-           id="waterfall-exp">
-  </div>
-</div>
+<section class="container hide-on-load">
+  <form class="search-form-header__form" action="#">
+    <label class="mdl-button mdl-js-button mdl-button--icon" for="search-term">
+      <i class="material-icons">search</i>
+    </label>
+    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+      <input class="mdl-textfield__input" type="text" id="search-term">
+      <label class="mdl-textfield__label" for="search-term">Search Terms...</label>
+    </div>
+    <div class="mdl-selectfield mdl-js-selectfield">
+      <select class="mdl-selectfield__select" id="search-filter" name="search-filter">
+        <option value="all">All</option>
+        <option value="book">Books</option>
+        <option value="citation">Citations</option>
+        <option value="annotation">Annotations</option>
+      </select>
+    </div>
+  </form>
+</section>
