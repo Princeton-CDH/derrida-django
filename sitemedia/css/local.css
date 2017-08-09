@@ -1991,7 +1991,6 @@ body {
   background-color: #175498; }
 
 main {
-  min-height: 90vh;
   flex-grow: 2; }
 
 #homepage {
