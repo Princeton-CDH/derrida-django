@@ -1354,7 +1354,8 @@ hr {
 .page-header {
   background-color: #eee;
   background-position: center;
-  background-size: cover; }
+  background-size: contain;
+  background-repeat: no-repeat; }
   @media only screen and (min-width: 1080px) {
     .page-header {
       margin-top: -64px;
@@ -1995,54 +1996,56 @@ body {
 main {
   flex-grow: 2; }
 
-#homepage .credits {
-  font-family: "Cormorant Garamond", "Georgia", serif;
-  font-size: 1.25rem; }
-#homepage .credits__role {
-  font-style: italic; }
-#homepage .credits__name + .credits__role {
-  margin-top: 1em; }
-#homepage article {
-  display: inline-block;
-  margin-bottom: 10rem;
-  margin-right: 2.94118%;
-  margin-top: 5rem;
-  transition: margin-top 0.5s ease; }
-  @media only screen and (min-width: 1080px) {
-    #homepage article {
-      margin-top: 8rem; } }
-#homepage h1 {
-  font-size: 3.5rem;
-  margin-bottom: 4rem; }
-#homepage .lead {
-  font-size: 2rem;
-  margin-bottom: 4rem; }
-#homepage p {
-  max-width: 40rem; }
-#homepage header,
-#homepage section {
-  width: calc(100% - 5.88235%);
-  float: left;
-  margin-left: 2.94118%; }
-#homepage aside {
-  width: calc(100% - 5.88235%);
-  float: left;
-  margin-left: 2.94118%; }
-@media only screen and (min-width: 650px) {
+#homepage {
+  color: #fff; }
+  #homepage .credits {
+    font-family: "Cormorant Garamond", "Georgia", serif;
+    font-size: 1.25rem; }
+  #homepage .credits__role {
+    font-style: italic; }
+  #homepage .credits__name + .credits__role {
+    margin-top: 1em; }
+  #homepage article {
+    display: inline-block;
+    margin-bottom: 10rem;
+    margin-right: 2.94118%;
+    margin-top: 5rem;
+    transition: margin-top 0.5s ease; }
+    @media only screen and (min-width: 1080px) {
+      #homepage article {
+        margin-top: 8rem; } }
+  #homepage h1 {
+    font-size: 3.5rem;
+    margin-bottom: 4rem; }
+  #homepage .lead {
+    font-size: 2rem;
+    margin-bottom: 4rem; }
+  #homepage p {
+    max-width: 40rem; }
   #homepage header,
   #homepage section {
-    width: calc(66.66667% - 4.90196%);
+    width: calc(100% - 5.88235%);
     float: left;
-    margin-left: 2.94118%;
-    left: calc(33.33333% - 3.92157% + 2.94118%);
-    position: relative; }
+    margin-left: 2.94118%; }
   #homepage aside {
-    margin-left: calc(25% - 3.67647% + 5.88235%);
-    width: calc(16.66667% - 3.43137%);
+    width: calc(100% - 5.88235%);
     float: left;
-    margin-left: 2.94118%;
-    left: calc(-58.33333% - 1.22549% + 2.94118%);
-    position: relative; } }
+    margin-left: 2.94118%; }
+  @media only screen and (min-width: 650px) {
+    #homepage header,
+    #homepage section {
+      width: calc(66.66667% - 4.90196%);
+      float: left;
+      margin-left: 2.94118%;
+      left: calc(33.33333% - 3.92157% + 2.94118%);
+      position: relative; }
+    #homepage aside {
+      margin-left: calc(25% - 3.67647% + 5.88235%);
+      width: calc(16.66667% - 3.43137%);
+      float: left;
+      margin-left: 2.94118%;
+      left: calc(-58.33333% - 1.22549% + 2.94118%);
+      position: relative; } }
 
 #visualizations {
   padding-bottom: 6em; }
@@ -2089,11 +2092,18 @@ main {
   width: 10px;
   height: 10px; }
 
+.webui-popover-visualization.reference {
+  display: block;
+  float: left;
+  width: 100%;
+  margin-bottom: 0;
+  padding-bottom: 0; }
+  .webui-popover-visualization.reference .item__body {
+    min-height: none; }
 .webui-popover-visualization .item__body {
   width: calc(75% - 5.14706%);
   float: left;
-  margin-left: 2.94118%;
-  min-height: 200px; }
+  margin-left: 2.94118%; }
 .webui-popover-visualization .item__image {
   width: calc(25% - 3.67647%);
   float: left;
@@ -2171,7 +2181,6 @@ main {
   border-color: #3ca1ff;
   max-width: 100%;
   min-width: 400px;
-  min-height: 205px;
   width: calc(100% - 5.88235%);
   float: left;
   margin-left: 2.94118%;
@@ -2179,7 +2188,7 @@ main {
   position: fixed; }
   @media only screen and (min-width: 650px) {
     .webui-popover {
-      width: calc(66.66667% - 4.90196%);
+      width: calc(50% - 4.41176%);
       float: left;
       margin-left: 2.94118%;
       margin-left: 0; } }
