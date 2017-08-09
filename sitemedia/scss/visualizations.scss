@@ -75,6 +75,15 @@
   .item__image {
     @include grid-column(1);
     float: right;
+    min-height: 200px;
+
+    @include grid-media($large-medium-viewport-grid) {
+      min-height: 0;
+    }
+
+    @include grid-media($xlarge-viewport-grid) {
+      min-height: 200px;
+    }
   }
 }
 
@@ -208,6 +217,10 @@
 
   .collection__item {
     border: 0;
+    float: left;
+    width: 100%;
+    margin: 0;
+    padding-bottom: 0;
   }
 }
 

@@ -2108,7 +2108,14 @@ main {
   width: calc(25% - 3.67647%);
   float: left;
   margin-left: 2.94118%;
-  float: right; }
+  float: right;
+  min-height: 200px; }
+  @media only screen and (min-width: 650px) {
+    .webui-popover-visualization .item__image {
+      min-height: 0; } }
+  @media only screen and (min-width: 1080px) {
+    .webui-popover-visualization .item__image {
+      min-height: 200px; } }
 
 .visualization-chapter-marker {
   width: 10px;
@@ -2216,7 +2223,11 @@ main {
   .webui-popover .text-badge {
     display: none; }
   .webui-popover .collection__item {
-    border: 0; }
+    border: 0;
+    float: left;
+    width: 100%;
+    margin: 0;
+    padding-bottom: 0; }
 
 .webui-arrow {
   bottom: -11px;
