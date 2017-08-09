@@ -1,7 +1,8 @@
 .page-header {
   background-color: $grey-200;
   background-position: center;
-  background-size: cover;
+  background-size: contain;
+  background-repeat: no-repeat;
 
   @include grid-media($xlarge-viewport-grid) {
     margin-top: -$header-row-height;

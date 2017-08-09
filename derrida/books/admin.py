@@ -2,12 +2,13 @@ from dal import autocomplete, forward
 from django import forms
 from django.contrib import admin
 from djiffy.admin import ManifestSelectWidget
+from grappelli.forms import GrappelliSortableHiddenMixin
 
 from derrida.common.admin import NamedNotableAdmin
 from derrida.footnotes.admin import FootnoteInline
 from .models import Subject, Language, Publisher, OwningInstitution, \
     CreatorType, PersonBook, PersonBookRelationshipType, \
-    DerridaWork, Reference, ReferenceType, Journal
+    DerridaWork, Reference, ReferenceType, Journal, Section
 # refactored models
 from .models import Work, Instance, WorkSubject, WorkLanguage, \
     InstanceLanguage, InstanceCatalogue, InstanceCreator
@@ -212,12 +213,24 @@ class PersonBookAdmin(admin.ModelAdmin):
     inlines = [FootnoteInline]
 
 
+# class ResidenceInline(CollapsibleTabularInline):
+#     model = Person.addresses.through
+
+class SectionInline(GrappelliSortableHiddenMixin, CollapsibleTabularInline):
+    model = Section
+    extra = 1
+    fields = ('order', 'name', 'start_page', 'end_page')
+    sortable_field_name = "order"
+
+
 class DerridaWorkAdmin(admin.ModelAdmin):
     '''Creating a custom admin with inlines for Derrida Work to ease associating
     a specific book edition with it'''
     fields = ('short_title', 'abbreviation', 'full_citation', 'is_primary',
               'notes')
     list_display = ('short_title', 'abbreviation', 'is_primary', 'has_notes')
+    inlines = [SectionInline]
+
 
 ### refactored work/instance model admin
 

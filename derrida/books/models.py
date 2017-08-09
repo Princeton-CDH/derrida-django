@@ -413,6 +413,7 @@ class PersonBook(Notable, DateRange):
         return '%s - %s%s' % (self.person, self.book, dates)
 
 
+
 # New citationality model
 class DerridaWork(Notable):
     '''This models the reference copy used to identify all citations, not
@@ -431,6 +432,17 @@ class DerridaWork(Notable):
         return self.short_title
 
 
+class Section(models.Model):
+    name = models.CharField(max_length=255)
+    derridawork = models.ForeignKey(DerridaWork)
+    order = models.PositiveIntegerField('Order')
+    start_page = models.IntegerField(blank=True, null=True)
+    end_page = models.IntegerField(blank=True, null=True)
+
+    class Meta:
+        ordering = ['derridawork', 'order']
+
+
 class ReferenceType(Named, Notable):
     '''Type of reference, i.e. citation, quotation, foonotes, epigraph, etc.'''
     pass
@@ -445,7 +457,7 @@ class Reference(models.Model):
     derridawork = models.ForeignKey(DerridaWork)
     #: page in the Derrida work.
     # FIXME: does this have to be char and not integer?
-    derridawork_page = models.CharField(max_length=10)
+    derridawork_page = models.IntegerField()
     #: location/identifier on the page
     derridawork_pageloc = models.CharField(max_length=2)
     #: page in the referenced item

@@ -49,6 +49,38 @@
     });
   </script>
 
+{% if mode == 'section' %}
+
+  <article class="visualizations">
+  {% for section in sections %}
+    <section class="visualization-section">
+       {#  sections with start and end are normal #}
+        {% if section.start_page and section.end_page %}
+        <h3 class="visualization-chapter-header">{{ section.name }}</h3>
+        <div class="visualization-chapter-markers">
+        {% for ref in object_list %}
+            {% if ref.derridawork_page >= section.start_page and ref.derridawork_page <= section.end_page %}
+            <div class="visualization-marker-container">
+              <a class="visualization-chapter-marker"
+                  data-url="{% url 'books:reference' derridawork_abbrev=ref.derridawork__abbreviation page=ref.derridawork_page pageloc=ref.derridawork_pageloc %}"
+                  href="{% url 'books:detail' pk=ref.instance %}"
+                  id="tt{{ ref.id }}">
+                {{ forloop.counter }} {# ? #}
+              </a>
+            </div>
+            {% endif %}
+        {% endfor %}
+        </div>
+        {% else %}
+        {# sections with no start/end are groupings, higher-level sections #}
+        <h3 class="visualization-chapter-header" style="color:#9b9b9b">{{ section.name }}</h3>
+        {% endif %}
+    </section>
+  {% endfor %}
+</article>
+
+{% else %}
+
   {% regroup object_list by instance__work__authors__authorized_name as references_by_author %}
   <article class="visualizations">
 
@@ -71,5 +103,6 @@
       </section>
     {% endfor %}
   </article>
+  {% endif %}
 </div>
 {% endblock %}
