@@ -22,8 +22,10 @@
   <section class="page-sort">
     <header class="page-sort__header">
       <p class="sort-label">View By</p>
-      <a class="sort-link sort-link--active" href="#">Instance of Citation</a>
-      <a class="sort-link" href="#">Author of cited work</a>
+      <a class="sort-link {% if mode == 'section' %}sort-link--active{% endif %}"
+        href="{% url 'books:reference-histogram' derridawork_abbrev='dg' %}">Instance of Citation</a>
+      <a class="sort-link {% if mode != 'section' %}sort-link--active{% endif %}"
+      href="{% url 'books:reference-histogram' %}">Author of cited work</a>
     </header>
   </section>
 
