@@ -24,5 +24,9 @@
       {% include 'components/citation-list-item.html' with reference=reference %}
     {% endfor %}
   </article>
+    {% if is_paginated %}
+      {% include "components/page-pagination.html" with page_obj=page_obj %}
+    {% endif %}
+
 </div>
 {% endblock %}
