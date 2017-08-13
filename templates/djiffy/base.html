@@ -32,10 +32,9 @@
             }
           }
         });
-        var $searchForm = $(".search-form-header .container");
-        $searchForm.slideUp(0).removeClass('hide-on-load');
-        $("#toggle-search-form").on('click', function() {
-          $searchForm.stop(false, false).slideToggle(500);
+        var $searchForm = $(".search-form-header");
+        $("[data-action=toggle-search-form]").on('click', function() {
+          $searchForm.toggleClass('is-hidden');
         });
       });
     </script>

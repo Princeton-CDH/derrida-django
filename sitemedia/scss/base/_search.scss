@@ -8,6 +8,21 @@
     }
   }
 
+  @include grid-media($xlarge-viewport-grid) {
+    position: absolute;
+  }
+
+  .search-form-header__form {
+    height: 4rem;
+    transition: height 1s $base-timing, opacity 1s $base-timing;
+  }
+
+  &.is-hidden .search-form-header__form {
+    height: 0;
+    overflow: hidden;
+    opacity: 0;
+  }
+
   .mdl-button {
     color: $medium-grey;
     align-self: center;
@@ -17,25 +32,24 @@
       opacity: 0.8;
     }
   }
-
-  .hide-on-load {
-    visibility: hidden;
-    position: absolute;
-    top: -100%;
-  }
 }
 
 .search-form-header__form {
   display: flex;
+  max-width: 800px;
+  margin: auto;
 
   .mdl-textfield {
+    align-self: center;
     width: 100%;
   }
 
   .mdl-selectfield {
+    align-self: center;
     width: 150px;
     padding-bottom: 0;
-    padding-top: 1.7rem;
+    padding-top: 10px;
+    margin-right: 2rem;
 
     .selectize-input,
     .selectize-input.has-options,

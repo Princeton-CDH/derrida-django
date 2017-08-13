@@ -38,14 +38,14 @@ by default; use page_rdf_type to override with a webpage subclass.
           {% block navbar-extra %}{% endblock %}
         </nav>
         <!-- Search Form -->
-        <div class="header__search-button" id="toggle-search-form">
+        <div class="header__search-button" data-action="toggle-search-form">
           <div class="mdl-button mdl-js-button mdl-button--icon">
             <i class="material-icons">search</i>
           </div>
         </div>
       </div>
     </header>
-    <header class="search-form-header">
+    <header class="search-form-header is-hidden">
       {% include 'components/search-bar.html' %}
     </header>
     <div class="mdl-layout__drawer">
