@@ -13,8 +13,9 @@
   }
 
   .search-form-header__form {
+    $search-duration: 700ms;
     height: 4rem;
-    transition: height 1s $base-timing, opacity 1s $base-timing;
+    transition: height $search-duration $base-timing, opacity $search-duration $base-timing;
   }
 
   &.is-hidden .search-form-header__form {
@@ -131,5 +132,13 @@
     &.is-focused .mdl-textfield__label::after {
       background-color: $white;
     }
+  }
+}
+
+#search-results {
+  .page-header__container {
+    min-height: 0;
+    padding: 1em 0;
+    background: $base-background-color;
   }
 }

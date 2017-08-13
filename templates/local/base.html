@@ -45,7 +45,7 @@ by default; use page_rdf_type to override with a webpage subclass.
         </div>
       </div>
     </header>
-    <header class="search-form-header is-hidden">
+    <header class="search-form-header {% block search-form-classes %}is-hidden{% endblock %}">
       {% include 'components/search-bar.html' %}
     </header>
     <div class="mdl-layout__drawer">

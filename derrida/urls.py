@@ -43,6 +43,9 @@ urlpatterns = [
     url(r'^visualization', TemplateView.as_view(template_name='public/visualization.html'), name="visualization"),
 
     url(r'^citations', TemplateView.as_view(template_name='public/citations.html'), name="citations-list"),
+
+    url(r'^search', TemplateView.as_view(template_name='public/search-results.html'), name="search"),
+
 ]
 
 # NOTE: for some reason this isn't getting added automatically

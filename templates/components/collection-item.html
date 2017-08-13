@@ -1,6 +1,6 @@
 {% load static %}
 
-<section class="collection__item item">
+<section class="collection__item item {{itemType}}">
   <figure class="item__image">
     {% if href %}
     <a class="item__image-link" href="{% url href %}">
@@ -15,7 +15,11 @@
     {% endif %}
   </figure>
   <div class="item__body">
+    {% if itemType == 'annotation' %}
+    <a class="text-badge text-badge--red text-badge--link" href="#">Annotation</a>
+    {% else %}
     <a class="text-badge text-badge--blue text-badge--link" href="#">Reference</a>
+    {% endif%}
     <h3 class="item__heading"><a class="item__link" href="#">Cours de linguistique générale</a></h3>
     <p class="item__author">Ferdinand de Saussure</p>
     <p class="item__date">1931</p>
