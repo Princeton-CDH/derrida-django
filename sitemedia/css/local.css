@@ -1219,36 +1219,41 @@ hr {
       .coordinate-navigation .mdl-navigation__link:nth-child(2), .coordinate-navigation .mdl-navigation__link:nth-child(4) {
         top: calc(100vh - 17rem); } }
 .search-form-header {
-  width: calc(100% - 5.88235%);
-  float: left;
-  margin-left: 2.94118%;
-  z-index: 10; }
+  z-index: 10;
+  padding: 0 2.94118%; }
   @media only screen and (min-width: 650px) {
+    .background-colored--dark .search-form-header {
+      color: #eee; } }
+  @media only screen and (min-width: 1080px) {
     .search-form-header {
-      width: calc(100% - 5.88235%);
-      float: left;
-      margin-left: 2.94118%; }
-      .background-colored--dark .search-form-header {
-        color: #eee; } }
+      position: absolute; } }
+  .search-form-header .search-form-header__form {
+    height: 4rem;
+    transition: height 1s ease, opacity 1s ease; }
+  .search-form-header.is-hidden .search-form-header__form {
+    height: 0;
+    overflow: hidden;
+    opacity: 0; }
   .search-form-header .mdl-button {
     color: #9e9e9e;
     align-self: center; }
     .background-colored--dark .search-form-header .mdl-button {
       color: #fff;
       opacity: 0.8; }
-  .search-form-header .hide-on-load {
-    visibility: hidden;
-    position: absolute;
-    top: -100%; }
 
 .search-form-header__form {
-  display: flex; }
+  display: flex;
+  max-width: 800px;
+  margin: auto; }
   .search-form-header__form .mdl-textfield {
+    align-self: center;
     width: 100%; }
   .search-form-header__form .mdl-selectfield {
+    align-self: center;
     width: 150px;
     padding-bottom: 0;
-    padding-top: 1.7rem; }
+    padding-top: 10px;
+    margin-right: 2rem; }
     .search-form-header__form .mdl-selectfield .selectize-input,
     .search-form-header__form .mdl-selectfield .selectize-input.has-options,
     .search-form-header__form .mdl-selectfield .selectize-input.has-items {
@@ -1711,6 +1716,8 @@ hr {
       max-width: 100%;
       background: #eee;
       align-self: flex-end; }
+      .collection--condensed .item__image .img.img--placeholder {
+        margin: auto; }
     .collection--condensed .item__image .img {
       max-height: none; }
   .collection--condensed .item__image {
