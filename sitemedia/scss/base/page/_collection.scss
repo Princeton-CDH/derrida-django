@@ -124,6 +124,10 @@
       max-width: 100%;
       background: $light-grey;
       align-self: flex-end;
+
+      .collection--condensed & {
+        margin: auto;
+      }
     }
 
     .collection--condensed & {
