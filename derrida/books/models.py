@@ -1,5 +1,5 @@
 import json
-import re
+
 from django.db import models
 from django.contrib.contenttypes.fields import GenericRelation
 from django.core.validators import RegexValidator
@@ -261,16 +261,17 @@ class Instance(Notable):
 
     @property
     def location(self):
-        '''Parse the location indicator from the canvas title, if digitized'''
+        '''Location in Derrida's library (currently only available for
+        digitized books).'''
+        # NOTE: PUL digital editions from the Finding Aid include the
+        # location in the item title
         if self.is_digitized():
-            # Get the manifest label
-            manifest_title = self.digital_edition.label
-            # Split out the labeling, which includes annotation info
-            labeling = manifest_title.split(' - ')[0:2]
-            # rejoin them
-            loc = ' - '.join(labeling)
-            # strip the Gift . . . Items odd outside
-            return re.sub(r' - Gift.+Items', '', loc)
+            # Split manifest label on dashes; at most we want the first two
+            location_parts = self.digital_edition.label.split(' - ')[:2]
+            # some volumes include a "Gift Books" notation we don't care about
+            if location_parts[-1].startswith('Gift Books'):
+                location_parts = location_parts[:-1]
+            return ', '.join(location_parts)
 
     @property
     def item_type(self):

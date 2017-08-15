@@ -210,17 +210,18 @@ class TestInstance(TestCase):
 
     def test_location(self):
         la_vie = Instance.objects.get(work__short_title__contains="La vie")
-        # grabs first two dashed segments
+        # location is based on first part of manifest title
         la_vie.digital_edition = Manifest(
             label='Shelf - By the Cupboard - Title'
         )
-        assert la_vie.location == 'Shelf - By the Cupboard'
-        # test the one variation in the pattern
+        assert la_vie.location == 'Shelf, By the Cupboard'
+
+        # some manifests have only one location, and second part
+        # indicates it is a gift
         la_vie.digital_edition = Manifest(
-            label='House - Gift and ... Items - Title'
+            label='House - Gift Books, Works By and About Derrida, and Related Items - Derrida, Jacques. De la grammatologie.'
         )
         assert la_vie.location == 'House'
-
 
 
 class TestWorkLanguage(TestCase):
