@@ -482,7 +482,8 @@ class Reference(models.Model):
             self.derridawork.short_title,
             self.derridawork_page,
             self.derridawork_pageloc,
-            self.instance.display_title(),
+            # instance is technically optional...
+            self.instance.display_title() if self.instance else '[no instance]',
             self.book_page,
             self.reference_type
         )
