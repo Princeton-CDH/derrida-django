@@ -15,11 +15,11 @@ urlpatterns = [
     url(r'^references/$', views.ReferenceListView.as_view(), name='reference-list'),
     url(r'^references/histogram/$', views.ReferenceHistogramView.as_view(),
         name='reference-histogram'),
-    url(r'^references/histogram/(?P<derridawork_abbrev>[a-z]+)/$',
+    url(r'^references/histogram/(?P<derridawork_slug>[a-z-]+)/$',
         views.ReferenceHistogramView.as_view(), {'mode': 'section'},
         name='reference-histogram'),
 
-    url(r'^references/(?P<derridawork_abbrev>[a-z]+)(?P<page>[\dA-Z]+)(?P<pageloc>[a-z]+)?/$',
+    url(r'^references/(?P<derridawork_slug>[a-z-]+)/(?P<page>[\dA-Z]+)(?P<pageloc>[a-z]+)?/$',
         views.ReferenceDetailView.as_view(), name='reference'),
 
     url(r'^library/$', views.InstanceListView.as_view(), name='list'),

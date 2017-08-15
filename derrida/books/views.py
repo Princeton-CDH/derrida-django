@@ -1,6 +1,6 @@
 from dal import autocomplete
 
-from .models import Publisher, Language, Instance, Reference, Section
+from .models import Publisher, Language, Instance, Reference, DerridaWorkSection
 
 from django.views.generic import DetailView, ListView
 
@@ -66,6 +66,7 @@ class ReferenceListView(ListView):
     # default ordering by derrida work, page, page location
     # matches default ordering for this view
 
+
 class ReferenceHistogramView(ListView):
     template_name = 'books/reference_histogram.html'
     model = Reference
@@ -83,7 +84,7 @@ class ReferenceHistogramView(ListView):
         return refs.order_by(sort) \
                    .values('id', 'instance__work__authors__authorized_name',
                            'instance',
-                           'derridawork__abbreviation', 'derridawork_page',
+                           'derridawork__slug', 'derridawork_page',
                            'derridawork_pageloc')
 
     def get_context_data(self):
@@ -91,7 +92,7 @@ class ReferenceHistogramView(ListView):
         if self.kwargs.get('mode', None) == 'section':
             context.update({
                 'mode': self.kwargs['mode'],
-                'sections': Section.objects.filter(derridawork__abbreviation=self.kwargs['derridawork_abbrev'])
+                'sections': DerridaWorkSection.objects.filter(derridawork__slug=self.kwargs['derridawork_slug'])
             })
 
         return context
@@ -112,7 +113,7 @@ class ReferenceDetailView(DetailView):
         return queryset.filter(
             derridawork_page=self.kwargs['page'],
             derridawork_pageloc=self.kwargs['pageloc'],
-            derridawork__abbreviation=self.kwargs['derridawork_abbrev']
+            derridawork__slug=self.kwargs['derridawork_slug']
             ).first()
 
 

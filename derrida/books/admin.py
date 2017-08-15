@@ -7,8 +7,8 @@ from grappelli.forms import GrappelliSortableHiddenMixin
 from derrida.common.admin import NamedNotableAdmin
 from derrida.footnotes.admin import FootnoteInline
 from .models import Subject, Language, Publisher, OwningInstitution, \
-    CreatorType, PersonBook, PersonBookRelationshipType, \
-    DerridaWork, Reference, ReferenceType, Journal, Section
+    CreatorType, PersonBook, DerridaWork, Reference, ReferenceType, \
+    Journal, DerridaWorkSection
 # refactored models
 from .models import Work, Instance, WorkSubject, WorkLanguage, \
     InstanceLanguage, InstanceCatalogue, InstanceCreator
@@ -213,23 +213,26 @@ class PersonBookAdmin(admin.ModelAdmin):
     inlines = [FootnoteInline]
 
 
-# class ResidenceInline(CollapsibleTabularInline):
-#     model = Person.addresses.through
-
-class SectionInline(GrappelliSortableHiddenMixin, CollapsibleTabularInline):
-    model = Section
+class DerridaWorkSectionInline(GrappelliSortableHiddenMixin, CollapsibleTabularInline):
+    model = DerridaWorkSection
     extra = 1
-    fields = ('order', 'name', 'start_page', 'end_page')
+    fieldsets = (
+        (None, {
+            'fields': ('order', 'name', 'start_page', 'end_page'),
+            'description': 'Sections with pages unset will be treated as headers.'
+        }),
+    )
     sortable_field_name = "order"
 
 
 class DerridaWorkAdmin(admin.ModelAdmin):
     '''Creating a custom admin with inlines for Derrida Work to ease associating
     a specific book edition with it'''
-    fields = ('short_title', 'abbreviation', 'full_citation', 'is_primary',
+    fields = ('short_title', 'slug', 'full_citation', 'is_primary',
               'notes')
-    list_display = ('short_title', 'abbreviation', 'is_primary', 'has_notes')
-    inlines = [SectionInline]
+    list_display = ('short_title', 'slug', 'is_primary', 'has_notes')
+    prepopulated_fields = {"slug": ("short_title",)}
+    inlines = [DerridaWorkSectionInline]
 
 
 ### refactored work/instance model admin

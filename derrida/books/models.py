@@ -425,19 +425,22 @@ class DerridaWork(Notable):
     full_citation = models.TextField()
     #: boolean indicator for primary work
     is_primary = models.BooleanField()
-    #: abbreviation
-    abbreviation = models.SlugField(
-        help_text='abbreviation for use in URLs')
+    #: slug for use in URLs
+    slug = models.SlugField(
+        help_text='slug for use in URLs (changing after creation will break URLs)')
 
     def __str__(self):
         return self.short_title
 
 
-class Section(models.Model):
+class DerridaWorkSection(models.Model):
+    '''Sections of a :class:`DerridaWork` (e.g. chapters). Used to look at
+    :class:`Reference` by sections of the work.'''
     name = models.CharField(max_length=255)
     derridawork = models.ForeignKey(DerridaWork)
     order = models.PositiveIntegerField('Order')
-    start_page = models.IntegerField(blank=True, null=True)
+    start_page = models.IntegerField(blank=True, null=True,
+       help_text='Sections with no pages will be treated as headers.')
     end_page = models.IntegerField(blank=True, null=True)
 
     class Meta:

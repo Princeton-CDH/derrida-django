@@ -23,7 +23,7 @@
     <header class="page-sort__header">
       <p class="sort-label">View By</p>
       <a class="sort-link {% if mode == 'section' %}sort-link--active{% endif %}"
-        href="{% url 'books:reference-histogram' derridawork_abbrev='dg' %}">Instance of Citation</a>
+        href="{% url 'books:reference-histogram' derridawork_slug='de-la-grammatologie' %}">Instance of Citation</a>
       <a class="sort-link {% if mode != 'section' %}sort-link--active{% endif %}"
       href="{% url 'books:reference-histogram' %}">Author of cited work</a>
     </header>
@@ -64,7 +64,7 @@
             {% if ref.derridawork_page >= section.start_page and ref.derridawork_page <= section.end_page %}
             <div class="visualization-marker-container">
               <a class="visualization-chapter-marker"
-                  data-url="{% url 'books:reference' derridawork_abbrev=ref.derridawork__abbreviation page=ref.derridawork_page pageloc=ref.derridawork_pageloc %}"
+                  data-url="{% url 'books:reference' derridawork_slug=ref.derridawork__slug page=ref.derridawork_page pageloc=ref.derridawork_pageloc %}"
                   href="{% url 'books:detail' pk=ref.instance %}"
                   id="tt{{ ref.id }}">
                 {{ forloop.counter }} {# ? #}
@@ -96,7 +96,7 @@
               <a class="visualization-chapter-marker"
                  href="{% url 'books:detail' pk=ref.instance %}"
                  id="tt{{ ref.id }}"
-                 data-url="{% url 'books:reference' derridawork_abbrev=ref.derridawork__abbreviation page=ref.derridawork_page pageloc=ref.derridawork_pageloc %}">
+                 data-url="{% url 'books:reference' derridawork_slug=ref.derridawork__slug page=ref.derridawork_page pageloc=ref.derridawork_pageloc %}">
                 {{ forloop.counter }}
               </a>
             </div>
