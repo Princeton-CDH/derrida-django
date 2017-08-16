@@ -9,19 +9,27 @@
   }
 
   @include grid-media($xlarge-viewport-grid) {
-    position: absolute;
+    position: relative;
+    width: 100%;
   }
 
   .search-form-header__form {
     $search-duration: 700ms;
     height: 4rem;
-    transition: height $search-duration $base-timing, opacity $search-duration $base-timing;
+    transition: margin-bottom $search-duration $base-timing,
+      height $search-duration $base-timing,
+      opacity $search-duration $base-timing;
+
+    @include grid-media($xlarge-viewport-grid) {
+      margin-bottom: 5em;
+    }
   }
 
   &.is-hidden .search-form-header__form {
     height: 0;
     overflow: hidden;
     opacity: 0;
+    margin-bottom: 0;
   }
 
   .mdl-button {

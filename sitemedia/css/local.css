@@ -1226,14 +1226,19 @@ hr {
       color: #eee; } }
   @media only screen and (min-width: 1080px) {
     .search-form-header {
-      position: absolute; } }
+      position: relative;
+      width: 100%; } }
   .search-form-header .search-form-header__form {
     height: 4rem;
-    transition: height 700ms ease, opacity 700ms ease; }
+    transition: margin-bottom 700ms ease, height 700ms ease, opacity 700ms ease; }
+    @media only screen and (min-width: 1080px) {
+      .search-form-header .search-form-header__form {
+        margin-bottom: 5em; } }
   .search-form-header.is-hidden .search-form-header__form {
     height: 0;
     overflow: hidden;
-    opacity: 0; }
+    opacity: 0;
+    margin-bottom: 0; }
   .search-form-header .mdl-button {
     color: #9e9e9e;
     align-self: center; }

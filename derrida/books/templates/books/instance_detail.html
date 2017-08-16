@@ -5,7 +5,7 @@
 
 {% block header_class %}mdl-layout__header--transparent{% endblock %}
 
-{% block page-context-id %}books-list{% endblock %}
+{% block page-context-id %}books-detail{% endblock %}
 
 {% block content %}
   <header class="page-header page-header--link">
@@ -63,15 +63,22 @@
       $body.scroll(function() {
           clearTimeout($.data(this, 'scrollTimer'));
           $.data(this, 'scrollTimer', setTimeout(function() {
-              var activeTab = '';
+              var activeTab = '',
+                  offset = 64;
               if (navLinkSelectors.length) {
-                $(navLinkSelectors.join(',')).each(function() {
-                  var $this = $(this);
-                  if ($this.position().top < $body.scrollTop() + 64 ) {
-                    $(".item-navigation-link").removeClass(activeClass);
-                    $(".item-navigation-link[href=#"+$this.attr('name')+"]").addClass(activeClass);
-                  }
-                });
+                if ($body.scrollTop() < offset) {
+                  var $this = $(navLinkSelectors[0]);
+                  $(".item-navigation-link").removeClass(activeClass);
+                  $(".item-navigation-link[href=#"+$this.attr('name')+"]").addClass(activeClass);
+                } else {
+                  $(navLinkSelectors.join(',')).each(function() {
+                    var $this = $(this);
+                    if ($this.position().top < $body.scrollTop() + offset ) {
+                      $(".item-navigation-link").removeClass(activeClass);
+                      $(".item-navigation-link[href=#"+$this.attr('name')+"]").addClass(activeClass);
+                    }
+                  });
+                }
               }
           }, 250));
       });
