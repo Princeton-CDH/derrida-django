@@ -9,8 +9,7 @@
     transition: margin-top 0.5s ease;
   }
 
-  #citations-list &,
-  #visualizations & {
+  #citations-list & {
     background-image: url("../img/banner/citation_small_2x.png");
 
     @include grid-media($large-medium-viewport-grid) {

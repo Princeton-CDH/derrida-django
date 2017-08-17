@@ -1471,13 +1471,13 @@ hr {
     .page-header {
       margin-top: -64px;
       transition: margin-top 0.5s ease; } }
-  #citations-list .page-header, #visualizations .page-header {
+  #citations-list .page-header {
     background-image: url("../img/banner/citation_small_2x.png"); }
     @media only screen and (min-width: 650px) {
-      #citations-list .page-header, #visualizations .page-header {
+      #citations-list .page-header {
         background-image: url("../img/banner/citation_medium_2x.png"); } }
     @media only screen and (min-width: 1080px) {
-      #citations-list .page-header, #visualizations .page-header {
+      #citations-list .page-header {
         background-image: url("../img/banner/citation_large_2x.png"); } }
   #books-list .page-header {
     background-image: url("../img/banner/lib_small_2x.png"); }
