@@ -21,11 +21,6 @@ def load_initial_languages(apps, schema_editor):
 def load_initial_reftypes(apps, schema_editor):
     call_command('loaddata', 'initial_reftypes', app_label='books', verbose=0)
 
-# derrida.books.migrations.0012_template_derrida_work
-# No longer used because of incompatible fields in current serializer
-def load_initial_derridawork(apps, schema_editor):
-    call_command('loaddata', 'initial_derridawork', app_label='books', verbose=0)
-
 # derrida.books.migrations.0020_add_initial_item_types
 # - no longer needed, item types has been removed
 

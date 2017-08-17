@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'pucas',
     'djiffy',
     'annotator_store',
+    'viapy',
     # local apps
     'derrida.apps.DerridaConfig',
     'derrida.books',
