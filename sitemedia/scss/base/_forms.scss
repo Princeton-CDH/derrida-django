@@ -17,6 +17,8 @@ textarea {
   font-family: $base-font-family;
 }
 
-.mdl-textfield__input {
-  border-bottom-color: $action-color;
-}
+// Switch
+@import "switch";
+
+// Selects
+@import "selectize/selectize";

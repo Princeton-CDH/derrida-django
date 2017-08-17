@@ -1,0 +1,53 @@
+{% load static %}
+
+<section class="collection__item reference">
+  <figure class="item__image">
+    {% with digital_edition=reference.instance.digital_edition %}
+      {% if digital_edition %}
+      <a class="item__image-link" href="{{ reference.instance.get_absolute_url }}">
+        {% if digital_edition.thumbnail %}
+        <img class="img" src="{{ digital_edition.thumbnail.image.thumbnail }}" />
+        {% else %}
+        <span class="img img--placeholder"></span>
+        {% endif %}
+      </a>
+      {% else %}
+      <span class="img img--placeholder"></span>
+      {% endif %}
+    {% endwith %}
+  </figure>
+
+  <div class="item__body">
+    <a class="text-badge text-badge--blue text-badge--link" href="#">{{ reference.reference_type }}</a>
+    {% with instance=reference.instance %}
+      <h3 class="item__heading">
+        <a class="item__link" href="{{ reference.instance.get_absolute_url }}">{{ instance.display_title }}</a>
+      </h3>
+
+      <p class="item__author">
+        {% for author in instance.work.authors.all %}
+          {% if not forloop.last %}
+            {{ author.authorized_name }};
+          {% else %}
+            {{ author.authorized_name }}
+          {% endif %}
+        {% endfor %}
+      </p>
+
+      {% if instance.copyright_year %}
+        <p class="item__date">{{ instance.copyright_year }}{% if instance.copy %} - {{ instance.copy }}{% endif %}</p>
+      {% endif %}
+
+      {% if reference.book_page %}
+        <p class="item__location">pp. {{ reference.book_page }}</p>
+      {% endif %}
+
+      <p class="item__excerpt">{{ reference.anchor_text }}</p>
+
+      <p class="item__citation">
+        Cited in <em>{{ reference.derridawork }}</em> p.{{ reference.derridawork_page }}{{ reference.derridawork_pageloc }}
+      </p>
+
+    {% endwith %}
+  </div>
+</section>

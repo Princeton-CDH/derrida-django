@@ -1,0 +1,152 @@
+.search-form-header {
+  z-index: 10;
+  padding: 0 $gutter-size;
+
+  @include grid-media($large-medium-viewport-grid) {
+    .background-colored--dark & {
+      color: $light-grey;
+    }
+  }
+
+  @include grid-media($xlarge-viewport-grid) {
+    position: relative;
+    width: 100%;
+  }
+
+  .search-form-header__form {
+    $search-duration: 700ms;
+    height: 4rem;
+    transition: margin-bottom $search-duration $base-timing,
+      height $search-duration $base-timing,
+      opacity $search-duration $base-timing;
+
+    @include grid-media($xlarge-viewport-grid) {
+      margin-bottom: 5em;
+    }
+  }
+
+  &.is-hidden .search-form-header__form {
+    height: 0;
+    overflow: hidden;
+    opacity: 0;
+    margin-bottom: 0;
+  }
+
+  .mdl-button {
+    color: $medium-grey;
+    align-self: center;
+
+    .background-colored--dark & {
+      color: $white;
+      opacity: 0.8;
+    }
+  }
+}
+
+.search-form-header__form {
+  display: flex;
+  max-width: 800px;
+  margin: auto;
+
+  .mdl-textfield {
+    align-self: center;
+    width: 100%;
+  }
+
+  .mdl-selectfield {
+    align-self: center;
+    width: 150px;
+    padding-bottom: 0;
+    padding-top: 10px;
+    margin-right: 2rem;
+
+    .selectize-input,
+    .selectize-input.has-options,
+    .selectize-input.has-items {
+      padding-bottom: 0.4rem;
+      color: $base-font-color;
+      border-bottom-color: $primary-color;
+
+      input {
+        display: none !important;
+      }
+
+      .background-colored--dark & {
+        color: $white;
+        border-bottom-color: rgba($white, 0.6);
+      }
+    }
+  }
+
+  .selectize-control.single .selectize-input.input-active {
+    background: transparent;
+    padding-bottom: 0.6rem;
+  }
+
+  .selectize-control.single .selectize-input::after {
+    border: 0;
+    @include material-icons();
+    content: "keyboard_arrow_down";
+    width: 30px;
+    height: 30px;
+    margin-top: -15px;
+    line-height: 1;
+  }
+
+  .mdl-selectfield.is-active .selectize-control.single .selectize-input::after {
+    content: "keyboard_arrow_up";
+  }
+
+  .selectize-dropdown {
+    border: 1px solid $primary-color;
+    margin-top: -4px;
+    border-radius: 0;
+
+    .option {
+      font-size: 0.9rem;
+      padding: 14px 10px;
+    }
+  }
+}
+
+
+.full-width-input {
+  width: 100%;
+}
+
+.mdl-textfield--floating-label.is-upgraded {
+  .mdl-textfield__label {
+    color: $base-font-color;
+    opacity: 0.4;
+  }
+
+  &.is-focused .mdl-textfield__label {
+    opacity: 0.8;
+
+    &::after {
+      background-color: $primary-color;
+    }
+  }
+
+  .background-colored--dark & {
+    .mdl-textfield__label {
+      color: $white;
+    }
+
+    .mdl-textfield__input {
+      border-bottom-color: rgba($white, 0.6);
+    }
+
+    &.is-focused .mdl-textfield__label::after {
+      background-color: $white;
+    }
+  }
+}
+
+#search-results {
+  .page-header__container {
+    min-height: 0;
+    padding: 1em 0;
+    background: $base-background-color;
+  }
+}

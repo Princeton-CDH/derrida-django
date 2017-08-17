@@ -1,0 +1,9 @@
+{# single reference marker for histogram viz; expects a reference dict as returned by summary_value #}
+<div class="visualization-marker-container">
+  <a class="visualization-chapter-marker"
+     href="{% url 'books:detail' pk=ref.instance %}"
+     id="tt{{ ref.id }}"
+     data-url="{% url 'books:reference' derridawork_slug=ref.derridawork__slug page=ref.derridawork_page pageloc=ref.derridawork_pageloc %}">
+    {{ forloop.counter }}
+  </a>
+</div>

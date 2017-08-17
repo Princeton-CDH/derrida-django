@@ -1,5 +1,5 @@
 '''
-Manage command to import digitized book content viaf IIIF.  It takes
+Manage command to import digitized book content via IIIF.  It takes
 both files and URLs, and supports both IIIF Collections and single
 Manifests.  If a collection is specified, all supported manifests in the
 system will be loaded.  If a manifest is already loaded, it will be

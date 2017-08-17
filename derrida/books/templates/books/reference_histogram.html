@@ -1,15 +1,96 @@
-{# placeholder reference histogram template to provide data for citation visualization design #}
+{% extends 'djiffy/base.html' %}
+{% load static %}
 
-{# group queryset values list of reference pk and author name to group references by author#}
-{% regroup object_list by instance__work__authors__authorized_name as references_by_author %}
+{% block nav-title %} Derrida's Library {% endblock %}
 
-<ul>
-{% for work in references_by_author %}
-    <li>{{ work.grouper|default:'[no author]' }}:
-        {% for ref in work.list %}
-            {# eventually this will use ajax to load the reference card, but that view doesn't exist yet #}
-            <span title="{{ ref.id }}">•</span>
+{% block header_class %}mdl-layout__header--transparent{% endblock %}
+
+{% block page-context-id %}visualizations{% endblock %}
+
+{% block content %}
+<header class="page-header page-header--condensed">
+  <div class="container page-header__container">
+    <h1 class="page-header__heading">Visualization</h1>
+    <div class="page-header__callout">
+      <p class="lead">Explore all quotations and references in Derrida’s works</p>
+      <p><a class="callout__link" href="/">Export Complete List to Zotero</a></p>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+  <section class="page-sort">
+    <header class="page-sort__header">
+      <p class="sort-label">View By</p>
+      <a class="sort-link {% if mode == 'section' %}sort-link--active{% endif %}"
+        href="{% url 'books:reference-histogram' derridawork_slug='de-la-grammatologie' %}">Instance of Citation</a>
+      <a class="sort-link {% if mode != 'section' %}sort-link--active{% endif %}"
+      href="{% url 'books:reference-histogram' %}">Author of cited work</a>
+    </header>
+  </section>
+
+  <script>
+    $(function() {
+      $(".visualization-chapter-marker").webuiPopover({
+        trigger: "hover",
+        animation: "fade",
+        placement: "auto-top",
+        arrow: true,
+        delay: {
+          show: 300,
+          hide: 1000
+        },
+        style: "visualization",
+        type: "async",
+        async: {
+           error: function(that, xhr, data) {
+             that.$contentElement.children('.icon-refresh').addClass("error");
+           }
+        }
+      });
+    });
+  </script>
+
+{% if mode == 'section' %}
+
+  <article class="visualizations">
+  {% for section in sections %}
+    <section class="visualization-section">
+       {#  sections with start and end are normal #}
+        {% if section.start_page and section.end_page %}
+        <h3 class="visualization-chapter-header">{{ section.name }}</h3>
+        <div class="visualization-chapter-markers">
+        {% for ref in object_list %}
+            {#  filter references based on section page numbers#}
+            {% if ref.derridawork_page >= section.start_page and ref.derridawork_page <= section.end_page %}
+                {% include 'components/visualization-marker.html' %}
+            {% endif %}
         {% endfor %}
-    </li>
-{% endfor %}
-</ul>
+        </div>
+        {% else %}
+        {# sections with no start/end are groupings, higher-level sections #}
+        <h3 class="visualization-part-header">{{ section.name }}</h3>
+        {% endif %}
+    </section>
+  {% endfor %}
+</article>
+
+{% else %}
+
+  {% regroup object_list by author as references_by_author %}
+  <article class="visualizations">
+
+    {% for work in references_by_author %}
+      <section class="visualization-section">
+        <h3 class="visualization-chapter-header">{{ work.grouper|default:'[no author]' }}</h3>
+        <div class="visualization-chapter-markers">
+          {% for ref in work.list %}
+            {% include 'components/visualization-marker.html' %}
+        {% endfor %}
+        </div>
+      </section>
+    {% endfor %}
+  </article>
+  {% endif %}
+</div>
+{% endblock %}

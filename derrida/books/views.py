@@ -1,8 +1,8 @@
 from dal import autocomplete
 
-from .models import Publisher, Language, Instance, Reference
+from .models import Publisher, Language, Instance, Reference, DerridaWorkSection
 
-from django.views.generic import ListView, DetailView
+from django.views.generic import DetailView, ListView
 
 
 class PublisherAutocomplete(autocomplete.Select2QuerySetView):
@@ -46,7 +46,15 @@ class InstanceListView(ListView):
 
     def get_queryset(self):
         instances = super(InstanceListView, self).get_queryset()
-        return instances.order_by('work__authors__authorized_name')
+        order = self.request.GET.get('orderBy', 'work__authors__authorized_name')
+        return instances.order_by(order)
+
+    def get_context_data(self, **kwargs):
+        context = super(InstanceListView, self).get_context_data(**kwargs)
+        context['count'] = self.get_queryset().count()
+        context['orderBy'] = self.request.GET.get('orderBy', 'work__authors__authorized_name')
+
+        return context
 
 
 class ReferenceListView(ListView):
@@ -59,14 +67,50 @@ class ReferenceListView(ListView):
     # default ordering by derrida work, page, page location
     # matches default ordering for this view
 
+
 class ReferenceHistogramView(ListView):
     template_name = 'books/reference_histogram.html'
     model = Reference
 
     def get_queryset(self):
         refs = super(ReferenceHistogramView, self).get_queryset()
-        # for now, returning references by author; eventually
-        # we'll also want references by section of derrida work
-        # return a values list that can be regrouped in the template
-        return refs.order_by('instance__work__authors__authorized_name') \
-                   .values('id', 'instance__work__authors__authorized_name')
+        # sort based on specified mode
+        # TODO: filter on specific derrida work, for when we have more than one?
+        if self.kwargs.get('mode', None) == 'section':
+            refs = refs.order_by_source_page()
+        else:
+            refs = refs.order_by_author()
+        return refs.summary_values()
+
+    def get_context_data(self):
+        context = super(ReferenceHistogramView, self).get_context_data()
+        if self.kwargs.get('mode', None) == 'section':
+            # get sections for the specified derrida work
+            sections = DerridaWorkSection.objects \
+                .filter(derridawork__slug=self.kwargs['derridawork_slug'])
+            context.update({
+                'mode': self.kwargs['mode'],
+                'sections': sections
+            })
+        return context
+
+
+class ReferenceDetailView(DetailView):
+    # reference detail view for loading via ajax
+
+    model = Reference
+    template_name = 'components/citation-list-item.html'
+
+    def get_object(self, queryset=None):
+        if queryset is None:
+            queryset = self.get_queryset()
+        # FIXME: this is returning two results for some cases
+        # (must be an error in the data)
+        # return queryset.get(derridawork_page=self.kwargs['page'],
+        return queryset.filter(
+            derridawork_page=self.kwargs['page'],
+            derridawork_pageloc=self.kwargs['pageloc'],
+            derridawork__slug=self.kwargs['derridawork_slug']
+            ).first()
+
+

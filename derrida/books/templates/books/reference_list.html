@@ -1,27 +1,32 @@
-{# placeholder reference list template to show where to access fields in the design #}
+{% extends 'djiffy/base.html' %}
+{% load static %}
 
-{% for reference in object_list %}
-<div>
-{{ reference.reference_type }}
-{% with instance=reference.instance %}
-{% if instance.digital_edition and instance.digital_edition.thumbnail %}
-    <img style="float:right" src="{{ instance.digital_edition.thumbnail.image.thumbnail }}"/>
-{% endif %}
-<p><i>{{ instance.display_title }}</i></p>
-<p>{{ instance.work.authors.all|join:', ' }}</p> {# authorized format for now #}
-{# date: is this copyright year or print date? #}
-<p>{{ instance.copyright_year|default:'' }} {# optional, might not be set #}
-  {# copy of edition (A, B, etc) not yet in the database #}
-  p. {{ reference.book_page }}
-</p>
-{% endwith %}
+{% block nav-title %} Derrida's Library {% endblock %}
 
-{# NOTE: none of the anchor text has been added to the database yet  #}
-<p>{{ reference.anchor_text }}</p>
+{% block header_class %}mdl-layout__header--transparent{% endblock %}
 
-<p>Cited in <i>{{ reference.derridawork }}</i>
-p. {{ reference.derridawork_page }} {{ reference.derridawork_pageloc }}</p>
-<hr style="clear:both"/>
+{% block page-context-id %}citations-list{% endblock %}
+
+{% block content %}
+<header class="page-header">
+  <div class="container page-header__container">
+    <h1 class="page-header__heading">Citation List</h1>
+    <div class="page-header__callout">
+      <p class="lead">Only books that are cited in De la grammatologie and extant in Princeton University Library collection are displayed here.</p>
+      <p><a class="callout__link" href="/">A full list of citations is accessible through Citation List.</a></p>
+    </div>
+  </div>
+</header>
+{% include "components/page-filter.html" %}
+<div class="container">
+  <article class="collection">
+    {% for reference in object_list %}
+      {% include 'components/citation-list-item.html' with reference=reference %}
+    {% endfor %}
+  </article>
+    {% if is_paginated %}
+      {% include "components/page-pagination.html" with page_obj=page_obj %}
+    {% endif %}
+
 </div>
-
-{% endfor %}
+{% endblock %}

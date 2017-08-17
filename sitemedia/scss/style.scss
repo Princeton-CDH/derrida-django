@@ -14,23 +14,17 @@ body {
 
 .background-colored--light-navy {
   background-color: $light-navy;
-
-  & > main {
-    color: $white;
-  }
 }
 
-.mdl-layout__header {
-  margin-bottom: 0.7em;
-}
-
-.grid-container {
-  & > .container {
-    min-height: 50vh;
-  }
+main {
+  flex-grow: 2;
 }
 
 // Home Page style
 @import "homepage";
+
+// Home Page style
+@import "visualizations";
+
 // Local snips for banner and overrides from release 0.8
 @import "local-snips";

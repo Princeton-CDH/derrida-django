@@ -1,0 +1,69 @@
+{% extends 'djiffy/base.html' %}
+{% load static %}
+
+{% block nav-title %} Derrida's Library {% endblock %}
+
+{% block page-context-id %}item{% endblock %}
+
+{% block content %}
+  <header class="page-header page-header--link">
+    <div class="container">
+      <h1 class="page-header__heading"><a href="{% url 'library' %}"><i class="material-icons">arrow_back</i> Derrida's Library</a></h1>
+    </div>
+  </header>
+  <article class="item">
+    <div class="container">
+      <header class="item-header">
+        <img class="item-header__image" src="{% static "img/bookimg/cover1.png" %}" />
+        <h1 class="item-title">La pensée sauvage</h1>
+        <p class="item-author">Claude Lévi-Strauss</p>
+        <p class="item-pages">1962 · A</p>
+      </header>
+
+      <section class="item-section">
+        {% include "components/item-navigation-tabs.html" with is_biblio=True %}
+        <div class="item-term item-term--inline">
+          <h3 class="item-term__label">Publication Place</h3>
+          <p class="item-term__value">Paris</p>
+        </div>
+        <div class="item-term item-term--inline item-term--callout">
+          <h3 class="item-term__label">Where to find it</h3>
+          <p class="item-term__value">Paris</p>
+        </div>
+        <div class="item-term">
+          <h3 class="item-term__label">Book Sections</h3>
+          <p class="item-term__value">Les Primitifs. Signes et symboles. Pictogrammes et protoécriture</p>
+          <p class="item-term__value item-term__value--aside">Alfred Métraux</p>
+          <p class="item-term__value">Les Primitifs. Signes et symboles. Pictogrammes et protoécriture</p>
+          <p class="item-term__value item-term__value--aside">Jacques Gernet</p>
+        </div>
+        <div class="item-term">
+          <h3 class="item-term__label">Other Copies and Editions</h3>
+          <div class="collection collection--condensed item-term__value">
+            <section class="collection__item">
+              <figure class="item__image">
+                <a class="item__image-link" href="{% url 'books:list' %}">
+                  <img class="img" src="{% static "img/bookimg/cover2.png" %}">
+                </a>
+              </figure>
+              <h4 class="item__heading">La pensée sauvage</h3>
+              <p class="item__author">Claude Lévi-Strauss</p>
+              <p class="item__date">1962 · B</p>
+            </section>
+
+            <section class="collection__item">
+              <figure class="item__image">
+                <a class="item__image-link" href="{% url 'books:list' %}">
+                  <img class="img" src="{% static "img/bookimg/cover3.png" %}" />
+                </a>
+              </figure>
+              <h4 class="item__heading">La pensée sauvage</h3>
+              <p class="item__author">Claude Lévi-Strauss</p>
+              <p class="item__date">1962 · B</p>
+            </section>
+          </div>
+        </div>
+      </section>
+    </div>
+  </article>
+{% endblock %}

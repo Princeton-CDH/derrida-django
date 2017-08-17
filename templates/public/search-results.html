@@ -1,0 +1,80 @@
+{% extends 'djiffy/base.html' %}
+{% load static %}
+
+{% block nav-title %} Derrida's Library {% endblock %}
+
+{% block header_class %}mdl-layout__header--transparent{% endblock %}
+
+{% block page-context-id %}search-results{% endblock %}
+
+{% block search-form-classes %}{% endblock %}
+
+{% block content %}
+<header class="page-header">
+  <div class="container page-header__container">
+    <h1 class="page-header__heading">Search Results</h1>
+  </div>
+</header>
+
+<div class="container">
+  <article class="collection collection--no-images">
+    <header class="collection__header">
+      <h2 class="collection__title">
+        <a href="#">Library Books <span>→</span><span>View All</span></a>
+      </h2>
+    </header>
+
+    {% include 'components/collection-item.html' with href='books:list' img='img/bookimg/cover1.png' itemType='book--short' %}
+
+    {% include 'components/collection-item.html' with href='books:list' img='img/bookimg/cover2.png' itemType='book--short' %}
+
+    {% include 'components/collection-item.html' with href='books:list' img='img/bookimg/cover3.png' itemType='book--short' %}
+
+  </article>
+
+  <article class="collection collection--no-images">
+    <header class="collection__header">
+      <h2 class="collection__title">
+        <a href="#">Citations <span>→</span><span>View All</span></a>
+      </h2>
+    </header>
+
+    {% include 'components/collection-item.html' with href='books:list' img='img/bookimg/cover1.png' %}
+
+    {% include 'components/collection-item.html' with href='books:list' img='img/bookimg/cover2.png' %}
+
+    {% include 'components/collection-item.html' with href='books:list' img='img/bookimg/cover3.png' %}
+
+  </article>
+
+  <article class="collection collection--no-images">
+    <header class="collection__header">
+      <h2 class="collection__title">
+      <a href="#">Annotations <span>→</span><span>View All</span></a>
+    </h2>
+    </header>
+
+    {% include 'components/collection-item.html' with href='books:list' img='img/bookimg/cover1.png' itemType='annotation' %}
+
+    {% include 'components/collection-item.html' with href='books:list' img='img/bookimg/cover2.png' itemType='annotation' %}
+
+    {% include 'components/collection-item.html' with href='books:list' img='img/bookimg/cover3.png' itemType='annotation' %}
+
+  </article>
+
+  <article class="collection collection--no-images">
+    <header class="collection__header">
+      <h2 class="collection__title">
+        <a href="#">Outworks <span>→</span><span>View All</span></a>
+      </h2>
+    </header>
+
+    {% include 'components/collection-item.html' with href='books:list' img='img/bookimg/cover1.png' itemType='outwork' %}
+
+    {% include 'components/collection-item.html' with href='books:list' img='img/bookimg/cover2.png' itemType='outwork' %}
+
+    {% include 'components/collection-item.html' with href='books:list' img='img/bookimg/cover3.png' itemType='outwork' %}
+
+  </article>
+</div>
+{% endblock %}

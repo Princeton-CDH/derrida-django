@@ -1,5 +1,5 @@
 import json
-import re
+
 from django.db import models
 from django.contrib.contenttypes.fields import GenericRelation
 from django.core.validators import RegexValidator
@@ -202,6 +202,9 @@ class Instance(Notable):
     start_page = models.CharField(max_length=20, blank=True, null=True)
     #: end page for book section or journal article
     end_page = models.CharField(max_length=20, blank=True, null=True)
+    #: optional label to distinguish multiple copies of the same work
+    copy = models.CharField(max_length=3, blank=True, null=True,
+        help_text='Label to distinguish multiple copies of the same edition')
 
     #: :class:`Language` this item is written in;
     # uses :class:`InstanceLanguage` to indicate primary language
@@ -246,6 +249,10 @@ class Instance(Notable):
         return '%s (%s)' % (self.display_title(),
             self.copyright_year or 'n.d.')
 
+    def get_absolute_url(self):
+        # placeholder: id-based url until we have slugs
+        return reverse('books:detail', kwargs={'pk': self.pk})
+
     def display_title(self):
         '''display title - alternate title or work short title'''
         return self.alternate_title or self.work.short_title or '[no title]'
@@ -261,16 +268,17 @@ class Instance(Notable):
 
     @property
     def location(self):
-        '''Parse the location indicator from the canvas title, if digitized'''
+        '''Location in Derrida's library (currently only available for
+        digitized books).'''
+        # NOTE: PUL digital editions from the Finding Aid include the
+        # location in the item title
         if self.is_digitized():
-            # Get the manifest label
-            manifest_title = self.digital_edition.label
-            # Split out the labeling, which includes annotation info
-            labeling = manifest_title.split(' - ')[0:2]
-            # rejoin them
-            loc = ' - '.join(labeling)
-            # strip the Gift . . . Items odd outside
-            return re.sub(r' - Gift.+Items', '', loc)
+            # Split manifest label on dashes; at most we want the first two
+            location_parts = self.digital_edition.label.split(' - ')[:2]
+            # some volumes include a "Gift Books" notation we don't care about
+            if location_parts[-1].startswith('Gift Books'):
+                location_parts = location_parts[:-1]
+            return ', '.join(location_parts)
 
     @property
     def item_type(self):
@@ -413,6 +421,7 @@ class PersonBook(Notable, DateRange):
         return '%s - %s%s' % (self.person, self.book, dates)
 
 
+
 # New citationality model
 class DerridaWork(Notable):
     '''This models the reference copy used to identify all citations, not
@@ -423,14 +432,55 @@ class DerridaWork(Notable):
     full_citation = models.TextField()
     #: boolean indicator for primary work
     is_primary = models.BooleanField()
+    #: slug for use in URLs
+    slug = models.SlugField(
+        help_text='slug for use in URLs (changing after creation will break URLs)')
 
     def __str__(self):
         return self.short_title
 
 
+class DerridaWorkSection(models.Model):
+    '''Sections of a :class:`DerridaWork` (e.g. chapters). Used to look at
+    :class:`Reference` by sections of the work.'''
+    name = models.CharField(max_length=255)
+    derridawork = models.ForeignKey(DerridaWork)
+    order = models.PositiveIntegerField('Order')
+    start_page = models.IntegerField(blank=True, null=True,
+       help_text='Sections with no pages will be treated as headers.')
+    end_page = models.IntegerField(blank=True, null=True)
+
+    class Meta:
+        ordering = ['derridawork', 'order']
+
+    def __str__(self):
+        return self.name
+
+
 class ReferenceType(Named, Notable):
     '''Type of reference, i.e. citation, quotation, foonotes, epigraph, etc.'''
     pass
+
+
+class ReferenceQuerySet(models.QuerySet):
+    '''Custom :class:`~django.db.models.QuerySet` for :class:`Reference`.'''
+
+    def order_by_source_page(self):
+        '''Order by page in derrida work (attr:`Reference.derridawork_page`)'''
+        return self.order_by('derridawork_page')
+
+    def order_by_author(self):
+        '''Order by author of cited work'''
+        return self.order_by('instance__work__authors__authorized_name')
+
+    def summary_values(self):
+        '''Return a values list of summary information for display or
+        visualization.  Currently used for histogram visualization.
+        Author of cited work is aliased to `author`.
+        '''
+        return self.values('id', 'instance', 'derridawork__slug',
+            'derridawork_page', 'derridawork_pageloc',
+           author=models.F('instance__work__authors__authorized_name'))
 
 
 class Reference(models.Model):
@@ -440,8 +490,9 @@ class Reference(models.Model):
     instance = models.ForeignKey(Instance, blank=True, null=True)
     #: :class:`DerridaWork` that references the item
     derridawork = models.ForeignKey(DerridaWork)
-    #: page in the Derrida work
-    derridawork_page = models.CharField(max_length=10)
+    #: page in the Derrida work.
+    # FIXME: does this have to be char and not integer?
+    derridawork_page = models.IntegerField()
     #: location/identifier on the page
     derridawork_pageloc = models.CharField(max_length=2)
     #: page in the referenced item
@@ -457,6 +508,8 @@ class Reference(models.Model):
     interventions = models.ManyToManyField('interventions.Intervention',
         blank=True)  # Lazy reference to avoid a circular import
 
+    objects = ReferenceQuerySet.as_manager()
+
     class Meta:
         ordering = ['derridawork', 'derridawork_page', 'derridawork_pageloc']
 
@@ -465,10 +518,20 @@ class Reference(models.Model):
             self.derridawork.short_title,
             self.derridawork_page,
             self.derridawork_pageloc,
-            self.instance.display_title(),
+            # instance is technically optional...
+            self.instance.display_title() if self.instance else '[no instance]',
             self.book_page,
             self.reference_type
         )
+
+    def get_absolute_url(self):
+        '''URL for this reference on the site'''
+        # NOTE: currently view is html snippet for loading via ajax only
+        return reverse('books:reference', kwargs={
+            'derridawork_slug': self.derridawork.slug,
+            'page': self.derridawork_page,
+            'pageloc': self.derridawork_pageloc
+        })
 
     def anchor_text_snippet(self):
         '''Anchor text snippet, for admin display'''

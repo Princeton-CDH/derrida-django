@@ -1,0 +1,37 @@
+.page-sort {
+  color: $base-font-color;
+  padding-bottom: 2rem;
+  font-size: 0.9em;
+}
+
+.page-sort__header {
+  display: flex;
+  align-items: baseline;
+  padding: 0 $gutter-size 0.5rem;
+
+  .sort-label,
+  .sort-link {
+    margin-right: 1em;
+  }
+
+  .sort-label {
+    font-weight: 400;
+
+    &.sort-label--diminished {
+      font-size: 300;
+      color: $medium-grey;
+    }
+  }
+
+  .sort-link {
+    @include page-navigation-links();
+  }
+
+  .sort-link--danger {
+    &:hover,
+    &:active {
+      color: $error-red;
+      border-color: $error-red;
+    }
+  }
+}

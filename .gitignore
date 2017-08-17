@@ -100,3 +100,6 @@ ENV/
 
 # MacOS hidden files
 .DS_Store
+sitemedia/scss/bourbon
+sitemedia/scss/neat
+sitemedia/scss/.sass-cache

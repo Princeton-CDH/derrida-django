@@ -1,0 +1,87 @@
+{% extends 'djiffy/base.html' %}
+{% load static %}
+
+{% block nav-title %} Derrida's Library {% endblock %}
+
+{% block header_class %}mdl-layout__header--transparent{% endblock %}
+
+{% block page-context-id %}books-detail{% endblock %}
+
+{% block content %}
+  <header class="page-header page-header--link">
+    <div class="container">
+      <h1 class="page-header__heading"><a href="{% url 'books:list' %}"><i class="material-icons">arrow_back</i> Derrida's Library</a></h1>
+    </div>
+  </header>
+  <article class="item">
+    <div class="container">
+      {% include 'components/book-details.html' with book=instance %}
+    </div>
+  </article>
+{% endblock %}
+
+{% block page-js %}
+  <script type="text/javascript">
+    $(function() {
+      $("#book-header").stickySidebar({
+        topSpacing: 20
+      });
+
+      var $body = $('body'),
+          $navLinks = $(".item-navigation-link"),
+          activeClass = "item-navigation-link--active";
+
+      $navLinks.on('click', function(e) {
+        var $this = $(this),
+            hash = $this.attr('href'),
+            $target = $('[name=' + hash.slice(1) + ']');
+
+        if ($target.length) {
+          e.preventDefault();
+          $this.siblings().removeClass(activeClass);
+          $this.addClass(activeClass);
+          $this.blur();
+
+          $body.animate({
+            scrollTop: $target.position().top
+          }, 500);
+        }
+      });
+
+      var navLinkTargets = [],
+          navLinkSelectors = [];
+      $navLinks.each(function() {
+        navLinkTargets.push($(this).attr("href"));
+      });
+
+      if (navLinkTargets.length) {
+        $.each(navLinkTargets, function() {
+          navLinkSelectors.push(".item-gallery__title a[name=" + this.slice(1) + "]");
+        })
+      }
+
+      $body.scroll(function() {
+          clearTimeout($.data(this, 'scrollTimer'));
+          $.data(this, 'scrollTimer', setTimeout(function() {
+              var activeTab = '',
+                  offset = 64;
+              if (navLinkSelectors.length) {
+                if ($body.scrollTop() < offset) {
+                  var $this = $(navLinkSelectors[0]);
+                  $(".item-navigation-link").removeClass(activeClass);
+                  $(".item-navigation-link[href=#"+$this.attr('name')+"]").addClass(activeClass);
+                } else {
+                  $(navLinkSelectors.join(',')).each(function() {
+                    var $this = $(this);
+                    if ($this.position().top < $body.scrollTop() + offset ) {
+                      $(".item-navigation-link").removeClass(activeClass);
+                      $(".item-navigation-link[href=#"+$this.attr('name')+"]").addClass(activeClass);
+                    }
+                  });
+                }
+              }
+          }, 250));
+      });
+    });
+  </script>
+{% endblock %}

@@ -2,12 +2,13 @@ from dal import autocomplete, forward
 from django import forms
 from django.contrib import admin
 from djiffy.admin import ManifestSelectWidget
+from grappelli.forms import GrappelliSortableHiddenMixin
 
 from derrida.common.admin import NamedNotableAdmin
 from derrida.footnotes.admin import FootnoteInline
 from .models import Subject, Language, Publisher, OwningInstitution, \
-    CreatorType, PersonBook, PersonBookRelationshipType, \
-    DerridaWork, Reference, ReferenceType, Journal
+    CreatorType, PersonBook, DerridaWork, Reference, ReferenceType, \
+    Journal, DerridaWorkSection
 # refactored models
 from .models import Work, Instance, WorkSubject, WorkLanguage, \
     InstanceLanguage, InstanceCatalogue, InstanceCreator
@@ -212,10 +213,26 @@ class PersonBookAdmin(admin.ModelAdmin):
     inlines = [FootnoteInline]
 
 
+class DerridaWorkSectionInline(GrappelliSortableHiddenMixin, CollapsibleTabularInline):
+    model = DerridaWorkSection
+    extra = 1
+    fieldsets = (
+        (None, {
+            'fields': ('order', 'name', 'start_page', 'end_page'),
+            'description': 'Sections with pages unset will be treated as headers.'
+        }),
+    )
+    sortable_field_name = "order"
+
+
 class DerridaWorkAdmin(admin.ModelAdmin):
     '''Creating a custom admin with inlines for Derrida Work to ease associating
     a specific book edition with it'''
-    fields = ('short_title', 'full_citation', 'is_primary', 'notes')
+    fields = ('short_title', 'slug', 'full_citation', 'is_primary',
+              'notes')
+    list_display = ('short_title', 'slug', 'is_primary', 'has_notes')
+    prepopulated_fields = {"slug": ("short_title",)}
+    inlines = [DerridaWorkSectionInline]
 
 
 ### refactored work/instance model admin
@@ -332,7 +349,7 @@ class InstanceAdmin(admin.ModelAdmin):
         'is_digitized', 'is_translation', 'has_notes')
     # NOTE: fields are specified here so that notes input will be displayed last
     fields = ('work', 'alternate_title', 'journal', 'publisher',
-        'pub_place', 'copyright_year', 'print_date',
+        'pub_place', ('copyright_year', 'copy'), 'print_date',
         ('print_date_year_known', 'print_date_month_known',
          'print_date_day_known'),
         ('is_extant', 'is_translation'),

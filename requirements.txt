@@ -11,3 +11,6 @@ pucas>=0.5
 git+https://github.com/Princeton-CDH/piffle.git@feature/python3-compatibility#egg=piffle
 djiffy>=0.2
 annotator_store>=0.6
+# develop version of viapy until we have a release
+git+https://github.com/Princeton-CDH/viapy.git@develop#egg=viapy
+

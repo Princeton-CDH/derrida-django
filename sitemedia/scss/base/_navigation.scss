@@ -22,7 +22,7 @@
     &::before {
       $logo-size: 56px;
       content: "";
-      background-image: url("../img/margin-logo.png");
+      background-image: url("../img/derrida_VI_logo_arrow.svg");
       background-position: center;
       background-size: contain;
       background-repeat: no-repeat;
@@ -38,16 +38,39 @@
 }
 
 .mdl-navigation__link {
+  font-family: $heading-font-family;
   opacity: 0.8;
+
+  .navigation-title {
+    border-bottom: 0 solid transparent;
+    transition: border $base-duration $base-timing;
+    padding: 0 10px;
+  }
+
+  &:hover,
+  &:active,
+  &.mdl-navigation__link--active {
+    .navigation-title {
+      border-bottom: 3px solid $primary-color;
+    }
+  }
 
   &:hover,
   &:active {
     opacity: 1;
     text-decoration: none;
+    color: $base-font-color;
+  }
+}
+
+.coordinate-navigation--background-light-navy {
+  .navigation-title {
+    background: $light-navy;
   }
 }
 
 .mdl-layout__header-row {
+  height: $header-row-height;
   justify-content: space-between;
 
   & > .mdl-navigation {
@@ -77,7 +100,7 @@
   text-align: center;
 }
 
-@include grid-media($small-viewport-grid) {
+@include grid-media($large-medium-viewport-grid) {
   .mdl-layout-logo {
     flex-grow: 0;
   }
@@ -87,7 +110,7 @@
   }
 
   .mdl-layout__header-row {
-    padding: 0 $gutter-size;
+    padding: 0 1em;
 
     & > .mdl-navigation {
       display: flex;
@@ -96,7 +119,7 @@
   }
 }
 
-.coordintate-navigation {
+.coordinate-navigation {
   display: none;
 }
 
@@ -109,13 +132,13 @@
     }
 
     .background-colored--dark & {
-      .mdl-textfield .mdl-button {
+      .header__search-button .mdl-button {
         color: $white;
       }
     }
   }
 
-  .coordintate-navigation {
+  .coordinate-navigation {
     display: block;
 
     .background-colored--dark & {
@@ -131,7 +154,7 @@
       opacity: 1;
       padding: 0;
       font-size: 1.6em;
-      position: absolute;
+      position: fixed;
       width: 12rem;
       white-space: nowrap;
 
@@ -144,8 +167,12 @@
       &:nth-child(3),
       &:nth-child(4) {
         right: 0;
-        text-align: right;
-        transform: rotateZ(90deg) translate(2rem, -4rem);
+        transform: rotateZ(90deg) translate(6rem, -4rem);
+      }
+
+      &:nth-child(4) {
+        transform: rotateZ(90deg) translate(9.5rem, -4rem);
+        padding-left: 1.3em;
       }
 
       &:nth-child(1),
@@ -155,7 +182,7 @@
 
       &:nth-child(2),
       &:nth-child(4) {
-        top: 60%;
+        top: calc(100vh - 17rem);
       }
     }
   }

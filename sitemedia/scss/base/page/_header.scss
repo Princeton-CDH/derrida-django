@@ -1,0 +1,101 @@
+.page-header {
+  background-color: $grey-200;
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+
+  @include grid-media($xlarge-viewport-grid) {
+    margin-top: -$header-row-height;
+    transition: margin-top 0.5s ease;
+  }
+
+  #citations-list & {
+    background-image: url("../img/banner/citation_small_2x.png");
+
+    @include grid-media($large-medium-viewport-grid) {
+      background-image: url("../img/banner/citation_medium_2x.png");
+    }
+
+    @include grid-media($xlarge-viewport-grid) {
+      background-image: url("../img/banner/citation_large_2x.png");
+    }
+  }
+
+  #books-list & {
+    background-image: url("../img/banner/lib_small_2x.png");
+
+    @include grid-media($large-medium-viewport-grid) {
+      background-image: url("../img/banner/lib_medium_2x.png");
+    }
+
+    @include grid-media($xlarge-viewport-grid) {
+      background-image: url("../img/banner/lib_large_2x.png");
+    }
+  }
+}
+
+.page-header--link {
+  text-align: center;
+  background: none;
+  padding-bottom: 3em;
+
+  .page-header__heading {
+    &,
+    .material-icons {
+      line-height: 2;
+      vertical-align: sub;
+    }
+
+    a {
+      text-decoration: none;
+    }
+  }
+}
+
+.page-header__container {
+  min-height: 300px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  position: relative;
+
+  @media screen and (min-height: 500px) {
+    min-height: 60vh;
+
+    .page-header--condensed & {
+      min-height: 16rem;
+    }
+  }
+}
+
+.page-header__heading {
+  font-size: 1.6rem;
+  margin-top: 1rem;
+  color: $blue;
+  font-weight: 700;
+}
+
+.page-header__callout {
+  color: $base-font-color;
+  background: $white;
+  font-size: 0.9rem;
+  padding: 1.5em 2em 0;
+  align-self: flex-start;
+  position: absolute;
+  bottom: 3rem;
+  @include grid-column(3);
+
+  @include grid-media($large-medium-viewport-grid) {
+    @include grid-column(6);
+  }
+
+  .callout__link {
+    @include faded-link();
+  }
+
+  .lead {
+    line-height: 1.2;
+    font-weight: 700;
+    font-size: 1.6em;
+  }
+}

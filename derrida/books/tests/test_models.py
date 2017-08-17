@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.core.exceptions import ValidationError
 from django.test import TestCase
-from django.urls import reverse
+from django.urls import reverse, resolve
 from djiffy.models import Manifest
 import pytest
 import json
@@ -10,7 +10,7 @@ from derrida.places.models import Place
 from derrida.people.models import Person
 # Common models between projects and associated new types
 from derrida.books.models import CreatorType, Publisher, OwningInstitution, \
-    Journal, DerridaWork, Reference, \
+    Journal, DerridaWork, DerridaWorkSection, Reference, \
     ReferenceType, Work, Instance, InstanceCatalogue, WorkLanguage, \
     InstanceLanguage, Language, WorkSubject, Subject
 from derrida.interventions.models import Canvas
@@ -74,6 +74,13 @@ class TestDerridaWork(TestCase):
         assert str(testwork) == short_title
 
 
+class TestDerridaSection(TestCase):
+
+    def test_str(self):
+        assert str(DerridaWorkSection(name='Chapter 1')) == 'Chapter 1'
+
+
+
 class TestReference(TestCase):
     fixtures = ['sample_work_data.json']
 
@@ -97,6 +104,23 @@ class TestReference(TestCase):
         )
         assert str(reference) == desired_output
 
+    def test_get_absolute_url(self):
+        ref = Reference.objects.create(
+            instance=self.la_vie,
+            derridawork=self.dg,
+            derridawork_page='110',
+            derridawork_pageloc='a',
+            book_page='10s',
+            reference_type=self.quotation
+        )
+        ref_url = ref.get_absolute_url()
+        resolved_url = resolve(ref_url)
+        assert resolved_url.url_name == 'reference'
+        assert resolved_url.namespace == 'books'
+        assert resolved_url.kwargs['derridawork_slug'] == self.dg.slug
+        assert resolved_url.kwargs['page'] == ref.derridawork_page
+        assert resolved_url.kwargs['pageloc'] == ref.derridawork_pageloc
+
     def test_valid_autocompletes(self):
         la_vie = self.la_vie
         reference = Reference.objects.create(
@@ -118,6 +142,42 @@ class TestReference(TestCase):
         la_vie.save()
         data = reference.get_autocomplete_instances()
         assert json.loads(data) == [la_vie.pk]
+
+
+class TestReferenceQuerySet(TestCase):
+    fixtures = ['test_references.json']
+
+    def setUp(self):
+        self.ref_qs = Reference.objects.all()
+
+    def test_order_by_source_page(self):
+        pages = sorted([ref.derridawork_page for ref in self.ref_qs.all()])
+        assert list(Reference.objects.order_by_source_page()
+                             .values_list('derridawork_page', flat=True)) \
+                == pages
+
+    def test_order_by_author(self):
+        authors = sorted(
+            ['; '.join([str(p) for p in ref.instance.work.authors.all()])
+             for ref in self.ref_qs])
+        qs_authors = list(self.ref_qs.order_by_author() \
+           .values_list('instance__work__authors__authorized_name', flat=True))
+        qs_authors = ['' if name is None else name for name in qs_authors]
+        assert qs_authors == authors
+
+    def test_summary_values(self):
+        ref = self.ref_qs.first()
+        ref_values = self.ref_qs.summary_values().first()
+        assert ref_values['id'] == ref.pk
+        assert ref_values['instance'] == ref.instance.id
+        assert ref_values['derridawork__slug'] == ref.derridawork.slug
+        assert ref_values['derridawork_page'] == ref.derridawork_page
+        assert ref_values['derridawork_pageloc'] == ref.derridawork_pageloc
+        assert ref_values['author'] == \
+            ref.instance.work.authors.first().authorized_name
+
+        # TODO: not actually sure how this works for multi-author items
+
 
 class TestWork(TestCase):
     fixtures = ['sample_work_data.json']
@@ -161,6 +221,14 @@ class TestInstance(TestCase):
         # no date
         la_vie.year = None
         assert '%s (n.d.)' % (la_vie.display_title(), )
+
+    def test_get_absolute_url(self):
+        la_vie = Instance.objects.get(work__short_title__contains="La vie")
+        item_url = la_vie.get_absolute_url()
+        resolved_url = resolve(item_url)
+        assert resolved_url.url_name == 'detail'
+        assert resolved_url.namespace == 'books'
+        assert int(resolved_url.kwargs['pk']) == la_vie.pk
 
     def test_item_type(self):
         la_vie = Instance.objects.get(work__short_title__contains="La vie")
@@ -210,17 +278,18 @@ class TestInstance(TestCase):
 
     def test_location(self):
         la_vie = Instance.objects.get(work__short_title__contains="La vie")
-        # grabs first two dashed segments
+        # location is based on first part of manifest title
         la_vie.digital_edition = Manifest(
             label='Shelf - By the Cupboard - Title'
         )
-        assert la_vie.location == 'Shelf - By the Cupboard'
-        # test the one variation in the pattern
+        assert la_vie.location == 'Shelf, By the Cupboard'
+
+        # some manifests have only one location, and second part
+        # indicates it is a gift
         la_vie.digital_edition = Manifest(
-            label='House - Gift and ... Items - Title'
+            label='House - Gift Books, Works By and About Derrida, and Related Items - Derrida, Jacques. De la grammatologie.'
         )
         assert la_vie.location == 'House'
-
 
 
 class TestWorkLanguage(TestCase):

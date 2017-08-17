@@ -3,6 +3,7 @@ from django.contrib import admin
 from django.conf import settings
 from django.utils.safestring import mark_safe
 from dal import autocomplete
+from viapy.widgets import ViafWidget
 
 from derrida.footnotes.admin import FootnoteInline
 from .models import Person, Residence, RelationshipType, Relationship
@@ -42,19 +43,6 @@ class ResidenceInline(admin.TabularInline):
     fields = ('place', 'start_year', 'end_year', 'notes')
 
 
-class ViafWidget(autocomplete.Select2):
-    '''Customize autocomplete select widget to display VIAF id as a link'''
-    # (inspired by winthrop.places.admin.GeoNamesWidget)
-
-    def render(self, name, value, attrs=None):
-        widget = super(ViafWidget, self).render(name, value, attrs)
-        return mark_safe(
-            u'%s<p><br /><a id="viaf_uri" target="_blank" href="%s">%s</a></p>'
-            '<p> Note: Choosing a VIAF value will automatically set the birth'
-            ' and death fields, blanking the input if there is a previous value.') % \
-            (widget, value or '', value or '')
-
-
 class PersonAdminForm(forms.ModelForm):
     '''Custom model form for Person editing, used to add VIAF lookup'''
     class Meta:
@@ -62,14 +50,13 @@ class PersonAdminForm(forms.ModelForm):
         exclude = []
         widgets = {
                 'viaf_id': ViafWidget(
-                    url='people:viaf-autosuggest',
+                    url='viaf:person-suggest',
                     attrs={
                         'data-placeholder': 'Type a name to search VIAF',
                         'data-minimum-input-length': 3
                     }
                 )
         }
-
 
 
 class PersonAdmin(admin.ModelAdmin):
@@ -86,7 +73,7 @@ class PersonAdmin(admin.ModelAdmin):
 
     class Media:
         static_url = getattr(settings, 'STATIC_URL')
-        js = ['admin/viaf-suggest.js']
+        js = ['admin/viaf-lookup.js']
 
 admin.site.register(Person, PersonAdmin)
 admin.site.register(RelationshipType)

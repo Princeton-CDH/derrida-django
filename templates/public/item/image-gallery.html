@@ -1,0 +1,116 @@
+{% extends 'djiffy/base.html' %}
+{% load static %}
+
+{% block nav-title %} Derrida's Library {% endblock %}
+
+{% block page-context-id %}item{% endblock %}
+
+{% block content %}
+  <header class="page-header page-header--link">
+    <div class="container">
+      <h1 class="page-header__heading"><a href="{% url 'library' %}"><i class="material-icons">arrow_back</i> Derrida's Library</a></h1>
+    </div>
+  </header>
+  <article class="item">
+    <div class="container">
+      <header class="item-header">
+        <img class="item-header__image" src="{% static "img/bookimg/cover1.png" %}" />
+        <h1 class="item-title">La pensée sauvage</h1>
+        <p class="item-author">Claude Lévi-Strauss</p>
+        <p class="item-pages">1962 · A</p>
+        <nav class="item-navigation">
+          <a class="item-navigation-link item-navigation-link--active" href="#">Overview Images</a>
+          <a class="item-navigation-link" href="#">Annotated Pages</a>
+          <a class="item-navigation-link" href="#">Relevant Markings</a>
+          <a class="item-navigation-link" href="#">Insertions</a>
+        </nav>
+      </header>
+
+      <section class="item-section">
+        {% include "components/item-navigation-tabs.html" with is_gallery=True %}
+        <div class="item-gallery">
+          <header class="item-gallery__heading">
+            <h2 class="item-gallery__title">Overview Images</h2>
+          </header>
+          <figure class="item__image item__image--gallery">
+            <a class="item__image-link" href="#">
+              <img class="img" src="{% static "img/bookimg/cover2.png" %}" />
+            </a>
+            <figcaption class="item__image-caption">
+              <p>Cover</p>
+            </figcaption>
+          </figure>
+          <figure class="item__image item__image--gallery">
+            <a class="item__image-link" href="#">
+              <img class="img" src="{% static "img/bookimg/cover3.png" %}" />
+            </a>
+            <figcaption class="item__image-caption">
+              <p>Spine</p>
+            </figcaption>
+          </figure>
+          <figure class="item__image item__image--gallery">
+            <a class="item__image-link" href="#">
+              <img class="img" src="{% static "img/bookimg/cover1.png" %}" />
+            </a>
+            <figcaption class="item__image-caption">
+              <p>Back</p>
+            </figcaption>
+          </figure>
+          <figure class="item__image item__image--gallery">
+            <a class="item__image-link" href="#">
+              <img class="img" src="{% static "img/bookimg/cover2.png" %}" />
+            </a>
+            <figcaption class="item__image-caption">
+              <p>Side View</p>
+            </figcaption>
+          </figure>
+          <figure class="item__image item__image--gallery">
+            <a class="item__image-link" href="#">
+              <img class="img" src="{% static "img/bookimg/page1.png" %}" />
+            </a>
+            <figcaption class="item__image-caption">
+              <p>Page 1</p>
+            </figcaption>
+          </figure>
+          <figure class="item__image item__image--gallery">
+            <a class="item__image-link" href="#">
+              <img class="img" src="{% static "img/bookimg/page2.png" %}" />
+            </a>
+            <figcaption class="item__image-caption">
+              <p>Page 2</p>
+            </figcaption>
+          </figure>
+
+          <header class="item-gallery__heading">
+            <h2 class="item-gallery__title">Annotated Page</h2>
+            <p>Only pages that are cited in De la grammatologie are displayed here.</p>
+          </header>
+          <figure class="item__image item__image--gallery">
+            <a class="item__image-link" href="#">
+              <img class="img" src="{% static "img/bookimg/cover1.png" %}" />
+            </a>
+            <figcaption class="item__image-caption">
+              <p>Cover</p>
+            </figcaption>
+          </figure>
+          <figure class="item__image item__image--gallery">
+            <a class="item__image-link" href="#">
+              <img class="img" src="{% static "img/bookimg/page2.png" %}" />
+            </a>
+            <figcaption class="item__image-caption">
+              <p>Spine</p>
+            </figcaption>
+          </figure>
+          <figure class="item__image item__image--gallery">
+            <a class="item__image-link" href="#">
+              <img class="img" src="{% static "img/bookimg/page3.png" %}" />
+            </a>
+            <figcaption class="item__image-caption">
+              <p>Back</p>
+            </figcaption>
+          </figure>
+        </div>
+      </section>
+    </div>
+  </article>
+{% endblock %}

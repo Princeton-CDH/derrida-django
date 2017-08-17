@@ -40,7 +40,7 @@ This will compile the scss file `style.scss` into css, minify the css, and move 
 
 ## Conventions for Development
 
-### Structure 
+### Structure
 The scaffold styles, variables, and other Sass resources are located in the `base` directory and follows the conventions defined by [Bitters](https://github.com/thoughtbot/bitters). The base directory contain styles for all the basic elements used throughout the project and is accessed by importing `base/base` on the main stylesheet.
 
 ### Naming

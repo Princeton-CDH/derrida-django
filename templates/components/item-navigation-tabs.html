@@ -1,0 +1,8 @@
+<nav class="item-nav">
+  <a href="{% url 'bibliography' %}" class="item-nav__link {% if is_biblio %}item-nav__link--active{% endif %}">Bibliography</a>
+  <span class="item-nav__spacer"></span>
+  <a href="{% url 'image-gallery' %}" class="item-nav__link {% if is_gallery %}item-nav__link--active{% endif %}">Image Gallery</a>
+  <span class="item-nav__spacer"></span>
+  <a href="{% url 'citation-view' %}" class="item-nav__link {% if is_citation %}item-nav__link--active{% endif %}">Citation View</a>
+  <span class="item-nav__spacer item-nav__spacer--end"></span>
+</nav>

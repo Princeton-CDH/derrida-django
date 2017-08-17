@@ -1,0 +1,231 @@
+.item-header {
+  color: $base-font-color;
+  @include grid-column(4);
+
+  @include grid-media($large-medium-viewport-grid) {
+    @include grid-column(3);
+    @include grid-push(1);
+  }
+
+  .item-header__image {
+    width: 100%;
+    max-width: 200px;
+    float: left;
+    margin: 0 1em 1em 0;
+
+    @include grid-media($large-medium-viewport-grid) {
+      margin: 0;
+      max-width: 100%;
+      float: none;
+    }
+
+    &.img--placeholder {
+      background: $light-grey;
+      height: 250px;
+      display: inherit;
+    }
+  }
+}
+
+.item-title {
+  font-style: italic;
+  font-size: 1.6em;
+  margin: 1em 0 0.25em;
+}
+
+.item-author {
+  font-size: 1.3em;
+  font-family: $heading-font-family;
+  margin-bottom: 6px;
+}
+
+.item-pages {
+  margin-bottom: 3rem;
+}
+
+.item-section {
+  @include grid-column(4);
+
+  @include grid-media($large-medium-viewport-grid) {
+    @include grid-column(8);
+  }
+}
+
+.item-navigation-link {
+  @include page-navigation-links();
+  clear: both;
+  float: left;
+  margin-bottom: 1rem;
+}
+
+.item-nav {
+  display: flex;
+  align-items: center;
+  padding-bottom: 2em;
+}
+
+.item-nav__link {
+  flex-grow: 3;
+  font-weight: 600;
+  text-decoration: none;
+  padding: 0.5em 2em;
+  text-align: center;
+  border-bottom: 1px solid $primary-color;
+  background: darken($light-grey, 10%);
+  height: 2.6em;
+  white-space: nowrap;
+  color: darken($medium-grey, 20%);
+
+  &:active {
+    outline: none;
+  }
+
+  &.item-nav__link--active {
+    background: none;
+    border: 1px solid $primary-color;
+    border-bottom-color: transparent;
+    color: $primary-color;
+  }
+}
+
+.item-nav__spacer {
+  flex-grow: 2;
+  background: transparent;
+  border-bottom: 1px solid $primary-color;
+  height: 2.6em;
+  display: inline-block;
+  position: relative;
+}
+
+.item-nav__spacer--end {
+  flex-grow: 4;
+  padding-left: 4em;
+}
+
+.item-term {
+  color: $base-font-color;
+  width: 100%;
+  padding-bottom: 1.2em;
+  display: block;
+
+  .item-term__label {
+    font-family: $base-font-family;
+    font-size: 1.1em;
+    font-weight: 400;
+    margin-top: 1em;
+
+    @include grid-column(4);
+
+    @include grid-media($large-medium-viewport-grid) {
+      @include grid-column(12);
+      margin-left: 0;
+    }
+  }
+
+  .item-term__value {
+    font-weight: 300;
+    font-style: italic;
+    @include grid-column(4);
+
+    .item-term__link {
+      @include faded-link();
+    }
+
+    .item__link {
+      border: 0;
+    }
+
+    &.item-term__value--aside {
+      font-style: normal;
+    }
+
+    @include grid-media($large-medium-viewport-grid) {
+      @include grid-column(9);
+      margin-left: 0;
+
+      &.collection {
+        @include grid-column(12);
+        margin-left: - $gutter-size;
+        font-size: 0.75rem;
+      }
+
+      &.item-term__value--aside {
+        margin-left: inherit;
+        @include grid-column(3);
+      }
+    }
+  }
+
+
+  &.item-term--callout {
+    border-top: 1px solid rgba($black, 0.2);
+    border-bottom: 1px solid rgba($black, 0.2);
+    padding-bottom: 0.6em;
+    padding-top: 0.6em;
+    margin-bottom: 0.6em;
+  }
+
+  &.item-term--inline {
+    display: flex;
+    align-items: baseline;
+
+    .item-term__label {
+      margin-bottom: 0;
+      margin-top: 0;
+      @include grid-column(4);
+
+      @include grid-media($large-medium-viewport-grid) {
+        @include grid-column(4);
+        margin-left: inherit;
+      }
+    }
+
+    .item-term__value {
+      margin-bottom: 0;
+      font-style: normal;
+      @include grid-column(4);
+
+      @include grid-media($large-medium-viewport-grid) {
+        @include grid-column(6);
+        margin-left: inherit;
+      }
+    }
+  }
+}
+
+.item-gallery__heading {
+  width: 100%;
+  float: left;
+  color: $base-font-color;
+  padding: 0 $gutter-size 1em;
+
+  p {
+    font-weight: 300;
+    margin: 0;
+  }
+}
+
+.item-gallery__title {
+  font-size: 1.2em;
+  font-weight: 400;
+  margin: 0 0 0.5em;
+  font-family: $base-font-family;
+
+  a {
+    color: inherit;
+    font-weight: inherit;
+    text-decoration: inherit;
+  }
+}
+
+.citation-list {
+  .collection .collection__item {
+    @include grid-column(4);
+    margin-left: 0;
+
+    @include grid-media($large-medium-viewport-grid) {
+      @include grid-column(12);
+      margin-left: 0;
+    }
+  }
+}

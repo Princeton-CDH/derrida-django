@@ -1,4 +1,8 @@
 @import "variables";
+@import "mixins";
+
+@import "animations";
+@import "shadows";
 
 @import "buttons";
 @import "badges";
@@ -9,5 +13,13 @@
 @import "tables";
 @import "typography";
 @import "navigation";
+@import "search";
 @import "tabs";
 @import "footer";
+
+@import "page/header";
+@import "page/filter";
+@import "page/collection";
+@import "page/item";
+@import "page/sort";
+@import "page/pagination";
