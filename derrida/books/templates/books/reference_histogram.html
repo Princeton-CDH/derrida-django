@@ -61,21 +61,15 @@
         <h3 class="visualization-chapter-header">{{ section.name }}</h3>
         <div class="visualization-chapter-markers">
         {% for ref in object_list %}
+            {#  filter references based on section page numbers#}
             {% if ref.derridawork_page >= section.start_page and ref.derridawork_page <= section.end_page %}
-            <div class="visualization-marker-container">
-              <a class="visualization-chapter-marker"
-                  data-url="{% url 'books:reference' derridawork_slug=ref.derridawork__slug page=ref.derridawork_page pageloc=ref.derridawork_pageloc %}"
-                  href="{% url 'books:detail' pk=ref.instance %}"
-                  id="tt{{ ref.id }}">
-                {{ forloop.counter }}
-              </a>
-            </div>
+                {% include 'components/visualization-marker.html' %}
             {% endif %}
         {% endfor %}
         </div>
         {% else %}
         {# sections with no start/end are groupings, higher-level sections #}
-        <h3 class="visualization-chapter-header" style="color:#9b9b9b">{{ section.name }}</h3>
+        <h3 class="visualization-part-header">{{ section.name }}</h3>
         {% endif %}
     </section>
   {% endfor %}
@@ -89,18 +83,10 @@
     {% for work in references_by_author %}
       <section class="visualization-section">
         <h3 class="visualization-chapter-header">{{ work.grouper|default:'[no author]' }}</h3>
-
         <div class="visualization-chapter-markers">
           {% for ref in work.list %}
-            <div class="visualization-marker-container">
-              <a class="visualization-chapter-marker"
-                 href="{% url 'books:detail' pk=ref.instance %}"
-                 id="tt{{ ref.id }}"
-                 data-url="{% url 'books:reference' derridawork_slug=ref.derridawork__slug page=ref.derridawork_page pageloc=ref.derridawork_pageloc %}">
-                {{ forloop.counter }}
-              </a>
-            </div>
-          {% endfor %}
+            {% include 'components/visualization-marker.html' %}
+        {% endfor %}
         </div>
       </section>
     {% endfor %}
