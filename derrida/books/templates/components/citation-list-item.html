@@ -26,11 +26,7 @@
 
       <p class="item__author">
         {% for author in instance.work.authors.all %}
-          {% if not forloop.last %}
-            {{ author.authorized_name }};
-          {% else %}
-            {{ author.authorized_name }}
-          {% endif %}
+          {{ author.firstname_last }}{% if not forloop.last %}; {% endif %}
         {% endfor %}
       </p>
 

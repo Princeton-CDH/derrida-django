@@ -69,6 +69,11 @@ class Person(Notable, DateRange):
             self.birth = self.viaf.birthyear
             self.death = self.viaf.deathyear
 
+    @property
+    def firstname_last(self):
+        '''Authorized name in 'firstname lastname' format for display'''
+        names = self.authorized_name.split(', ', 1)
+        return ' '.join(reversed(names))
 
 
 class Residence(Notable, DateRange):

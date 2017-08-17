@@ -86,6 +86,14 @@ class TestPerson(TestCase):
             pers.save()
             mock_setbirthdeath.assert_called_with()
 
+    def test_firstname_last(self):
+        # convert authorized name to firstname last
+        pers = Person(authorized_name='Granger, Gilles-Gaston')
+        assert pers.firstname_last == 'Gilles-Gaston Granger'
+        # single name, should that occur
+        pers.authorized_name = 'Humperdinck'
+        assert pers.firstname_last == pers.authorized_name
+
 
 class TestResidence(TestCase):
 
