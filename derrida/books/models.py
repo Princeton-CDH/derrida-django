@@ -450,10 +450,34 @@ class DerridaWorkSection(models.Model):
     class Meta:
         ordering = ['derridawork', 'order']
 
+    def __str__(self):
+        return self.name
+
 
 class ReferenceType(Named, Notable):
     '''Type of reference, i.e. citation, quotation, foonotes, epigraph, etc.'''
     pass
+
+
+class ReferenceQuerySet(models.QuerySet):
+    '''Custom :class:`~django.db.models.QuerySet` for :class:`Reference`.'''
+
+    def order_by_source_page(self):
+        '''Order by page in derrida work (attr:`Reference.derridawork_page`)'''
+        return self.order_by('derridawork_page')
+
+    def order_by_author(self):
+        '''Order by author of cited work'''
+        return self.order_by('instance__work__authors__authorized_name')
+
+    def summary_values(self):
+        '''Return a values list of summary information for display or
+        visualization.  Currently used for histogram visualization.
+        Author of cited work is aliased to `author`.
+        '''
+        return self.values('id', 'instance', 'derridawork__slug',
+            'derridawork_page', 'derridawork_pageloc',
+           author=models.F('instance__work__authors__authorized_name'))
 
 
 class Reference(models.Model):
@@ -480,6 +504,8 @@ class Reference(models.Model):
     #: ManyToManyField to :class:`derrida.interventions.Intervention`
     interventions = models.ManyToManyField('interventions.Intervention',
         blank=True)  # Lazy reference to avoid a circular import
+
+    objects = ReferenceQuerySet.as_manager()
 
     class Meta:
         ordering = ['derridawork', 'derridawork_page', 'derridawork_pageloc']

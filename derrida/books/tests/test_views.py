@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.contrib.auth import get_user_model
+from django.db.models import Min
 from django.test import TestCase
 from django.urls import reverse
 from django.utils.html import escape
@@ -7,8 +8,7 @@ from djiffy.models import Manifest
 import json
 
 from derrida.people.models import Person
-from derrida.books.models import Instance, Work, DerridaWork, Reference, \
-    ReferenceType
+from derrida.books.models import Instance, Work, Reference, DerridaWorkSection
 from derrida.interventions.models import Intervention, INTERVENTION_TYPES
 
 
@@ -96,7 +96,7 @@ class TestInstanceViews(TestCase):
         assert len(response.context['object_list']) == 5
 
 
-class TestViews(TestCase):
+class TestReferenceViews(TestCase):
     fixtures = ['test_references.json']
 
     def test_reference_list(self):
@@ -169,6 +169,52 @@ class TestViews(TestCase):
         self.assertContains(response,
             'p.%s%s' % (ref.derridawork_page, ref.derridawork_pageloc),
             msg_prefix='should include Derrida work location')
+
+    def test_reference_histogram(self):
+        # default: reference by author of referenced book
+        histogram_url = reverse('books:reference-histogram')
+        response = self.client.get(histogram_url)
+        self.assertTemplateUsed(response, 'books/reference_histogram.html')
+        assert list(response.context['object_list']) == \
+            list(Reference.objects.order_by_author().summary_values())
+        assert 'sections' not in response.context
+        refs = Reference.objects.all()
+
+        for ref in refs:
+            self.assertContains(response, ref.get_absolute_url(),
+                msg_prefix='template should include link to reference')
+            self.assertContains(response, ref.instance.get_absolute_url(),
+                msg_prefix='template should include link to cited item')
+
+        authors = [ref.instance.work.authors.first().authorized_name if ref.instance.work.authors.first()    else None
+                   for ref in refs]
+        for auth in authors:
+            self.assertContains(response, auth or '[no author]', count=1,
+                msg_prefix='template should include each referenced author once')
+
+        dg = Reference.objects.first().derridawork
+        histogram_url = reverse('books:reference-histogram',
+            kwargs={'derridawork_slug': dg.slug})
+        response = self.client.get(histogram_url)
+        assert list(response.context['object_list']) == \
+            list(Reference.objects.order_by_source_page().summary_values())
+        assert response.context['mode'] == 'section'
+        sections = DerridaWorkSection.objects.filter(derridawork__slug=dg.slug)
+        assert list(response.context['sections']) == list(sections)
+
+        for sect in sections:
+            self.assertContains(response, escape(sect.name),
+                msg_prefix='section label should be displayed when viewing citations by chapter')
+
+        # exclude any references lower than first section start page
+        min_startpage = sections.aggregate(Min('start_page'))['start_page__min']
+        refs = Reference.objects.filter(derridawork__slug=dg.slug,
+                                        derridawork_page__gt=min_startpage)
+        for ref in refs:
+            self.assertContains(response, ref.get_absolute_url(),
+                msg_prefix='template should include link to reference')
+            self.assertContains(response, ref.instance.get_absolute_url(),
+                msg_prefix='template should include link to cited item')
 
 
 class TestBookViews(TestCase):

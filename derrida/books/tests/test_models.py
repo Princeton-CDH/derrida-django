@@ -10,7 +10,7 @@ from derrida.places.models import Place
 from derrida.people.models import Person
 # Common models between projects and associated new types
 from derrida.books.models import CreatorType, Publisher, OwningInstitution, \
-    Journal, DerridaWork, Reference, \
+    Journal, DerridaWork, DerridaWorkSection, Reference, \
     ReferenceType, Work, Instance, InstanceCatalogue, WorkLanguage, \
     InstanceLanguage, Language, WorkSubject, Subject
 from derrida.interventions.models import Canvas
@@ -74,6 +74,13 @@ class TestDerridaWork(TestCase):
         assert str(testwork) == short_title
 
 
+class TestDerridaSection(TestCase):
+
+    def test_str(self):
+        assert str(DerridaWorkSection(name='Chapter 1')) == 'Chapter 1'
+
+
+
 class TestReference(TestCase):
     fixtures = ['sample_work_data.json']
 
@@ -135,6 +142,42 @@ class TestReference(TestCase):
         la_vie.save()
         data = reference.get_autocomplete_instances()
         assert json.loads(data) == [la_vie.pk]
+
+
+class TestReferenceQuerySet(TestCase):
+    fixtures = ['test_references.json']
+
+    def setUp(self):
+        self.ref_qs = Reference.objects.all()
+
+    def test_order_by_source_page(self):
+        pages = sorted([ref.derridawork_page for ref in self.ref_qs.all()])
+        assert list(Reference.objects.order_by_source_page()
+                             .values_list('derridawork_page', flat=True)) \
+                == pages
+
+    def test_order_by_author(self):
+        authors = sorted(
+            ['; '.join([str(p) for p in ref.instance.work.authors.all()])
+             for ref in self.ref_qs])
+        qs_authors = list(self.ref_qs.order_by_author() \
+           .values_list('instance__work__authors__authorized_name', flat=True))
+        qs_authors = ['' if name is None else name for name in qs_authors]
+        assert qs_authors == authors
+
+    def test_summary_values(self):
+        ref = self.ref_qs.first()
+        ref_values = self.ref_qs.summary_values().first()
+        assert ref_values['id'] == ref.pk
+        assert ref_values['instance'] == ref.instance.id
+        assert ref_values['derridawork__slug'] == ref.derridawork.slug
+        assert ref_values['derridawork_page'] == ref.derridawork_page
+        assert ref_values['derridawork_pageloc'] == ref.derridawork_pageloc
+        assert ref_values['author'] == \
+            ref.instance.work.authors.first().authorized_name
+
+        # TODO: not actually sure how this works for multi-author items
+
 
 class TestWork(TestCase):
     fixtures = ['sample_work_data.json']

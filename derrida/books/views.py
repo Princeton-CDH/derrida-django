@@ -56,6 +56,7 @@ class InstanceListView(ListView):
 
         return context
 
+
 class ReferenceListView(ListView):
     # full citation/reference list; eventually will have filter/sort options
     # (sticking with 'reference' for now until project team confirms
@@ -73,28 +74,24 @@ class ReferenceHistogramView(ListView):
 
     def get_queryset(self):
         refs = super(ReferenceHistogramView, self).get_queryset()
-        # for now, returning references by author; eventually
-        # we'll also want references by section of derrida work
-        # return a values list that can be regrouped in the template
+        # sort based on specified mode
+        # TODO: filter on specific derrida work, for when we have more than one?
         if self.kwargs.get('mode', None) == 'section':
-            sort = 'derridawork_page'
+            refs = refs.order_by_source_page()
         else:
-            sort = 'instance__work__authors__authorized_name'
-
-        return refs.order_by(sort) \
-                   .values('id', 'instance__work__authors__authorized_name',
-                           'instance',
-                           'derridawork__slug', 'derridawork_page',
-                           'derridawork_pageloc')
+            refs = refs.order_by_author()
+        return refs.summary_values()
 
     def get_context_data(self):
         context = super(ReferenceHistogramView, self).get_context_data()
         if self.kwargs.get('mode', None) == 'section':
+            # get sections for the specified derrida work
+            sections = DerridaWorkSection.objects \
+                .filter(derridawork__slug=self.kwargs['derridawork_slug'])
             context.update({
                 'mode': self.kwargs['mode'],
-                'sections': DerridaWorkSection.objects.filter(derridawork__slug=self.kwargs['derridawork_slug'])
+                'sections': sections
             })
-
         return context
 
 

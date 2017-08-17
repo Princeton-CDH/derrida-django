@@ -67,7 +67,7 @@
                   data-url="{% url 'books:reference' derridawork_slug=ref.derridawork__slug page=ref.derridawork_page pageloc=ref.derridawork_pageloc %}"
                   href="{% url 'books:detail' pk=ref.instance %}"
                   id="tt{{ ref.id }}">
-                {{ forloop.counter }} {# ? #}
+                {{ forloop.counter }}
               </a>
             </div>
             {% endif %}
@@ -83,7 +83,7 @@
 
 {% else %}
 
-  {% regroup object_list by instance__work__authors__authorized_name as references_by_author %}
+  {% regroup object_list by author as references_by_author %}
   <article class="visualizations">
 
     {% for work in references_by_author %}

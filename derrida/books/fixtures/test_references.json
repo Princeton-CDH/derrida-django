@@ -1422,5 +1422,125 @@
     "last_modified": "2017-08-01",
     "extra_data": "{}"
   }
+},
+{
+  "model": "books.derridaworksection",
+  "pk": 1,
+  "fields": {
+    "name": "Chapter 1",
+    "derridawork": 1,
+    "order": 2,
+    "start_page": 15,
+    "end_page": 40
+  }
+},
+{
+  "model": "books.derridaworksection",
+  "pk": 2,
+  "fields": {
+    "name": "Chapter 1",
+    "derridawork": 1,
+    "order": 7,
+    "start_page": 145,
+    "end_page": 196
+  }
+},
+{
+  "model": "books.derridaworksection",
+  "pk": 3,
+  "fields": {
+    "name": "Chapter 2",
+    "derridawork": 1,
+    "order": 3,
+    "start_page": 41,
+    "end_page": 104
+  }
+},
+{
+  "model": "books.derridaworksection",
+  "pk": 4,
+  "fields": {
+    "name": "Part 1",
+    "derridawork": 1,
+    "order": 0,
+    "start_page": null,
+    "end_page": null  }
+},
+{
+  "model": "books.derridaworksection",
+  "pk": 5,
+  "fields": {
+    "name": "Part 2",
+    "derridawork": 1,
+    "order": 5,
+    "start_page": null,
+    "end_page": null
+  }
+},
+{
+  "model": "books.derridaworksection",
+  "pk": 6,
+  "fields": {
+    "name": "Exergue",
+    "derridawork": 1,
+    "order": 1,
+    "start_page": 11,
+    "end_page": 14
+  }
+},
+{
+  "model": "books.derridaworksection",
+  "pk": 7,
+  "fields": {
+    "name": "Chapter 3",
+    "derridawork": 1,
+    "order": 4,
+    "start_page": 105,
+    "end_page": 140
+  }
+},
+{
+  "model": "books.derridaworksection",
+  "pk": 8,
+  "fields": {
+    "name": "Introduction to the \"Epoch of Rousseau\"",
+    "derridawork": 1,
+    "order": 6,
+    "start_page": 141,
+    "end_page": 144
+  }
+},
+{
+  "model": "books.derridaworksection",
+  "pk": 9,
+  "fields": {
+    "name": "Chapter 2",
+    "derridawork": 1,
+    "order": 8,
+    "start_page": 197,
+    "end_page": 226
+  }
+},
+{
+  "model": "books.derridaworksection",
+  "pk": 10,
+  "fields": {
+    "name": "Chapter 3",
+    "derridawork": 1,
+    "order": 9,
+    "start_page": 227,
+    "end_page": 362
+  }
+},
+{
+  "model": "books.derridaworksection",
+  "pk": 11,
+  "fields": {
+    "name": "Chapter 4",
+    "derridawork": 1,
+    "order": 10,
+    "start_page": 363,
+    "end_page": 450
+  }
 }
 ]
