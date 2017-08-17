@@ -4,7 +4,7 @@
   <figure class="item__image">
     {% with digital_edition=reference.instance.digital_edition %}
       {% if digital_edition %}
-      <a class="item__image-link" href="{{ digital_edition.get_absolute_url }}">
+      <a class="item__image-link" href="{{ reference.instance.get_absolute_url }}">
         {% if digital_edition.thumbnail %}
         <img class="img" src="{{ digital_edition.thumbnail.image.thumbnail }}" />
         {% else %}
