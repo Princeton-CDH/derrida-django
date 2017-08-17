@@ -35,7 +35,7 @@
       </p>
 
       {% if instance.copyright_year %}
-        <p class="item__date">{{ instance.copyright_year }}</p>
+        <p class="item__date">{{ instance.copyright_year }}{% if instance.copy %} - {{ instance.copy }}{% endif %}</p>
       {% endif %}
 
       {% if reference.book_page %}

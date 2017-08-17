@@ -14,6 +14,7 @@
     {% endif %}
   {% endfor %}
 </p>
+<p class="item-term__value">{{ book.copyright_year }}{% if book.copy %} - {{ book.copy }}{% endif %}</p>
 {% if book.start_page %}
 <p class="item-pages">{{book.start_page}}</p>
 {% endif %}
