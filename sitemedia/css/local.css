@@ -1658,24 +1658,17 @@ hr {
     text-decoration: none; }
     .collection__title a:hover, .collection__title a:active {
       color: #3ca1ff; }
+      .collection__title a:hover span, .collection__title a:active span {
+        color: #3ca1ff; }
     .collection__title a span {
-      font-size: 1rem; }
+      color: #424242;
+      font-family: "Fira Sans", "Helvetica", "Arial", sans-serif;
+      font-size: 1rem;
+      text-decoration: none;
+      transition: color 150ms ease; }
       .collection__title a span:first-child {
-        color: #424242;
         margin-left: 1em;
         margin-right: 0.25em; }
-      .collection__title a span + span {
-        font-family: "Fira Sans", "Helvetica", "Arial", sans-serif;
-        color: #424242;
-        font-weight: inherit;
-        opacity: 0.8;
-        text-decoration: none;
-        border-bottom: 3px solid #dbdbdb;
-        transition: border-color 150ms ease, opacity 150ms ease; }
-        .collection__title a span + span:hover, .collection__title a span + span:active {
-          opacity: 1;
-          color: #424242;
-          border-color: #3ca1ff; }
 
 .collection__item {
   color: #424242;

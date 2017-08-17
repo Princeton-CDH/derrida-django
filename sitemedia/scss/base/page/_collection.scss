@@ -58,20 +58,22 @@
     &:hover,
     &:active {
       color: $blue;
+
+      & span {
+        color: $blue;
+      }
     }
 
     span {
+      color: $base-font-color;
+      font-family: $base-font-family;
       font-size: 1rem;
+      text-decoration: none;
+      transition: color $base-duration $base-timing;
 
       &:first-child {
-        color: $base-font-color;
         margin-left: 1em;
         margin-right: 0.25em;
-      }
-
-      & + span{
-        font-family: $base-font-family;
-        @include faded-link();
       }
     }
   }
