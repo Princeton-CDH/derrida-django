@@ -246,6 +246,10 @@ class Instance(Notable):
         return '%s (%s)' % (self.display_title(),
             self.copyright_year or 'n.d.')
 
+    def get_absolute_url(self):
+        # placeholder: id-based url until we have slugs
+        return reverse('books:detail', kwargs={'pk': self.pk})
+
     def display_title(self):
         '''display title - alternate title or work short title'''
         return self.alternate_title or self.work.short_title or '[no title]'
@@ -490,6 +494,15 @@ class Reference(models.Model):
             self.book_page,
             self.reference_type
         )
+
+    def get_absolute_url(self):
+        '''URL for this reference on the site'''
+        # NOTE: currently view is html snippet for loading via ajax only
+        return reverse('books:reference', kwargs={
+            'derridawork_slug': self.derridawork.slug,
+            'page': self.derridawork_page,
+            'pageloc': self.derridawork_pageloc
+        })
 
     def anchor_text_snippet(self):
         '''Anchor text snippet, for admin display'''

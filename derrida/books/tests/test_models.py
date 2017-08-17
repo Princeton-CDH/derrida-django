@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.core.exceptions import ValidationError
 from django.test import TestCase
-from django.urls import reverse
+from django.urls import reverse, resolve
 from djiffy.models import Manifest
 import pytest
 import json
@@ -97,6 +97,23 @@ class TestReference(TestCase):
         )
         assert str(reference) == desired_output
 
+    def test_get_absolute_url(self):
+        ref = Reference.objects.create(
+            instance=self.la_vie,
+            derridawork=self.dg,
+            derridawork_page='110',
+            derridawork_pageloc='a',
+            book_page='10s',
+            reference_type=self.quotation
+        )
+        ref_url = ref.get_absolute_url()
+        resolved_url = resolve(ref_url)
+        assert resolved_url.url_name == 'reference'
+        assert resolved_url.namespace == 'books'
+        assert resolved_url.kwargs['derridawork_slug'] == self.dg.slug
+        assert resolved_url.kwargs['page'] == ref.derridawork_page
+        assert resolved_url.kwargs['pageloc'] == ref.derridawork_pageloc
+
     def test_valid_autocompletes(self):
         la_vie = self.la_vie
         reference = Reference.objects.create(
@@ -161,6 +178,14 @@ class TestInstance(TestCase):
         # no date
         la_vie.year = None
         assert '%s (n.d.)' % (la_vie.display_title(), )
+
+    def test_get_absolute_url(self):
+        la_vie = Instance.objects.get(work__short_title__contains="La vie")
+        item_url = la_vie.get_absolute_url()
+        resolved_url = resolve(item_url)
+        assert resolved_url.url_name == 'detail'
+        assert resolved_url.namespace == 'books'
+        assert int(resolved_url.kwargs['pk']) == la_vie.pk
 
     def test_item_type(self):
         la_vie = Instance.objects.get(work__short_title__contains="La vie")

@@ -2,6 +2,7 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
+from django.utils.html import escape
 from djiffy.models import Manifest
 import json
 
@@ -112,15 +113,42 @@ class TestViews(TestCase):
 
         # reference details that should be present in the template
         ref = Reference.objects.first()
+        # spot check template (tested more thoroughly in reference detail below)
+        self.assertContains(response, 'pp. %s' % ref.book_page,
+            msg_prefix='reference detail should include book page number')
+        self.assertContains(response, escape(ref.instance.display_title()),
+            msg_prefix='reference detail should include book title')
+
+        # pagination: link to page two
+        # FIXME: should this include current page url?
+        # will eventually need to include sort/filter options
+        self.assertContains(response, '?page=2',
+            msg_prefix='should include link to next page of results')
+
+        # test non-paginated results
+        # - remove all but five references
+        keep_ids = Reference.objects.values_list('id', flat=True)[:5]
+        Reference.objects.exclude(id__in=keep_ids).delete()
+        response = self.client.get(reference_list_url)
+        assert response.status_code == 200
+        self.assertTemplateNotUsed(response, 'components/page-pagination.html')
+
+        # todo: test no results display?
+
+    def test_reference_detail(self):
+        ref = Reference.objects.exclude(book_page='').first()
+        response = self.client.get(ref.get_absolute_url())
+        assert response.status_code == 200
+        self.assertTemplateUsed('components/citation-list-item.html')
+        # check for details that should be displayed
         # - reference type
         self.assertContains(response, ref.reference_type.name,
             msg_prefix='should display reference type')
         # - link to cited book
-        self.assertContains(response,
-            reverse('books:detail', args=[ref.instance.pk]),
+        self.assertContains(response, ref.instance.get_absolute_url(),
             msg_prefix='should include link to work instance detail page')
         # - cited book title
-        self.assertContains(response, ref.instance.display_title(),
+        self.assertContains(response, escape(ref.instance.display_title()),
             msg_prefix='should include work instance title')
         # - work instance authors
         self.assertContains(response,
@@ -141,22 +169,6 @@ class TestViews(TestCase):
         self.assertContains(response,
             'p.%s%s' % (ref.derridawork_page, ref.derridawork_pageloc),
             msg_prefix='should include Derrida work location')
-
-        # pagination: link to page two
-        # FIXME: should this include current page url?
-        # will eventually need to include sort/filter options
-        self.assertContains(response, '?page=2',
-            msg_prefix='should include link to next page of results')
-
-        # test non-paginated results
-        # - remove all but five references
-        keep_ids = Reference.objects.values_list('id', flat=True)[:5]
-        Reference.objects.exclude(id__in=keep_ids).delete()
-        response = self.client.get(reference_list_url)
-        assert response.status_code == 200
-        self.assertTemplateNotUsed(response, 'components/page-pagination.html')
-
-        # todo: test no results display?
 
 
 class TestBookViews(TestCase):
