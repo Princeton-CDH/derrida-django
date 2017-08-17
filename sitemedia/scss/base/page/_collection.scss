@@ -91,6 +91,22 @@
   &.annotation {
     border-bottom-color: $orange-red;
   }
+
+  &.outwork {
+    .text-badge,
+    .item__author,
+    .item__citation {
+      display: none;
+    }
+  }
+
+  &.book--short {
+    .text-badge,
+    .item__excerpt,
+    .item__citation {
+      display: none;
+    }
+  }
 }
 
 .item__body {

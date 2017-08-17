@@ -1687,6 +1687,14 @@ hr {
     border-bottom: 0; }
   .collection__item.annotation {
     border-bottom-color: #ff470f; }
+  .collection__item.outwork .text-badge,
+  .collection__item.outwork .item__author,
+  .collection__item.outwork .item__citation {
+    display: none; }
+  .collection__item.book--short .text-badge,
+  .collection__item.book--short .item__excerpt,
+  .collection__item.book--short .item__citation {
+    display: none; }
 
 .item__body {
   width: calc(50% - 4.41176%);
