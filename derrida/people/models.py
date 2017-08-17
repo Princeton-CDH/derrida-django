@@ -1,9 +1,10 @@
-from django.db import models
 import re
+
+from django.db import models
+from viapy.api import ViafEntity
 
 from derrida.common.models import Named, Notable, DateRange
 from derrida.places.models import Place
-from .viaf import ViafAPI
 
 
 class AliasIntegerField(models.IntegerField):
@@ -26,7 +27,7 @@ class AliasIntegerField(models.IntegerField):
 class Person(Notable, DateRange):
     '''Person'''
     authorized_name = models.CharField(max_length=255)
-    viaf_id = models.URLField(null=True, blank=True)
+    viaf_id = models.URLField('VIAF id', null=True, blank=True)
     # alias start/end year from DateRange to be more readable and semantic
     birth = AliasIntegerField(db_column='start_year', null=True, blank=True)
     death = AliasIntegerField(db_column='end_year', null=True, blank=True)
@@ -43,21 +44,31 @@ class Person(Notable, DateRange):
         # if not, why do we have it?
         ordering = ['authorized_name']
 
+    def __str__(self):
+        return self.authorized_name
+
     def save(self, *args, **kwargs):
-        '''Adds birth and death dates if they aren't in kwargs
+        '''Adds birth and death dates from VIAF if they aren't set
         and there's a viaf id for the record'''
 
         if self.viaf_id and not self.birth and not self.death:
-            # Parse out the ID from the URI
-            id_num = (re.search(r'\d+', self.viaf_id)).group(0)
-            viaf = ViafAPI()
-            viaf_rdf = viaf.get_RDF(id_num)
-            self.birth, self.death = viaf.get_years(viaf_rdf)
-        # Call save normally
+            self.set_birth_death_years()
+
         super(Person, self).save(*args, **kwargs)
 
-    def __str__(self):
-        return self.authorized_name
+    @property
+    def viaf(self):
+        ''':class:`viapy.api.ViafEntity` for this record if :attr:`viaf_id`
+        is set.'''
+        if self.viaf_id:
+            return ViafEntity(self.viaf_id)
+
+    def set_birth_death_years(self):
+        '''Set local birth and death dates based on information from VIAF'''
+        if self.viaf_id:
+            self.birth = self.viaf.birthyear
+            self.death = self.viaf.deathyear
+
 
 
 class Residence(Notable, DateRange):

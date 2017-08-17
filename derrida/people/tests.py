@@ -1,15 +1,14 @@
 import json
 import os
-import requests
 from unittest.mock import patch
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
-
-from .viaf import ViafAPI
 from rdflib import Graph
+from viapy.api import ViafEntity
+
 from .models import Person, Relationship, RelationshipType, Residence
 from derrida.places.models import Place
 
@@ -41,15 +40,51 @@ class TestPerson(TestCase):
         # queryset filters on alias fields should also work
         assert Person.objects.get(birth=1800) == pers
 
-    @patch('derrida.people.viaf.ViafAPI.get_RDF',
-        return_value=Graph().serialize())
-    @patch('derrida.people.viaf.ViafAPI.get_years', return_value=(1800, 1900))
-    def test_viaf_dates(self, fakedrdf, fakedyears):
-        '''Check that if a viaf_id is set, save method will call ViafAPI'''
-        pers = Person.objects.create(authorized_name='Mr. X',
-            viaf_id='http://notviaf/viaf/0000/')
-        assert pers.birth == 1800
-        assert pers.death == 1900
+    def test_viaf(self):
+        pers = Person(authorized_name='Humperdinck')
+        assert pers.viaf is None
+        pers.viaf_id = 'http://viaf.org/viaf/35247539'
+        assert isinstance(pers.viaf, ViafEntity)
+        assert pers.viaf.uri == pers.viaf_id
+
+    def test_set_birth_death_years(self):
+        pers = Person(authorized_name='Humperdinck')
+        # no viaf id
+        pers.set_birth_death_years()
+        assert pers.birth is None
+        assert pers.death is None
+
+        pers.viaf_id = 'http://viaf.org/viaf/35247539'
+        with patch.object(Person, 'viaf') as mockviaf_entity:
+            mockviaf_entity.birthyear = 1902
+            mockviaf_entity.deathyear = 1953
+            pers.set_birth_death_years()
+            assert pers.birth == mockviaf_entity.birthyear
+            assert pers.death == mockviaf_entity.deathyear
+
+    def test_save(self):
+        pers = Person(authorized_name='Humperdinck')
+        with patch.object(pers, 'set_birth_death_years') as mock_setbirthdeath:
+            # no viaf - should not call set birth/death
+            pers.save()
+            mock_setbirthdeath.assert_not_called()
+
+            # viaf and dates set - should not call set birth/death
+            pers.viaf_id = 'http://viaf.org/viaf/35247539'
+            pers.birth = 1801
+            pers.death = 1850
+            pers.save()
+            mock_setbirthdeath.assert_not_called()
+
+            # viaf and one date set - should not call set birth/death
+            pers.birth = None
+            pers.save()
+            mock_setbirthdeath.assert_not_called()
+
+            # viaf and no dates set - *should* call set birth/death
+            pers.death = None
+            pers.save()
+            mock_setbirthdeath.assert_called_with()
 
 
 class TestResidence(TestCase):
@@ -118,77 +153,6 @@ class TestRelationship(TestCase):
 
         query = son.from_relationships.all()
         assert not query
-
-
-class TestViafAPI(TestCase):
-
-    def setUp(self):
-        """Load the sample XML file and pass to the TestCase object"""
-        fixture_file = os.path.join(FIXTURES_PATH, 'sample_viaf_rdf.xml')
-        with open(fixture_file, 'r') as fixture:
-            self.mock_rdf = fixture.read()
-
-        graph = Graph()
-        self.empty_rdf = graph.serialize()
-
-    @patch('derrida.people.viaf.requests')
-    def test_suggest(self, mockrequests):
-        viaf = ViafAPI()
-        mockrequests.codes = requests.codes
-        # Check that query with no matches still returns an empty list
-        mock_result = {'query': 'notanauthor', 'result': None}
-        mockrequests.get.return_value.status_code = requests.codes.ok
-        mockrequests.get.return_value.json.return_value = mock_result
-        assert viaf.suggest('notanauthor') == []
-        mockrequests.get.assert_called_with(
-            'https://www.viaf.org/viaf/AutoSuggest',
-            params={'query': 'notanauthor'})
-
-        # valid (abbreviated) response
-        mock_result['result'] = [{
-          "term": "Austen, Jane, 1775-1817",
-          "displayForm": "Austen, Jane, 1775-1817",
-          "recordID": "102333412"
-        }]
-        mockrequests.get.return_value.json.return_value = mock_result
-        assert viaf.suggest('austen') == mock_result['result']
-
-        # bad status code on the response - should still return an empty list
-        mockrequests.get.return_value.status_code = requests.codes.forbidden
-        assert viaf.suggest('test') == []
-
-    def test_get_uri(self):
-        assert ViafAPI.uri_from_id('1234') == \
-            'https://viaf.org/viaf/1234/'
-        # numeric id should also work
-        assert ViafAPI.uri_from_id(1234) == \
-            'https://viaf.org/viaf/1234/'
-
-    @patch('derrida.people.viaf.requests')
-    def test_getRDF(self, mockrequests):
-        viaf = ViafAPI()
-        mock_rdf = self.mock_rdf
-        empty_rdf = self.empty_rdf
-        mockrequests.codes = requests.codes
-
-        # Mock a GET that works correctly
-        mockrequests.get.return_value.status_code = requests.codes.ok
-        mockrequests.get.return_value.text = mock_rdf
-        assert viaf.get_RDF('89599270') == mock_rdf
-
-        # Mock a GET that returns a bad code
-        mockrequests.get.return_value.status_code = requests.codes.bad
-        assert viaf.get_RDF('89599270') == empty_rdf
-
-    def test_get_years(self):
-        viaf = ViafAPI()
-        mock_rdf = self.mock_rdf
-        empty_rdf = self.empty_rdf
-
-        # Test fixture should produce a tuple as follows
-        assert viaf.get_years(mock_rdf) == (69, 140)
-        # An empty RDF should produce (None, None)
-        assert viaf.get_years(empty_rdf) == (None, None)
 
 
 class TestPersonAutocomplete(TestCase):

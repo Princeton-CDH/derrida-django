@@ -28,6 +28,7 @@ urlpatterns = [
     url(r'^people/', include('derrida.people.urls', namespace='people')),
     url(r'^places/', include('derrida.places.urls', namespace='places')),
     url(r'^interventions/', include('derrida.interventions.urls', namespace='interventions')),
+    url(r'^viaf/', include('viapy.urls', namespace='viaf')),
 
     # local version of djiffy urls
     url(r'^admin/iiif-books/', include('derrida.interventions.iiif_urls', namespace='djiffy')),
