@@ -6,18 +6,16 @@ from unittest.mock import patch
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.test import TestCase
+from django.urls import reverse
+
 from .viaf import ViafAPI
 from rdflib import Graph
 from .models import Person, Relationship, RelationshipType, Residence
 from derrida.places.models import Place
-try:
-    # django 1.10
-    from django.urls import reverse
-except ImportError:
-    from django.core.urlresolvers import reverse
 
-# Get the fixtures dir for this app
-FIXTURES_PATH = os.path.join(settings.BASE_DIR, 'derrida/people/fixtures')
+
+# fixtures dir for this app
+FIXTURES_PATH = os.path.join(settings.BASE_DIR, 'derrida', 'people', 'fixtures')
 
 
 class TestPerson(TestCase):
