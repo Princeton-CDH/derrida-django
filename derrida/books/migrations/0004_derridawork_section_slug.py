@@ -27,12 +27,10 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=255)),
                 ('order', models.PositiveIntegerField(verbose_name='Order')),
-                ('start_page', models.IntegerField(blank=True, null=True)),
+                ('start_page', models.IntegerField(blank=True, null=True,
+                    help_text='Sections with no pages will be treated as headers.')),
                 ('end_page', models.IntegerField(blank=True, null=True)),
-            ],
-            options={
-                'ordering': ['derridawork', 'order'],
-            },
+            ]
         ),
         migrations.AddField(
             model_name='derridawork',

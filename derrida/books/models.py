@@ -202,6 +202,9 @@ class Instance(Notable):
     start_page = models.CharField(max_length=20, blank=True, null=True)
     #: end page for book section or journal article
     end_page = models.CharField(max_length=20, blank=True, null=True)
+    #: optional label to distinguish multiple copies of the same work
+    copy = models.CharField(max_length=3, blank=True, null=True,
+        help_text='Label to distinguish multiple copies of the same edition')
 
     #: :class:`Language` this item is written in;
     # uses :class:`InstanceLanguage` to indicate primary language
