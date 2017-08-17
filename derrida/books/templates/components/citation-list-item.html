@@ -39,13 +39,13 @@
       {% endif %}
 
       {% if reference.book_page %}
-        <p class="item__location">pp. {{ reference.book_page }}</p>
+        <p class="item__location">p{% if '-' in reference.book_page %}p{% endif %}. {{ reference.book_page }}</p>
       {% endif %}
 
       <p class="item__excerpt">{{ reference.anchor_text }}</p>
 
       <p class="item__citation">
-        Cited in <em>{{ reference.derridawork }}</em> p.{{ reference.derridawork_page }}{{ reference.derridawork_pageloc }}
+        Cited in <em>{{ reference.derridawork }}</em> p.{{ reference.derridawork_page }} {{ reference.derridawork_pageloc }}
       </p>
 
     {% endwith %}

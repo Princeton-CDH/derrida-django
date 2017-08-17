@@ -114,7 +114,7 @@ class TestReferenceViews(TestCase):
         # reference details that should be present in the template
         ref = Reference.objects.first()
         # spot check template (tested more thoroughly in reference detail below)
-        self.assertContains(response, 'pp. %s' % ref.book_page,
+        self.assertContains(response, 'p. %s' % ref.book_page,
             msg_prefix='reference detail should include book page number')
         self.assertContains(response, escape(ref.instance.display_title()),
             msg_prefix='reference detail should include book title')
@@ -158,7 +158,7 @@ class TestReferenceViews(TestCase):
         self.assertContains(response, ref.instance.copyright_year,
             msg_prefix='should include work instance copyright year')
         # - reference page number
-        self.assertContains(response, 'pp. %s' % ref.book_page,
+        self.assertContains(response, 'p. %s' % ref.book_page,
             msg_prefix='should include reference page number')
         # - reference anchor text
         self.assertContains(response, ref.anchor_text,
@@ -167,8 +167,16 @@ class TestReferenceViews(TestCase):
         self.assertContains(response, ref.derridawork,
             msg_prefix='should include Derrida work title')
         self.assertContains(response,
-            'p.%s%s' % (ref.derridawork_page, ref.derridawork_pageloc),
+            'p.%s %s' % (ref.derridawork_page, ref.derridawork_pageloc),
             msg_prefix='should include Derrida work location')
+
+        # display for page range
+        ref.book_page = '100-101'
+        ref.save()
+        response = self.client.get(ref.get_absolute_url())
+        self.assertContains(response, 'pp. %s' % ref.book_page,
+            msg_prefix='display reference page number with pp. for ranges')
+
 
     def test_reference_histogram(self):
         # default: reference by author of referenced book
