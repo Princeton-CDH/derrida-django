@@ -2,15 +2,17 @@
 
 <section class="collection__item book">
   <figure class="item__image">
-    {% if book.digital_edition %}
-      {% if book.digital_edition.thumbnail %}
-      <img class="img" src="{{ book.digital_edition.thumbnail.image.thumbnail }}" />
+    <a class="img item__image__link" href="{% url 'books:detail' pk=book.id %}">
+      {% if book.digital_edition %}
+        {% if book.digital_edition.thumbnail %}
+        <img class="img" src="{{ book.digital_edition.thumbnail.image.thumbnail }}" />
+        {% else %}
+        <span class="img img--placeholder"></span>
+        {% endif %}
       {% else %}
       <span class="img img--placeholder"></span>
       {% endif %}
-    {% else %}
-    <span class="img img--placeholder"></span>
-    {% endif %}
+    </a>
   </figure>
 
   <div class="item__body">

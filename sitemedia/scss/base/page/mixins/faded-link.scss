@@ -8,7 +8,8 @@
     opacity $base-duration $base-timing;
 
   &:hover,
-  &:active {
+  &:active,
+  &.is-hovered {
     opacity: 1;
     color: $color;
     border-color: $primary-color;

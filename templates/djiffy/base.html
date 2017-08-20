@@ -36,6 +36,12 @@
         $("[data-action=toggle-search-form]").on('click', function() {
           $searchForm.toggleClass('is-hidden');
         });
+
+        $(".item__image__link").on('mouseenter', function() {
+          $(this).parents('.collection__item').find('.item__heading .item__link').addClass('is-hovered');
+        }).on('mouseleave', function() {
+          $(this).parents('.collection__item').find('.item__heading .item__link').removeClass('is-hovered');
+        });
       });
     </script>
     {# Include analytics if INCLUDE_ANALYTICS is set to True #}

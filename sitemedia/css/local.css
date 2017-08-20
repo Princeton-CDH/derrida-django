@@ -1540,7 +1540,7 @@ hr {
     text-decoration: none;
     border-bottom: 3px solid #dbdbdb;
     transition: border-color 150ms ease, opacity 150ms ease; }
-    .page-header__callout .callout__link:hover, .page-header__callout .callout__link:active {
+    .page-header__callout .callout__link:hover, .page-header__callout .callout__link:active, .page-header__callout .callout__link.is-hovered {
       opacity: 1;
       color: #424242;
       border-color: #3ca1ff; }
@@ -1719,7 +1719,7 @@ hr {
   border-bottom: 3px solid #dbdbdb;
   transition: border-color 150ms ease, opacity 150ms ease;
   color: inherit; }
-  .item__link:hover, .item__link:active {
+  .item__link:hover, .item__link:active, .item__link.is-hovered {
     opacity: 1;
     color: #424242;
     border-color: #3ca1ff; }
@@ -1768,15 +1768,15 @@ hr {
   .item__image .img {
     position: relative;
     width: auto;
-    max-height: 200px; }
+    max-height: 200px;
+    display: block; }
     .item__image .img.img--placeholder {
       height: 200px;
       width: 150px;
       max-width: 100%;
       background: #eee;
-      align-self: flex-end; }
-      .collection--condensed .item__image .img.img--placeholder {
-        margin: auto; }
+      align-self: flex-end;
+      margin: 0; }
     .collection--condensed .item__image .img {
       max-height: none; }
   .collection--condensed .item__image {
@@ -1989,7 +1989,7 @@ hr {
       text-decoration: none;
       border-bottom: 3px solid #dbdbdb;
       transition: border-color 150ms ease, opacity 150ms ease; }
-      .item-term .item-term__value .item-term__link:hover, .item-term .item-term__value .item-term__link:active {
+      .item-term .item-term__value .item-term__link:hover, .item-term .item-term__value .item-term__link:active, .item-term .item-term__value .item-term__link.is-hovered {
         opacity: 1;
         color: #424242;
         border-color: #3ca1ff; }

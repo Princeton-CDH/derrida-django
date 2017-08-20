@@ -191,6 +191,7 @@
     position: relative;
     width: auto;
     max-height: 200px;
+    display: block;
 
     &.img--placeholder {
       height: 200px;
@@ -198,10 +199,7 @@
       max-width: 100%;
       background: $light-grey;
       align-self: flex-end;
-
-      .collection--condensed & {
-        margin: auto;
-      }
+      margin: 0;
     }
 
     .collection--condensed & {
