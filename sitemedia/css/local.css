@@ -1469,7 +1469,7 @@ hr {
   background-repeat: no-repeat; }
   @media only screen and (min-width: 1080px) {
     .page-header {
-      margin-top: -64px;
+      margin: -64px 6rem 0;
       transition: margin-top 0.5s ease; } }
   #citations-list .page-header {
     background-image: url("../img/banner/citation_small_2x.png"); }
@@ -1492,12 +1492,9 @@ hr {
   text-align: center;
   background: none;
   padding-bottom: 3em; }
-  .page-header--link .page-header__heading,
-  .page-header--link .page-header__heading .material-icons {
-    line-height: 2;
-    vertical-align: sub; }
   .page-header--link .page-header__heading a {
-    text-decoration: none; }
+    text-decoration: none;
+    font-weight: inherit; }
 
 .page-header__container {
   min-height: 300px;
@@ -2155,7 +2152,8 @@ body {
   background-color: #175498; }
 
 main {
-  flex-grow: 2; }
+  flex-grow: 2;
+  z-index: 3; }
 
 #homepage {
   color: #fff; }
