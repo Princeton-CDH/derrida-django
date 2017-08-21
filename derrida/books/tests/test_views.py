@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.contrib.auth import get_user_model
 from django.db.models import Min
+from django.db.transaction import atomic
 from django.test import TestCase
 from django.urls import reverse
 from django.utils.html import escape
@@ -127,8 +128,16 @@ class TestReferenceViews(TestCase):
 
         # test non-paginated results
         # - remove all but five references
-        keep_ids = Reference.objects.values_list('id', flat=True)[:5]
-        Reference.objects.exclude(id__in=keep_ids).delete()
+        # Done as three steps to avoid a MySQL subquery issue (LIMIT + IN/ANY/ALL)
+        keep_ids = Reference.objects.all()[:5]
+        Reference.objects.all().delete()
+        
+        @atomic
+        def save_keeps(qs):
+            '''Wrap the save of all 5 as one commit to keep the test zippier'''
+            for item in qs:
+                item.save()
+        save_keeps(keep_ids)
         response = self.client.get(reference_list_url)
         assert response.status_code == 200
         self.assertTemplateNotUsed(response, 'components/page-pagination.html')
