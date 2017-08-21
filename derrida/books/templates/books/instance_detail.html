@@ -24,7 +24,10 @@
   <script type="text/javascript">
     $(function() {
       $("#book-header").stickySidebar({
-        topSpacing: 20
+        topSpacing: 20,
+        containerSelector: '#books-detail article',
+        minWidth: 649,
+        resizeSensor: false
       });
 
       var $body = $('body'),

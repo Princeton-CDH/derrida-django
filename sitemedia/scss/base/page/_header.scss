@@ -53,7 +53,7 @@
   position: relative;
 
   @media screen and (min-height: 500px) {
-    min-height: 60vh;
+    min-height: 40vh;
 
     .page-header--condensed & {
       min-height: 16rem;
@@ -65,7 +65,7 @@
   font-size: 1.6rem;
   margin-top: 1rem;
   color: $blue;
-  font-weight: 700;
+  @include secondary-font-style("bold");
 }
 
 .page-header__callout {
@@ -88,7 +88,7 @@
 
   .lead {
     line-height: 1.2;
-    font-weight: 700;
-    font-size: 1.6em;
+    @include secondary-font-style("italic");
+    font-size: 1.25em;
   }
 }

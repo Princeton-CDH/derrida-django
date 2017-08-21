@@ -1,8 +1,37 @@
 @import "colors";
 
 // Typography
-$base-font-family: 'Fira Sans', 'Helvetica', 'Arial', sans-serif;
-$heading-font-family: 'Cormorant Garamond', 'Georgia', serif;
+$base-font-family: "UniversLTPro-55Roman", "Helvetica", "Arial", sans-serif;
+$base-font-family--italic: "UniversLTPro-55Oblique", "Helvetica", "Arial", sans-serif;
+$base-font-family--bold: "UniversLTPro-65Bold", "Helvetica", "Arial", sans-serif;
+
+$secondary-font-family: "SabonLTPro-Roman", "Georgia", serif;
+$secondary-font-family--italic: "SabonLTPro-Italic", "Georgia", serif;
+$secondary-font-family--bold: "SabonLTPro-Bold", "Georgia", serif;
+
+@mixin primary-font-style($variant: "") {
+  @if $variant == "italic" {
+    font-family: $base-font-family--italic;
+  } @else if $variant == "bold" {
+    font-family: $base-font-family--bold;
+  } @else {
+    font-family: $base-font-family;
+  }
+  font-weight: normal;
+  font-style: normal;
+}
+
+@mixin secondary-font-style($variant: "") {
+  @if $variant == "italic" {
+    font-family: $secondary-font-family--italic;
+  } @else if $variant == "bold" {
+    font-family: $secondary-font-family--bold;
+  } @else {
+    font-family: $secondary-font-family;
+  }
+  font-weight: normal;
+  font-style: normal;
+}
 
 // Base Font Size
 $base-font-size: 14px;
