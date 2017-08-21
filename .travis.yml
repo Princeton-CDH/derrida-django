@@ -3,6 +3,9 @@ language: python
 python:
   - "3.5"
 
+addons:
+  - mariadb: "5.5"
+
 install:
   - pip install -r requirements.txt
   - pip install -r dev-requirements.txt

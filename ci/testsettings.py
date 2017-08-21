@@ -7,11 +7,23 @@
 
 DEBUG = False
 
+# include database settings to use Mariadb ver on production (5.5)
 DATABASES = {
-    "default": {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'derrida-django.db'
-    }
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'test',
+        'USER': 'root',
+        'PASSWORD': 'foobar123',
+        'HOST': 'localhost',
+        'PORT': '',
+        'TEST': {
+                'CHARSET': 'utf8',
+                'COLLATION': 'utf8_general_ci',
+            },
+    },
+
 }
+
+
 
 # secret key added as a travis build step
