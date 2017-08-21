@@ -5,7 +5,7 @@
   background-repeat: no-repeat;
 
   @include grid-media($xlarge-viewport-grid) {
-    margin-top: -$header-row-height;
+    margin: -$header-row-height 6rem 0;
     transition: margin-top 0.5s ease;
   }
 
@@ -39,16 +39,9 @@
   background: none;
   padding-bottom: 3em;
 
-  .page-header__heading {
-    &,
-    .material-icons {
-      line-height: 2;
-      vertical-align: sub;
-    }
-
-    a {
-      text-decoration: none;
-    }
+  .page-header__heading a {
+    text-decoration: none;
+    font-weight: inherit;
   }
 }
 
