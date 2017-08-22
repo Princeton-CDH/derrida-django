@@ -140,6 +140,15 @@ class Work(Notable):
     instance_count.short_description = '# instances'
 
 
+class InstanceQuerySet(models.QuerySet):
+    '''Custom :class:`~django.db.models.QuerySet` for :class:`Instance` to
+    make it easy to find all instances that have a digital
+    edition'''
+
+    def with_digital_eds(self):
+        return self.exclude(digital_edition__isnull=True)
+
+
 class Instance(Notable):
     '''A single instance of a :class:`Work` - i.e., a specific copy or edition
     or translation.  Can also include books that appear as sections
@@ -235,6 +244,8 @@ class Instance(Notable):
     # proof-of-concept generic relation to footnotes
     #: generic relation to :class:~`derrida.footnotes.models.Footnote`
     footnotes = GenericRelation(Footnote)
+
+    objects = InstanceQuerySet.as_manager()
 
     class Meta:
         ordering = ['alternate_title', 'work__primary_title'] ## ??
@@ -421,7 +432,6 @@ class PersonBook(Notable, DateRange):
         return '%s - %s%s' % (self.person, self.book, dates)
 
 
-
 # New citationality model
 class DerridaWork(Notable):
     '''This models the reference copy used to identify all citations, not
@@ -542,17 +552,20 @@ class Reference(models.Model):
     anchor_text_snippet.short_description = 'Anchor Text'
     anchor_text.admin_order_field = 'anchor_text'
 
-    def get_autocomplete_instances(self):
-        '''Returns a list of :class:`Instance` primary keys as JSON for
-        jQuery use in disabling or enabling the autocompletes for
-        :class:`~derrida.interventions.models.Canvas` and
-        :class:`~derrida.interventions.models.Interventions` on the change_form
-        for :class:`Reference`.
+    @staticmethod
+    def instance_ids_with_digital_editions():
+        '''Used as a convenience method to provide a readonly field in the
+        admin change form for :class:`Reference` with a list of JSON formatted
+        primary keys. This is used by jQuery in the :class:`Reference`
+        change_form and reference inlines on the :class:`Instance`change_form
+        to disable the autocomplete fields when there is or is not a digital
+        edition. See ``sitemedia/js/reference-instance-canvas-toggle.js`` for
+        this logic.
 
-        :return: Returns a JSON formatted array
-        :rtype: str
+        :rtype: JSON formatted string of :class:`Instance` primary keys
         '''
-        valid_instance_pks = Instance.objects.exclude(
-                                digital_edition__isnull=True
-                             ).values_list('id', flat=True).order_by('id')
-        return json.dumps(list(valid_instance_pks))
+        with_digital_eds = Instance.objects.with_digital_eds()
+        # Flatten to just the primary keys
+        ids = with_digital_eds.values_list('id', flat=True).order_by('id')
+        # Return serialized JSON
+        return json.dumps(list(ids))
