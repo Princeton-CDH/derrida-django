@@ -47,15 +47,28 @@ Development instructions
 
 Initial setup and installation:
 
--  recommended: create and activate a python 3.5 virtualenv
-   ``virtualenv derrida -p python3.5`` ``source derrida/bin/activate``
+-  **recommended:** create and activate a python 3.5 virtualenv::
 
--  pip install required python dependencies
-   ``pip install -r requirements.txt``
-   ``pip install -r dev-requirements.txt``
+     virtualenv derrida -p python3.5
+     source derrida/bin/activate
 
--  copy sample local settings and configure for your environment
-   ``cp derrida/local_settings.py.sample derrida/local_settings.py``
+-  Use pip to install required python dependencies::
+
+     pip install -r requirements.txt
+     pip install -r dev-requirements.txt
+
+-  Copy sample local settings and configure for your environment::
+
+   cp derrida/local_settings.py.sample derrida/local_settings.py
+
+- Create a database, configure in local settings, and run migrations::
+
+    python manage.py migrate
+
+- Create a Solr core, configure it, and index content::
+
+  python manage.py build_solr_schema --configure-directory=/path/to/solr/derrida/conf --reload-core derrida
+  python manage.py rebuild_index --noinput
 
 
 Unit Tests
@@ -70,7 +83,6 @@ things easier. To run them, first install development requirements::
 Run tests using py.test::
 
     py.test
-
 
 Documentation
 ~~~~~~~~~~~~~
