@@ -1,7 +1,11 @@
 '''
-Code for safely loading fixtures based on their historical serializer not their
+Utilities for Derrida
+
+1) Code for safely loading fixtures based on their historical serializer not their
 current one. Adapted almost verbatim from
 https://stackoverflow.com/questions/32912112/django-loaddata-in-migrations-errors
+
+2) Cleanup function to remove Latin ligatures and replace with 'ae' and 'oe'
 '''
 import os
 
@@ -63,8 +67,9 @@ class LoadFixtureData(object):
     migration, NOT the current one. Necessary for any models that have later
     changes and pre-loaded fixtures'''
     def __init__(self, *files):
-        ''':param files: args style list of fixture files
-           :type list:
+        '''        
+        :param files: args style list of fixture files
+        :type list:
         '''
         self.files = files
 
@@ -85,3 +90,15 @@ class LoadFixtureData(object):
         if apps:
             # Cleanup monkey patch
             serializers.python.apps = original_apps
+
+
+def deligature(value):
+    '''Remove common unicode characters Œ and Æ plus lowercase equivalents.'''
+    mapping = {
+        u'\u00C6': 'Ae',
+        u'\u0152': 'Oe',
+        u'\u00E6': 'ae',
+        u'\u0153': 'oe'
+    }
+
+    return value.translate(str.maketrans(mapping))
