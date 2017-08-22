@@ -1,3 +1,4 @@
+{# work instance text for generic keyword search across all fields #}
 {{ object.display_title }}
 {{ object.item_type }}
 {% for author in object.instance.work.authors.all %}

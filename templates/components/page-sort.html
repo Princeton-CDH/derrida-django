@@ -1,11 +1,14 @@
+{% load humanize %}
 <section class="page-sort">
   <div class="container">
     <header class="page-sort__header">
-      <p class="sort-label sort-label--diminished ">{{number}} Results</p>
+      <p class="sort-label sort-label--diminished ">{{ total|intcomma }} Results</p>
       <a class="sort-link sort-link--danger" href="#">Clear All</a>
     </header>
     <header class="page-sort__header">
       <p class="sort-label">Sort By</p>
+      {# TODO: can we restyle form order field so radio button looks like the links in the design? #}
+      {{ form.order_by }}
 
       <a class="sort-link {% if 'work__authors__authorized_name' == orderBy or orderBy == null %}sort-link--active{% endif %}" href="?orderBy=work__authors__authorized_name">Author of cited work</a>
       <a class="sort-link {% if 'work__instance__start_page' == orderBy %}sort-link--active{% endif %}" href="?orderBy=work__instance__start_page">Page Order in Derrida work</a>
