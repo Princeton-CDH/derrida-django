@@ -6,6 +6,7 @@ from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
 from django.urls import reverse
 from django.utils.safestring import mark_safe
+from django.utils.text import slugify
 from djiffy.models import Canvas, Manifest
 from sortedm2m.fields import SortedManyToManyField
 
@@ -13,6 +14,7 @@ from derrida.common.models import Named, Notable, DateRange
 from derrida.places.models import Place
 from derrida.people.models import Person
 from derrida.footnotes.models import Footnote
+from derrida.utils import deligature
 
 Q = models.Q
 
@@ -263,6 +265,30 @@ class Instance(Notable):
     def get_absolute_url(self):
         # placeholder: id-based url until we have slugs
         return reverse('books:detail', kwargs={'pk': self.pk})
+
+    def generate_base_slug(self):
+        '''Generate slug for :class:`Instance` object.
+           :rtype str: String in the format ``lastname-title-of-work-year``
+        '''
+        # get the first author, if there is one
+        author = self.work.authors.first()
+        if author:
+            # use the last name of the first author
+            author = author.authorized_name.split(',')[0]
+        else:
+            # otherwise, set it to an empty string
+            author = ''
+        title = self.work.primary_title
+        year = self.copyright_year
+        # if no instance copyright_year,
+        if not year:
+            # try the work year,
+            year = self.work.year
+        if not year:
+            # if still no year, use 'nd' for now
+            year = 'nd'
+        # return a slug with no distinction for copies
+        return slugify('%s %s %s' % (author, deligature(title), year))
 
     def display_title(self):
         '''display title - alternate title or work short title'''
