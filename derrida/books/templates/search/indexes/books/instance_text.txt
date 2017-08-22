@@ -1,0 +1,7 @@
+{{ object.display_title }}
+{{ object.item_type }}
+{% for author in object.instance.work.authors.all %}
+  {{ author.firstname_last }}{% if not forloop.last %} {% endif %}
+{% endfor %}
+{{ instance.copyright_year }}
+
