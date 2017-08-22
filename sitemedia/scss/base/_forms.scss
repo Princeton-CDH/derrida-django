@@ -14,7 +14,7 @@ legend {
 input,
 select,
 textarea {
-  font-family: $base-font-family;
+  @include primary-font-style();
 }
 
 // Switch

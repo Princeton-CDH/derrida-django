@@ -1,7 +1,9 @@
+{% load static %}
+
 <section class="container">
   <form class="search-form-header__form" action="{% url 'search' %}">
     <label class="mdl-button mdl-js-button mdl-button--icon" for="search-term">
-      <i class="material-icons">search</i>
+      <img width="50%" src="{% static "img/icons/Search.svg" %}" />
     </label>
     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
       <input class="mdl-textfield__input" type="text" id="search-term" name="term">
@@ -16,7 +18,7 @@
       </select>
     </div>
     <div class="mdl-button mdl-js-button mdl-button--icon" data-action="toggle-search-form">
-      <i class="material-icons">close</i>
+      <img width="50%" src="{% static "img/icons/Delete.svg" %}" />
     </div>
     <input type="submit" class="hidden" />
   </form>

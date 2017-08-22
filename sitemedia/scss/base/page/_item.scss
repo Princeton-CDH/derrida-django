@@ -28,19 +28,29 @@
 }
 
 .item-title {
-  font-style: italic;
+  @include secondary-font-style("italic");
   font-size: 1.6em;
   margin: 1em 0 0.25em;
 }
 
 .item-author {
   font-size: 1.3em;
-  font-family: $heading-font-family;
+  @include secondary-font-style();
   margin-bottom: 6px;
 }
 
 .item-pages {
   margin-bottom: 3rem;
+}
+
+.item-navigation {
+  float: left;
+}
+
+.inner-wrapper-sticky {
+  @include grid-media($large-medium-viewport-grid) {
+    float: left;
+  }
 }
 
 .item-section {
@@ -109,10 +119,11 @@
   display: block;
 
   .item-term__label {
-    font-family: $base-font-family;
+    @include primary-font-style("bold");
     font-size: 1.1em;
     font-weight: 400;
     margin-top: 1em;
+    margin-right: 0.5em;
 
     @include grid-column(4);
 
@@ -124,7 +135,7 @@
 
   .item-term__value {
     font-weight: 300;
-    font-style: italic;
+    @include primary-font-style("italic");
     @include grid-column(4);
 
     .item-term__link {

@@ -52,7 +52,15 @@
 }
 
 .mdl-mega-footer__branding-section {
-  padding-left: 10em;
+  padding-top: 2em;
+
+  @media screen and (min-width: 760px) {
+    padding-left: 7em;
+  }
+
+  @media screen and (min-width: 1024px) {
+    padding-top: 0;
+  }
 }
 
 // Dropdown sections

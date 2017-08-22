@@ -11,7 +11,7 @@
 
   &,
   .mdl-layout-title {
-    font-family: $base-font-family;
+    @include primary-font-style();
   }
 
   &.mdl-layout__header--with-logo {
@@ -34,11 +34,11 @@
 }
 
 .nav>li>a {
-  font-family: $heading-font-family;
+  @include secondary-font-style();
 }
 
 .mdl-navigation__link {
-  font-family: $heading-font-family;
+  @include secondary-font-style();
   opacity: 0.8;
 
   .navigation-title {
@@ -148,7 +148,7 @@
     }
 
     .mdl-navigation__link {
-      font-family: $heading-font-family;
+      @include secondary-font-style();
       font-weight: bold;
       -webkit-font-smoothing: antialiased;
       opacity: 1;

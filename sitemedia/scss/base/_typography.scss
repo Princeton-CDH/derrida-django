@@ -1,8 +1,7 @@
 html, body {
   color: $base-font-color;
-  font-family: $base-font-family;
+  @include primary-font-style();
   font-size: $base-font-size;
-  font-weight: $base-font-weight;
   line-height: $base-line-height;
 }
 
@@ -12,40 +11,40 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: $heading-font-family;
-  font-weight: $heading-font-weight;
+  @include secondary-font-style();
   font-size: modular-scale(1);
   line-height: $heading-line-height;
   margin: 0 0 $small-spacing;
 
   .dashboard & {
-    font-family: $base-font-family;
+    @include primary-font-style();
   }
 }
 
 h1 {
-  font-size: modular-scale(5);
+  font-size: 3em;
 }
 
 h2 {
-  font-size: modular-scale(4);
-}
-
-h3 {
   font-size: modular-scale(3);
 }
 
+h3,
 h4 {
-  font-size: modular-scale(2);
+  font-size: 1.35em;
+}
+
+h3 {
+  @include secondary-font-style("bold");
 }
 
 h5,
 h6 {
-  font-family: $base-font-family;
+  @include primary-font-style();
 }
 
 h6 {
-  font-weight: 600;
+  @include primary-font-style("bold");
 }
 
 h6, p {
@@ -58,10 +57,8 @@ p {
 }
 
 .lead {
-  font-size: modular-scale(2);
-  font-family: $heading-font-family;
-  font-style: italic;
-  font-weight: $heading-font-weight;
+  font-size: 1.6em;
+  @include secondary-font-style("italic");
 }
 
 a {

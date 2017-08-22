@@ -85,8 +85,11 @@
 
   .selectize-control.single .selectize-input::after {
     border: 0;
-    @include material-icons();
-    content: "keyboard_arrow_down";
+    content: "";
+    background-image: url("../img/icons/Expand.svg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 50%;
     width: 30px;
     height: 30px;
     margin-top: -15px;
@@ -94,7 +97,7 @@
   }
 
   .mdl-selectfield.is-active .selectize-control.single .selectize-input::after {
-    content: "keyboard_arrow_up";
+    background-image: url("../img/icons/Collapse.svg");
   }
 
   .selectize-dropdown {
