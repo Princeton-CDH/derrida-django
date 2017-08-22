@@ -26,7 +26,7 @@ def get_default_intervener():
 
 
 class TagQuerySet(models.QuerySet):
-    '''Custom :class:`~django.db.models.QuerySet` for :class`Tag` to
+    '''Custom :class:`~django.db.models.QuerySet` for :class:`Tag` to
     make it easy to find tags that apply to a particular kind of
     Intervention.'''
 
@@ -50,7 +50,7 @@ class Tag(Named, Notable):
         help_text='Type or types of interventions this tag is applicable to.')
 
     objects = TagQuerySet.as_manager()
-
+    
 
 class Intervention(BaseAnnotation):
 
