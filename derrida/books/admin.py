@@ -349,7 +349,7 @@ class InstanceAdmin(admin.ModelAdmin):
         'is_digitized', 'is_translation', 'has_notes')
     # NOTE: fields are specified here so that notes input will be displayed last
     fields = ('work', 'alternate_title', 'journal', 'publisher',
-        'pub_place', ('copyright_year', 'copy'), 'print_date',
+        'pub_place', 'slug', 'copy_letter', ('copyright_year', 'copy'), 'print_date',
         ('print_date_year_known', 'print_date_month_known',
          'print_date_day_known'),
         ('is_extant', 'is_translation'),

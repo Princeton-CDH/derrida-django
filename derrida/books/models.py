@@ -175,6 +175,22 @@ class Instance(Notable):
                         message='Zotero IDs must be alphanumeric.'
                     )]
     )
+    # identifying slug for use in get_absolute_url, indexed for speed
+    slug = models.CharField(max_length=255,
+                            help_text=('Editing this after a record is '
+                                       'created should be done with caution '
+                                       'as it will break the previous URL.'),
+                            unique=True)
+    # copy letter (A, B, C, D) to identify duplicate copies
+    copy_letter = models.CharField(
+        max_length=1,
+        # match A-Z or an empty string
+        validators=[RegexValidator(
+                r'[A-Z]*', ' '
+            )],
+        blank=True
+    )
+
     #: item is extant
     is_extant = models.BooleanField(help_text='Extant in PUL JD', default=False)
     #: item is annotated
@@ -289,6 +305,16 @@ class Instance(Notable):
             year = 'nd'
         # return a slug with no distinction for copies
         return slugify('%s %s %s' % (author, deligature(title), year))
+
+    def generate_safe_slug(self):
+        '''Generate a verified slug with copy handling for :class:`Instance`
+           object.
+           :rtype str: String in the format
+           ``lastname-title-of-work-year-letter``
+        '''
+
+        base = self.generate_base_slug()
+
 
     def display_title(self):
         '''display title - alternate title or work short title'''
