@@ -1723,13 +1723,17 @@ hr {
     margin-left: 0; }
 
 .item__heading {
+  font-family: "SabonLTPro-Italic", "Georgia", serif;
+  font-weight: normal;
+  font-style: normal;
   font-size: 1.35em;
   font-weight: 700;
   font-style: italic;
   margin-top: 0.4em; }
   .collection--condensed .item__heading {
     font-size: 1.4em;
-    margin-top: 0.6em; }
+    margin-top: 0.6em;
+    margin-bottom: 0.25em; }
 
 .item__link {
   color: #424242;
@@ -1738,7 +1742,8 @@ hr {
   text-decoration: none;
   border-bottom: 3px solid #dbdbdb;
   transition: border-color 150ms ease, opacity 150ms ease;
-  color: inherit; }
+  color: inherit;
+  border-bottom-color: transparent; }
   .item__link:hover, .item__link:active, .item__link.is-hovered {
     opacity: 1;
     color: #424242;
@@ -1746,12 +1751,12 @@ hr {
 
 .item__heading,
 .item__author {
-  font-family: "SabonLTPro-Roman", "Georgia", serif;
-  font-weight: normal;
-  font-style: normal;
   margin-bottom: 0; }
 
 .item__author {
+  font-family: "SabonLTPro-Roman", "Georgia", serif;
+  font-weight: normal;
+  font-style: normal;
   font-size: 1.3em; }
   .collection--condensed .item__author {
     font-size: 1.3em; }
