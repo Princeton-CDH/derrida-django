@@ -1554,12 +1554,10 @@ hr {
   .page-header__callout .callout__link {
     color: #424242;
     font-weight: inherit;
-    opacity: 0.8;
     text-decoration: none;
     border-bottom: 3px solid #dbdbdb;
-    transition: border-color 150ms ease, opacity 150ms ease; }
+    transition: border-color 150ms ease; }
     .page-header__callout .callout__link:hover, .page-header__callout .callout__link:active, .page-header__callout .callout__link.is-hovered {
-      opacity: 1;
       color: #424242;
       border-color: #3ca1ff; }
   .page-header__callout .lead {
@@ -1738,14 +1736,12 @@ hr {
 .item__link {
   color: #424242;
   font-weight: inherit;
-  opacity: 0.8;
   text-decoration: none;
   border-bottom: 3px solid #dbdbdb;
-  transition: border-color 150ms ease, opacity 150ms ease;
+  transition: border-color 150ms ease;
   color: inherit;
   border-bottom-color: transparent; }
   .item__link:hover, .item__link:active, .item__link.is-hovered {
-    opacity: 1;
     color: #424242;
     border-color: #3ca1ff; }
 
@@ -1943,10 +1939,7 @@ hr {
   clear: both;
   float: left;
   margin-bottom: 1rem; }
-  .item-navigation-link:hover, .item-navigation-link:active {
-    opacity: 1;
-    border-color: rgba(60, 161, 255, 0.5); }
-  .item-navigation-link--active {
+  .item-navigation-link--active, .item-navigation-link:hover, .item-navigation-link:active {
     opacity: 1;
     color: #424242;
     border-color: #3ca1ff; }
@@ -2020,12 +2013,10 @@ hr {
     .item-term .item-term__value .item-term__link {
       color: #424242;
       font-weight: inherit;
-      opacity: 0.8;
       text-decoration: none;
       border-bottom: 3px solid #dbdbdb;
-      transition: border-color 150ms ease, opacity 150ms ease; }
+      transition: border-color 150ms ease; }
       .item-term .item-term__value .item-term__link:hover, .item-term .item-term__value .item-term__link:active, .item-term .item-term__value .item-term__link.is-hovered {
-        opacity: 1;
         color: #424242;
         border-color: #3ca1ff; }
     .item-term .item-term__value .item__link {
@@ -2139,10 +2130,7 @@ hr {
     text-decoration: none;
     border-bottom: 3px solid #c2c2c2;
     transition: color 150ms ease, border-color 150ms ease; }
-    .page-sort__header .sort-link:hover, .page-sort__header .sort-link:active {
-      opacity: 1;
-      border-color: rgba(60, 161, 255, 0.5); }
-    .page-sort__header .sort-link--active {
+    .page-sort__header .sort-link--active, .page-sort__header .sort-link:hover, .page-sort__header .sort-link:active {
       opacity: 1;
       color: #424242;
       border-color: #3ca1ff; }

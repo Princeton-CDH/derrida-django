@@ -8,13 +8,9 @@
 
   transition: color $base-duration $base-timing, border-color $base-duration $base-timing;
 
+  @at-root #{&}--active,
   &:hover,
   &:active {
-    opacity: 1;
-    border-color: rgba($primary-color, 0.5);
-  }
-
-  @at-root #{&}--active {
     opacity: 1;
     color: $base-font-color;
     border-color: $primary-color;
