@@ -1,4 +1,5 @@
 import json
+import re
 
 from django.db import models
 from django.contrib.contenttypes.fields import GenericRelation
@@ -306,8 +307,29 @@ class Instance(Notable):
            ``lastname-title-of-work-year-letter``
         '''
 
-        base = self.generate_base_slug()
+        # base slug
+        slug = self.generate_base_slug()
+        # get any copies that use the base slug
+        duplicates = Instance.objects.filter(
+            slug__icontains=slug).order_by('-slug')
+        # any new copies should start with 'B' since 'A' is implicit in already
+        # saved slug for original
+        new_copy_letter = 'B'
+        # check for duplicates
+        if duplicates.exists():
+            # get their slugs as a flat list
+            slugs = duplicates.values_list('slug', flat=True)
+            letters = []
+            # clip any -[A-Z] copy suffixes and append to a list
+            for slug in slugs:
+                if re.match(r'-[A-Z]%', slug):
+                    letters += slug.split('-')[-1]
+            # sort and iterate letter by one
+            if sorted(letters, reverse=True):
+                new_copy_letter = chr(ord(letters[0]) + 1)
+            slug = ('%s-%s' % (slug, new_copy_letter))
 
+        return slug
 
     def display_title(self):
         '''display title - alternate title or work short title'''
@@ -533,7 +555,7 @@ class ReferenceQuerySet(models.QuerySet):
         visualization.  Currently used for histogram visualization.
         Author of cited work is aliased to `author`.
         '''
-        return self.values('id', 'instance', 'derridawork__slug',
+        return self.values('id', 'instance__slug', 'derridawork__slug',
             'derridawork_page', 'derridawork_pageloc',
            author=models.F('instance__work__authors__authorized_name'))
 

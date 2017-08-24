@@ -162,7 +162,7 @@ class TestReferenceQuerySet(TestCase):
         ref = self.ref_qs.first()
         ref_values = self.ref_qs.summary_values().first()
         assert ref_values['id'] == ref.pk
-        assert ref_values['instance'] == ref.instance.id
+        assert ref_values['instance__slug'] == ref.instance.slug
         assert ref_values['derridawork__slug'] == ref.derridawork.slug
         assert ref_values['derridawork_page'] == ref.derridawork_page
         assert ref_values['derridawork_pageloc'] == ref.derridawork_pageloc
@@ -215,13 +215,33 @@ class TestInstance(TestCase):
         la_vie.year = None
         assert '%s (n.d.)' % (la_vie.display_title(), )
 
+    def test_generate_base_slug(self):
+        la_vie = Instance.objects.get(work__short_title__contains="La vie")
+        # La vie's slug is set in the test fixture as a reference
+        assert la_vie.generate_base_slug() == la_vie.slug
+
+    def test_generate_safe_slug(self):
+
+        # la vie should appear in the list and see itself so suggest -B
+        la_vie = Instance.objects.get(work__short_title__contains="La vie")
+        assert la_vie.generate_safe_slug() == la_vie.generate_base_slug() + '-B'
+        # save the -B copy
+        la_vie.pk = None
+        la_vie.slug = la_vie.generate_safe_slug()
+        la_vie.save()
+        # now pull in the original copy and run again, should produce a slug
+        # with -C as its suffix
+        la_vie = Instance.objects.get(slug=la_vie.generate_base_slug())
+        la_vie.generate_safe_slug() == la_vie.generate_base_slug() + '-C'
+
+
     def test_get_absolute_url(self):
         la_vie = Instance.objects.get(work__short_title__contains="La vie")
         item_url = la_vie.get_absolute_url()
         resolved_url = resolve(item_url)
         assert resolved_url.url_name == 'detail'
         assert resolved_url.namespace == 'books'
-        assert int(resolved_url.kwargs['pk']) == la_vie.pk
+        assert resolved_url.kwargs['slug'] == la_vie.slug
 
     def test_item_type(self):
         la_vie = Instance.objects.get(work__short_title__contains="La vie")

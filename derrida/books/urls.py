@@ -24,10 +24,10 @@ urlpatterns = [
 
     url(r'^library/$', views.InstanceListView.as_view(), name='list'),
     url(r'^library/(?P<slug>[-\w]+)/$', views.InstanceDetailView.as_view(), name='detail'),
-    url(r'^library/(?P<pk>\d+)/gallery/$',
+    url(r'^library/(?P<slug>[-\w]+)/gallery/$',
         views.InstanceDetailView.as_view(template_name='books/detail/gallery.html'),
         name='detail-gallery'),
-    url(r'^library/(?P<pk>\d+)/citations/$',
+    url(r'^library/(?P<slug>[-\w]+)/citations/$',
         views.InstanceDetailView.as_view(template_name='books/detail/citations.html'),
         name='detail-citations'),
 ]
