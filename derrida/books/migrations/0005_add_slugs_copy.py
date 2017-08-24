@@ -18,8 +18,8 @@ def generate_base_slug(obj):
        :param obj: Object of :class:`~derrida.books.models.Instance`
        :rtype str: String in the format ``lastname-title-of-work-year``
     '''
-    # get the first author, if there is one
-    author = obj.work.authors.first()
+    # get the first author, if there is one, by authorized name
+    author = obj.work.authors.order_by('authorized_name').first()
     if author:
         # use the last name of the first author
         author = author.authorized_name.split(',')[0]
@@ -77,7 +77,7 @@ def add_slugs(apps, schema_editor):
                 # add char to slug
                 dupe.slug = '%s-%s' % (dupe.slug, char)
                 # set dupe's copy_letter
-                dupe.copy_letter = char
+                dupe.copy = char
                 # iterate to next capital alpha
                 char = chr(ord(char) + 1)
             # iterate over the list and use pks to apply new slugs
@@ -86,7 +86,7 @@ def add_slugs(apps, schema_editor):
                 for dupe in duplicates[1:]:
                     if item.pk == dupe.pk:
                         item.slug = dupe.slug
-                        item.copy_letter = dupe.copy_letter
+                        item.copy = dupe.copy
             # update once, two transactions total
             update_instances(instances)
 
@@ -94,7 +94,7 @@ def add_slugs(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('books', '0005_instance_copy'),
+        ('books', '0004_derridawork_section_slug'),
     ]
 
     operations = [
@@ -104,28 +104,26 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='instance',
-            name='copy_letter',
-            field=models.CharField(blank=True, max_length=1, validators=[django.core.validators.RegexValidator('[A-Z]*', ' ')]),
+            name='slug',
+            field=models.SlugField(unique=False, blank=True, help_text='Editing this after a record is created should be done with caution as it will break the previous URL.', max_length=255, null=True),
         ),
         migrations.AddField(
             model_name='instance',
-            name='slug',
-            field=models.CharField(blank=True, help_text='Editing this after a record is created should be done with caution as it will break the previous URL.', max_length=255, null=True),
+            name='copy',
+            field=models.CharField(blank=True, help_text='Label to distinguish multiple copies of the same edition', max_length=1, validators=[django.core.validators.RegexValidator('[A-Z]', message='Please set a capital letter from A-Z.')]),
         ),
         # Make the slugs and validate their uniqueness
         migrations.RunPython(
             code=add_slugs,
             reverse_code=migrations.RunPython.noop,
         ),
-        # Alter the field to make it required and unique, adding index
+        # Alter the field to make it SlugField with max_length 255
         migrations.AlterField(
             model_name='instance',
             name='slug',
-            field=models.CharField(
-                help_text='Editing this after a record is created should be done with caution as it will break the previous URL.',
+            field=models.SlugField(
                 max_length=255,
-                null=False,
-                blank=False,
-                unique=True),
-        )
+                help_text='Editing this after a record is created should be done with caution as it will break the previous URL.',
+            ),
+        ),
     ]

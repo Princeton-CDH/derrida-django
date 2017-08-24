@@ -176,20 +176,10 @@ class Instance(Notable):
                     )]
     )
     # identifying slug for use in get_absolute_url, indexed for speed
-    slug = models.CharField(max_length=255,
+    slug = models.SlugField(max_length=255,
                             help_text=('Editing this after a record is '
                                        'created should be done with caution '
-                                       'as it will break the previous URL.'),
-                            unique=True)
-    # copy letter (A, B, C, D) to identify duplicate copies
-    copy_letter = models.CharField(
-        max_length=1,
-        # match A-Z or an empty string
-        validators=[RegexValidator(
-                r'[A-Z]*', ' '
-            )],
-        blank=True
-    )
+                                       'as it will break the previous URL.'))
 
     #: item is extant
     is_extant = models.BooleanField(help_text='Extant in PUL JD', default=False)
@@ -230,8 +220,12 @@ class Instance(Notable):
     #: end page for book section or journal article
     end_page = models.CharField(max_length=20, blank=True, null=True)
     #: optional label to distinguish multiple copies of the same work
-    copy = models.CharField(max_length=3, blank=True, null=True,
-        help_text='Label to distinguish multiple copies of the same edition')
+    copy = models.CharField(max_length=1, blank=True,
+        help_text='Label to distinguish multiple copies of the same edition',
+        validators=[RegexValidator(r'[A-Z]',
+            message='Please set a capital letter from A-Z.'
+        )],
+    )
 
     #: :class:`Language` this item is written in;
     # uses :class:`InstanceLanguage` to indicate primary language
