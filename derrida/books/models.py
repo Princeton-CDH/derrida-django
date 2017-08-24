@@ -295,8 +295,8 @@ class Instance(Notable):
             # try the work year,
             year = self.work.year
         if not year:
-            # if still no year, use 'nd' for now
-            year = 'nd'
+            # if still no year, use blank string
+            year = ''
         # return a slug with no distinction for copies
         return slugify('%s %s %s' % (author, deligature(title), year))
 

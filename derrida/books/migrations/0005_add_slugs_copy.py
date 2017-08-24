@@ -34,8 +34,8 @@ def generate_base_slug(obj):
         # try the work year,
         year = obj.work.year
     if not year:
-        # if still no year, use 'nd' for now
-        year = 'nd'
+        # if still no year, use blank string
+        year = ''
     # return a slug with no distinction for copies
     return slugify('%s %s %s' % (author, deligature(title), year))
 
