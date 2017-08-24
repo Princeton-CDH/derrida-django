@@ -23,7 +23,7 @@ urlpatterns = [
         views.ReferenceDetailView.as_view(), name='reference'),
 
     url(r'^library/$', views.InstanceListView.as_view(), name='list'),
-    url(r'^library/(?P<pk>\d+)/$', views.InstanceDetailView.as_view(), name='detail'),
+    url(r'^library/(?P<slug>[-\w]+)/$', views.InstanceDetailView.as_view(), name='detail'),
     url(r'^library/(?P<pk>\d+)/gallery/$',
         views.InstanceDetailView.as_view(template_name='books/detail/gallery.html'),
         name='detail-gallery'),

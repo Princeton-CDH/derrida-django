@@ -273,8 +273,7 @@ class Instance(Notable):
             self.copyright_year or 'n.d.')
 
     def get_absolute_url(self):
-        # placeholder: id-based url until we have slugs
-        return reverse('books:detail', kwargs={'pk': self.pk})
+        return reverse('books:detail', kwargs={'slug': self.slug})
 
     def generate_base_slug(self):
         '''Generate slug for :class:`Instance` object.
