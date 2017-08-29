@@ -1,6 +1,6 @@
 # import datetime
 from haystack import indexes
-from derrida.books.models import Instance
+from derrida.books.models import Instance, Reference
 
 
 # Solr index needs to support:
@@ -50,3 +50,14 @@ class InstanceIndex(indexes.SearchIndex, indexes.Indexable):
         # first letter of author
         return [author.authorized_name[0].upper() for author in instance.work.authors.all()]
 
+
+class CitationIndex(indexes.SearchIndex, indexes.Indexable):
+
+    text = indexes.CharField(document=True, use_template=True, stored=False)
+    reference_type = indexes.CharField(model_attr='reference_type__name')
+    canvases = indexes.MultiValueField(model_attr='canvases__label')
+    interventions = indexes.MultiValueField(model_attr='interventions__text')
+    # TODO: Fields on interventions that can facet
+
+    def get_model(self):
+        return Reference

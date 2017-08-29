@@ -1,0 +1,20 @@
+{#  text for generic search across text and non #}
+{# brief citation to grab useful info about the DerridaWork #}
+{{ object.derridawork.short_title }}
+{{ object.derridawork.full_citation }}
+{# pull in instance info #}
+{{ object.instance.work.primary_title }}
+{% for author in object.instance.authors.all %}
+  {{ author.firstname_last }}{% if not forloop.last %} {% endif %}
+{% endfor %}
+{# get the text of associated intervention #}
+{% for intervention in object.interventions.all %}
+  {# anchor and annotation text #}
+  {{ intervention.text }}
+  {{ intervention.quote }}
+  {{ intervention.get_intervention_type_display }}
+  {% for tag in intervention.tags %}
+    {{ tag.name }}{% if not forloop.last %}, {% endif %}
+  {% endfor %}
+{% endfor %}
+{# TODO: More intervention data (since that's what citations wrap )#}
