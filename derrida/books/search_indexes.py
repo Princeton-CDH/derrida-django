@@ -52,12 +52,30 @@ class InstanceIndex(indexes.SearchIndex, indexes.Indexable):
 
 
 class CitationIndex(indexes.SearchIndex, indexes.Indexable):
-
+    '''Search index instance for :class:`derrida.books.models.Reference`'''
     text = indexes.CharField(document=True, use_template=True, stored=False)
-    reference_type = indexes.CharField(model_attr='reference_type__name')
-    canvases = indexes.MultiValueField(model_attr='canvases__label')
-    interventions = indexes.MultiValueField(model_attr='interventions__text')
-    # TODO: Fields on interventions that can facet
+    #: Full citation from :class:`~derrida.books.models.DerridaWork`
+    derridawork = indexes.CharField(model_attr='derridawork__full_citation', faceted=True)
+    #: Page and page location as a concated code, i.e. 106a
+    derridawork_page_loc = indexes.CharField()
+    book_page = indexes.CharField(model_attr='book_page')
+    reference_type = indexes.CharField(model_attr='reference_type__name',
+        faceted=True)
+    anchor_text = indexes.CharField(model_attr='anchor_text')
+    # QUESTION: Is this useful at all for faceting?
+    canvases = indexes.MultiValueField(model_attr='canvases__label', faceted=True)
 
     def get_model(self):
         return Reference
+
+    def prepare_derridawork_page_loc(self, instance):
+        '''
+        Concat instance.derridawork_page and derridwork_page_loc.
+        Provides value for :class:`CitationIndex` ``derridawork_page_loc``.
+
+        :param object instance: Instance of :class:`~derrida.books.models.DerridaWorkSection`
+        :return: Concatenated string of page and loc
+        :rtype: str
+        '''
+        return '%s%s' % (instance.derridawork_page,
+                         instance.derridawork_page_loc)
