@@ -52,7 +52,19 @@ class InstanceSearchForm(forms.Form):
                     for val, count in counts]
 
 
+class CitationSearchForm(forms.Form):
 
+    query = forms.CharField(label='Search', required=False)
 
+    facet_fields =['derridawork', 'reference_type']
+    derridawork = FacetChoiceField('Cited by Derrida in')
+    reference_type = FacetChoiceField('Citation Type')
 
-
+    def set_choices_from_facets(self, facets):
+        # configure field choices based on facets returned from Solr
+        # TODO: Generalize this for a sublcass of forms.Form?
+        for facet, counts in facets.items():
+            if facet in self.fields:
+                self.fields[facet].choices = [
+                    (val, mark_safe('%s <span>%d</span>' % (val, count)))
+                    for val, count in counts]
