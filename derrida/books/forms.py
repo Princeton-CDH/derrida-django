@@ -56,9 +56,9 @@ class CitationSearchForm(forms.Form):
 
     query = forms.CharField(label='Search', required=False)
 
-    facet_fields =['derridawork', 'reference_type']
-    derridawork = FacetChoiceField('Cited by Derrida in')
-    reference_type = FacetChoiceField('Citation Type')
+    facet_fields = ['derridawork', 'reference_type']
+    derridawork = FacetChoiceField(label='Cited by Derrida in')
+    reference_type = FacetChoiceField(label='Citation Type')
 
     def set_choices_from_facets(self, facets):
         # configure field choices based on facets returned from Solr

@@ -2,8 +2,7 @@ from dal import autocomplete
 from django.views.generic import DetailView, ListView
 from django.views.generic.list import MultipleObjectMixin
 from haystack.query import SearchQuerySet
-
-from .forms import InstanceSearchForm
+from .forms import CitationSearchForm, InstanceSearchForm
 from .models import Publisher, Language, Instance, Reference, DerridaWorkSection
 
 
@@ -49,7 +48,6 @@ class InstanceListView(ListView):
 
     def get_queryset(self):
         sqs = SearchQuerySet().models(self.model)
-
         # if search parameters are specified, use them to initialize the form;
         # otherwise, use form defaults
         self.form = self.form_class(self.request.GET or None)
@@ -101,13 +99,54 @@ class ReferenceListView(ListView):
     # full citation/reference list; eventually will have filter/sort options
     # (sticking with 'reference' for now until project team confirms
     # which term is more general / preferred for public site)
+
+    # NOTE: Still leaving this as Reference, but perhaps it should change since
+    # citation is firmly in place on the public site?
+
     model = Reference
+    form_class = CitationSearchForm
     paginate_by = 16
     template_name = 'books/reference_list.html'
 
-    # default ordering by derrida work, page, page location
-    # matches default ordering for this view
+    def get_queryset(self):
+        sqs = SearchQuerySet().models(self.model)
 
+        # if search parameters are specified, use them to initialize the form;
+        # otherwise, use form defaults
+        self.form = self.form_class(self.request.GET or None)
+        for facet_field in self.form.facet_fields:
+            sqs = sqs.facet(facet_field)
+
+        if self.form.is_valid():
+            search_opts = self.form.cleaned_data
+        else:
+            # todo: display/handle any form validation errors
+            # (possible?)
+            # for now, return unfiltered queryset with facets
+            return sqs
+
+        # filter solr query based on search options
+        if search_opts['query']:
+            sqs = sqs.filter(text=search_opts['query'])
+
+        for facet in self.form.facet_fields:
+            if facet in search_opts and search_opts[facet]:
+                sqs = sqs.filter(**{'%s__in' % facet: search_opts[facet]})
+
+        return sqs
+
+    def get_context_data(self, **kwargs):
+        context = super(ReferenceListView, self).get_context_data(**kwargs)
+        sqs = self.get_queryset()
+        facets = sqs.facet_counts()
+        # update multi-choice fields based on facets in the data
+        self.form.set_choices_from_facets(facets.get('fields'))
+        context.update({
+            'facets': facets,
+            'total': sqs.count(),
+            'form': self.form,
+        })
+        return context
 
 class ReferenceHistogramView(ListView):
     template_name = 'books/reference_histogram.html'
@@ -153,5 +192,3 @@ class ReferenceDetailView(DetailView):
             derridawork_pageloc=self.kwargs['pageloc'],
             derridawork__slug=self.kwargs['derridawork_slug']
             ).first()
-
-
