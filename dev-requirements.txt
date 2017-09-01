@@ -5,5 +5,9 @@ pytest-cov
 pytest-sugar
 django-debug-toolbar
 sphinx
-ansible
 # Optional, only needed if deploying
+ansible
+# pytest-django-haystack
+# local fork adds haystack connection parameter
+git+https://github.com/Princeton-CDH/pytest-django-haystack.git@haystack-parameter#egg=pytest-django-haystack
+

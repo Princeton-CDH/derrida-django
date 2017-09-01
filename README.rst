@@ -80,6 +80,10 @@ things easier. To run them, first install development requirements::
 
     pip install -r dev-requirements.txt
 
+Configure a Solr core for testing and update with the built solr schema.
+(The test Solr core will be cleared and reindexed for tests of functionality
+that require Solr.)
+
 Run tests using py.test::
 
     py.test
