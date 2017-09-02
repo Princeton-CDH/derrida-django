@@ -177,3 +177,67 @@
     opacity: 0.5;
   }
 }
+
+.filter--years {
+  max-width: 200px;
+
+  .filter__search {
+    padding: 0;
+    border: 0;
+  }
+
+  .filter__search-label {
+    padding: 0 1em;
+  }
+
+  .filter__search-field {
+    border: 1px solid lighten($medium-grey, 20%);
+    border-radius: 1rem;
+    height: 1.7rem;
+    padding: 0 1em;
+    text-align: center;
+  }
+}
+
+.frequency_chart {
+  height: 4rem;
+  border: 1px solid lighten($medium-grey, 20%);
+  display: flex;
+  margin-bottom: 0.25rem;
+
+  &.frequency_chart--bar {
+    align-items: flex-end;
+  }
+}
+
+.frequency_chart__bar {
+  background-color: lighten($medium-grey, 20%);
+  cursor: pointer;
+  width: 100%;
+  transition: background-color $base-duration $base-timing;
+
+  &:hover,
+  &:active {
+    background-color: $blue;
+  }
+
+  @for $i from 1 through 10 {
+    &.frequency_chart__bar--#{$i} {
+      height: $i * 10%;
+    }
+  }
+}
+
+.frequency_chart-axis {
+  display: flex;
+  color: lighten($medium-grey, 10%);
+
+  .chart-label {
+    width: 50%;
+    font-size: 0.8em;
+
+    &.chart-label--end {
+      text-align: right;
+    }
+  }
+}

@@ -1711,6 +1711,65 @@ hr {
   .filter__check-list .filter__count {
     opacity: 0.5; }
 
+.filter--years {
+  max-width: 200px; }
+  .filter--years .filter__search {
+    padding: 0;
+    border: 0; }
+  .filter--years .filter__search-label {
+    padding: 0 1em; }
+  .filter--years .filter__search-field {
+    border: 1px solid #d1d1d1;
+    border-radius: 1rem;
+    height: 1.7rem;
+    padding: 0 1em;
+    text-align: center; }
+
+.frequency_chart {
+  height: 4rem;
+  border: 1px solid #d1d1d1;
+  display: flex;
+  margin-bottom: 0.25rem; }
+  .frequency_chart.frequency_chart--bar {
+    align-items: flex-end; }
+
+.frequency_chart__bar {
+  background-color: #d1d1d1;
+  cursor: pointer;
+  width: 100%;
+  transition: background-color 150ms ease; }
+  .frequency_chart__bar:hover, .frequency_chart__bar:active {
+    background-color: #3ca1ff; }
+  .frequency_chart__bar.frequency_chart__bar--1 {
+    height: 10%; }
+  .frequency_chart__bar.frequency_chart__bar--2 {
+    height: 20%; }
+  .frequency_chart__bar.frequency_chart__bar--3 {
+    height: 30%; }
+  .frequency_chart__bar.frequency_chart__bar--4 {
+    height: 40%; }
+  .frequency_chart__bar.frequency_chart__bar--5 {
+    height: 50%; }
+  .frequency_chart__bar.frequency_chart__bar--6 {
+    height: 60%; }
+  .frequency_chart__bar.frequency_chart__bar--7 {
+    height: 70%; }
+  .frequency_chart__bar.frequency_chart__bar--8 {
+    height: 80%; }
+  .frequency_chart__bar.frequency_chart__bar--9 {
+    height: 90%; }
+  .frequency_chart__bar.frequency_chart__bar--10 {
+    height: 100%; }
+
+.frequency_chart-axis {
+  display: flex;
+  color: #b8b8b8; }
+  .frequency_chart-axis .chart-label {
+    width: 50%;
+    font-size: 0.8em; }
+    .frequency_chart-axis .chart-label.chart-label--end {
+      text-align: right; }
+
 .collection {
   display: flex;
   flex-direction: row;
