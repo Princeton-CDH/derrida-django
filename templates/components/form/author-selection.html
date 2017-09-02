@@ -1,0 +1,52 @@
+{% load static %}
+<script>
+  $(function() {
+    $(".clear-link").on("click", function(e) {
+      e.preventDefault();
+      var $checkboxes = $(this).parents(".filter").find('.mdl-checkbox__input');
+      $checkboxes.each(function() {
+        var $checkbox = $(this);
+        $checkbox.removeProp('checked');
+        $checkbox.parent().removeClass('is-checked');
+      });
+    });
+  });
+</script>
+
+<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+  <input class="mdl-textfield__input" type="text" name="author-selection" id="author-selection">
+  <label class="mdl-textfield__label" for="author-selection">Author</label>
+</div>
+<div class="filter filter--author">
+  <header class="filter__search">
+    <label class="mdl-button mdl-js-button mdl-button--icon" for="filter__search-term">
+      <img src="{% static "img/icons/Search.svg" %}" />
+    </label>
+    <input class="filter__search-field" id="filter__search-term" name="filter__search-term" placeholder="Search" />
+  </header>
+
+  <nav class="filter__nav">
+    {% with "IXYZ" as emptyLetters %}
+      {% for letter in "ABCDEFGHIJKLMNOPQRSTUVWXYZ" %}
+        {% if letter in emptyLetters %}
+          <span class="filter__nav-link filter__nav-link--disabled">{{letter}}</span>
+        {% else %}
+          <a href="#" class="filter__nav-link">{{letter}}</a>
+        {% endif %}
+      {% endfor %}
+    {% endwith %}
+  </nav>
+
+  <section class="filter__check-list">
+    {% for author in "ABCDEFGHIJK" %}
+    <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="list-checkbox-{{author}}">
+      <input type="checkbox" id="list-checkbox-{{author}}" class="mdl-checkbox__input" />
+      {{author}}dolf, Stender-Petersen <span class="filter__count">3</span>
+    </label>
+    {% endfor %}
+  </section>
+
+  <footer class="filter__footer">
+    <a class="clear-link" href="#">Clear Selection</a>
+  </footer>
+</div>

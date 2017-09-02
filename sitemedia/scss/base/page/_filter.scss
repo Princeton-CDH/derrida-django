@@ -1,3 +1,4 @@
+// Page filter for collections
 .page-filter {
   background: $white;
   color: $base-font-color;
@@ -5,28 +6,6 @@
   .container {
     width: 80%;
     margin: auto;
-  }
-}
-
-.filter__section {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: stretch;
-  padding-bottom: 1em;
-}
-
-.filter__selector {
-  padding: 0 1rem;
-  flex-grow: 2;
-  flex-basis: 200px;
-
-  @include grid-media($large-medium-viewport-grid) {
-    max-width: 50%;
-  }
-
-  &.filter__selector--condensed {
-    flex-grow: 1;
-    flex-basis: 130px;
   }
 }
 
@@ -76,5 +55,125 @@
     .is-visible & {
       display: block;
     }
+  }
+}
+
+// Old Search filter
+.filter__section {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  padding-bottom: 1em;
+}
+
+.filter__selector {
+  padding: 0 1rem;
+  flex-grow: 2;
+  flex-basis: 200px;
+
+  @include grid-media($large-medium-viewport-grid) {
+    max-width: 50%;
+  }
+
+  &.filter__selector--condensed {
+    flex-grow: 1;
+    flex-basis: 130px;
+  }
+}
+
+// New Search filter
+.filter {
+  background-color: $white;
+  border: 1px solid $primary-color;
+  padding: 1rem 1rem 0.8rem;
+  max-width: 360px;
+
+  .mdl-checkbox__box-outline {
+    border: 1px solid transparentize($black, 0.8);
+  }
+
+  .clear-link {
+    font-size: 0.8em;
+    @include faded-link;
+    border: 0;
+  }
+}
+
+.filter__nav {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  font-size: 0.85em;
+  padding: 0 1.4rem 1rem;
+}
+
+.filter__nav-link {
+  width: 7.5%;
+  text-align: center;
+  text-decoration: none;
+  color: $base-font-color;
+  transition: color $base-duration $base-timing;
+
+  &:hover,
+  &:active {
+    color: $blue;
+  }
+
+  &.filter__nav-link--disabled {
+    color: $medium-grey;
+    opacity: 0.6;
+
+    &:hover,
+    &:active {
+      color: $medium-grey;
+    }
+  }
+}
+
+.filter__search {
+  border: 1px solid lighten($medium-grey, 20%);
+  margin-bottom: 1rem;
+  border-radius: 1em;
+  display: flex;
+  padding: 0 0.5em;
+
+  .mdl-button--icon {
+    width: 1.25rem;
+    height: 100%;
+    min-width: 0;
+    margin-top: -5px;
+    opacity: 0.8;
+  }
+
+  .filter__search-field {
+    border: 0;
+    padding-left: 0.5rem;
+    width: 100%;
+    outline: none;
+
+    &::placeholder {
+      opacity: 0.8;
+    }
+  }
+}
+
+.filter__check-list {
+  max-height: 8em;
+  overflow: scroll;
+  margin-bottom: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+
+  .mdl-checkbox {
+    width: 50%;
+    height: auto;
+    margin-bottom: 0.6rem;
+    display: flex;
+    padding-right: 1.5rem;
+    font-size: 0.85em;
+  }
+
+  .filter__count {
+    opacity: 0.5;
   }
 }

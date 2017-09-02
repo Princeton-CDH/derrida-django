@@ -140,6 +140,7 @@
 
   .coordinate-navigation {
     display: block;
+    z-index: 10;
 
     .background-colored--dark & {
       .mdl-navigation__link {

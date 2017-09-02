@@ -17,6 +17,20 @@ textarea {
   @include primary-font-style();
 }
 
+.mdl-checkbox__ripple-container .mdl-ripple {
+  background: $primary-color;
+}
+
+.mdl-checkbox.is-checked {
+  .mdl-checkbox__box-outline {
+    border-color: $primary-color;
+  }
+
+  .mdl-checkbox__tick-outline {
+    background: $primary-color;
+  }
+}
+
 // Switch
 @import "switch";
 
