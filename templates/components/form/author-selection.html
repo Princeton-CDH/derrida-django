@@ -1,6 +1,21 @@
 {% load static %}
 <script>
   $(function() {
+    var authorList = new List("authors", {
+      valueNames: [ "name" ],
+      listClass: "filter__check-list--authors",
+      searchClass: "filter__search-field--authors"
+    });
+
+    $(".filter__nav a").on("click", function(e) {
+      e.preventDefault();
+      var letter = $(this).text();
+      authorList.filter(function(item) {
+        var name = item.values().name.toLowerCase();
+        return name.substr(0, 1) == letter.toLowerCase();
+      });
+    });
+
     $(".clear-link").on("click", function(e) {
       e.preventDefault();
       var $checkboxes = $(this).parents(".filter").find('.mdl-checkbox__input');
@@ -8,21 +23,23 @@
         var $checkbox = $(this);
         $checkbox.removeProp('checked');
         $checkbox.parent().removeClass('is-checked');
+        authorList.filter();
       });
     });
   });
 </script>
 
+
 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
   <input class="mdl-textfield__input" type="text" name="author-selection" id="author-selection">
   <label class="mdl-textfield__label" for="author-selection">Author</label>
 </div>
-<div class="filter filter--author">
+<div class="filter filter--author" id="authors">
   <header class="filter__search">
     <label class="mdl-button mdl-js-button mdl-button--icon" for="filter__search-term">
       <img src="{% static "img/icons/Search.svg" %}" />
     </label>
-    <input class="filter__search-field" id="filter__search-term" name="filter__search-term" placeholder="Search" />
+    <input class="filter__search-field filter__search-field--authors" id="filter__search-term" name="filter__search-term" placeholder="Search" />
   </header>
 
   <nav class="filter__nav">
@@ -37,11 +54,11 @@
     {% endwith %}
   </nav>
 
-  <section class="filter__check-list">
+  <section class="filter__check-list filter__check-list--authors">
     {% for author in "ABCDEFGHIJK" %}
     <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="list-checkbox-{{author}}">
       <input type="checkbox" id="list-checkbox-{{author}}" class="mdl-checkbox__input" />
-      {{author}}dolf, Stender-Petersen <span class="filter__count">3</span>
+      <span class="name">{{author}}dolf, Stender-Petersen</span><span class="filter__count">3</span>
     </label>
     {% endfor %}
   </section>

@@ -86,7 +86,7 @@
   background-color: $white;
   border: 1px solid $primary-color;
   padding: 1rem 1rem 0.8rem;
-  max-width: 360px;
+  width: 360px;
 
   .mdl-checkbox__box-outline {
     border: 1px solid transparentize($black, 0.8);
