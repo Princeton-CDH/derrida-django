@@ -10,28 +10,46 @@
     <script src="{% static 'js/lib/selectize.min.js' %}"></script>
     <script>
       $(function() {
+        Selectize.define('active_css_classes', function(options) {
+          var self = this;
+
+          this.onFocus = (function() {
+            var original = self.onFocus;
+              return function() {
+                var $select_field = self.$control.parents('.mdl-selectfield');
+                $select_field.addClass('is-active');
+                return original.apply(this, arguments);
+              }
+          })();
+
+          this.onBlur = (function() {
+            var original = self.onBlur;
+              return function() {
+                var $select_field = self.$control.parents('.mdl-selectfield');
+                $select_field.removeClass('is-active');
+                return original.apply(this, arguments);
+              }
+          })();
+
+          this.onChange = (function() {
+            var original = self.onBlur;
+              return function(value) {
+                var $select_field = self.$control.parents('.mdl-selectfield');
+                if (value.length) {
+                  $select_field.addClass('is-dirty');
+                } else {
+                  $select_field.removeClass('is-dirty');
+                }
+                return original.apply(this, arguments);
+              }
+          })();
+        });
+
         $(".mdl-selectfield__select").selectize({
           allowEmptyOption: true,
-          onFocus: function() {
-            var $this = this.$control,
-                $select_field = $this.parents('.mdl-selectfield');
-            $select_field.addClass('is-active')
-          },
-          onBlur: function() {
-            var $this = this.$control,
-                $select_field = $this.parents('.mdl-selectfield');
-            $select_field.removeClass('is-active')
-          },
-          onChange: function(value) {
-            var $this = this.$control,
-                $select_field = $this.parents('.mdl-selectfield');
-            if (value.length) {
-              $select_field.addClass('is-dirty');
-            } else {
-              $select_field.removeClass('is-dirty');
-            }
-          }
+          plugins: ['active_css_classes']
         });
+
         var $searchForm = $(".search-form-header");
         $("[data-action=toggle-search-form]").on('click', function() {
           $searchForm.toggleClass('is-hidden');
