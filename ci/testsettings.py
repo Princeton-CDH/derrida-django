@@ -27,9 +27,8 @@ DATABASES = {
 HAYSTACK_CONNECTIONS = {
     'default': {
         'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
-        # 'URL': 'http://127.0.0.1:8983/solr/test-derrida',
-        'URL': 'http://127.0.0.1:8983/solr/',
-        # 'ADMIN_URL': 'http://127.0.0.1:8983/solr/admin/cores',
+        'URL': 'http://127.0.0.1:8983/solr/test-derrida',
+        'ADMIN_URL': 'http://127.0.0.1:8983/solr/admin/cores',
     }
 }
 

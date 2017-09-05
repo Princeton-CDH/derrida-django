@@ -22,8 +22,8 @@ install:
   - python -c "import uuid; print('SECRET_KEY = \'%s\'' % uuid.uuid4())" >> derrida/local_settings.py
 
 before_script:
-  - python manage.py build_solr_schema > solr-schema.xml
-  - curl -sSL https://raw.githubusercontent.com/moliware/travis-solr/master/travis-solr.sh | SOLR_COLLECTION_CONF="solr-schema.xml" SOLR_VERSION=$SOLR_VERSION SOLR_COLLECTION=$SOLR_CORE bash
+  - SOLR_VERSION=$SOLR_VERSION SOLR_CORE=$SOLR_CORE bash config_solr.sh
+  - python manage.py build_solr_schema --configure-directory=solr-$SOLR_VERSION/server/solr/$SOLR_CORE/conf --reload-core $SOLR_CORE
 
 script:
   - py.test --cov=derrida
