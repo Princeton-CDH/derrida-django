@@ -23,7 +23,7 @@ install:
 
 before_script:
   - python manage.py build_solr_schema > solr-schema.xml
-  - curl -sSL https://raw.githubusercontent.com/moliware/travis-solr/master/travis-solr.sh | SOLR_CONFS="solr-schema.xml" SOLR_VERSION=$SOLR_VERSION SOLR_CORE=$SOLR_CORE bash
+  - curl -sSL https://raw.githubusercontent.com/moliware/travis-solr/master/travis-solr.sh | SOLR_COLLECTION_CONFS="solr-schema.xml" SOLR_VERSION=$SOLR_VERSION SOLR_COLLECTION=$SOLR_CORE bash
 
 script:
   - py.test --cov=derrida
