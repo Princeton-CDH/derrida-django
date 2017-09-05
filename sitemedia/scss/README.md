@@ -30,10 +30,10 @@ The easiest way to install Bourbon and Neat is through `gem`. However, you can u
 
 ## Building CSS files
 To build the style assets, run the following command from the `scss` directory:
-`sass --scss site.scss ../css/local.css`
+`sass --scss style.scss ../css/local.css`
 
 To generate a compressed version of the styles, use the command:
-`sass --scss -t compressed site.scss ../css/local.min.css`
+`sass --scss -t compressed style.scss ../css/local.min.css`
 
 This will compile the scss file `style.scss` into css, minify the css, and move it to the css folder. Changes made to the scss file will not be reflected until that command is executed.
 
