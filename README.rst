@@ -74,15 +74,17 @@ Initial setup and installation:
 Unit Tests
 ~~~~~~~~~~
 
-Unit tests are written with `py.test <http://doc.pytest.org/>`__ but use
+Unit tests are written with `py.test <http://doc.pytest.org/>`_ but use
 Django fixture loading and convenience testing methods when that makes
 things easier. To run them, first install development requirements::
 
     pip install -r dev-requirements.txt
 
-Configure a Solr core for testing and update with the built solr schema.
+Configure a Solr core for testing and update with the built solr schema
+using the same build_solr_schema manage command as for development, above.
 (The test Solr core will be cleared and reindexed for tests of functionality
-that require Solr.)
+that require Solr.)  Any new unit tests that require Solr should use Django
+`override_settings` to use the test connection.
 
 Run tests using py.test::
 

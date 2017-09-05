@@ -10,23 +10,21 @@ import json
 from haystack.models import SearchResult
 import pytest
 
-from derrida.people.models import Person
-from derrida.books.models import Instance, Work, Reference, DerridaWorkSection
+from derrida.books.models import Instance, Reference, DerridaWorkSection
 from derrida.interventions.models import Intervention, INTERVENTION_TYPES
 
 
-class TestInstanceViews(TestCase):
-    fixtures = ['sample_work_data.json']
+#: reusable version of override_settings that sets test haystack connection
+USE_TEST_HAYSTACK = override_settings(
+    HAYSTACK_CONNECTIONS=settings.HAYSTACK_TEST_CONNECTIONS)
 
-    def setUp(self):
-        la_vie = Instance.objects.get(work__primary_title__icontains='la vie')
-        for i in range(1, 20):
-            la_vie.pk = None
-            la_vie.save()
+
+class TestInstanceViews(TestCase):
+    fixtures = ['test_instances.json']
 
     def test_instance_detail_view(self):
-        # get one of the la_vie copies
-        la_vie = Instance.objects.filter(work__primary_title__icontains='la vie')[3]
+        # get an instance of la_vie
+        la_vie = Instance.objects.filter(work__primary_title__icontains='la vie').first()
         # pass its pk to detail view
         detail_view_url = reverse('books:detail', kwargs={'pk': la_vie.pk})
         response = self.client.get(detail_view_url)
@@ -47,72 +45,51 @@ class TestInstanceViews(TestCase):
         # it should be the copy of la_view we looked up
         assert response.context['instance'] == la_vie
 
-    # FIXME: need a new fixture since this runs before setUp
-    @pytest.mark.haystack(connection=[settings.HAYSTACK_TEST_CONNECTION])
+    @USE_TEST_HAYSTACK
+    @pytest.mark.haystack
     def test_instance_list_view(self):
         list_view_url = reverse('books:list')
-        with override_settings(HAYSTACK_CONNECTIONS={
-            'default': settings.HAYSTACK_CONNECTIONS[settings.HAYSTACK_TEST_CONNECTION]}):
-            # an anonymous user can see the view
-            response = self.client.get(list_view_url)
-            # print(response.context)
+        # an anonymous user can see the view
+        response = self.client.get(list_view_url)
 
         assert response.status_code == 200
         # an object list is returned
         assert 'object_list' in response.context
         # Should find 16 objects and a paginator in context
-        # assert len(response.context['object_list']) == 16
+        assert len(response.context['object_list']) == 16
+        # 23 total instances in the fixture
+        assert response.context['total'] == 23
+        self.assertContains(response, '23 Results',
+            msg_prefix='total number of results displayed')
+        assert isinstance(response.context['object_list'][0], SearchResult)
+        assert response.context['object_list'][0].model == Instance
         assert 'page_obj' in response.context
         page_obj = response.context['page_obj']
         assert page_obj
         # Paginator 1 indexes this rather than 0, it's 2 pages!
-        # assert page_obj.paginator.page_range == range(1, 3)
-        assert page_obj.number == 1
-
-        # - testing that query set is alpha by author of work
-        # Make one more work, and give it an author
-        testwork = Work.objects.create(
-            primary_title="Un livre d'unittest",
-            short_title="Un livre"
-        )
-        # author starts with 'a' so it should come first
-        pers = Person.objects.create(authorized_name='Adespota', birth=1800,
-            death=1845)
-        testwork.authors.add(pers)
-        testwork.save()
-        # make an instance from that work
-        inst = Instance.objects.create(work=testwork)
-        # check the context to ensure it is there and firstß
-        response = self.client.get(list_view_url)
-        assert response.status_code == 200
-        assert 'object_list' in response.context
-        assert response.context['object_list'][0] == inst
-        # still 16 items
-        assert len(response.context['object_list']) == 16
-        # still page 1
-        page_obj = response.context['page_obj']
-        assert page_obj
         assert page_obj.paginator.page_range == range(1, 3)
         assert page_obj.number == 1
-        # now pick a different page via query string
+
+        # load a different page
         response = self.client.get(list_view_url, {'page': 2})
+
         assert response.status_code == 200
         page_obj = response.context['page_obj']
         assert page_obj
         assert page_obj.paginator.page_range == range(1, 3)
         assert page_obj.number == 2
-        # only 5 of 21 items on pg. 2
-        assert len(response.context['object_list']) == 5
+        # only 7 of 23 items on pg. 2
+        assert len(response.context['object_list']) == 7
 
 
 class TestReferenceViews(TestCase):
     fixtures = ['test_references.json']
 
-    @pytest.mark.haystack(connection=["test"])
+    @USE_TEST_HAYSTACK
+    @pytest.mark.haystack
     def test_reference_list(self):
         reference_list_url = reverse('books:reference-list')
-        with override_settings(HAYSTACK_CONNECTIONS={'default': settings.HAYSTACK_CONNECTIONS['test']}):
-            response = self.client.get(reference_list_url)
+        response = self.client.get(reference_list_url)
         assert response.status_code == 200
         assert 'object_list' in response.context
         assert isinstance(response.context['object_list'][0], SearchResult)
@@ -121,7 +98,10 @@ class TestReferenceViews(TestCase):
         self.assertTemplateUsed(response, 'components/citation-list-item.html')
         self.assertTemplateUsed(response, 'components/page-pagination.html')
 
-        # fixme: is total displayed anywhere?
+        # total number of matches should be set in context and displayed
+        assert response.context['total'] == 20
+        self.assertContains(response, '20 Results',
+            msg_prefix='total number of results displayed')
 
         # reference details that should be present in the template
         ref = Reference.objects.first()
@@ -188,7 +168,6 @@ class TestReferenceViews(TestCase):
         response = self.client.get(ref.get_absolute_url())
         self.assertContains(response, 'pp. %s' % ref.book_page,
             msg_prefix='display reference page number with pp. for ranges')
-
 
     def test_reference_histogram(self):
         # default: reference by author of referenced book
