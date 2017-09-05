@@ -1212,7 +1212,8 @@ hr {
       color: #fff; }
 
   .coordinate-navigation {
-    display: block; }
+    display: block;
+    z-index: 10; }
     .background-colored--dark .coordinate-navigation .mdl-navigation__link {
       color: #fff; }
     .coordinate-navigation .mdl-navigation__link {
