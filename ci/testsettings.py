@@ -24,5 +24,15 @@ DATABASES = {
 }
 
 
+HAYSTACK_TEST_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
+        'URL': 'http://127.0.0.1:8983/solr/test-derrida',
+        'ADMIN_URL': 'http://127.0.0.1:8983/solr/admin/cores',
+    }
+}
+
+
+
 
 # secret key added as a travis build step

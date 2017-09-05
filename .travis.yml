@@ -3,6 +3,11 @@ language: python
 python:
   - "3.5"
 
+env:
+  global:
+    - SOLR_VERSION=6.6.0
+    - SOLR_CORE=test-derrida
+
 addons:
   - mariadb: "5.5"
 
@@ -13,8 +18,12 @@ install:
   - cp ci/testsettings.py derrida/local_settings.py
   - python -c "import uuid; print('SECRET_KEY = \'%s\'' % uuid.uuid4())" >> derrida/local_settings.py
 
+before_script:
+  - curl -sSL https://raw.githubusercontent.com/moliware/travis-solr/master/travis-solr.sh | SOLR_VERSION=$SOLR_VERSION SOLR_CORE=$SOLR_CORE bash
+  - python manage.py build_solr_schema --configure-directory=solr-$SOLR_VERSION/example/multicore/$SOLR_CORE/conf --reload-core $SOLR_CORE
+
 script:
   - py.test --cov=derrida
 
 after_success:
-- codecov
+  - codecov
