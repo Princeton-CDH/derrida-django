@@ -23,14 +23,17 @@ DATABASES = {
 
 }
 
-
-HAYSTACK_TEST_CONNECTIONS = {
+# must be defined for initial setup
+HAYSTACK_CONNECTIONS = {
     'default': {
         'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
         'URL': 'http://127.0.0.1:8983/solr/test-derrida',
         'ADMIN_URL': 'http://127.0.0.1:8983/solr/admin/cores',
     }
 }
+
+# for unit tests, that swap test connection in for default
+HAYSTACK_TEST_CONNECTIONS = HAYSTACK_CONNECTIONS
 
 
 
