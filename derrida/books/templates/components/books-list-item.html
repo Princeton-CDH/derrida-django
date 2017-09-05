@@ -1,14 +1,9 @@
 {% load static %}
-
 <section class="collection__item book">
   <figure class="item__image">
-    <a class="img item__image__link" href="{% url 'books:detail' pk=book.id %}">
-      {% if book.digital_edition %}
-        {% if book.digital_edition.thumbnail %}
+    <a class="img item__image__link" {% if book.digital_edition %} href="{{ book.get_absolute_url }}"{% endif %}>
+      {% if book.digital_edition.thumbnail %}
         <img class="img" src="{{ book.digital_edition.thumbnail.image.thumbnail }}" />
-        {% else %}
-        <span class="img img--placeholder"></span>
-        {% endif %}
       {% else %}
       <span class="img img--placeholder"></span>
       {% endif %}
@@ -16,11 +11,15 @@
   </figure>
 
   <div class="item__body">
+    {# NOTE: annotation indicator should be based on book.is_annotated #}
     <a class="text-badge text-badge--blue text-badge--link" href="#">{{ book.item_type }}</a>
     <h3 class="item__heading">
-      <a class="item__link" href="{% url 'books:detail' pk=book.id %}">{{ book.work.primary_title }}</a>
+      <a class="item__link" {% if book.digital_edition %}href="{{ book.get_absolute_url }}"{% endif %}>{{ book.display_title }}</a>
     </h3>
     <p class="item__author">
+      {% if book.author_firstname_last %}
+      {{ book.author_firstname_last|join:"; " }}
+      {% endif %}
       {% for author in book.work.authors.all %}
         {% if not forloop.last %}
           {{ author.authorized_name }};&nbsp;
@@ -30,7 +29,7 @@
       {% endfor %}
     </p>
     {% if book.copyright_year %}
-    <p class="item__date">{{ book.copyright_year }}{% if instance.copy %} - {{ instance.copy }}{% endif %}</p>
+    <p class="item__date">{{ book.copyright_year }}{% if book.copy %} - {{ book.copy }}{% endif %}</p>
     {% endif %}
     <p class="item__location">{{ book.location }}</p>
     <p class="item__excerpt">---</p>
