@@ -11,6 +11,9 @@ env:
 addons:
   - mariadb: "5.5"
 
+before_install:
+  - mysql -e 'CREATE DATABASE IF NOT EXISTS test;'
+
 install:
   - pip install -r requirements.txt
   - pip install -r dev-requirements.txt
