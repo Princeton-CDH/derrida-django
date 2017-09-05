@@ -2,6 +2,16 @@ from django import forms
 from django.utils.safestring import mark_safe
 
 
+class SearchForm(forms.Form):
+    query = forms.CharField(label='Search Terms...', required=False)
+    content_type = forms.ChoiceField(choices=[
+        ('all', 'All'),
+        ('book', 'Books'),
+        ('reference', 'Citations'),  # FIXME: References
+        ('annotation', 'Annotations'),  # Interventions?
+    ], required=False, initial='all')
+
+
 class FacetChoiceField(forms.MultipleChoiceField):
     # customize multiple choice field for use with facets
     # - turn of choice validation (shouldn't fail if facets don't get loaded)

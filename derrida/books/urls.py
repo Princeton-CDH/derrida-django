@@ -30,4 +30,7 @@ urlpatterns = [
     url(r'^library/(?P<pk>\d+)/citations/$',
         views.InstanceDetailView.as_view(template_name='books/detail/citations.html'),
         name='detail-citations'),
+
+    url(r'^search/$', views.SearchView.as_view(), name='search'),
+
 ]

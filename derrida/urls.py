@@ -2,13 +2,15 @@
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/1.10/topics/http/urls/
 """
+from annotator_store import views as annotator_views
 from django.conf import settings
 from django.conf.urls import url, include
 from django.contrib import admin
 from django.views.generic import TemplateView
 from django.views.generic.base import RedirectView
 
-from annotator_store import views as annotator_views
+from derrida.books.views import SearchView
+
 
 urlpatterns = [
     # for now, since there is not yet any public-facing site,
@@ -24,7 +26,7 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^accounts/', include('pucas.cas_urls')),
     url(r'^', include('derrida.books.urls', namespace='books')),
-
+    url(r'^search/$', SearchView.as_view(), name='search'),
     url(r'^people/', include('derrida.people.urls', namespace='people')),
     url(r'^places/', include('derrida.places.urls', namespace='places')),
     url(r'^interventions/', include('derrida.interventions.urls', namespace='interventions')),
@@ -45,7 +47,7 @@ urlpatterns = [
 
     url(r'^citations', TemplateView.as_view(template_name='public/citations.html'), name="citations-list"),
 
-    url(r'^search', TemplateView.as_view(template_name='public/search-results.html'), name="search"),
+    # url(r'^search', TemplateView.as_view(template_name='public/search-results.html'), name="search"),
 
 ]
 

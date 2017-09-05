@@ -1,8 +1,11 @@
 from dal import autocomplete
+from django.http import HttpResponseRedirect
+from django.urls import reverse
+from django.views.generic.base import TemplateView
 from django.views.generic import DetailView, ListView
-from django.views.generic.list import MultipleObjectMixin
 from haystack.query import SearchQuerySet
-from .forms import CitationSearchForm, InstanceSearchForm
+
+from .forms import CitationSearchForm, InstanceSearchForm, SearchForm
 from .models import Publisher, Language, Instance, Reference, DerridaWorkSection
 
 
@@ -192,3 +195,52 @@ class ReferenceDetailView(DetailView):
             derridawork_pageloc=self.kwargs['pageloc'],
             derridawork__slug=self.kwargs['derridawork_slug']
             ).first()
+
+
+
+class SearchView(TemplateView):
+    form_class = SearchForm
+    template_name = 'books/search.html'
+    max_per_type = 3
+
+    def get(self, *args, **kwargs):
+        self.form = self.form_class(self.request.GET)
+        # if search on a single type is requested, forward to the
+        # appropriate view
+        if self.form.is_valid():
+            search_opts = self.form.cleaned_data
+            if search_opts['content_type'] != 'all':
+                if search_opts['content_type'] == 'book':
+                    url = reverse('books:list')
+                elif search_opts['content_type'] == 'reference':
+                    url = reverse('books:reference-list')
+
+                url = '%s?query=%s' % (url, search_opts['query'])
+                response = HttpResponseRedirect(url)
+                response.status_code = 303  # see other
+                return response
+
+        return super(SearchView, self).get(*args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        search_opts = self.form.cleaned_data
+        sqs = SearchQuerySet().filter()
+
+        if search_opts['query']:
+            sqs = sqs.filter(text=search_opts['query'])
+
+        # NOTE: Solr supports grouping results in a single search, but
+        # haystack does not.  For now, query each content type separately.
+
+        instance_query = sqs.models(Instance).all()
+        reference_query = sqs.models(Reference).all()
+
+        return {
+            'query': search_opts['query'],
+            'instance_list': instance_query[:self.max_per_type],
+            'instance_count': instance_query.count(),
+            'reference_list': reference_query[:self.max_per_type],
+            'reference_count': reference_query.count()
+            # annotations todo
+            # outwork TODO
+        }
