@@ -86,7 +86,7 @@
   background-color: $white;
   border: 1px solid $primary-color;
   padding: 1rem 1rem 0.8rem;
-  width: 360px;
+  max-width: 360px;
 
   .mdl-checkbox__box-outline {
     border: 1px solid transparentize($black, 0.8);
@@ -113,9 +113,11 @@
   text-decoration: none;
   color: $base-font-color;
   transition: color $base-duration $base-timing;
+  outline: none;
 
   &:hover,
-  &:active {
+  &:active,
+  &.is-active {
     color: $blue;
   }
 
@@ -171,6 +173,11 @@
     display: flex;
     padding-right: 1.5rem;
     font-size: 0.85em;
+  }
+
+  .name {
+    flex-basis: 100%;
+    padding-right: 6px;
   }
 
   .filter__count {

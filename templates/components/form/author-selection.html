@@ -1,6 +1,51 @@
 {% load static %}
 <script>
   $(function() {
+    //transform list items
+    var $oldLabels = $(".filter__check-list--authors label"),
+        $newLabels = $("<div/>"),
+        sortLetters = [];
+
+    $oldLabels.remove();
+    $oldLabels.each(function() {
+      var $this = $(this),
+          $countLabel = $this.children("span"),
+          count = $countLabel.text();
+      $countLabel.remove();
+
+      var authorName = $this.text().trim(),
+          $input = $this.find("input"),
+          $label = $("<label/>")
+            .addClass("mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect")
+            .append(
+              $("<input/>").attr({
+                id: $input.attr("id"),
+                name: $input.attr("name"),
+                value: $input.attr("value"),
+                type: "checkbox"
+              }).addClass("mdl-checkbox__input"))
+            .append($("<span/>").addClass("name").text(authorName))
+            .append($("<span/>").addClass("filter__count").text(count));
+
+        $newLabels.append($label);
+        sortLetters.push(authorName.substr(0, 1));
+    });
+
+    $(".filter__check-list--authors").append($newLabels.html());
+
+    var $filterNav = $(".filter__nav"),
+        alphabetArray = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split(""),
+        unavailableLetters = alphabetArray.filter(function(i) { return $.unique(sortLetters).indexOf(i) < 0 });
+
+    $.each(alphabetArray, function() {
+      var $filterLink = (unavailableLetters.indexOf(this[0]) > -1) ?
+        $("<span/>").addClass("filter__nav-link--disabled") :
+        $("<a/>").attr({ href: "#" });
+
+      $filterNav.append($filterLink.addClass("filter__nav-link").text(this));
+    })
+
+
     var authorList = new List("authors", {
       valueNames: [ "name" ],
       listClass: "filter__check-list--authors",
@@ -9,22 +54,54 @@
 
     $(".filter__nav a").on("click", function(e) {
       e.preventDefault();
-      var letter = $(this).text();
+      var $this = $(this),
+          letter = $this.text();
+      $this.addClass("is-active").siblings(".is-active").removeClass("is-active")
       authorList.filter(function(item) {
         var name = item.values().name.toLowerCase();
         return name.substr(0, 1) == letter.toLowerCase();
       });
+
     });
 
     $(".clear-link").on("click", function(e) {
       e.preventDefault();
-      var $checkboxes = $(this).parents(".filter").find('.mdl-checkbox__input');
+      var $checkboxes = $(this).parents(".filter").find(".mdl-checkbox__input");
       $checkboxes.each(function() {
         var $checkbox = $(this);
-        $checkbox.removeProp('checked');
-        $checkbox.parent().removeClass('is-checked');
-        authorList.filter();
+        $checkbox.removeProp("checked");
+        $checkbox.parent().removeClass("is-checked");
       });
+      authorList.filter();
+    });
+
+    var $authorFilter = $(".filter.filter--author");
+    $authorFilter.hide();
+
+    $("#author-selection").on("focus", function() {
+        $(this).parent().addClass("is-open");
+        $authorFilter.slideDown();
+      })
+      .on("blur", function(e) {
+        e.preventDefault();
+        var isOpen = $(this).parent().addClass("is-open");
+        if (! isOpen) {
+          $authorFilter.slideUp();
+        }
+      });
+
+    $("body").on("click.filter", function(e) {
+      var $target = $(e.target),
+          $openInput = $(".is-open"),
+          isOpenText = $target.is(".is-open") || $target.parents(".is-open").length,
+          $filter = $target.is(".filter") ? $target : $target.parents(".filter").first();
+
+      if (! $filter.length && ! isOpenText && $openInput.length) {
+        $authorFilter.slideUp();
+        $openInput.removeClass("is-open").removeClass("is-focused");
+      } else if ($openInput.length) {
+        $openInput.addClass("is-focused");
+      }
     });
   });
 </script>
@@ -42,24 +119,11 @@
     <input class="filter__search-field filter__search-field--authors" id="filter__search-term" name="filter__search-term" placeholder="Search" />
   </header>
 
-  <nav class="filter__nav">
-    {% with "IXYZ" as emptyLetters %}
-      {% for letter in "ABCDEFGHIJKLMNOPQRSTUVWXYZ" %}
-        {% if letter in emptyLetters %}
-          <span class="filter__nav-link filter__nav-link--disabled">{{letter}}</span>
-        {% else %}
-          <a href="#" class="filter__nav-link">{{letter}}</a>
-        {% endif %}
-      {% endfor %}
-    {% endwith %}
-  </nav>
+  <nav class="filter__nav"></nav>
 
   <section class="filter__check-list filter__check-list--authors">
-    {% for author in "ABCDEFGHIJK" %}
-    <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="list-checkbox-{{author}}">
-      <input type="checkbox" id="list-checkbox-{{author}}" class="mdl-checkbox__input" />
-      <span class="name">{{author}}dolf, Stender-Petersen</span><span class="filter__count">3</span>
-    </label>
+    {% for author in authors %}
+      {{author}}
     {% endfor %}
   </section>
 

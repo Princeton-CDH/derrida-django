@@ -1666,8 +1666,9 @@ hr {
   text-align: center;
   text-decoration: none;
   color: #424242;
-  transition: color 150ms ease; }
-  .filter__nav-link:hover, .filter__nav-link:active {
+  transition: color 150ms ease;
+  outline: none; }
+  .filter__nav-link:hover, .filter__nav-link:active, .filter__nav-link.is-active {
     color: #3ca1ff; }
   .filter__nav-link.filter__nav-link--disabled {
     color: #9e9e9e;
@@ -1708,6 +1709,9 @@ hr {
     display: flex;
     padding-right: 1.5rem;
     font-size: 0.85em; }
+  .filter__check-list .name {
+    flex-basis: 100%;
+    padding-right: 6px; }
   .filter__check-list .filter__count {
     opacity: 0.5; }
 
