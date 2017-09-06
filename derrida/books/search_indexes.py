@@ -59,6 +59,13 @@ class CitationIndex(indexes.SearchIndex, indexes.Indexable):
     #: Name value for the :class:`~derrida.books.models.ReferenceType` of citation
     reference_type = indexes.CharField(model_attr='reference_type__name',
         faceted=True)
+    #: Page in derrida work; :attr:`derrida.books.models.Reference.derridawork_page`
+    derridawork_page = indexes.IntegerField(model_attr='derridawork_page')
+    #: Page location in derrida work; :attr:`derrida.books.models.Reference.derridawork_pageloc`
+    derridawork_pageloc = indexes.CharField(model_attr='derridawork_pageloc')
+    #: Cited page in referenced work; :attr:`derrida.books.models.Reference.book_page`
+    book_page = indexes.CharField(model_attr='book_page', null=True)
+    # instance_id = indexes.IntegerField(model_attr='instance__id')
 
     def get_model(self):
         return Reference

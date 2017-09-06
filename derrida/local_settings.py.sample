@@ -48,6 +48,17 @@ HAYSTACK_CONNECTIONS = {
     },
 }
 
+# Haystack configuration for unit tests that use Solr
+HAYSTACK_TEST_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
+        # example multicore setup with core named test-derrida
+        'URL': 'http://127.0.0.1:8983/solr/test-derrida',
+        'ADMIN_URL': 'http://127.0.0.1:8983/solr/admin/cores',
+    },
+}
+
+
 # username for accessing GeoNames API
 GEONAMES_USERNAME = ''
 

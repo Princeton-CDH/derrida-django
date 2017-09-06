@@ -1,0 +1,1193 @@
+[
+{
+    "model": "books.work",
+    "pk": 183,
+    "fields": {
+        "notes": "Stub collection work \u0152uvres compl\u00e8tes created from book section for Cratyle",
+        "primary_title": "\u0152uvres compl\u00e8tes",
+        "short_title": "\u0152uvres compl\u00e8tes",
+        "year": 1950,
+        "uri": "",
+        "authors": [
+            78
+        ]
+    }
+},
+{
+    "model": "books.work",
+    "pk": 173,
+    "fields": {
+        "notes": "Stub collection work De quoi demain\u2026 created from book section for \u00c9loge de la psychanalyse",
+        "primary_title": "De quoi demain\u2026",
+        "short_title": "De quoi demain\u2026",
+        "year": 2001,
+        "uri": "",
+        "authors": [
+            1,
+            84
+        ]
+    }
+},
+{
+    "model": "books.work",
+    "pk": 217,
+    "fields": {
+        "notes": "Stub collection work The Philosophical Writings of Peirce created from book section for Principles of Phenomenology",
+        "primary_title": "The Philosophical Writings of Peirce",
+        "short_title": "The Philosophical Writings of Peirce",
+        "year": 1940,
+        "uri": "",
+        "authors": [
+            81
+        ]
+    }
+},
+{
+    "model": "books.work",
+    "pk": 213,
+    "fields": {
+        "notes": "Stub collection work Le Banquet / Ph\u00e8dre created from book section for Ph\u00e8dre",
+        "primary_title": "Le Banquet / Ph\u00e8dre",
+        "short_title": "Le Banquet / Ph\u00e8dre",
+        "year": 1964,
+        "uri": "",
+        "authors": [
+            78
+        ]
+    }
+},
+{
+    "model": "books.work",
+    "pk": 225,
+    "fields": {
+        "notes": "Stub collection work Sociologie et anthropologie created from book section for Introduction \u00e0 l'\u0153uvre de",
+        "primary_title": "Sociologie et anthropologie",
+        "short_title": "Sociologie et anthropologie",
+        "year": 1950,
+        "uri": "",
+        "authors": [
+            87,
+            141
+        ]
+    }
+},
+{
+    "model": "djiffy.manifest",
+    "pk": 23,
+    "fields": {
+        "label": "Studio - Wall 1 - Plato. Platon. Oeuvres Compl\u00e8tes : Tome IV-3e partie.\n                                Ph\u00e8dre",
+        "short_id": "pdv142233k",
+        "uri": "https://plum.princeton.edu/concern/scanned_resources/pdv142233k/manifest",
+        "metadata": "{\"Creator\":[\"Derrida, Jacques\"],\"Published/Created\":[\"Derrida, Jacques\"],\"Container\":[\"Box B-000226, Folder 11\"],\"Extent\":[\"1 folder\"],\"Collection\":[\"The Library of Jacques Derrida, Studio Series\"]}",
+        "created": "2017-07-27",
+        "last_modified": "2017-07-27",
+        "extra_data": "{\"https://plum.princeton.edu/concern/scanned_resources/pdv142233k.jsonld\":{\"title\":\"Studio - Wall 1 - Plato. Platon. Oeuvres Compl\\u00e8tes : Tome IV-3e partie.\\n                                Ph\\u00e8dre\",\"memberOf\":[{\"title\":\"The Library of Jacques Derrida, Studio Series\",\"@id\":\"https://plum.princeton.edu/collections/pb5646r538\",\"@type\":\"pcdm:Collection\"}],\"@context\":\"https://bibdata.princeton.edu/context.json\",\"@id\":\"https://plum.princeton.edu/concern/scanned_resources/pdv142233k\",\"edm_rights\":{\"pref_label\":\"In Copyright\",\"@type\":\"dcterms:RightsStatement\",\"@id\":\"http://rightsstatements.org/vocab/InC/1.0/\"}},\"https://findingaids.princeton.edu/collections/RBD1/c10091.xml?scope=record\":{}}"
+    }
+},
+{
+    "model": "books.publisher",
+    "pk": 28,
+    "fields": {
+        "name": "Les Belles Lettres",
+        "notes": ""
+    }
+},
+{
+    "model": "djiffy.manifest",
+    "pk": 38,
+    "fields": {
+        "label": "Studio - Wall 1 - Platon. Platon. Oeuvres Compl\u00e8tes : Tome troisi\u00e8me. Le\n                                Banquet / Ph\u00e9don / Ph\u00e8dre / Th\u00e9\u00e9t\u00e8te / Parm\u00e9nide",
+        "short_id": "p5138mn35m",
+        "uri": "https://plum.princeton.edu/concern/scanned_resources/p5138mn35m/manifest",
+        "metadata": "{\"Creator\":[\"Derrida, Jacques\"],\"Published/Created\":[\"Derrida, Jacques\"],\"Container\":[\"Box B-000229, Folder 7\"],\"Extent\":[\"1 folder\"],\"Collection\":[\"The Library of Jacques Derrida, Studio Series\"]}",
+        "created": "2017-07-27",
+        "last_modified": "2017-07-27",
+        "extra_data": "{\"https://plum.princeton.edu/concern/scanned_resources/p5138mn35m.jsonld\":{\"title\":\"Studio - Wall 1 - Platon. Platon. Oeuvres Compl\\u00e8tes : Tome troisi\\u00e8me. Le\\n                                Banquet / Ph\\u00e9don / Ph\\u00e8dre / Th\\u00e9\\u00e9t\\u00e8te / Parm\\u00e9nide\",\"memberOf\":[{\"title\":\"The Library of Jacques Derrida, Studio Series\",\"@id\":\"https://plum.princeton.edu/collections/pb5646r538\",\"@type\":\"pcdm:Collection\"}],\"@context\":\"https://bibdata.princeton.edu/context.json\",\"@id\":\"https://plum.princeton.edu/concern/scanned_resources/p5138mn35m\",\"edm_rights\":{\"pref_label\":\"In Copyright\",\"@type\":\"dcterms:RightsStatement\",\"@id\":\"http://rightsstatements.org/vocab/InC/1.0/\"}},\"https://findingaids.princeton.edu/collections/RBD1/c10099.xml?scope=record\":{}}"
+    }
+},
+{
+    "model": "books.instance",
+    "pk": 183,
+    "fields": {
+        "notes": "Stub collection instance \u0152uvres compl\u00e8tes created from book section for Cratyle",
+        "work": 183,
+        "alternate_title": "",
+        "publisher": null,
+        "zotero_id": "",
+        "is_extant": false,
+        "is_annotated": false,
+        "is_translation": false,
+        "dimensions": "",
+        "copyright_year": null,
+        "journal": null,
+        "print_date": null,
+        "print_date_day_known": false,
+        "print_date_month_known": false,
+        "print_date_year_known": true,
+        "uri": "",
+        "has_dedication": false,
+        "has_insertions": false,
+        "start_page": null,
+        "end_page": null,
+        "copy": null,
+        "collected_in": null,
+        "digital_edition": null,
+        "pub_place": [],
+        "cited_in": []
+    }
+},
+{
+    "model": "books.publisher",
+    "pk": 23,
+    "fields": {
+        "name": "Garnier",
+        "notes": ""
+    }
+},
+{
+    "model": "books.work",
+    "pk": 209,
+    "fields": {
+        "notes": "Stub collection work \u0152uvres compl\u00e8tes created from book section for Lettre \u00e0 Mersenne, 20",
+        "primary_title": "\u0152uvres compl\u00e8tes",
+        "short_title": "\u0152uvres compl\u00e8tes",
+        "year": 1963,
+        "uri": "",
+        "authors": [
+            97
+        ]
+    }
+},
+{
+    "model": "books.work",
+    "pk": 223,
+    "fields": {
+        "notes": "Stub collection work \u0152uvres choisies created from book section for Scienza Nuova (Science Nouvelle)",
+        "primary_title": "\u0152uvres choisies",
+        "short_title": "\u0152uvres choisies",
+        "year": 1946,
+        "uri": "",
+        "authors": [
+            105
+        ]
+    }
+},
+{
+    "model": "books.instance",
+    "pk": 173,
+    "fields": {
+        "notes": "Stub collection instance De quoi demain\u2026 created from book section for \u00c9loge de la psychanalyse",
+        "work": 173,
+        "alternate_title": "",
+        "publisher": null,
+        "zotero_id": "",
+        "is_extant": false,
+        "is_annotated": false,
+        "is_translation": false,
+        "dimensions": "",
+        "copyright_year": null,
+        "journal": null,
+        "print_date": null,
+        "print_date_day_known": false,
+        "print_date_month_known": false,
+        "print_date_year_known": true,
+        "uri": "",
+        "has_dedication": false,
+        "has_insertions": false,
+        "start_page": null,
+        "end_page": null,
+        "copy": null,
+        "collected_in": null,
+        "digital_edition": null,
+        "pub_place": [],
+        "cited_in": []
+    }
+},
+{
+    "model": "books.publisher",
+    "pk": 9,
+    "fields": {
+        "name": "Fayard - Galil\u00e9e",
+        "notes": ""
+    }
+},
+{
+    "model": "books.work",
+    "pk": 172,
+    "fields": {
+        "notes": "",
+        "primary_title": "\u00c9loge de la psychanalyse",
+        "short_title": "\u00c9loge de la psychanalyse",
+        "year": 2001,
+        "uri": "",
+        "authors": [
+            1,
+            84
+        ]
+    }
+},
+{
+    "model": "books.work",
+    "pk": 222,
+    "fields": {
+        "notes": "",
+        "primary_title": "Scienza Nuova",
+        "short_title": "Scienza Nuova",
+        "year": 1946,
+        "uri": "",
+        "authors": [
+            105
+        ]
+    }
+},
+{
+    "model": "books.instance",
+    "pk": 217,
+    "fields": {
+        "notes": "Stub collection instance The Philosophical Writings of Peirce created from book section for Principles of Phenomenology",
+        "work": 217,
+        "alternate_title": "",
+        "publisher": null,
+        "zotero_id": "",
+        "is_extant": false,
+        "is_annotated": false,
+        "is_translation": false,
+        "dimensions": "",
+        "copyright_year": null,
+        "journal": null,
+        "print_date": null,
+        "print_date_day_known": false,
+        "print_date_month_known": false,
+        "print_date_year_known": true,
+        "uri": "",
+        "has_dedication": false,
+        "has_insertions": false,
+        "start_page": null,
+        "end_page": null,
+        "copy": null,
+        "collected_in": null,
+        "digital_edition": null,
+        "pub_place": [],
+        "cited_in": []
+    }
+},
+{
+    "model": "books.publisher",
+    "pk": 30,
+    "fields": {
+        "name": "Dover",
+        "notes": ""
+    }
+},
+{
+    "model": "books.work",
+    "pk": 216,
+    "fields": {
+        "notes": "In \"Philosophical Writings of Peirce\"",
+        "primary_title": "Principles of Phenomenology",
+        "short_title": "Principles of Phenomenology",
+        "year": 1940,
+        "uri": "",
+        "authors": [
+            81
+        ]
+    }
+},
+{
+    "model": "djiffy.manifest",
+    "pk": 44,
+    "fields": {
+        "label": "Studio - Wall 1 - Platon. Le Banquet / Ph\u00e8dre",
+        "short_id": "pff367w51s",
+        "uri": "https://plum.princeton.edu/concern/scanned_resources/pff367w51s/manifest",
+        "metadata": "{\"Creator\":[\"Derrida, Jacques\"],\"Published/Created\":[\"Derrida, Jacques\"],\"Container\":[\"Box 360, Folder 16\"],\"Extent\":[\"1 folder\"],\"Collection\":[\"The Library of Jacques Derrida, Studio Series\"]}",
+        "created": "2017-07-27",
+        "last_modified": "2017-07-27",
+        "extra_data": "{\"https://plum.princeton.edu/concern/scanned_resources/pff367w51s.jsonld\":{\"@context\":\"https://bibdata.princeton.edu/context.json\",\"@id\":\"https://plum.princeton.edu/concern/scanned_resources/pff367w51s\",\"edm_rights\":{\"pref_label\":\"No Known Copyright\",\"@type\":\"dcterms:RightsStatement\",\"@id\":\"http://rightsstatements.org/vocab/NKC/1.0/\"},\"memberOf\":[{\"@type\":\"pcdm:Collection\",\"@id\":\"https://plum.princeton.edu/collections/pb5646r538\",\"title\":\"The Library of Jacques Derrida, Studio Series\"}],\"title\":\"Studio - Wall 1 - Platon. Le Banquet / Ph\\u00e8dre\"},\"https://findingaids.princeton.edu/collections/RBD1/c10116.xml?scope=record\":{}}"
+    }
+},
+{
+    "model": "books.instance",
+    "pk": 213,
+    "fields": {
+        "notes": "Stub collection instance Le Banquet / Ph\u00e8dre created from book section for Ph\u00e8dre",
+        "work": 213,
+        "alternate_title": "",
+        "publisher": null,
+        "zotero_id": "",
+        "is_extant": false,
+        "is_annotated": false,
+        "is_translation": false,
+        "dimensions": "",
+        "copyright_year": 1964,
+        "journal": null,
+        "print_date": null,
+        "print_date_day_known": false,
+        "print_date_month_known": false,
+        "print_date_year_known": true,
+        "uri": "",
+        "has_dedication": false,
+        "has_insertions": false,
+        "start_page": null,
+        "end_page": null,
+        "copy": null,
+        "collected_in": null,
+        "digital_edition": null,
+        "pub_place": [],
+        "cited_in": []
+    }
+},
+{
+    "model": "books.publisher",
+    "pk": 15,
+    "fields": {
+        "name": "Flammarion",
+        "notes": ""
+    }
+},
+{
+    "model": "books.work",
+    "pk": 215,
+    "fields": {
+        "notes": "",
+        "primary_title": "Phaedrus",
+        "short_title": "Phaedrus",
+        "year": -370,
+        "uri": "",
+        "authors": [
+            78
+        ]
+    }
+},
+{
+    "model": "books.work",
+    "pk": 123,
+    "fields": {
+        "notes": "",
+        "primary_title": "Logique formelle et logique transcendentale",
+        "short_title": "Logique formelle et logique transcendentale",
+        "year": 1957,
+        "uri": "",
+        "authors": [
+            83
+        ]
+    }
+},
+{
+    "model": "books.work",
+    "pk": 169,
+    "fields": {
+        "notes": "",
+        "primary_title": "Lettre \u00e0 Vernes",
+        "short_title": "Lettre \u00e0 Vernes",
+        "year": null,
+        "uri": "",
+        "authors": [
+            8
+        ]
+    }
+},
+{
+    "model": "books.work",
+    "pk": 45,
+    "fields": {
+        "notes": "",
+        "primary_title": "La vie familiale et sociale des Indiens Nambikwara",
+        "short_title": "La vie familiale et sociale des Indiens Nambikwara",
+        "year": 1948,
+        "uri": "",
+        "authors": [
+            87
+        ]
+    }
+},
+{
+    "model": "books.journal",
+    "pk": 7,
+    "fields": {
+        "name": "Travaux du Cercle linguistique de Copenhague vol. V",
+        "notes": ""
+    }
+},
+{
+    "model": "books.work",
+    "pk": 167,
+    "fields": {
+        "notes": "",
+        "primary_title": "La notion de signe dans la gloss\u00e9matique et dans l'esth\u00e9tique",
+        "short_title": "La notion de signe dans la gloss\u00e9matique et dans l'esth\u00e9tique",
+        "year": 1949,
+        "uri": "",
+        "authors": [
+            74
+        ]
+    }
+},
+{
+    "model": "djiffy.manifest",
+    "pk": 25,
+    "fields": {
+        "label": "Studio - Wall 1 - Jean Starobinski. L'Oeil vivant",
+        "short_id": "p41689r884",
+        "uri": "https://plum.princeton.edu/concern/scanned_resources/p41689r884/manifest",
+        "metadata": "{\"Creator\":[\"Derrida, Jacques\"],\"Published/Created\":[\"Derrida, Jacques\"],\"Container\":[\"Box B-000228, Folder 1\"],\"Extent\":[\"1 folder\"],\"Collection\":[\"The Library of Jacques Derrida, Studio Series\"]}",
+        "created": "2017-07-27",
+        "last_modified": "2017-07-27",
+        "extra_data": "{\"https://plum.princeton.edu/concern/scanned_resources/p41689r884.jsonld\":{\"title\":\"Studio - Wall 1 - Jean Starobinski. L'Oeil vivant\",\"memberOf\":[{\"title\":\"The Library of Jacques Derrida, Studio Series\",\"@id\":\"https://plum.princeton.edu/collections/pb5646r538\",\"@type\":\"pcdm:Collection\"}],\"@context\":\"https://bibdata.princeton.edu/context.json\",\"@id\":\"https://plum.princeton.edu/concern/scanned_resources/p41689r884\",\"edm_rights\":{\"pref_label\":\"In Copyright\",\"@type\":\"dcterms:RightsStatement\",\"@id\":\"http://rightsstatements.org/vocab/InC/1.0/\"}},\"https://findingaids.princeton.edu/collections/RBD1/c10447.xml?scope=record\":{}}"
+    }
+},
+{
+    "model": "books.publisher",
+    "pk": 11,
+    "fields": {
+        "name": "Gallimard",
+        "notes": ""
+    }
+},
+{
+    "model": "books.work",
+    "pk": 122,
+    "fields": {
+        "notes": "",
+        "primary_title": "L'\u0152il vivant",
+        "short_title": "L'\u0152il vivant",
+        "year": 1961,
+        "uri": "",
+        "authors": [
+            123
+        ]
+    }
+},
+{
+    "model": "djiffy.manifest",
+    "pk": 30,
+    "fields": {
+        "label": "Studio - Wall 1 - Marcel Mauss. Sociologie et anthropologie, pr\u00e9c\u00e9d\u00e9 d'une\n                                Introduction \u00e0 l'oeuvre de Marcel Mauss par Claude\n                                L\u00e9vi-Strauss",
+        "short_id": "pb8517x924",
+        "uri": "https://plum.princeton.edu/concern/scanned_resources/pb8517x924/manifest",
+        "metadata": "{\"Creator\":[\"Derrida, Jacques\"],\"Published/Created\":[\"Derrida, Jacques\"],\"Container\":[\"Box B-000162, Folder 10\"],\"Extent\":[\"1 folder\"],\"Collection\":[\"The Library of Jacques Derrida, Studio Series\"]}",
+        "created": "2017-07-27",
+        "last_modified": "2017-07-27",
+        "extra_data": "{\"https://plum.princeton.edu/concern/scanned_resources/pb8517x924.jsonld\":{\"title\":\"Studio - Wall 1 - Marcel Mauss. Sociologie et anthropologie, pr\\u00e9c\\u00e9d\\u00e9 d'une\\n                                Introduction \\u00e0 l'oeuvre de Marcel Mauss par Claude\\n                                L\\u00e9vi-Strauss\",\"memberOf\":[{\"title\":\"The Library of Jacques Derrida, Studio Series\",\"@id\":\"https://plum.princeton.edu/collections/pb5646r538\",\"@type\":\"pcdm:Collection\"}],\"@context\":\"https://bibdata.princeton.edu/context.json\",\"@id\":\"https://plum.princeton.edu/concern/scanned_resources/pb8517x924\",\"edm_rights\":{\"pref_label\":\"In Copyright\",\"@type\":\"dcterms:RightsStatement\",\"@id\":\"http://rightsstatements.org/vocab/InC/1.0/\"}},\"https://findingaids.princeton.edu/collections/RBD1/c8933.xml?scope=record\":{}}"
+    }
+},
+{
+    "model": "books.instance",
+    "pk": 225,
+    "fields": {
+        "notes": "Stub collection instance Sociologie et anthropologie created from book section for Introduction \u00e0 l'\u0153uvre de",
+        "work": 225,
+        "alternate_title": "",
+        "publisher": null,
+        "zotero_id": "",
+        "is_extant": false,
+        "is_annotated": false,
+        "is_translation": false,
+        "dimensions": "",
+        "copyright_year": null,
+        "journal": null,
+        "print_date": null,
+        "print_date_day_known": false,
+        "print_date_month_known": false,
+        "print_date_year_known": true,
+        "uri": "",
+        "has_dedication": false,
+        "has_insertions": false,
+        "start_page": null,
+        "end_page": null,
+        "copy": null,
+        "collected_in": null,
+        "digital_edition": null,
+        "pub_place": [],
+        "cited_in": []
+    }
+},
+{
+    "model": "books.publisher",
+    "pk": 1,
+    "fields": {
+        "name": "Presses universitaires de France",
+        "notes": ""
+    }
+},
+{
+    "model": "books.work",
+    "pk": 224,
+    "fields": {
+        "notes": "",
+        "primary_title": "Introduction \u00e0 l'\u0153uvre de Marcel Mauss",
+        "short_title": "Introduction \u00e0 l'\u0153uvre de Marcel Mauss",
+        "year": 1950,
+        "uri": "",
+        "authors": [
+            87
+        ]
+    }
+},
+{
+    "model": "books.publisher",
+    "pk": 19,
+    "fields": {
+        "name": "Biblioth\u00e8que de Cluny",
+        "notes": ""
+    }
+},
+{
+    "model": "books.work",
+    "pk": 104,
+    "fields": {
+        "notes": "",
+        "primary_title": "Discours de la m\u00e9thode",
+        "short_title": "Discours de la m\u00e9thode",
+        "year": 1637,
+        "uri": "",
+        "authors": [
+            97
+        ]
+    }
+},
+{
+    "model": "books.work",
+    "pk": 93,
+    "fields": {
+        "notes": "",
+        "primary_title": "Collected Papers of Charles Sanders Peirce, Vol. 2",
+        "short_title": "Elements of Logic",
+        "year": 1932,
+        "uri": "",
+        "authors": [
+            81
+        ]
+    }
+},
+{
+    "model": "books.work",
+    "pk": 144,
+    "fields": {
+        "notes": "",
+        "primary_title": "A la recherche de l'essence du langage",
+        "short_title": "A la recherche de l'essence du langage",
+        "year": null,
+        "uri": "",
+        "authors": [
+            13
+        ]
+    }
+},
+{
+    "model": "djiffy.manifest",
+    "pk": 75,
+    "fields": {
+        "label": "Studio - Wall 1 - A Study of Writing : A Discussion of the general principles governing the use and evolution of writing",
+        "short_id": "prj432v451",
+        "uri": "https://plum.princeton.edu/concern/scanned_resources/prj432v451/manifest",
+        "metadata": "{\"Creator\":[\"Derrida, Jacques\"],\"Published/Created\":[\"Derrida, Jacques\"],\"Container\":[\"Box B-000157, Folder 5\"],\"Extent\":[\"1 folder\"],\"Collection\":[\"The Library of Jacques Derrida, Studio Series\"]}",
+        "created": "2017-08-01",
+        "last_modified": "2017-08-01",
+        "extra_data": "{\"https://plum.princeton.edu/concern/scanned_resources/prj432v451.jsonld\":{\"@context\":\"https://bibdata.princeton.edu/context.json\",\"@id\":\"https://plum.princeton.edu/concern/scanned_resources/prj432v451\",\"edm_rights\":{\"@id\":\"http://rightsstatements.org/vocab/NKC/1.0/\",\"pref_label\":\"No Known Copyright\",\"@type\":\"dcterms:RightsStatement\"},\"title\":\"Studio - Wall 1 - A Study of Writing : A Discussion of the general principles governing the use and evolution of writing\",\"memberOf\":[{\"@id\":\"https://plum.princeton.edu/collections/pb5646r538\",\"title\":\"The Library of Jacques Derrida, Studio Series\",\"@type\":\"pcdm:Collection\"}]},\"https://findingaids.princeton.edu/collections/RBD1/c9643.xml?scope=record\":{}}"
+    }
+},
+{
+    "model": "books.publisher",
+    "pk": 12,
+    "fields": {
+        "name": "The University of Chicago Press",
+        "notes": ""
+    }
+},
+{
+    "model": "books.work",
+    "pk": 98,
+    "fields": {
+        "notes": "",
+        "primary_title": "A Study of Writing",
+        "short_title": "A Study of Writing",
+        "year": 1952,
+        "uri": "",
+        "authors": [
+            88
+        ]
+    }
+},
+{
+    "model": "books.instance",
+    "pk": 215,
+    "fields": {
+        "notes": "three candidates: http://findingaids.princeton.edu/collections/RBD1?v1=Ph\u00e8dre&f1=kw&b1=AND&v2=&f2=kw&b2=AND&v3=&f3=kw&year=before&ed=&ld=&rpp=10&start=0",
+        "work": 215,
+        "alternate_title": "Ph\u00e8dre",
+        "publisher": 28,
+        "zotero_id": "",
+        "is_extant": true,
+        "is_annotated": true,
+        "is_translation": false,
+        "dimensions": "",
+        "copyright_year": 1961,
+        "journal": null,
+        "print_date": null,
+        "print_date_day_known": true,
+        "print_date_month_known": true,
+        "print_date_year_known": true,
+        "uri": "http://findingaids.princeton.edu/collections/RBD1/c10091",
+        "has_dedication": false,
+        "has_insertions": false,
+        "start_page": null,
+        "end_page": null,
+        "copy": null,
+        "collected_in": 183,
+        "digital_edition": 23,
+        "pub_place": [
+            3
+        ],
+        "cited_in": []
+    }
+},
+{
+    "model": "books.instance",
+    "pk": 214,
+    "fields": {
+        "notes": "",
+        "work": 215,
+        "alternate_title": "Ph\u00e8dre",
+        "publisher": 23,
+        "zotero_id": "",
+        "is_extant": true,
+        "is_annotated": true,
+        "is_translation": false,
+        "dimensions": "",
+        "copyright_year": 1938,
+        "journal": null,
+        "print_date": null,
+        "print_date_day_known": true,
+        "print_date_month_known": true,
+        "print_date_year_known": true,
+        "uri": "http://findingaids.princeton.edu/collections/RBD1/c10099",
+        "has_dedication": false,
+        "has_insertions": false,
+        "start_page": null,
+        "end_page": null,
+        "copy": null,
+        "collected_in": 183,
+        "digital_edition": 38,
+        "pub_place": [
+            3
+        ],
+        "cited_in": []
+    }
+},
+{
+    "model": "books.instance",
+    "pk": 209,
+    "fields": {
+        "notes": "Stub collection instance \u0152uvres compl\u00e8tes created from book section for Lettre \u00e0 Mersenne, 20",
+        "work": 209,
+        "alternate_title": "",
+        "publisher": null,
+        "zotero_id": "",
+        "is_extant": false,
+        "is_annotated": false,
+        "is_translation": false,
+        "dimensions": "",
+        "copyright_year": null,
+        "journal": null,
+        "print_date": null,
+        "print_date_day_known": false,
+        "print_date_month_known": false,
+        "print_date_year_known": true,
+        "uri": "",
+        "has_dedication": false,
+        "has_insertions": false,
+        "start_page": null,
+        "end_page": null,
+        "copy": null,
+        "collected_in": null,
+        "digital_edition": null,
+        "pub_place": [],
+        "cited_in": []
+    }
+},
+{
+    "model": "books.instance",
+    "pk": 223,
+    "fields": {
+        "notes": "Stub collection instance \u0152uvres choisies created from book section for Scienza Nuova (Science Nouvelle)",
+        "work": 223,
+        "alternate_title": "",
+        "publisher": null,
+        "zotero_id": "",
+        "is_extant": false,
+        "is_annotated": false,
+        "is_translation": false,
+        "dimensions": "",
+        "copyright_year": null,
+        "journal": null,
+        "print_date": null,
+        "print_date_day_known": false,
+        "print_date_month_known": false,
+        "print_date_year_known": true,
+        "uri": "",
+        "has_dedication": false,
+        "has_insertions": false,
+        "start_page": null,
+        "end_page": null,
+        "copy": null,
+        "collected_in": null,
+        "digital_edition": null,
+        "pub_place": [],
+        "cited_in": []
+    }
+},
+{
+    "model": "books.instance",
+    "pk": 172,
+    "fields": {
+        "notes": "",
+        "work": 172,
+        "alternate_title": "",
+        "publisher": 9,
+        "zotero_id": "",
+        "is_extant": false,
+        "is_annotated": false,
+        "is_translation": false,
+        "dimensions": "",
+        "copyright_year": 2001,
+        "journal": null,
+        "print_date": null,
+        "print_date_day_known": true,
+        "print_date_month_known": true,
+        "print_date_year_known": true,
+        "uri": "",
+        "has_dedication": false,
+        "has_insertions": false,
+        "start_page": "269",
+        "end_page": "316",
+        "copy": null,
+        "collected_in": 173,
+        "digital_edition": null,
+        "pub_place": [
+            3
+        ],
+        "cited_in": []
+    }
+},
+{
+    "model": "books.instance",
+    "pk": 222,
+    "fields": {
+        "notes": "(nearly certain this is the edition he used: the citations, which ended up in Grammatologie, are coded with letters, a-o ) dg152cF___ = dg152cF82pY dg367bF174p_ = dg367bF76pY dg367cF32p_  = dg367cF76-77Y dg367dF163p_  = dg367dF78pY dg367fF95p_ = dg367fF77pY dg367hF178p_  = dg367hF77pY dg376bF18p_  = dg376bF94-95Y dg404bF61-62_ = dg404bF87pY dg404cF181-182_ = dg404cF85-86Y dg404dF194p_  = dg404dF86pY",
+        "work": 222,
+        "alternate_title": "",
+        "publisher": 1,
+        "zotero_id": "",
+        "is_extant": true,
+        "is_annotated": true,
+        "is_translation": true,
+        "dimensions": "",
+        "copyright_year": 1946,
+        "journal": null,
+        "print_date": null,
+        "print_date_day_known": true,
+        "print_date_month_known": true,
+        "print_date_year_known": true,
+        "uri": "http://findingaids.princeton.edu/collections/RBD1/c10922",
+        "has_dedication": false,
+        "has_insertions": false,
+        "start_page": null,
+        "end_page": null,
+        "copy": null,
+        "collected_in": 223,
+        "digital_edition": null,
+        "pub_place": [
+            3
+        ],
+        "cited_in": []
+    }
+},
+{
+    "model": "books.instance",
+    "pk": 216,
+    "fields": {
+        "notes": "",
+        "work": 216,
+        "alternate_title": "",
+        "publisher": 30,
+        "zotero_id": "",
+        "is_extant": true,
+        "is_annotated": true,
+        "is_translation": false,
+        "dimensions": "",
+        "copyright_year": 1955,
+        "journal": null,
+        "print_date": null,
+        "print_date_day_known": true,
+        "print_date_month_known": true,
+        "print_date_year_known": true,
+        "uri": "http://findingaids.princeton.edu/collections/RBD1/c9670",
+        "has_dedication": false,
+        "has_insertions": false,
+        "start_page": null,
+        "end_page": null,
+        "copy": null,
+        "collected_in": 217,
+        "digital_edition": null,
+        "pub_place": [
+            9
+        ],
+        "cited_in": []
+    }
+},
+{
+    "model": "books.instance",
+    "pk": 212,
+    "fields": {
+        "notes": "",
+        "work": 215,
+        "alternate_title": "",
+        "publisher": 15,
+        "zotero_id": "",
+        "is_extant": true,
+        "is_annotated": false,
+        "is_translation": false,
+        "dimensions": "",
+        "copyright_year": 1964,
+        "journal": null,
+        "print_date": null,
+        "print_date_day_known": true,
+        "print_date_month_known": true,
+        "print_date_year_known": true,
+        "uri": "http://findingaids.princeton.edu/collections/RBD1/c10116",
+        "has_dedication": false,
+        "has_insertions": false,
+        "start_page": null,
+        "end_page": null,
+        "copy": null,
+        "collected_in": 213,
+        "digital_edition": 44,
+        "pub_place": [
+            3
+        ],
+        "cited_in": []
+    }
+},
+{
+    "model": "books.instance",
+    "pk": 123,
+    "fields": {
+        "notes": "two boxes for this item: http://findingaids.princeton.edu/collections/RBD1/c8943 http://findingaids.princeton.edu/collections/RBD1/c8950 Logique formelle et logique transcendantale : Essai d'une critique de la raison logique dg393aQ386pY (Y) refers to Box 48, folder 1 of B-000154.  dg393aQ386pY (Y): for folder 2 of the same box. Derrida has two copies in the same box: folder 2 is another, more intensely read copie of Husserl's book. We need scans of pp. 386-387 from both copies.",
+        "work": 123,
+        "alternate_title": "",
+        "publisher": 1,
+        "zotero_id": "",
+        "is_extant": true,
+        "is_annotated": true,
+        "is_translation": false,
+        "dimensions": "",
+        "copyright_year": 1957,
+        "journal": null,
+        "print_date": null,
+        "print_date_day_known": true,
+        "print_date_month_known": true,
+        "print_date_year_known": true,
+        "uri": "",
+        "has_dedication": false,
+        "has_insertions": false,
+        "start_page": null,
+        "end_page": null,
+        "copy": null,
+        "collected_in": null,
+        "digital_edition": null,
+        "pub_place": [
+            3
+        ],
+        "cited_in": []
+    }
+},
+{
+    "model": "books.instance",
+    "pk": 169,
+    "fields": {
+        "notes": "",
+        "work": 169,
+        "alternate_title": "",
+        "publisher": null,
+        "zotero_id": "",
+        "is_extant": false,
+        "is_annotated": false,
+        "is_translation": false,
+        "dimensions": "",
+        "copyright_year": null,
+        "journal": null,
+        "print_date": null,
+        "print_date_day_known": true,
+        "print_date_month_known": true,
+        "print_date_year_known": true,
+        "uri": "",
+        "has_dedication": false,
+        "has_insertions": false,
+        "start_page": null,
+        "end_page": null,
+        "copy": null,
+        "collected_in": null,
+        "digital_edition": null,
+        "pub_place": [],
+        "cited_in": []
+    }
+},
+{
+    "model": "books.instance",
+    "pk": 45,
+    "fields": {
+        "notes": "dg171aQ40p_ - D cites n. 1, p. 40",
+        "work": 45,
+        "alternate_title": "",
+        "publisher": null,
+        "zotero_id": "",
+        "is_extant": false,
+        "is_annotated": false,
+        "is_translation": false,
+        "dimensions": "",
+        "copyright_year": 1948,
+        "journal": null,
+        "print_date": null,
+        "print_date_day_known": true,
+        "print_date_month_known": true,
+        "print_date_year_known": true,
+        "uri": "",
+        "has_dedication": false,
+        "has_insertions": false,
+        "start_page": null,
+        "end_page": null,
+        "copy": null,
+        "collected_in": null,
+        "digital_edition": null,
+        "pub_place": [],
+        "cited_in": []
+    }
+},
+{
+    "model": "books.instance",
+    "pk": 167,
+    "fields": {
+        "notes": "",
+        "work": 167,
+        "alternate_title": "",
+        "publisher": null,
+        "zotero_id": "",
+        "is_extant": false,
+        "is_annotated": false,
+        "is_translation": false,
+        "dimensions": "",
+        "copyright_year": 1949,
+        "journal": 7,
+        "print_date": null,
+        "print_date_day_known": true,
+        "print_date_month_known": true,
+        "print_date_year_known": true,
+        "uri": "",
+        "has_dedication": false,
+        "has_insertions": false,
+        "start_page": null,
+        "end_page": null,
+        "copy": null,
+        "collected_in": null,
+        "digital_edition": null,
+        "pub_place": [],
+        "cited_in": []
+    }
+},
+{
+    "model": "books.instance",
+    "pk": 122,
+    "fields": {
+        "notes": "",
+        "work": 122,
+        "alternate_title": "",
+        "publisher": 11,
+        "zotero_id": "",
+        "is_extant": true,
+        "is_annotated": true,
+        "is_translation": false,
+        "dimensions": "",
+        "copyright_year": 1961,
+        "journal": null,
+        "print_date": null,
+        "print_date_day_known": true,
+        "print_date_month_known": true,
+        "print_date_year_known": true,
+        "uri": "http://findingaids.princeton.edu/collections/RBD1/c10447",
+        "has_dedication": false,
+        "has_insertions": false,
+        "start_page": null,
+        "end_page": null,
+        "copy": null,
+        "collected_in": null,
+        "digital_edition": 25,
+        "pub_place": [
+            3
+        ],
+        "cited_in": []
+    }
+},
+{
+    "model": "books.instance",
+    "pk": 224,
+    "fields": {
+        "notes": "",
+        "work": 224,
+        "alternate_title": "",
+        "publisher": 1,
+        "zotero_id": "",
+        "is_extant": true,
+        "is_annotated": true,
+        "is_translation": false,
+        "dimensions": "",
+        "copyright_year": 1950,
+        "journal": null,
+        "print_date": null,
+        "print_date_day_known": true,
+        "print_date_month_known": true,
+        "print_date_year_known": true,
+        "uri": "http://findingaids.princeton.edu/collections/RBD1/c8933",
+        "has_dedication": false,
+        "has_insertions": false,
+        "start_page": "I",
+        "end_page": "LII",
+        "copy": null,
+        "collected_in": 225,
+        "digital_edition": 30,
+        "pub_place": [
+            3
+        ],
+        "cited_in": []
+    }
+},
+{
+    "model": "books.instance",
+    "pk": 103,
+    "fields": {
+        "notes": "",
+        "work": 104,
+        "alternate_title": "",
+        "publisher": 19,
+        "zotero_id": "",
+        "is_extant": true,
+        "is_annotated": true,
+        "is_translation": false,
+        "dimensions": "",
+        "copyright_year": 1943,
+        "journal": null,
+        "print_date": null,
+        "print_date_day_known": true,
+        "print_date_month_known": true,
+        "print_date_year_known": true,
+        "uri": "http://findingaids.princeton.edu/collections/RBD1/c12861",
+        "has_dedication": false,
+        "has_insertions": false,
+        "start_page": null,
+        "end_page": null,
+        "copy": null,
+        "collected_in": null,
+        "digital_edition": null,
+        "pub_place": [
+            3
+        ],
+        "cited_in": []
+    }
+},
+{
+    "model": "books.instance",
+    "pk": 93,
+    "fields": {
+        "notes": "***See Notecards inserted under front cover of \"Philosophical writings of Perice\" - there are notes from \"Elements of Logic\" - all citations (all from from pg. 302) are there, on two cards (front and back); MUST SCAN This book is not in D's library; the url below is to the \"Philosophical writings book\"",
+        "work": 93,
+        "alternate_title": "",
+        "publisher": null,
+        "zotero_id": "",
+        "is_extant": true,
+        "is_annotated": false,
+        "is_translation": false,
+        "dimensions": "",
+        "copyright_year": null,
+        "journal": null,
+        "print_date": null,
+        "print_date_day_known": true,
+        "print_date_month_known": true,
+        "print_date_year_known": true,
+        "uri": "http://findingaids.princeton.edu/collections/RBD1/c9670",
+        "has_dedication": false,
+        "has_insertions": false,
+        "start_page": null,
+        "end_page": null,
+        "copy": null,
+        "collected_in": null,
+        "digital_edition": null,
+        "pub_place": [],
+        "cited_in": []
+    }
+},
+{
+    "model": "books.instance",
+    "pk": 227,
+    "fields": {
+        "notes": "",
+        "work": 144,
+        "alternate_title": "",
+        "publisher": null,
+        "zotero_id": "",
+        "is_extant": false,
+        "is_annotated": false,
+        "is_translation": false,
+        "dimensions": "",
+        "copyright_year": null,
+        "journal": null,
+        "print_date": null,
+        "print_date_day_known": false,
+        "print_date_month_known": false,
+        "print_date_year_known": true,
+        "uri": "",
+        "has_dedication": false,
+        "has_insertions": false,
+        "start_page": null,
+        "end_page": null,
+        "copy": null,
+        "collected_in": null,
+        "digital_edition": null,
+        "pub_place": [],
+        "cited_in": []
+    }
+},
+{
+    "model": "books.instance",
+    "pk": 98,
+    "fields": {
+        "notes": "",
+        "work": 98,
+        "alternate_title": "",
+        "publisher": 12,
+        "zotero_id": "",
+        "is_extant": true,
+        "is_annotated": false,
+        "is_translation": false,
+        "dimensions": "",
+        "copyright_year": 1963,
+        "journal": null,
+        "print_date": null,
+        "print_date_day_known": true,
+        "print_date_month_known": true,
+        "print_date_year_known": true,
+        "uri": "http://findingaids.princeton.edu/collections/RBD1/c9643",
+        "has_dedication": false,
+        "has_insertions": false,
+        "start_page": null,
+        "end_page": null,
+        "copy": null,
+        "collected_in": null,
+        "digital_edition": 75,
+        "pub_place": [
+            6,
+            7
+        ],
+        "cited_in": []
+    }
+}
+]
