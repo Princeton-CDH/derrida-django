@@ -1,16 +1,18 @@
 - name: Clone the repo if doesn't already exist and make sure it's on gitref
   git:
-    repo: https://github.com/Princeton-CDH/{{ repo }}.git
-    dest: /home/deploy/checkouts/{{ repo }}
+    repo: '{{ repo_url }}'
+    dest: '{{ clone_root }}'
     version: '{{ gitref }}'
-- name: Get repo short hash
-  command: git rev-parse --short HEAD
+  register: repo_info
+- name: Get version information
+  command: 'printf "%s\n" "import {{ djangoapp }}" "print {{ djangoapp }}".__version__ | python -'
   args:
-      chdir: '/home/deploy/checkouts/{{ repo }}'
-  register: shorthash
+    chdir: {{ clone_root }}
+  # used to generate the {{ version }} variable
+  register: ver
   check_mode: no
 - name: Sync checkout to production
   synchronize:
     src: /home/deploy/checkouts/{{ repo }}/
-    dest: '{{ prod }}/{{ shorthash.stdout }}'
-  delegate_to: "{{ inventory_hostname }}"
+    dest: '{{ deploy }}'
+  delegate_to: '{{ inventory_hostname }}'

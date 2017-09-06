@@ -1,4 +1,5 @@
-[derrida-prod]
+[prod]
 derridas-margins
-[derrda-qa]
+
+[qa]
 test-derrida.cdh.princeton.edu
