@@ -83,9 +83,9 @@ class CitationIndex(indexes.SearchIndex, indexes.Indexable):
     #: print year of associated instance; :attr:`derrida.books.models.Instance.print_year`
     instance_print_year = indexes.DecimalField(model_attr='instance__print_year', null=True)
     #: is instance extant in PU collection?; :attr:`derrida.books.models.Instance.is_extant`
-    is_extant = indexes.FacetBooleanField(model_attr='is_extant')
+    instance_is_extant = indexes.FacetBooleanField(model_attr='instance_is_extant')
     #: is instance annotated?; :attr:`derrida.books.models.Instance.is_annotated`
-    is_annotated = indexes.FacetBooleanField(model_attr='is_extant')
+    instance_is_annotated = indexes.FacetBooleanField(model_attr='instance__is_annotated')
 
     def get_model(self):
         return Reference
