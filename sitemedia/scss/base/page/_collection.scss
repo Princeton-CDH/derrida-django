@@ -115,7 +115,7 @@
   @include grid-column(2);
 
   .collection--condensed & {
-    @include grid-column(4);
+    width: 100%;
     float: none;
   }
 
@@ -127,12 +127,11 @@
 
 .item__heading {
   @include secondary-font-style("italic");
-  font-size: 1.35em;
+  font-size: ems(19px);
   font-style: italic;
   margin-top: 0.4em;
 
   .collection--condensed & {
-    font-size: 1.4em;
     margin-top: 0.6em;
     margin-bottom: 0.25em;
   }
@@ -150,25 +149,17 @@
 }
 
 .item__author {
+  font-size: ems(18px);
   @include secondary-font-style();
-  font-size: 1.3em;
-
-  .collection--condensed & {
-    font-size: 1.3em;
-  }
 }
 
 .item__date,
 .item__location {
   display: inline-block;
   margin-right: 1rem;
-  font-size: 0.9em;
+  font-size: ems(12px);
   line-height: 1;
   margin-bottom: 1.2em;
-
-  .collection--condensed & {
-    font-size: 1em;
-  }
 }
 
 .item__image {
@@ -179,6 +170,10 @@
   z-index: 2;
   display: flex;
   flex-direction: column;
+
+  .collection--condensed & {
+    float: none;
+  }
 
   &.item__image--gallery {
     float: left;
