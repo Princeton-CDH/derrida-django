@@ -77,7 +77,9 @@ class CitationIndex(indexes.SearchIndex, indexes.Indexable):
         faceted=True, null=True)
     #: languages for associated instance; :attr:`derrida.book.models.Instance.languages`
     instance_language = indexes.MultiValueField(model_attr='instance__languages__name',
-        faceted=True, null=True)
+        faceted=True, null=True)    
+    #: languages for the original work; :attr:`derrida.book.models.Work.languages`
+    original_language = indexes.MultiValueField(model_attr='instance__work__languages__name')
     #: copyright year of associated instance; :attr:`derrida.books.models.Instance.copyright_year`
     instance_copyright_year = indexes.DecimalField(model_attr='instance__copyright_year', null=True)
     #: print year of associated instance; :attr:`derrida.books.models.Instance.print_year`
