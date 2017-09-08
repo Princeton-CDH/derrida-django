@@ -1529,7 +1529,7 @@ hr {
         min-height: 16rem; } }
 
 .page-header__heading {
-  font-size: 1.6rem;
+  font-size: 1.25em;
   margin-top: 1rem;
   color: #3ca1ff;
   font-family: "SabonLTPro-Bold", "Georgia", serif;
@@ -1557,7 +1557,8 @@ hr {
     font-weight: inherit;
     text-decoration: none;
     border-bottom: 3px solid #dbdbdb;
-    transition: border-color 150ms ease; }
+    transition: border-color 150ms ease;
+    font-size: 0.75em; }
     .page-header__callout .callout__link:hover, .page-header__callout .callout__link:active, .page-header__callout .callout__link.is-hovered {
       color: #424242;
       border-color: #3ca1ff; }
@@ -1566,7 +1567,7 @@ hr {
     font-family: "SabonLTPro-Italic", "Georgia", serif;
     font-weight: normal;
     font-style: normal;
-    font-size: 1.25em; }
+    font-size: 1.1875em; }
 
 .page-filter {
   background: #fff;
@@ -1713,9 +1714,7 @@ hr {
   float: left;
   margin-left: 2.94118%; }
   .collection--condensed .item__body {
-    width: calc(100% - 5.88235%);
-    float: left;
-    margin-left: 2.94118%;
+    width: 100%;
     float: none; }
   .collection--no-images .item__body {
     width: 100%;
@@ -1725,12 +1724,10 @@ hr {
   font-family: "SabonLTPro-Italic", "Georgia", serif;
   font-weight: normal;
   font-style: normal;
-  font-size: 1.35em;
-  font-weight: 700;
+  font-size: 1.1875em;
   font-style: italic;
   margin-top: 0.4em; }
   .collection--condensed .item__heading {
-    font-size: 1.4em;
     margin-top: 0.6em;
     margin-bottom: 0.25em; }
 
@@ -1751,23 +1748,18 @@ hr {
   margin-bottom: 0; }
 
 .item__author {
+  font-size: 1.125em;
   font-family: "SabonLTPro-Roman", "Georgia", serif;
   font-weight: normal;
-  font-style: normal;
-  font-size: 1.3em; }
-  .collection--condensed .item__author {
-    font-size: 1.3em; }
+  font-style: normal; }
 
 .item__date,
 .item__location {
   display: inline-block;
   margin-right: 1rem;
-  font-size: 0.9em;
+  font-size: 0.75em;
   line-height: 1;
   margin-bottom: 1.2em; }
-  .collection--condensed .item__date, .collection--condensed
-  .item__location {
-    font-size: 1em; }
 
 .item__image {
   position: relative;
@@ -1779,6 +1771,8 @@ hr {
   z-index: 2;
   display: flex;
   flex-direction: column; }
+  .collection--condensed .item__image {
+    float: none; }
   .item__image.item__image--gallery {
     float: left;
     width: calc(50% - 4.41176%);

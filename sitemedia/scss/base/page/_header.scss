@@ -62,7 +62,7 @@
 }
 
 .page-header__heading {
-  font-size: 1.6rem;
+  font-size: ems(20px);
   margin-top: 1rem;
   color: $blue;
   @include secondary-font-style("bold");
@@ -84,11 +84,12 @@
 
   .callout__link {
     @include faded-link();
+    font-size: ems(12px);
   }
 
   .lead {
     line-height: 1.2;
     @include secondary-font-style("italic");
-    font-size: 1.25em;
+    font-size: ems(19px);
   }
 }
