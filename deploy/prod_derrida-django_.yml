@@ -15,9 +15,8 @@
 # the --private-key flag can manually specify a key if you don't want to use
 # ssh-add or similar, or you can add ansible_ssh_private_key_file to variables.
 
-- hosts: '{{ group | default(qa) }}'
+- hosts: derrida-prod
   remote_user: deploy
-  connetion: '{{ conn }}'
   # Set environment to use scl rh-python35
   environment:
     PATH: '/opt/rh/rh-python35/root/usr/bin/:{{ lookup("env","PATH") }}'

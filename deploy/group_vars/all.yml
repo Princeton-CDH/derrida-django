@@ -1,7 +1,0 @@
----
-# Name of the Github Repo to clone
-repo: 'Princeton-CDH/derrida-django'
-# Repository url
-repo_url: 'https://www.github.com/{{repo }}.git'
-# Version variable
-version: '{{ ver.stdout }}'
