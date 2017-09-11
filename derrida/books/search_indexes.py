@@ -65,7 +65,35 @@ class CitationIndex(indexes.SearchIndex, indexes.Indexable):
     derridawork_pageloc = indexes.CharField(model_attr='derridawork_pageloc')
     #: Cited page in referenced work; :attr:`derrida.books.models.Reference.book_page`
     book_page = indexes.CharField(model_attr='book_page', null=True)
-    # instance_id = indexes.IntegerField(model_attr='instance__id')
+    # - related instance and work info
+    #: Title of instance to which citation points; :method:`derrida.books.models.Instance.display_title`
+    instance_title = indexes.CharField(model_attr='instance__display_title')
+    #: Instance authors for faceted filtering; :method:`derrida.books.models.Work.firstname_last`
+    instance_author = indexes.MultiValueField(model_attr='instance__work__authors__firstname_last')
+    #: author in firstname last for display
+    instance_author_letter = indexes.MultiValueField(faceted=True)
+    #: subjects for associated instance; :attr:`derrida.books.models.Instance.subjects`
+    instance_subject = indexes.MultiValueField(model_attr='instance__work__subjects__name',
+        faceted=True, null=True)
+    #: languages for associated instance; :attr:`derrida.book.models.Instance.languages`
+    instance_language = indexes.MultiValueField(model_attr='instance__languages__name',
+        faceted=True, null=True)    
+    #: languages for the original work; :attr:`derrida.book.models.Work.languages`
+    original_language = indexes.MultiValueField(model_attr='instance__work__languages__name')
+    #: copyright year of associated instance; :attr:`derrida.books.models.Instance.copyright_year`
+    instance_copyright_year = indexes.DecimalField(model_attr='instance__copyright_year', null=True)
+    #: print year of associated instance; :attr:`derrida.books.models.Instance.print_year`
+    instance_print_year = indexes.DecimalField(model_attr='instance__print_year', null=True)
+    #: is instance extant in PU collection?; :attr:`derrida.books.models.Instance.is_extant`
+    instance_is_extant = indexes.FacetBooleanField(model_attr='instance__is_extant')
+    #: is instance annotated?; :attr:`derrida.books.models.Instance.is_annotated`
+    instance_is_annotated = indexes.FacetBooleanField(model_attr='instance__is_annotated')
 
     def get_model(self):
         return Reference
+
+    def prepare_instance_author_letter(self, instance):
+        # first letter of author
+        # slightly odd notation of instance.instance is correct here
+        return [author.authorized_name[0].upper()
+                for author in instance.instance.work.authors.all()]

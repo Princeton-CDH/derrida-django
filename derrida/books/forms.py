@@ -2,6 +2,16 @@ from django import forms
 from django.utils.safestring import mark_safe
 
 
+class SearchForm(forms.Form):
+    query = forms.CharField(label='Search Terms...', required=False)
+    content_type = forms.ChoiceField(choices=[
+        ('all', 'All'),
+        ('book', 'Books'),
+        ('reference', 'Citations'),  # FIXME: References
+        ('annotation', 'Annotations'),  # Interventions?
+    ], required=False, initial='all')
+
+
 class FacetChoiceField(forms.MultipleChoiceField):
     # customize multiple choice field for use with facets
     # - turn of choice validation (shouldn't fail if facets don't get loaded)
@@ -57,8 +67,19 @@ class CitationSearchForm(forms.Form):
     query = forms.CharField(label='Search', required=False)
 
     facet_fields = ['derridawork', 'reference_type']
-    derridawork = FacetChoiceField(label='Cited by Derrida in')
-    reference_type = FacetChoiceField(label='Citation Type')
+
+    instance_is_extant = forms.BooleanField(label="Extant in Derrida's Library",
+        required=False)
+    instance_is_annotated = forms.BooleanField(label='Contains annotation',
+        required=False)
+    derridawork = FacetChoiceField(label='Cited by Derrida in', required=False)
+    reference_type = FacetChoiceField(label='Citation Type', required=False)
+    # Placeholder for the letter search that at passes the facets
+    instance_author_letter = FacetChoiceField()
+    instance_author = FacetChoiceField(label='Publication Author')
+    instance_subject = FacetChoiceField(label='Publication Subject')
+    instance_language = FacetChoiceField(label='Language of Publication')
+    original_language = FacetChoiceField(label='Original Language')
 
     def set_choices_from_facets(self, facets):
         # configure field choices based on facets returned from Solr
