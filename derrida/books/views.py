@@ -33,6 +33,7 @@ class InstanceDetailView(DetailView):
     digtial editions set.'''
 
     model = Instance
+    slug_field = 'slug'
 
     def get_queryset(self):
         instances = super(InstanceDetailView, self).get_queryset()
@@ -195,7 +196,6 @@ class ReferenceDetailView(DetailView):
             derridawork_pageloc=self.kwargs['pageloc'],
             derridawork__slug=self.kwargs['derridawork_slug']
             ).first()
-
 
 
 class SearchView(TemplateView):

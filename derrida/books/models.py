@@ -1,4 +1,5 @@
 import json
+import re
 
 from django.db import models
 from django.contrib.contenttypes.fields import GenericRelation
@@ -6,6 +7,7 @@ from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
 from django.urls import reverse
 from django.utils.safestring import mark_safe
+from django.utils.text import slugify
 from djiffy.models import Canvas, Manifest
 from sortedm2m.fields import SortedManyToManyField
 
@@ -13,6 +15,7 @@ from derrida.common.models import Named, Notable, DateRange
 from derrida.places.models import Place
 from derrida.people.models import Person
 from derrida.footnotes.models import Footnote
+from derrida.utils import deligature
 
 Q = models.Q
 
@@ -140,6 +143,15 @@ class Work(Notable):
     instance_count.short_description = '# instances'
 
 
+class InstanceQuerySet(models.QuerySet):
+    '''Custom :class:`~django.db.models.QuerySet` for :class:`Instance` to
+    make it easy to find all instances that have a digital
+    edition'''
+
+    def with_digital_eds(self):
+        return self.exclude(digital_edition__isnull=True)
+
+
 class Instance(Notable):
     '''A single instance of a :class:`Work` - i.e., a specific copy or edition
     or translation.  Can also include books that appear as sections
@@ -164,6 +176,12 @@ class Instance(Notable):
                         message='Zotero IDs must be alphanumeric.'
                     )]
     )
+    # identifying slug for use in get_absolute_url, indexed for speed
+    slug = models.SlugField(max_length=255,
+                            help_text=('Editing this after a record is '
+                                       'created should be done with caution '
+                                       'as it will break the previous URL.'))
+
     #: item is extant
     is_extant = models.BooleanField(help_text='Extant in PUL JD', default=False)
     #: item is annotated
@@ -203,8 +221,12 @@ class Instance(Notable):
     #: end page for book section or journal article
     end_page = models.CharField(max_length=20, blank=True, null=True)
     #: optional label to distinguish multiple copies of the same work
-    copy = models.CharField(max_length=3, blank=True, null=True,
-        help_text='Label to distinguish multiple copies of the same edition')
+    copy = models.CharField(max_length=1, blank=True,
+        help_text='Label to distinguish multiple copies of the same edition',
+        validators=[RegexValidator(r'[A-Z]',
+            message='Please set a capital letter from A-Z.'
+        )],
+    )
 
     #: :class:`Language` this item is written in;
     # uses :class:`InstanceLanguage` to indicate primary language
@@ -236,6 +258,8 @@ class Instance(Notable):
     #: generic relation to :class:~`derrida.footnotes.models.Footnote`
     footnotes = GenericRelation(Footnote)
 
+    objects = InstanceQuerySet.as_manager()
+
     class Meta:
         ordering = ['alternate_title', 'work__primary_title'] ## ??
         verbose_name = 'Derrida library work instance'
@@ -250,8 +274,62 @@ class Instance(Notable):
             self.copyright_year or 'n.d.')
 
     def get_absolute_url(self):
-        # placeholder: id-based url until we have slugs
-        return reverse('books:detail', kwargs={'pk': self.pk})
+        return reverse('books:detail', kwargs={'slug': self.slug})
+
+    def generate_base_slug(self):
+        '''Generate slug for :class:`Instance` object.
+           :rtype str: String in the format ``lastname-title-of-work-year``
+        '''
+        # get the first author, if there is one
+        author = self.work.authors.first()
+        if author:
+            # use the last name of the first author
+            author = author.authorized_name.split(',')[0]
+        else:
+            # otherwise, set it to an empty string
+            author = ''
+        title = self.work.primary_title
+        year = self.copyright_year
+        # if no instance copyright_year,
+        if not year:
+            # try the work year,
+            year = self.work.year
+        if not year:
+            # if still no year, use blank string
+            year = ''
+        # return a slug with no distinction for copies
+        return slugify('%s %s %s' % (author, deligature(title), year))
+
+    def generate_safe_slug(self):
+        '''Generate a verified slug with copy handling for :class:`Instance`
+           object.
+           :rtype str: String in the format
+           ``lastname-title-of-work-year-letter``
+        '''
+
+        # base slug
+        slug = self.generate_base_slug()
+        # get any copies that use the base slug
+        duplicates = Instance.objects.filter(
+            slug__icontains=slug).order_by('-slug')
+        # any new copies should start with 'B' since 'A' is implicit in already
+        # saved slug for original
+        new_copy_letter = 'B'
+        # check for duplicates
+        if duplicates.exists():
+            # get their slugs as a flat list
+            slugs = duplicates.values_list('slug', flat=True)
+            letters = []
+            # clip any -[A-Z] copy suffixes and append to a list
+            for slug in slugs:
+                if re.match(r'-[A-Z]%', slug):
+                    letters += slug.split('-')[-1]
+            # sort and iterate letter by one
+            if sorted(letters, reverse=True):
+                new_copy_letter = chr(ord(letters[0]) + 1)
+            slug = ('%s-%s' % (slug, new_copy_letter))
+
+        return slug
 
     def display_title(self):
         '''display title - alternate title or work short title'''
@@ -426,7 +504,6 @@ class PersonBook(Notable, DateRange):
         return '%s - %s%s' % (self.person, self.book, dates)
 
 
-
 # New citationality model
 class DerridaWork(Notable):
     '''This models the reference copy used to identify all citations, not
@@ -483,7 +560,7 @@ class ReferenceQuerySet(models.QuerySet):
         visualization.  Currently used for histogram visualization.
         Author of cited work is aliased to `author`.
         '''
-        return self.values('id', 'instance', 'derridawork__slug',
+        return self.values('id', 'instance__slug', 'derridawork__slug',
             'derridawork_page', 'derridawork_pageloc',
            author=models.F('instance__work__authors__authorized_name'))
 
@@ -547,17 +624,20 @@ class Reference(models.Model):
     anchor_text_snippet.short_description = 'Anchor Text'
     anchor_text.admin_order_field = 'anchor_text'
 
-    def get_autocomplete_instances(self):
-        '''Returns a list of :class:`Instance` primary keys as JSON for
-        jQuery use in disabling or enabling the autocompletes for
-        :class:`~derrida.interventions.models.Canvas` and
-        :class:`~derrida.interventions.models.Interventions` on the change_form
-        for :class:`Reference`.
+    @staticmethod
+    def instance_ids_with_digital_editions():
+        '''Used as a convenience method to provide a readonly field in the
+        admin change form for :class:`Reference` with a list of JSON formatted
+        primary keys. This is used by jQuery in the :class:`Reference`
+        change_form and reference inlines on the :class:`Instance`change_form
+        to disable the autocomplete fields when there is or is not a digital
+        edition. See ``sitemedia/js/reference-instance-canvas-toggle.js`` for
+        this logic.
 
-        :return: Returns a JSON formatted array
-        :rtype: str
+        :rtype: JSON formatted string of :class:`Instance` primary keys
         '''
-        valid_instance_pks = Instance.objects.exclude(
-                                digital_edition__isnull=True
-                             ).values_list('id', flat=True).order_by('id')
-        return json.dumps(list(valid_instance_pks))
+        with_digital_eds = Instance.objects.with_digital_eds()
+        # Flatten to just the primary keys
+        ids = with_digital_eds.values_list('id', flat=True).order_by('id')
+        # Return serialized JSON
+        return json.dumps(list(ids))

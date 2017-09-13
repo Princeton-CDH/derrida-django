@@ -133,7 +133,7 @@ class ReferenceInline(admin.StackedInline):
     form = ReferenceModelForm
     extra = 1
     classes = ('grp-collapse grp-open',)
-    readonly_fields = ('get_autocomplete_instances', )
+    readonly_fields = ('instance_ids_with_digital_editions', )
     fieldsets = (
         ('Citation Information', {
                 'fields': (
@@ -168,8 +168,8 @@ class ReferenceAdmin(admin.ModelAdmin):
         'instance', 'book_page', 'reference_type', 'anchor_text_snippet']
     list_filter = ['derridawork', 'reference_type']
     search_fields = ['anchor_text']
+    readonly_fields = ('instance_ids_with_digital_editions', )
     # *almost* the same as ReferenceInline.fieldsets (adds instance)
-    readonly_fields = ('get_autocomplete_instances', )
     fieldsets = (
         ('Citation Information', {
                 'fields': (
@@ -197,7 +197,7 @@ class ReferenceAdmin(admin.ModelAdmin):
         # NOTE: This field is a callable, so it can't be included in the
         # ModelForm so as to be given a HiddenInput
         ('Hidden Info', {
-            'fields': ('get_autocomplete_instances', ),
+            'fields': ('instance_ids_with_digital_editions', ),
             'classes': ('hidden-admin-info', ),
         })
     )
@@ -349,7 +349,7 @@ class InstanceAdmin(admin.ModelAdmin):
         'is_digitized', 'is_translation', 'has_notes')
     # NOTE: fields are specified here so that notes input will be displayed last
     fields = ('work', 'alternate_title', 'journal', 'publisher',
-        'pub_place', ('copyright_year', 'copy'), 'print_date',
+        'pub_place', 'slug', ('copyright_year', 'copy'), 'print_date',
         ('print_date_year_known', 'print_date_month_known',
          'print_date_day_known'),
         ('is_extant', 'is_translation'),

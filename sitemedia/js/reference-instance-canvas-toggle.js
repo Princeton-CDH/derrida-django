@@ -13,11 +13,9 @@ an Instance
 */
 function toggleReferenceAutocompletes() {
   var instancePksArray = []
-  var jsonString = $('.get_autocomplete_instances div div .grp-readonly').text();
+  var jsonString = $('.instance_ids_with_digital_editions div div .grp-readonly').text();
   if (jsonString) {
-    instancePksArray = JSON.parse(
-      $('.get_autocomplete_instances div div .grp-readonly').text()
-    );
+    instancePksArray = JSON.parse(jsonString);
   }
 
   // Flag to see if a digital edition is set on Instance change_form

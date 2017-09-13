@@ -121,27 +121,20 @@ class TestReference(TestCase):
         assert resolved_url.kwargs['page'] == ref.derridawork_page
         assert resolved_url.kwargs['pageloc'] == ref.derridawork_pageloc
 
-    def test_valid_autocompletes(self):
-        la_vie = self.la_vie
-        reference = Reference.objects.create(
-            instance=la_vie,
-            derridawork=self.dg,
-            derridawork_page='110',
-            derridawork_pageloc='a',
-            book_page='10s',
-            reference_type=self.quotation
-        )
+    def test_instance_ids_with_digital_editions(self):
+        # check static method, so we don't need cls or self
+        Reference.instance_ids_with_digital_editions()
 
         # no instances have associated canvases so this should return an
         # empty list as a JSON string
-        data = reference.get_autocomplete_instances()
+        data = Reference.instance_ids_with_digital_editions()
         assert json.loads(data) == []
 
         # add a canvas to la_vie, then it should appear in the list
-        la_vie.digital_edition = self.manif
-        la_vie.save()
-        data = reference.get_autocomplete_instances()
-        assert json.loads(data) == [la_vie.pk]
+        self.la_vie.digital_edition = self.manif
+        self.la_vie.save()
+        data = Reference.instance_ids_with_digital_editions()
+        assert json.loads(data) == [self.la_vie.pk]
 
 
 class TestReferenceQuerySet(TestCase):
@@ -169,7 +162,7 @@ class TestReferenceQuerySet(TestCase):
         ref = self.ref_qs.first()
         ref_values = self.ref_qs.summary_values().first()
         assert ref_values['id'] == ref.pk
-        assert ref_values['instance'] == ref.instance.id
+        assert ref_values['instance__slug'] == ref.instance.slug
         assert ref_values['derridawork__slug'] == ref.derridawork.slug
         assert ref_values['derridawork_page'] == ref.derridawork_page
         assert ref_values['derridawork_pageloc'] == ref.derridawork_pageloc
@@ -222,13 +215,33 @@ class TestInstance(TestCase):
         la_vie.year = None
         assert '%s (n.d.)' % (la_vie.display_title(), )
 
+    def test_generate_base_slug(self):
+        la_vie = Instance.objects.get(work__short_title__contains="La vie")
+        # La vie's slug is set in the test fixture as a reference
+        assert la_vie.generate_base_slug() == la_vie.slug
+
+    def test_generate_safe_slug(self):
+
+        # la vie should appear in the list and see itself so suggest -B
+        la_vie = Instance.objects.get(work__short_title__contains="La vie")
+        assert la_vie.generate_safe_slug() == la_vie.generate_base_slug() + '-B'
+        # save the -B copy
+        la_vie.pk = None
+        la_vie.slug = la_vie.generate_safe_slug()
+        la_vie.save()
+        # now pull in the original copy and run again, should produce a slug
+        # with -C as its suffix
+        la_vie = Instance.objects.get(slug=la_vie.generate_base_slug())
+        la_vie.generate_safe_slug() == la_vie.generate_base_slug() + '-C'
+
+
     def test_get_absolute_url(self):
         la_vie = Instance.objects.get(work__short_title__contains="La vie")
         item_url = la_vie.get_absolute_url()
         resolved_url = resolve(item_url)
         assert resolved_url.url_name == 'detail'
         assert resolved_url.namespace == 'books'
-        assert int(resolved_url.kwargs['pk']) == la_vie.pk
+        assert resolved_url.kwargs['slug'] == la_vie.slug
 
     def test_item_type(self):
         la_vie = Instance.objects.get(work__short_title__contains="La vie")
@@ -291,6 +304,28 @@ class TestInstance(TestCase):
         )
         assert la_vie.location == 'House'
 
+
+class TestInstanceQuerySet(TestCase):
+    fixtures = ['sample_work_data.json']
+
+    def setUp(self):
+        self.manif1 = Manifest.objects.create(short_id='bk123', label='Foobar')
+
+    def test_with_digital_eds(self):
+        la_vie = Instance.objects.get(work__short_title__contains="La vie")
+
+        # no digital editiosn with manifests, so should return empty queryset
+        empty = Instance.objects.with_digital_eds()
+        assert len(empty) == 0
+
+        # associate la_vie with the set up manfest, len should be 1
+        # and the only result should be la_vie
+        la_vie.digital_edition = self.manif1
+        la_vie.save()
+
+        qs = Instance.objects.with_digital_eds()
+        assert len(qs) == 1
+        assert qs[0] == la_vie
 
 class TestWorkLanguage(TestCase):
     fixtures = ['sample_work_data.json']
