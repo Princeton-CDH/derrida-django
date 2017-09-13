@@ -1624,13 +1624,16 @@ hr {
 .filter__selector {
   padding: 0 1rem;
   flex-grow: 2;
-  flex-basis: 200px; }
+  flex-basis: 330px; }
   @media only screen and (min-width: 650px) {
     .filter__selector {
       max-width: 50%; } }
   .filter__selector.filter__selector--condensed {
     flex-grow: 1;
-    flex-basis: 130px; }
+    flex-basis: 180px;
+    max-width: 180px; }
+  .filter__selector .mdl-textfield {
+    width: 100%; }
 
 .filter {
   background-color: #fff;
@@ -1643,13 +1646,11 @@ hr {
     font-size: 0.8em;
     color: #424242;
     font-weight: inherit;
-    opacity: 0.8;
     text-decoration: none;
     border-bottom: 3px solid #dbdbdb;
-    transition: border-color 150ms ease, opacity 150ms ease;
+    transition: border-color 150ms ease;
     border: 0; }
     .filter .clear-link:hover, .filter .clear-link:active, .filter .clear-link.is-hovered {
-      opacity: 1;
       color: #424242;
       border-color: #3ca1ff; }
 
@@ -1708,6 +1709,9 @@ hr {
     display: flex;
     padding-right: 1.5rem;
     font-size: 0.85em; }
+    .filter__selector--condensed .filter__check-list .mdl-checkbox {
+      width: 100%;
+      padding-right: 0; }
   .filter__check-list .name {
     flex-basis: 100%;
     padding-right: 6px; }
