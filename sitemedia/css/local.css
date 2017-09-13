@@ -1103,6 +1103,11 @@ p {
   font-size: 1em;
   margin: 0 0 0.75em; }
 
+b, strong {
+  font-family: "UniversLTPro-65Bold", "Helvetica", "Arial", sans-serif;
+  font-weight: normal;
+  font-style: normal; }
+
 .lead {
   font-size: 1.6em;
   font-family: "SabonLTPro-Italic", "Georgia", serif;
@@ -1225,10 +1230,9 @@ hr {
     .background-colored--dark .coordinate-navigation .mdl-navigation__link {
       color: #fff; }
     .coordinate-navigation .mdl-navigation__link {
-      font-family: "SabonLTPro-Roman", "Georgia", serif;
+      font-family: "SabonLTPro-Bold", "Georgia", serif;
       font-weight: normal;
       font-style: normal;
-      font-weight: bold;
       -webkit-font-smoothing: antialiased;
       opacity: 1;
       padding: 0;

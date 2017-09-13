@@ -149,8 +149,7 @@
     }
 
     .mdl-navigation__link {
-      @include secondary-font-style();
-      font-weight: bold;
+      @include secondary-font-style("bold");
       -webkit-font-smoothing: antialiased;
       opacity: 1;
       padding: 0;
