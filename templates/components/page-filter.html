@@ -62,27 +62,27 @@
       </div>
 
       <div class="filter__selector">
-        {% include 'components/form/checkbox-selection.html' with name='subject' items=form.subject %}
+        {% include 'components/form/checkbox-selection.html' with name='subject' label='Subject' items=form.subject %}
       </div>
 
-      <div class="filter__selector">
-        {% include 'components/form/checkbox-selection.html' with name='language' items=form.language %}
+      <div class="filter__selector filter__selector--condensed">
+        {% include 'components/form/checkbox-selection.html' with name='language' label='Original Language' items=form.language %}
       </div>
 
-      <div class="filter__selector">
-        {% include 'components/form/checkbox-selection.html' with name='work_language' items=form.work_language %}
+      <div class="filter__selector filter__selector--condensed">
+        {% include 'components/form/checkbox-selection.html' with name='work_language' label='Language of Publication' items=form.work_language %}
       </div>
 
-      <div class="filter__selector">
-        {% include 'components/form/checkbox-selection.html' with name='pub_place' items=form.pub_place %}
+      <div class="filter__selector filter__selector--condensed">
+        {% include 'components/form/checkbox-selection.html' with name='pub_place' label='Publication Place' items=form.pub_place %}
       </div>
 
-      <div class="filter__selector">
-        {% include 'components/form/checkbox-selection.html' with name='publication_type' items=form.item_type %}
+      <div class="filter__selector filter__selector--condensed">
+        {% include 'components/form/checkbox-selection.html' with name='publication_type' label='Publication Type' items=form.item_type %}
       </div>
 
-      <div class="filter__selector">
-        {% include 'components/form/checkbox-selection.html' with name='cited_in' items=form.cited_in %}
+      <div class="filter__selector filter__selector--condensed">
+        {% include 'components/form/checkbox-selection.html' with name='cited_in' label='Cited In' items=form.cited_in %}
       </div>
 
     </section>
