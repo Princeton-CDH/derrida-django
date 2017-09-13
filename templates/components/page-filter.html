@@ -32,19 +32,17 @@
     <section class="filter__section">
       <div class="filter__selector"> {# is_extant #}
         <label class="mdl-switch__label mdl-switch__label--right" for="is-extant">{{ form.is_extant.label }}
-        {# <span class="mdl-switch mdl-switch--right mdl-js-switch"> #}
-         {# {% render_field form.is_extant class="mdl-switch__input" %} #}
-        {% render_field form.is_extant %}
-        {# </span> #}
+          <span class="mdl-switch mdl-switch--right mdl-js-switch">
+            {% render_field form.is_extant class="mdl-switch__input" id="is-extant" %}
+          </span>
         </label>
       </div>
 
       <div class="filter__selector">  {# is_annotated #}
         <label class="mdl-switch__label mdl-switch__label--right" for="contains-annotation">{{ form.is_annotated.label }}
-        {# <span class="mdl-switch mdl-switch--right mdl-js-switch"> #}
-        {% render_field form.is_annotated class="mdl-switch__input" %}
-          {# <input type="checkbox" id="contains-annotation" class="mdl-switch__input" checked /> #}
-        {# </span> #}
+          <span class="mdl-switch mdl-switch--right mdl-js-switch">
+            {% render_field form.is_annotated class="mdl-switch__input" id="contains-annotation" %}
+          </span>
         </label>
       </div>
 
@@ -58,149 +56,35 @@
     </section>
 
     <section class="filter__section">
-      <div class="filter__selector">
-        <div class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label">
-          <select class="mdl-selectfield__select" id="author" name="author">
-            <option value=""></option>
-            <option value="option1">option 1</option>
-            <option value="option2">option 2</option>
-            <option value="option3">option 3</option>
-            <option value="option4">option 4</option>
-            <option value="option5">option 5</option>
-          </select>
-          <label class="mdl-selectfield__label" for="author">Author</label>
-        </div>
-      </div>
 
-      <div class="filter__selector filter__selector--condensed">
-        <div class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label">
-          <select class="mdl-selectfield__select" id="subject" name="subject">
-            <option value=""></option>
-            <option value="option1">option 1</option>
-            <option value="option2">option 2</option>
-            <option value="option3">option 3</option>
-            <option value="option4">option 4</option>
-            <option value="option5">option 5</option>
-          </select>
-          <label class="mdl-selectfield__label" for="subject">Subject</label>
-        </div>
+      <div class="filter__selector">
+        {% include 'components/form/author-selection.html' with authors=form.author %}
       </div>
 
       <div class="filter__selector">
-        <div class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label">
-          <select class="mdl-selectfield__select" id="language-published" name="language-published">
-            <option value=""></option>
-            <option value="option1">option 1</option>
-            <option value="option2">option 2</option>
-            <option value="option3">option 3</option>
-            <option value="option4">option 4</option>
-            <option value="option5">option 5</option>
-          </select>
-          <label class="mdl-selectfield__label" for="language-published">Language of Publication</label>
-        </div>
+        {% include 'components/form/checkbox-selection.html' with name='subject' items=form.subject %}
       </div>
 
       <div class="filter__selector">
-        <div class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label">
-          <select class="mdl-selectfield__select" id="language-original" name="language-original">
-            <option value=""></option>
-            <option value="option1">option 1</option>
-            <option value="option2">option 2</option>
-            <option value="option3">option 3</option>
-            <option value="option4">option 4</option>
-            <option value="option5">option 5</option>
-          </select>
-          <label class="mdl-selectfield__label" for="language-original">Original Language</label>
-        </div>
+        {% include 'components/form/checkbox-selection.html' with name='language' items=form.language %}
       </div>
 
       <div class="filter__selector">
-        <div class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label">
-          <select class="mdl-selectfield__select" id="place-published" name="place-published">
-            <option value=""></option>
-            <option value="option1">option 1</option>
-            <option value="option2">option 2</option>
-            <option value="option3">option 3</option>
-            <option value="option4">option 4</option>
-            <option value="option5">option 5</option>
-          </select>
-          <label class="mdl-selectfield__label" for="place-published">Place of Publication</label>
-        </div>
+        {% include 'components/form/checkbox-selection.html' with name='work_language' items=form.work_language %}
       </div>
 
       <div class="filter__selector">
-        <div class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label">
-          <select class="mdl-selectfield__select" id="year-published" name="year-published">
-            <option value=""></option>
-            <option value="option1">option 1</option>
-            <option value="option2">option 2</option>
-            <option value="option3">option 3</option>
-            <option value="option4">option 4</option>
-            <option value="option5">option 5</option>
-          </select>
-          <label class="mdl-selectfield__label" for="year-published">Original Publication Year</label>
-        </div>
-      </div>
-
-      <div class="filter__selector filter__selector--condensed">
-        <div class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label">
-          <select class="mdl-selectfield__select" id="year-edition" name="year-edition">
-            <option value=""></option>
-            <option value="option1">option 1</option>
-            <option value="option2">option 2</option>
-            <option value="option3">option 3</option>
-            <option value="option4">option 4</option>
-            <option value="option5">option 5</option>
-          </select>
-          <label class="mdl-selectfield__label" for="year-edition">Edition Year</label>
-        </div>
-      </div>
-
-      <div class="filter__selector filter__selector--condensed">
-        <div class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label">
-          <select class="mdl-selectfield__select" id="year-printing" name="year-printing">
-            <option value=""></option>
-            <option value="option1">option 1</option>
-            <option value="option2">option 2</option>
-            <option value="option3">option 3</option>
-            <option value="option4">option 4</option>
-            <option value="option5">option 5</option>
-          </select>
-          <label class="mdl-selectfield__label" for="year-printing">Printing Year</label>
-        </div>
-      </div>
-
-      <div class="filter__selector filter__selector--condensed">
-        <div class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label">
-          {# {{ form.item_type }} #}
-          {# FIXME: label/field name should come from the form #}
-          <select class="mdl-selectfield__select" id="citation-type" name="citation-type">
-            <option value=""></option>
-            {% for item_type, count in facets.fields.item_type %}
-              <option value="{{ item_type }}">{{ item_type }} {{ count }}</option>
-            {% endfor %}
-            {# <option value="option2">option 2</option> #}
-            {# <option value="option3">option 3</option> #}
-            {# <option value="option4">option 4</option> #}
-            {# <option value="option5">option 5</option> #}
-          </select>
-          <label class="mdl-selectfield__label" for="citation-type">{{ form.item_type.label }}</label>
-        </div>
+        {% include 'components/form/checkbox-selection.html' with name='pub_place' items=form.pub_place %}
       </div>
 
       <div class="filter__selector">
-        <div class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label">
-          <select class="mdl-selectfield__select" id="derrida-citation" name="derrida-citation">
-            <option value=""></option>
-            <option value="option1">option 1</option>
-            <option value="option2">option 2</option>
-            <option value="option3">option 3</option>
-            <option value="option4">option 4</option>
-            <option value="option5">option 5</option>
-          </select>
-          <label class="mdl-selectfield__label" for="derrida-citation">Cited by Derrida in</label>
-        </div>
+        {% include 'components/form/checkbox-selection.html' with name='publication_type' items=form.item_type %}
       </div>
+
+      <div class="filter__selector">
+        {% include 'components/form/checkbox-selection.html' with name='cited_in' items=form.cited_in %}
+      </div>
+
     </section>
     <input type="submit"/>
   </div>

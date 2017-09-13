@@ -17,28 +17,13 @@
       </div>
     </div>
   </header>
-  {% include "components/page-filter.html" with show_filter=False %}
+
+  {% include "components/page-filter.html" with show_filter=False formItems=form %}
   {% include "components/page-sort.html" with number=count orderBy=orderBy %}
-  <section>
-    {% include 'components/form/author-selection.html' with authors=form.author %}
-  </section>
-  <hr/>
-  <hr/>
-  <hr/>
+
   <div class="container">
   {# TEST version of the form for implementing functionality; integration with design still TODO #}
-<form>
 
-  {% for field in form %}
-        <div class="fieldWrapper">
-            {{ field.errors }}
-            {{ field.label_tag }}: {{ field }}
-        </div>
-    {% endfor %}
-
-  <input type="submit"/>
-
-</form>
 {# NOTE: author first letters available via solr facet, but may need some processing in the view for display #}
 
     <article class="collection collection--condensed">
