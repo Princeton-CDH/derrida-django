@@ -1393,7 +1393,7 @@ hr {
 .mdl-mega-footer {
   background-color: #fff;
   color: #424242;
-  padding-top: 4rem; }
+  padding: 4rem 0 1rem; }
   .mdl-mega-footer .mdl-logo {
     color: inherit; }
 
@@ -1402,8 +1402,10 @@ hr {
   font-size: 0.9rem;
   margin: 0; }
 
-.mdl-mega-footer__logos .logo + .logo {
-  padding-left: 2rem; }
+.mdl-mega-footer__logos {
+  align-self: flex-end; }
+  .mdl-mega-footer__logos .logo + .logo {
+    padding-left: 2rem; }
 
 .mdl-mega-footer__legal {
   padding-top: 2rem; }
@@ -1418,6 +1420,11 @@ hr {
   .mdl-mega-footer__heading:hover,
   .mdl-mega-footer__heading:active {
     color: #3ca1ff; }
+
+.mdl-mega-footer__middle-section,
+.mdl-mega-footer__bottom-section {
+  width: 100%;
+  padding: 0 2.94118%; }
 
 .mdl-mega-footer__middle-section {
   display: flex;
