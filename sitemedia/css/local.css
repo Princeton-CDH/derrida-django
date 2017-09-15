@@ -1902,7 +1902,7 @@ hr {
   border-bottom: 3px solid #dbdbdb;
   transition: border-color 150ms ease;
   color: inherit;
-  border-bottom-color: transparent; }
+  line-height: 1.4; }
   .item__link:hover, .item__link:active, .item__link.is-hovered {
     color: #424242;
     border-color: #3ca1ff; }
