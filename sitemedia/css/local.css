@@ -1256,6 +1256,41 @@ hr {
         top: 10%; }
       .coordinate-navigation .mdl-navigation__link:nth-child(2), .coordinate-navigation .mdl-navigation__link:nth-child(4) {
         top: calc(100vh - 17rem); } }
+.mdl-layout__drawer {
+  width: 100%;
+  padding-top: 4em;
+  -webkit-transform: translateX(-100%);
+  -moz-transform: translateX(-100%);
+  -ms-transform: translateX(-100%);
+  -o-transform: translateX(-100%);
+  transform: translateX(-100%); }
+  .mdl-layout__drawer .mdl-navigation {
+    transition: padding-top 0.5s ease; }
+  .search-form-header + .mdl-layout__drawer.is-visible .mdl-navigation {
+    padding-top: 6em; }
+  .search-form-header.is-hidden + .mdl-layout__drawer.is-visible .mdl-navigation {
+    padding-top: 0; }
+  .mdl-layout__drawer .mdl-layout__drawer__search-button {
+    position: absolute;
+    right: 0;
+    top: 0;
+    margin: 1em; }
+  .mdl-layout__drawer .mdl-layout__drawer__close_button {
+    width: 2.25rem;
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 0;
+    padding: 0.5rem;
+    margin: 0.9em 1em; }
+    .mdl-layout__drawer .mdl-layout__drawer__close_button::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%; }
+
 .search-form-header {
   z-index: 10;
   padding: 0 2.94118%; }
