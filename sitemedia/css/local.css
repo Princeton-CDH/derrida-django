@@ -1131,6 +1131,9 @@ hr {
   border-top: 0;
   margin: 1.5em 0; }
 
+.arrow_icon {
+  font-family: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Geneva, Verdana, sans-serif; }
+
 .mdl-layout__header {
   display: block;
   box-shadow: none;

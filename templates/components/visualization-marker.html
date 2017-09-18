@@ -3,7 +3,7 @@
   <a class="visualization-chapter-marker"
      href="{% url 'books:detail' slug=ref.instance__slug %}"
      id="tt{{ ref.id }}"
-     data-url="{% url 'books:reference' derridawork_slug=ref.derridawork__slug page=ref.derridawork_page pageloc=ref.derridawork_pageloc %}">
+     data-url="{% url 'books:reference' derridawork_slug=ref.instance__slug page=ref.derridawork_page pageloc=ref.derridawork_pageloc %}">
     {{ forloop.counter }}
   </a>
 </div>
