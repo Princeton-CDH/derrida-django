@@ -85,7 +85,9 @@
         <h3 class="visualization-chapter-header">{{ work.grouper|default:'[no author]' }}</h3>
         <div class="visualization-chapter-markers">
           {% for ref in work.list %}
-            {% include 'components/visualization-marker.html' %}
+            {% if ref.derridawork_slug %}
+              {% include 'components/visualization-marker.html' %}
+            {% endif %}
         {% endfor %}
         </div>
       </section>
