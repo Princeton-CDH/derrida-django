@@ -1,18 +1,43 @@
-{% load humanize %}
+{% load humanize widget_tweaks %}
+<script>
+  $(function() {
+    $(".order_by #id_order_by label").each(function() {
+      var $this = $(this),
+          $parent = $this.parent(),
+          $checkbox = $this.children("input").addClass("hidden"),
+          $label = $("<span/>").text($.trim($this.text()));
+      $this.text('');
+      $this.append($checkbox).append($label);
+
+      $parent.addClass('sort-link');
+      if ($checkbox.prop("checked")) {
+        $parent.addClass("sort-link--active");
+      }
+    });
+
+    $("form.order_by .sort-link").on("click", function(e) {
+      e.preventDefault();
+      $(this).find("input").prop("checked", "checked");
+      $("form.order_by").submit();
+    });
+
+    $("form.order_by input[type='radio']").on("change", function() {
+      $("form.order_by").submit();
+    });
+  });
+</script>
 <section class="page-sort">
   <div class="container">
     <header class="page-sort__header">
       <p class="sort-label sort-label--diminished ">{{ total|intcomma }} Results</p>
-      <a class="sort-link sort-link--danger" href="#">Clear All</a>
+      <a class="sort-link sort-link--danger" href="{{ request.path }}">Clear All</a>
     </header>
     <header class="page-sort__header">
       <p class="sort-label">Sort By</p>
-      {# TODO: can we restyle form order field so radio button looks like the links in the design? #}
-      {{ form.order_by }}
-
-      <a class="sort-link {% if 'work__authors__authorized_name' == orderBy or orderBy == null %}sort-link--active{% endif %}" href="?orderBy=work__authors__authorized_name">Author of cited work</a>
-      <a class="sort-link {% if 'work__instance__start_page' == orderBy %}sort-link--active{% endif %}" href="?orderBy=work__instance__start_page">Page Order in Derrida work</a>
-      <a class="sort-link {% if 'work__primary_title' == orderBy %}sort-link--active{% endif %}" href="?orderBy=work__primary_title">Title of cited work</a>
+      <form class="order_by">
+        <div class="hidden">{{form}}</div>
+        {% render_field form.order_by class="order_by__options" %}
+      </form>
     </header>
   </div>
 </section>

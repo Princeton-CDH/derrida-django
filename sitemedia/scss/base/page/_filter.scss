@@ -58,12 +58,16 @@
   }
 }
 
-// Old Search filter
 .filter__section {
   display: flex;
   flex-wrap: wrap;
   align-items: stretch;
   padding-bottom: 1em;
+
+
+  .mdl-button {
+    align-self: center;
+  }
 }
 
 .filter__selector {
@@ -188,6 +192,9 @@
   .name {
     flex-basis: 100%;
     padding-right: 6px;
+    text-overflow: ellipsis;
+    width: 100%;
+    overflow: hidden;
   }
 
   .filter__count {

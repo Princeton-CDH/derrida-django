@@ -30,6 +30,8 @@
     </header>
 
     <section class="filter__section">
+
+      {% if form.is_extant %}
       <div class="filter__selector"> {# is_extant #}
         <label class="mdl-switch__label mdl-switch__label--right" for="is-extant">{{ form.is_extant.label }}
           <span class="mdl-switch mdl-switch--right mdl-js-switch">
@@ -37,7 +39,9 @@
           </span>
         </label>
       </div>
+      {% endif %}
 
+      {% if form.is_annotated %}
       <div class="filter__selector">  {# is_annotated #}
         <label class="mdl-switch__label mdl-switch__label--right" for="contains-annotation">{{ form.is_annotated.label }}
           <span class="mdl-switch mdl-switch--right mdl-js-switch">
@@ -45,49 +49,95 @@
           </span>
         </label>
       </div>
+      {% endif %}
 
+      {% if form.instance_is_extant %}
+        <div class="filter__selector">
+          <label class="mdl-switch__label mdl-switch__label--right" for="is-extant">{{ form.instance_is_extant.label }}
+            <span class="mdl-switch mdl-switch--right mdl-js-switch">
+              {% render_field form.instance_is_extant class="mdl-switch__input" id="id_instance_is_extant" %}
+            </span>
+          </label>
+        </div>
+      {% endif %}
+
+      {% if form.instance_is_annotated %}
       <div class="filter__selector">
-        <label class="mdl-switch__label mdl-switch__label--right" for="contains-corresponding-annotation">Containing corresponding annotation
-        <span class="mdl-switch mdl-switch--right mdl-js-switch">
-          <input type="checkbox" id="contains-corresponding-annotation" class="mdl-switch__input" checked />
-        </span>
+        <label class="mdl-switch__label mdl-switch__label--right" for="is-extant">{{ form.instance_is_annotated.label }}
+          <span class="mdl-switch mdl-switch--right mdl-js-switch">
+            {% render_field form.instance_is_annotated class="mdl-switch__input" id="id_instance_is_annotated" %}
+          </span>
         </label>
       </div>
-    </section>
+      {% endif %}
 
-    <section class="filter__section">
+      {% if form.query %}
+      <div class="filter__selector">
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+          <input class="mdl-textfield__input" type="text" name="query" id="id_query">
+          <label class="mdl-textfield__label" for="query">Text Search</label>
+        </div>
+      </div>
+      {% endif %}
 
+      {% if form.author %}
       <div class="filter__selector">
         {% include 'components/form/author-selection.html' with authors=form.author %}
       </div>
+      {% endif %}
 
+      {% if form.subject %}
       <div class="filter__selector">
         {% include 'components/form/checkbox-selection.html' with name='subject' label='Subject' items=form.subject %}
       </div>
+      {% endif %}
 
+      {% if form.derridawork %}
+      <div class="filter__selector filter__selector--condensed">
+        {% include 'components/form/checkbox-selection.html' with name='derridawork' label='Derrida Work' items=form.derridawork %}
+      </div>
+      {% endif %}
+
+      {% if form.language %}
       <div class="filter__selector filter__selector--condensed">
         {% include 'components/form/checkbox-selection.html' with name='language' label='Original Language' items=form.language %}
       </div>
+      {% endif %}
 
+      {% if form.work_language %}
       <div class="filter__selector filter__selector--condensed">
         {% include 'components/form/checkbox-selection.html' with name='work_language' label='Language of Publication' items=form.work_language %}
       </div>
+      {% endif %}
 
+      {% if form.pub_place %}
       <div class="filter__selector filter__selector--condensed">
         {% include 'components/form/checkbox-selection.html' with name='pub_place' label='Publication Place' items=form.pub_place %}
       </div>
+      {% endif %}
 
+      {% if form.item_type %}
       <div class="filter__selector filter__selector--condensed">
         {% include 'components/form/checkbox-selection.html' with name='publication_type' label='Publication Type' items=form.item_type %}
       </div>
+      {% endif %}
 
+      {% if form.reference_type %}
+      <div class="filter__selector filter__selector--condensed">
+        {% include 'components/form/checkbox-selection.html' with name='reference_type' label='Reference Type' items=form.reference_type %}
+      </div>
+      {% endif %}
+
+      {% if form.cited_in %}
       <div class="filter__selector filter__selector--condensed">
         {% include 'components/form/checkbox-selection.html' with name='cited_in' label='Cited In' items=form.cited_in %}
       </div>
+      {% endif %}
 
+      <input type="submit" class="mdl-button mdl-js-button mdl-button--primary"/>
     </section>
-    <input type="submit"/>
   </div>
+  <div class="hidden">{{form.order_by}}</div>
   </form>
   <footer class="page-filter__footer">
     <button class="toggle-button">

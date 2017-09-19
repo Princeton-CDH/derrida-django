@@ -20,9 +20,6 @@
 {% include "components/page-filter.html" %}
 {% include "components/page-sort.html" with number=count orderBy=orderBy %} {# preliminary #}
 <div class="container">
-  {# TEST version of the form for implementing functionality; integration with design still TODO #}
-  <form>  {{ form }}<input type="submit"/> </form>
-
   <article class="collection">
     {% for reference in object_list %}
       {% include 'components/citation-list-item.html' with reference=reference %}
