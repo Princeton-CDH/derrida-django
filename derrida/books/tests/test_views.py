@@ -85,6 +85,12 @@ class TestInstanceViews(TestCase):
 class TestReferenceViews(TestCase):
     fixtures = ['test_references.json']
 
+    def setUp(self):
+        '''None of the Instacefixtures have slugs, so generate them'''
+        for instance in Instance.objects.all():
+            instance.slug = instance.generate_safe_slug()
+            instance.save()
+
     @USE_TEST_HAYSTACK
     @pytest.mark.haystack
     def test_reference_list(self):
