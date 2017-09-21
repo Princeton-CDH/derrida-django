@@ -478,7 +478,6 @@ fieldset {
   padding: 0; }
 
 legend {
-  font-weight: 600;
   margin-bottom: 0.375em;
   padding: 0; }
 
@@ -1190,8 +1189,7 @@ hr {
 .mdl-layout__drawer-button,
 .mdl-layout__header-row .mdl-navigation__link {
   color: #424242;
-  font-size: 1.15em;
-  font-weight: 600; }
+  font-size: 1.15em; }
 
 .mdl-layout__header-row--aligned-left .mdl-layout-spacer {
   display: none; }
@@ -2153,7 +2151,6 @@ hr {
 
 .item-nav__link {
   flex-grow: 3;
-  font-weight: 600;
   text-decoration: none;
   padding: 0.5em 2em;
   text-align: center;
