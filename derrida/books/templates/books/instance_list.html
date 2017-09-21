@@ -28,7 +28,8 @@
 
     <article class="collection collection--condensed">
       {% for instance in object_list %}
-        {% include 'components/books-list-item.html' with href='books:detail' book=instance %}
+        {% url 'books:detail' instance.slug as instance_url %}
+        {% include 'components/books-list-item.html' with href=instance_url book=instance %}
       {% endfor %}
     </article>
     {% if is_paginated %}

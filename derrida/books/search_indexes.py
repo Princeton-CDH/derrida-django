@@ -17,6 +17,7 @@ class InstanceIndex(indexes.SearchIndex, indexes.Indexable):
     #: author names in lastname, first for sort/facet
     author = indexes.MultiValueField(model_attr='work__authors__authorized_name',
         faceted=True)
+    #: first author to allow sorting by author
     first_author = indexes.CharField(model_attr='work__authors__authorized_name',
         faceted=True)
     author_letter = indexes.MultiValueField(faceted=True)
@@ -37,6 +38,8 @@ class InstanceIndex(indexes.SearchIndex, indexes.Indexable):
         faceted=True, null=True)
     is_extant = indexes.FacetBooleanField(model_attr='is_extant')
     is_annotated = indexes.FacetBooleanField(model_attr='is_extant')
+    digital_edition = indexes.FacetBooleanField(model_attr='digital_edition')
+    slug = indexes.CharField(model_attr='slug')
 
     # FIXME: probably shouldn't use this in production because it
     # could expose the actual plum image url, which should be hidden
