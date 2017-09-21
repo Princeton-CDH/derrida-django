@@ -1,10 +1,10 @@
 {% load static %}
 <section class="collection__item book">
   <figure class="item__image">
-    {% with book.digital_edition|yesno:"a,a" as tag %}
+    {% with book.digital_edition|yesno:"a,span" as tag %}
     <{{tag}} class="img item__image__link"{% if tag == "a" %} href=""{% endif %}>
-      {% if book.digital_edition.thumbnail %}
-        <img class="img" src="{{ book.digital_edition.thumbnail.image.thumbnail }}" />
+      {% if book.thumbnail %}
+        <img class="img" src="{{ book.thumbnail }}" />
       {% else %}
       <span class="img img--placeholder"></span>
       {% endif %}
@@ -16,7 +16,7 @@
     {# NOTE: annotation indicator should be based on book.is_annotated #}
     <a class="text-badge text-badge--blue text-badge--link" href="#">{{ book.item_type }}</a>
     <h3 class="item__heading">
-      {% with book.digital_edition|yesno:"a,a" as tag %}
+      {% with book.digital_edition|yesno:"a,span" as tag %}
       <{{tag}}{% if tag == 'a' %} class="item__link" href=""{% endif %}>{{ book.display_title }}</{{tag}}>
       {% endwith %}
     </h3>
