@@ -1599,7 +1599,6 @@ hr {
 .page-header__callout {
   color: #424242;
   background: #fff;
-  font-size: 0.9rem;
   padding: 1.5em 2em 0;
   align-self: flex-start;
   position: absolute;
@@ -1618,7 +1617,7 @@ hr {
     text-decoration: none;
     border-bottom: 3px solid #dbdbdb;
     transition: border-color 150ms ease;
-    font-size: 0.75em; }
+    font-size: 0.85714em; }
     .page-header__callout .callout__link:hover, .page-header__callout .callout__link:active, .page-header__callout .callout__link.is-hovered {
       color: #424242;
       border-color: #3ca1ff; }
@@ -1627,7 +1626,7 @@ hr {
     font-family: "SabonLTPro-Italic", "Georgia", serif;
     font-weight: normal;
     font-style: normal;
-    font-size: 1.1875em; }
+    font-size: 1.07143em; }
 
 .page-filter {
   background: #fff;
