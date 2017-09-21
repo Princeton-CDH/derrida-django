@@ -1,16 +1,13 @@
 @mixin faded-link($color: $base-font-color) {
   color: $color;
   font-weight: inherit;
-  opacity: 0.8;
   text-decoration: none;
   border-bottom: 3px solid lighten($color, 60%);
-  transition: border-color $base-duration $base-timing,
-    opacity $base-duration $base-timing;
+  transition: border-color $base-duration $base-timing;
 
   &:hover,
   &:active,
   &.is-hovered {
-    opacity: 1;
     color: $color;
     border-color: $primary-color;
   }

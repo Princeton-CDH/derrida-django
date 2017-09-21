@@ -26,7 +26,7 @@ class TestInstanceViews(TestCase):
         # get an instance of la_vie
         la_vie = Instance.objects.filter(work__primary_title__icontains='la vie').first()
         # pass its pk to detail view
-        detail_view_url = reverse('books:detail', kwargs={'pk': la_vie.pk})
+        detail_view_url = la_vie.get_absolute_url()
         response = self.client.get(detail_view_url)
         # doesn't have a manifest, should 404
         # should return a response
@@ -84,6 +84,12 @@ class TestInstanceViews(TestCase):
 
 class TestReferenceViews(TestCase):
     fixtures = ['test_references.json']
+
+    def setUp(self):
+        '''None of the Instacefixtures have slugs, so generate them'''
+        for instance in Instance.objects.all():
+            instance.slug = instance.generate_safe_slug()
+            instance.save()
 
     @USE_TEST_HAYSTACK
     @pytest.mark.haystack
@@ -178,7 +184,6 @@ class TestReferenceViews(TestCase):
             list(Reference.objects.order_by_author().summary_values())
         assert 'sections' not in response.context
         refs = Reference.objects.all()
-
         for ref in refs:
             self.assertContains(response, ref.get_absolute_url(),
                 msg_prefix='template should include link to reference')

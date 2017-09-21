@@ -126,6 +126,7 @@
 }
 
 .item__heading {
+  @include secondary-font-style("italic");
   font-size: 1.35em;
   font-weight: 700;
   font-style: italic;
@@ -134,21 +135,23 @@
   .collection--condensed & {
     font-size: 1.4em;
     margin-top: 0.6em;
+    margin-bottom: 0.25em;
   }
 }
 
 .item__link {
   @include faded-link();
   color: inherit;
+  border-bottom-color: transparent;
 }
 
 .item__heading,
 .item__author {
-  @include secondary-font-style();
   margin-bottom: 0;
 }
 
 .item__author {
+  @include secondary-font-style();
   font-size: 1.3em;
 
   .collection--condensed & {

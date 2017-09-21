@@ -1,9 +1,9 @@
 {% load static %}
 <section class="collection__item book">
   <figure class="item__image">
-    <a class="img item__image__link" href="{% url 'books:detail' pk=book.pk %}">
-      {% if book.thumbnail %}
-        <img class="img" src="{{ book.thumbnail }}" />
+    <a class="img item__image__link" {% if book.digital_edition %} href="{{ book.get_absolute_url }}"{% endif %}>
+      {% if book.digital_edition.thumbnail %}
+        <img class="img" src="{{ book.digital_edition.thumbnail.image.thumbnail }}" />
       {% else %}
       <span class="img img--placeholder"></span>
       {% endif %}
@@ -14,7 +14,7 @@
     {# NOTE: annotation indicator should be based on book.is_annotated #}
     <a class="text-badge text-badge--blue text-badge--link" href="#">{{ book.item_type }}</a>
     <h3 class="item__heading">
-      <a class="item__link" href="{% url 'books:detail' pk=book.pk %}">{{ book.display_title }}</a>
+      <a class="item__link" {% if book.digital_edition %}href="{{ book.get_absolute_url }}"{% endif %}>{{ book.display_title }}</a>
     </h3>
     <p class="item__author">
       {% if book.author_firstname_last %}
