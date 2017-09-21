@@ -63,7 +63,13 @@
       });
     });
 
-    $(".clear-link").on("click", function(e) {
+    var $authorSelectionInput = $("#author-selection"),
+        clearSelectionInput = function() {
+          $authorSelectionInput.val("");
+          $authorSelectionInput.parent().removeClass("is-dirty");
+        };
+
+    $(".filter--author .clear-link").on("click", function(e) {
       e.preventDefault();
       var $checkboxes = $(this).parents(".filter").find(".mdl-checkbox__input");
       $checkboxes.each(function() {
@@ -72,12 +78,12 @@
         $checkbox.parent().removeClass("is-checked");
       });
       authorList.filter();
+      clearSelectionInput();
     });
 
     var $authorFilter = $(".filter.filter--author");
     $authorFilter.hide();
 
-    var $authorSelectionInput = $("#author-selection");
     $authorSelectionInput
       .on("focus", function() {
         $(this).parent().addClass("is-open");

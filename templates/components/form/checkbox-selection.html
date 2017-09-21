@@ -36,7 +36,23 @@
     var ${{name}}Filter = $(".filter.filter--{{name}}");
     ${{name}}Filter.hide();
 
-    var ${{name}}SelectionInput = $("#{{name}}-selection");
+    var ${{name}}SelectionInput = $("#{{name}}-selection"),
+        clearSelectionInput = function() {
+          ${{name}}SelectionInput.val("");
+          ${{name}}SelectionInput.parent().removeClass("is-dirty");
+        };
+
+    ${{name}}Filter.find(".clear-link").on("click", function(e) {
+      e.preventDefault();
+      var $checkboxes = $(this).parents(".filter").find(".mdl-checkbox__input");
+      $checkboxes.each(function() {
+        var $checkbox = $(this);
+        $checkbox.removeProp("checked");
+        $checkbox.parent().removeClass("is-checked");
+      });
+      clearSelectionInput();
+    });
+
     ${{name}}SelectionInput.on("focus", function() {
         $(this).parent().addClass("is-open");
         ${{name}}Filter.slideDown();
