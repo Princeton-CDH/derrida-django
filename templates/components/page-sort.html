@@ -32,6 +32,7 @@
       <p class="sort-label sort-label--diminished ">{{ total|intcomma }} Results</p>
       <a class="sort-link sort-link--danger" href="{{ request.path }}">Clear All</a>
     </header>
+    {% if form.order_by %}
     <header class="page-sort__header">
       <p class="sort-label">Sort By</p>
       <form class="order_by">
@@ -39,5 +40,6 @@
         {% render_field form.order_by class="order_by__options" %}
       </form>
     </header>
+    {% endif %}
   </div>
 </section>
