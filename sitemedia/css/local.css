@@ -1267,6 +1267,12 @@ hr {
     padding-top: 6em; }
   .search-form-header.is-hidden + .mdl-layout__drawer.is-visible .mdl-navigation {
     padding-top: 0; }
+  .mdl-layout__drawer .mdl-navigation .mdl-navigation__link {
+    padding: 0.5rem 1rem; }
+    .mdl-layout__drawer .mdl-navigation .mdl-navigation__link:hover, .mdl-layout__drawer .mdl-navigation .mdl-navigation__link:active {
+      background: none; }
+    .mdl-layout__drawer .mdl-navigation .mdl-navigation__link .navigation-title {
+      font-size: 14px; }
   .mdl-layout__drawer .mdl-layout__drawer__search-button {
     position: absolute;
     right: 0;

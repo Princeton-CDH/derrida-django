@@ -209,6 +209,19 @@
     }
   }
 
+  .mdl-navigation .mdl-navigation__link {
+    padding: 0.5rem 1rem;
+
+    &:hover,
+    &:active {
+      background: none;
+    }
+
+    .navigation-title {
+      font-size: 14px;
+    }
+  }
+
   .mdl-layout__drawer__search-button {
     position: absolute;
     right: 0;
