@@ -10,7 +10,7 @@
 
 {% url 'books:reference-list' as cit_url %}
 <a class="mdl-navigation__link {% if cit_url in request.path and not vis_url in request.path %}mdl-navigation__link--active{% endif %}" href="{{ cit_url }}">
-  <span class="navigation-title">Citation List</span>
+  <span class="navigation-title">Reference List</span>
 </a>
 
 {% url 'djiffy:list' as out_url %}
