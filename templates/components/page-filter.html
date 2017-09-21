@@ -53,7 +53,7 @@
 
       {% if form.instance_is_extant %}
         <div class="filter__selector">
-          <label class="mdl-switch__label mdl-switch__label--right" for="is-extant">{{ form.instance_is_extant.label }}
+          <label class="mdl-switch__label mdl-switch__label--right" for="id_instance_is_extant">{{ form.instance_is_extant.label }}
             <span class="mdl-switch mdl-switch--right mdl-js-switch">
               {% render_field form.instance_is_extant class="mdl-switch__input" id="id_instance_is_extant" %}
             </span>
@@ -63,7 +63,7 @@
 
       {% if form.instance_is_annotated %}
       <div class="filter__selector">
-        <label class="mdl-switch__label mdl-switch__label--right" for="is-extant">{{ form.instance_is_annotated.label }}
+        <label class="mdl-switch__label mdl-switch__label--right" for="id_instance_is_annotated">{{ form.instance_is_annotated.label }}
           <span class="mdl-switch mdl-switch--right mdl-js-switch">
             {% render_field form.instance_is_annotated class="mdl-switch__input" id="id_instance_is_annotated" %}
           </span>
