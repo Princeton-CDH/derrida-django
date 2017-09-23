@@ -157,7 +157,7 @@ class Instance(Notable):
     or translation.  Can also include books that appear as sections
     of a collected works.'''
 
-    #: :class:`Work` this instancebelongs to
+    #: :class:`Work` this instance belongs to
     work = models.ForeignKey(Work)
     #: alternate title (optional)
     alternate_title = models.CharField(blank=True, max_length=255)
@@ -379,6 +379,11 @@ class Instance(Notable):
                           if c.call_number])
     catalogue_call_numbers.short_description = 'Call Numbers'
     catalogue_call_numbers.admin_order_field = 'catalogue__call_number'
+
+    def print_year(self):
+        '''Year from :attr:`print_date` if year is known'''
+        if self.print_date and self.print_date_year_known:
+            return self.print_date.year
 
 
 class WorkSubject(Notable):

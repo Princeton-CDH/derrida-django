@@ -1,8 +1,12 @@
 from dal import autocomplete
-
-from .models import Publisher, Language, Instance, Reference, DerridaWorkSection
-
+from django.http import HttpResponseRedirect
+from django.urls import reverse
+from django.views.generic.base import TemplateView
 from django.views.generic import DetailView, ListView
+from haystack.query import SearchQuerySet
+
+from .forms import CitationSearchForm, InstanceSearchForm, SearchForm
+from .models import Publisher, Language, Instance, Reference, DerridaWorkSection
 
 
 class PublisherAutocomplete(autocomplete.Select2QuerySetView):
@@ -37,24 +41,61 @@ class InstanceDetailView(DetailView):
 
 
 class InstanceListView(ListView):
-    '''View that provides a paginated, potentially filterable list of
-    :class:`~derrida.books.models.Instance`. Users pagination functionality
-    provided by :class:`~django.views.generic.ListView` to provide pagination
-    by query string `?page=`'''
+    # NOTE: haystack includes generic views, but they are not well documented
+    # and don't seem to work quite right, so sticking with stock django
+    # class-based views and forms.
 
     model = Instance
+    form_class = InstanceSearchForm
     paginate_by = 16
+    template_name = 'books/instance_list.html'
 
     def get_queryset(self):
-        instances = super(InstanceListView, self).get_queryset()
-        order = self.request.GET.get('orderBy', 'work__authors__authorized_name')
-        return instances.order_by(order)
+        sqs = SearchQuerySet().models(self.model)
+        # if search parameters are specified, use them to initialize the form;
+        # otherwise, use form defaults
+        self.form = self.form_class(self.request.GET or None)
+
+        for facet_field in self.form.facet_fields:
+            sqs = sqs.facet(facet_field)
+
+        if self.form.is_valid():
+            search_opts = self.form.cleaned_data
+        else:
+            # todo: display/handle any form validation errors
+            # (possible?)
+            # for now, return unfiltered queryset with facets
+            return sqs
+
+        # filter solr query based on search options
+        if search_opts['query']:
+            sqs = sqs.filter(text=search_opts['query'])
+        if search_opts['is_extant']:
+            sqs = sqs.filter(is_extant=True)
+        if search_opts['is_annotated']:
+            sqs = sqs.filter(is_annotated=True)
+
+        for facet in self.form.facet_fields:
+            if facet in search_opts and search_opts[facet]:
+                sqs = sqs.filter(**{'%s__in' % facet: search_opts[facet]})
+
+        # disabling sort for now (issues/questions TBD)
+        # if search_opts['order_by']:
+            # sqs = sqs.order_by(search_opts['order_by'])
+
+        return sqs
 
     def get_context_data(self, **kwargs):
         context = super(InstanceListView, self).get_context_data(**kwargs)
-        context['count'] = self.get_queryset().count()
-        context['orderBy'] = self.request.GET.get('orderBy', 'work__authors__authorized_name')
-
+        sqs = self.get_queryset()
+        facets = sqs.facet_counts()
+        # update multi-choice fields based on facets in the data
+        self.form.set_choices_from_facets(facets.get('fields'))
+        context.update({
+            'facets': facets,
+            'total': sqs.count(),
+            'form': self.form,
+        })
         return context
 
 
@@ -62,12 +103,54 @@ class ReferenceListView(ListView):
     # full citation/reference list; eventually will have filter/sort options
     # (sticking with 'reference' for now until project team confirms
     # which term is more general / preferred for public site)
+
+    # NOTE: Still leaving this as Reference, but perhaps it should change since
+    # citation is firmly in place on the public site?
+
     model = Reference
+    form_class = CitationSearchForm
     paginate_by = 16
+    template_name = 'books/reference_list.html'
 
-    # default ordering by derrida work, page, page location
-    # matches default ordering for this view
+    def get_queryset(self):
+        sqs = SearchQuerySet().models(self.model)
 
+        # if search parameters are specified, use them to initialize the form;
+        # otherwise, use form defaults
+        self.form = self.form_class(self.request.GET or None)
+        for facet_field in self.form.facet_fields:
+            sqs = sqs.facet(facet_field)
+
+        if self.form.is_valid():
+            search_opts = self.form.cleaned_data
+        else:
+            # todo: display/handle any form validation errors
+            # (possible?)
+            # for now, return unfiltered queryset with facets
+            return sqs
+
+        # filter solr query based on search options
+        if search_opts['query']:
+            sqs = sqs.filter(text=search_opts['query'])
+
+        for facet in self.form.facet_fields:
+            if facet in search_opts and search_opts[facet]:
+                sqs = sqs.filter(**{'%s__in' % facet: search_opts[facet]})
+
+        return sqs
+
+    def get_context_data(self, **kwargs):
+        context = super(ReferenceListView, self).get_context_data(**kwargs)
+        sqs = self.get_queryset()
+        facets = sqs.facet_counts()
+        # update multi-choice fields based on facets in the data
+        self.form.set_choices_from_facets(facets.get('fields'))
+        context.update({
+            'facets': facets,
+            'total': sqs.count(),
+            'form': self.form,
+        })
+        return context
 
 class ReferenceHistogramView(ListView):
     template_name = 'books/reference_histogram.html'
@@ -113,3 +196,51 @@ class ReferenceDetailView(DetailView):
             derridawork_pageloc=self.kwargs['pageloc'],
             derridawork__slug=self.kwargs['derridawork_slug']
             ).first()
+
+
+class SearchView(TemplateView):
+    form_class = SearchForm
+    template_name = 'books/search.html'
+    max_per_type = 3
+
+    def get(self, *args, **kwargs):
+        self.form = self.form_class(self.request.GET)
+        # if search on a single type is requested, forward to the
+        # appropriate view
+        if self.form.is_valid():
+            search_opts = self.form.cleaned_data
+            if search_opts['content_type'] != 'all':
+                if search_opts['content_type'] == 'book':
+                    url = reverse('books:list')
+                elif search_opts['content_type'] == 'reference':
+                    url = reverse('books:reference-list')
+
+                url = '%s?query=%s' % (url, search_opts['query'])
+                response = HttpResponseRedirect(url)
+                response.status_code = 303  # see other
+                return response
+
+        return super(SearchView, self).get(*args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        search_opts = self.form.cleaned_data
+        sqs = SearchQuerySet().filter()
+
+        if search_opts['query']:
+            sqs = sqs.filter(text=search_opts['query'])
+
+        # NOTE: Solr supports grouping results in a single search, but
+        # haystack does not.  For now, query each content type separately.
+
+        instance_query = sqs.models(Instance).all()
+        reference_query = sqs.models(Reference).all()
+
+        return {
+            'query': search_opts['query'],
+            'instance_list': instance_query[:self.max_per_type],
+            'instance_count': instance_query.count(),
+            'reference_list': reference_query[:self.max_per_type],
+            'reference_count': reference_query.count()
+            # annotations todo
+            # outwork TODO
+        }

@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'djiffy',
     'annotator_store',
     'viapy',
+    'haystack',
+    'widget_tweaks',
     # local apps
     'derrida.apps.DerridaConfig',
     'derrida.books',

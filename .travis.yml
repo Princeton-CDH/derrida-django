@@ -3,8 +3,16 @@ language: python
 python:
   - "3.5"
 
+env:
+  global:
+    - SOLR_VERSION=6.6.0
+    - SOLR_CORE=test-derrida
+
 addons:
   - mariadb: "5.5"
+
+before_install:
+  - mysql -e 'CREATE DATABASE IF NOT EXISTS test;'
 
 install:
   - pip install -r requirements.txt
@@ -13,8 +21,12 @@ install:
   - cp ci/testsettings.py derrida/local_settings.py
   - python -c "import uuid; print('SECRET_KEY = \'%s\'' % uuid.uuid4())" >> derrida/local_settings.py
 
+before_script:
+  - SOLR_VERSION=$SOLR_VERSION SOLR_CORE=$SOLR_CORE bash ci/config_solr.sh
+  - python manage.py build_solr_schema --configure-directory=solr-$SOLR_VERSION/server/solr/$SOLR_CORE/conf --reload-core $SOLR_CORE
+
 script:
   - py.test --cov=derrida
 
 after_success:
-- codecov
+  - codecov

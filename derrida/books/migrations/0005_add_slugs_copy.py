@@ -57,38 +57,37 @@ def add_slugs(apps, schema_editor):
         instance.slug = generate_base_slug(instance)
 
     # - validate them and add characters to duplicates
+    # sort by slug so any repeated slugs will show up together
+    instances = sorted(instances, key=lambda instance: instance.slug)
 
-    # iterate over all items and get duplicates
-    for current in instances:
-        duplicates = [current]
-        for other in instances:
-            if current.slug == other.slug:
-                duplicates.append(other)
+    # loop through, tracking previous item to check for dupes
+    prev_item = None
+    prev_slug = None
+    for item in instances:
+        if prev_slug and item.slug == prev_slug:
+            # if previous item does not have a copy letter,
+            # set it now starting with A
+            if not prev_item.copy:
+                prev_item.copy = 'A'
+                # update slug to include copy letter and make unique
+                prev_item.slug = '%s-%s' % (prev_item.slug, prev_item.copy)
 
-        # if there is at least one match, there will be three entries
-        # (current, current finding itself, and any actual duplicates)
-        # from testing, there appears to be no instance of more than two
-        # without different copyright year
-        if len(duplicates) > 2:
-            # Start with 'A'
-            char = 'A'
-            # iterate over the duplicates less current (index 0)
-            for dupe in duplicates[1:]:
-                # add char to slug
-                dupe.slug = '%s-%s' % (dupe.slug, char)
-                # set dupe's copy_letter
-                dupe.copy = char
-                # iterate to next capital alpha
-                char = chr(ord(char) + 1)
-            # iterate over the list and use pks to apply new slugs
-            # doing this in place prevents duplications
-            for item in instances:
-                for dupe in duplicates[1:]:
-                    if item.pk == dupe.pk:
-                        item.slug = dupe.slug
-                        item.copy = dupe.copy
-            # update once, two transactions total
-            update_instances(instances)
+            # current item gets the next letter
+            item.copy = chr(ord(prev_item.copy) + 1)
+            # update slug to include copy letter and make unique
+            item.slug = '%s-%s' % (item.slug, item.copy)
+
+            # current item becomes previous for differentiating letters
+            prev_item = item
+            # preserve generic slug for comparison
+
+        else:
+            # no duplicate detected; item and slug become next previous
+            prev_item = item
+            prev_slug = item.slug
+
+    # save all the updated instances
+    update_instances(instances)
 
 
 class Migration(migrations.Migration):

@@ -13,4 +13,8 @@ djiffy>=0.2
 annotator_store>=0.6
 # develop version of viapy until we have a release
 git+https://github.com/Princeton-CDH/viapy.git@develop#egg=viapy
-
+#django-haystack
+# haystack from github required for django 1.11 support; should be 2.7 when released
+git+https://github.com/django-haystack/django-haystack.git@master#egg=django-haystack
+pysolr
+django-widget-tweaks

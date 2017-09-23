@@ -1,4 +1,4 @@
-{% load static %}
+{% load static widget_tweaks %}
 
 <section class="container">
   <form class="search-form-header__form" action="{% url 'search' %}">
@@ -6,16 +6,11 @@
       <img width="50%" src="{% static "img/icons/Search.svg" %}" />
     </label>
     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-      <input class="mdl-textfield__input" type="text" id="search-term" name="term">
-      <label class="mdl-textfield__label" for="search-term">Search Terms...</label>
+      {% render_field search_form.query class+='mdl-textfield__input' %}
+      <label class="mdl-textfield__label" for="{{ search_form.query.id }}">{{ search_form.query.label }}</label>
     </div>
     <div class="mdl-selectfield mdl-js-selectfield">
-      <select class="mdl-selectfield__select" id="search-filter" name="filter">
-        <option value="all">All</option>
-        <option value="book">Books</option>
-        <option value="citation">Citations</option>
-        <option value="annotation">Annotations</option>
-      </select>
+     {% render_field search_form.content_type class+="mdl-selectfield__select" %}
     </div>
     <div class="mdl-button mdl-js-button mdl-button--icon" data-action="toggle-search-form">
       <img width="50%" src="{% static "img/icons/Delete.svg" %}" />
