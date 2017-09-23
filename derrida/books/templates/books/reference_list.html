@@ -10,19 +10,16 @@
 {% block content %}
 <header class="page-header">
   <div class="container page-header__container">
-    <h1 class="page-header__heading">Citation List</h1>
+    <h1 class="page-header__heading">Reference List</h1>
     <div class="page-header__callout">
       <p class="lead">Only books that are cited in De la grammatologie and extant in Princeton University Library collection are displayed here.</p>
-      <p><a class="callout__link" href="/">A full list of citations is accessible through Citation List.</a></p>
+      <p><a class="callout__link" href="/">A full list of references is accessible through Reference List.</a></p>
     </div>
   </div>
 </header>
 {% include "components/page-filter.html" %}
 {% include "components/page-sort.html" with number=count orderBy=orderBy %} {# preliminary #}
 <div class="container">
-  {# TEST version of the form for implementing functionality; integration with design still TODO #}
-  <form>  {{ form }}<input type="submit"/> </form>
-
   <article class="collection">
     {% for reference in object_list %}
       {% include 'components/citation-list-item.html' with reference=reference %}

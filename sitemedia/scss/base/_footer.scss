@@ -3,7 +3,7 @@
 .mdl-mega-footer {
   background-color: $white;
   color: $dark-grey;
-  padding-top: 4rem;
+  padding: 4rem 0 1rem;
 
   .mdl-logo {
     color: inherit;
@@ -18,8 +18,12 @@
   }
 }
 
-.mdl-mega-footer__logos .logo + .logo {
-  padding-left: 2rem;
+.mdl-mega-footer__logos {
+  align-self: flex-end;
+
+  .logo + .logo {
+    padding-left: 2rem;
+  }
 }
 
 .mdl-mega-footer__legal {
@@ -37,6 +41,12 @@
   &:active {
     color: $primary-color;
   }
+}
+
+.mdl-mega-footer__middle-section,
+.mdl-mega-footer__bottom-section {
+  width: 100%;
+  padding: 0 $gutter-size;
 }
 
 .mdl-mega-footer__middle-section {

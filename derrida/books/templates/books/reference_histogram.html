@@ -61,7 +61,7 @@
         <h3 class="visualization-chapter-header">{{ section.name }}</h3>
         <div class="visualization-chapter-markers">
         {% for ref in object_list %}
-            {#  filter references based on section page numbers#}
+            {# filter references based on section page numbers #}
             {% if ref.derridawork_page >= section.start_page and ref.derridawork_page <= section.end_page %}
                 {% include 'components/visualization-marker.html' %}
             {% endif %}
@@ -85,7 +85,7 @@
         <h3 class="visualization-chapter-header">{{ work.grouper|default:'[no author]' }}</h3>
         <div class="visualization-chapter-markers">
           {% for ref in work.list %}
-            {% include 'components/visualization-marker.html' %}
+              {% include 'components/visualization-marker.html' %}
         {% endfor %}
         </div>
       </section>

@@ -82,7 +82,6 @@
 .mdl-layout__header-row .mdl-navigation__link {
   color: $header-text-color;
   font-size: 1.15em;
-  font-weight: 600;
 }
 
 .mdl-layout__header-row--aligned-left {
@@ -149,8 +148,7 @@
     }
 
     .mdl-navigation__link {
-      @include secondary-font-style();
-      font-weight: bold;
+      @include secondary-font-style("bold");
       -webkit-font-smoothing: antialiased;
       opacity: 1;
       padding: 0;
@@ -185,6 +183,68 @@
       &:nth-child(4) {
         top: calc(100vh - 17rem);
       }
+    }
+  }
+}
+
+// Mobile navigation
+.mdl-layout__drawer {
+  width: 100%;
+  padding-top: 4em;
+  @include prefixer(transform, translateX(-100%), webkit moz ms o spec);
+
+  .mdl-navigation {
+    transition: padding-top 0.5s $base-timing;
+  }
+
+  .search-form-header + &.is-visible {
+    .mdl-navigation {
+      padding-top: 6em;
+    }
+  }
+
+  .search-form-header.is-hidden + &.is-visible {
+    .mdl-navigation {
+      padding-top: 0;
+    }
+  }
+
+  .mdl-navigation .mdl-navigation__link {
+    padding: 0.5rem 1rem;
+
+    &:hover,
+    &:active {
+      background: none;
+    }
+
+    .navigation-title {
+      font-size: 14px;
+    }
+  }
+
+  .mdl-layout__drawer__search-button {
+    position: absolute;
+    right: 0;
+    top: 0;
+    margin: 1em;
+  }
+
+  .mdl-layout__drawer__close_button {
+    width: 2.25rem;
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 0;
+    padding: 0.5rem;
+    margin: 0.9em 1em;
+
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
     }
   }
 }

@@ -36,10 +36,10 @@ class InstanceSearchForm(forms.Form):
     is_annotated = forms.BooleanField(label='Contains annotation',
         required=False)
     order_by = forms.ChoiceField(choices=[
-            ('author', 'Author'),
-            ('work_year', 'Publication date: oldest to newest'),
-            ('-work_year', 'Publication date: newest to oldest'),
-        ], required=False, initial='author',
+            ('first_author', 'Author'),
+            ('-work_year', 'Publication date: oldest to newest'),
+            ('work_year', 'Publication date: newest to oldest'),
+        ], required=False, initial='first_author',
         widget=forms.RadioSelect)
 
     facet_fields = ['author', 'subject', 'item_type', 'pub_place', 'language',

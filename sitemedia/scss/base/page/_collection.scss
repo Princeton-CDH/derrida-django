@@ -140,7 +140,7 @@
 .item__link {
   @include faded-link();
   color: inherit;
-  border-bottom-color: transparent;
+  line-height: 1.4;
 }
 
 .item__heading,

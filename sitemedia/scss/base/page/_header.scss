@@ -71,7 +71,6 @@
 .page-header__callout {
   color: $base-font-color;
   background: $white;
-  font-size: 0.9rem;
   padding: 1.5em 2em 0;
   align-self: flex-start;
   position: absolute;
@@ -84,12 +83,12 @@
 
   .callout__link {
     @include faded-link();
-    font-size: ems(12px);
+    font-size: ems(12px, 14);
   }
 
   .lead {
     line-height: 1.2;
     @include secondary-font-style("italic");
-    font-size: ems(19px);
+    font-size: ems(15px, 14);
   }
 }

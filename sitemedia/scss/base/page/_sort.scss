@@ -34,4 +34,17 @@
       border-color: $error-red;
     }
   }
+
+  .order_by__options {
+    @include unstyled-list;
+    display: flex;
+
+    label {
+      cursor: pointer;
+    }
+
+    li {
+      font-size: 0.9rem;
+    }
+  }
 }

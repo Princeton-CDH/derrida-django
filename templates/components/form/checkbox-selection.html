@@ -1,0 +1,123 @@
+{% load static %}
+<script>
+  $(function() {
+    //transform list items
+    var $oldLabels = $(".filter__check-list--{{name}} label"),
+        $newLabels = $("<div/>");
+
+    $oldLabels.remove();
+    $oldLabels.each(function() {
+      var $this = $(this),
+          $countLabel = $this.children("span"),
+          count = $countLabel.text();
+      $countLabel.remove();
+
+      var labelText = $this.text().trim(),
+          $input = $this.find("input"),
+          $label = $("<label/>")
+            .addClass("mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect")
+            .append(
+              $("<input/>").attr({
+                id: $input.attr("id"),
+                name: $input.attr("name"),
+                value: $input.attr("value"),
+                checked: $input.attr("checked"),
+                type: "checkbox"
+              }).addClass("mdl-checkbox__input"))
+            .append($("<span/>").addClass("name").text(labelText))
+            .append($("<span/>").addClass("filter__count").text(count));
+
+        $newLabels.append($label);
+    });
+
+    $(".filter__check-list--{{name}}").append($newLabels.html());
+
+
+    var ${{name}}Filter = $(".filter.filter--{{name}}");
+    ${{name}}Filter.hide();
+
+    var ${{name}}SelectionInput = $("#{{name}}-selection"),
+        clearSelectionInput = function() {
+          ${{name}}SelectionInput.val("");
+          ${{name}}SelectionInput.parent().removeClass("is-dirty");
+        };
+
+    ${{name}}Filter.find(".clear-link").on("click", function(e) {
+      e.preventDefault();
+      var $checkboxes = $(this).parents(".filter").find(".mdl-checkbox__input");
+      $checkboxes.each(function() {
+        var $checkbox = $(this);
+        $checkbox.removeProp("checked");
+        $checkbox.parent().removeClass("is-checked");
+      });
+      clearSelectionInput();
+    });
+
+    ${{name}}SelectionInput.on("focus", function() {
+        $(this).parent().addClass("is-open");
+        ${{name}}Filter.slideDown();
+      })
+      .on("blur", function(e) {
+        e.preventDefault();
+        var isOpen = $(this).parent().addClass("is-open");
+        if (! isOpen) {
+          ${{name}}Filter.slideUp();
+        }
+      });
+
+      var setSelectedOptionsValues = function(context) {
+        var $elem = $(context),
+            optionText = $elem.val(),
+            {{name}}SelectionVal = ${{name}}SelectionInput.val() ? ${{name}}SelectionInput.val().split("; ") : [];
+        if ($elem.prop("checked")) {
+          {{name}}SelectionVal.push(optionText)
+        } else {
+          {{name}}SelectionVal = $.grep({{name}}SelectionVal, function(value) {
+            return value != optionText;
+          });
+        }
+        if ({{name}}SelectionVal.length) {
+          ${{name}}SelectionInput.parent().addClass("is-dirty");
+        }
+        ${{name}}SelectionInput.val({{name}}SelectionVal.join("; "));
+      }
+
+      $(".filter__check-list--{{name}} input:checked").each(function() {
+        setSelectedOptionsValues(this);
+      });
+
+      $(".filter__check-list--{{name}} input").on("change", function() {
+        setSelectedOptionsValues(this);
+      });
+
+      $("body").on("click.filter-{{name}}", function(e) {
+        var $target = $(e.target),
+            $openInput = ${{name}}Filter.prev(".is-open"),
+            isOpenText = $target.is(".is-open") || $target.parents(".is-open").length,
+            $filter = $target.is(".filter") ? $target : $target.parents(".filter").first();
+
+        if (! $filter.length && ! isOpenText && $openInput.length) {
+          ${{name}}Filter.slideUp();
+          $openInput.removeClass("is-open").removeClass("is-focused");
+        } else if ($openInput.length) {
+          $openInput.addClass("is-focused");
+        }
+      });
+  });
+</script>
+
+<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+  <input class="mdl-textfield__input" type="text" name="{{name}}-selection" id="{{name}}-selection">
+  <label class="mdl-textfield__label" for="{{name}}-selection">{{ label }}</label>
+</div>
+<div class="filter filter--{{name}}" id="{{name}}">
+  <section class="filter__check-list filter__check-list--{{name}}">
+    {% for item in items %}
+      {{item}}
+    {% endfor %}
+  </section>
+
+  <footer class="filter__footer">
+    <a class="clear-link" href="#">Clear Selection</a>
+  </footer>
+</div>

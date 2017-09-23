@@ -80,8 +80,8 @@ class InstanceListView(ListView):
                 sqs = sqs.filter(**{'%s__in' % facet: search_opts[facet]})
 
         # disabling sort for now (issues/questions TBD)
-        # if search_opts['order_by']:
-            # sqs = sqs.order_by(search_opts['order_by'])
+        if search_opts['order_by']:
+            sqs = sqs.order_by(search_opts['order_by'])
 
         return sqs
 

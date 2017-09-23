@@ -49,6 +49,8 @@ urlpatterns = [
 
     # url(r'^search', TemplateView.as_view(template_name='public/search-results.html'), name="search"),
 
+    url(r'^inputs', TemplateView.as_view(template_name='public/search-inputs.html'), name="show-inputs"),
+
 ]
 
 # NOTE: for some reason this isn't getting added automatically

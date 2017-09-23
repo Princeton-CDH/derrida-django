@@ -67,7 +67,7 @@ class LoadFixtureData(object):
     migration, NOT the current one. Necessary for any models that have later
     changes and pre-loaded fixtures'''
     def __init__(self, *files):
-        '''        
+        '''
         :param files: args style list of fixture files
         :type list:
         '''
@@ -93,7 +93,8 @@ class LoadFixtureData(object):
 
 
 def deligature(value):
-    '''Remove common unicode characters Œ and Æ plus lowercase equivalents.'''
+    '''Remove common unicode characters typographic ligatures
+    and their lowercase equivalents.'''
     mapping = {
         u'\u00C6': 'Ae',
         u'\u0152': 'Oe',

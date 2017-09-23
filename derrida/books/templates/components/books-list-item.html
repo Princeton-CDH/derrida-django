@@ -1,20 +1,24 @@
 {% load static %}
 <section class="collection__item book">
   <figure class="item__image">
-    <a class="img item__image__link" {% if book.digital_edition %} href="{{ book.get_absolute_url }}"{% endif %}>
-      {% if book.digital_edition.thumbnail %}
-        <img class="img" src="{{ book.digital_edition.thumbnail.image.thumbnail }}" />
+    {% with book.digital_edition|yesno:"a,span" as tag %}
+    <{{tag}} class="img item__image__link"{% if tag == "a" %} href="{{ href }}"{% endif %}>
+      {% if book.thumbnail %}
+        <img class="img" src="{{ book.thumbnail }}" />
       {% else %}
       <span class="img img--placeholder"></span>
       {% endif %}
-    </a>
+    </{{tag}}>
+    {% endwith %}
   </figure>
 
   <div class="item__body">
     {# NOTE: annotation indicator should be based on book.is_annotated #}
     <a class="text-badge text-badge--blue text-badge--link" href="#">{{ book.item_type }}</a>
     <h3 class="item__heading">
-      <a class="item__link" {% if book.digital_edition %}href="{{ book.get_absolute_url }}"{% endif %}>{{ book.display_title }}</a>
+      {% with book.digital_edition|yesno:"a,span" as tag %}
+      <{{tag}}{% if tag == 'a' %} class="item__link" href="{{ href }}"{% endif %}>{{ book.display_title }}</{{tag}}>
+      {% endwith %}
     </h3>
     <p class="item__author">
       {% if book.author_firstname_last %}

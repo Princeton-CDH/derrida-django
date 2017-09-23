@@ -17,6 +17,9 @@ class InstanceIndex(indexes.SearchIndex, indexes.Indexable):
     #: author names in lastname, first for sort/facet
     author = indexes.MultiValueField(model_attr='work__authors__authorized_name',
         faceted=True)
+    #: first author to allow sorting by author
+    first_author = indexes.CharField(model_attr='work__authors__authorized_name',
+        faceted=True)
     author_letter = indexes.MultiValueField(faceted=True)
     #: author in firstname last for display
     author_firstname_last = indexes.MultiValueField(model_attr='work__authors__firstname_last')
@@ -35,6 +38,8 @@ class InstanceIndex(indexes.SearchIndex, indexes.Indexable):
         faceted=True, null=True)
     is_extant = indexes.FacetBooleanField(model_attr='is_extant')
     is_annotated = indexes.FacetBooleanField(model_attr='is_extant')
+    digital_edition = indexes.FacetBooleanField(model_attr='digital_edition')
+    slug = indexes.CharField(model_attr='slug')
 
     # FIXME: probably shouldn't use this in production because it
     # could expose the actual plum image url, which should be hidden
@@ -77,7 +82,7 @@ class CitationIndex(indexes.SearchIndex, indexes.Indexable):
         faceted=True, null=True)
     #: languages for associated instance; :attr:`derrida.book.models.Instance.languages`
     instance_language = indexes.MultiValueField(model_attr='instance__languages__name',
-        faceted=True, null=True)    
+        faceted=True, null=True)
     #: languages for the original work; :attr:`derrida.book.models.Work.languages`
     original_language = indexes.MultiValueField(model_attr='instance__work__languages__name')
     #: copyright year of associated instance; :attr:`derrida.books.models.Instance.copyright_year`
