@@ -53,6 +53,10 @@ class InstanceSearchForm(forms.Form):
     item_type = FacetChoiceField(label='Publication Type')
     cited_in = FacetChoiceField()
 
+    defaults = {
+        'order_by': 'first_author'
+    }
+
     def set_choices_from_facets(self, facets):
         # configure field choices based on facets returned from Solr
         for facet, counts in facets.items():
