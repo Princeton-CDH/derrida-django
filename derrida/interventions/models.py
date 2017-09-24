@@ -50,7 +50,7 @@ class Tag(Named, Notable):
         help_text='Type or types of interventions this tag is applicable to.')
 
     objects = TagQuerySet.as_manager()
-    
+
 
 class Intervention(BaseAnnotation):
 
@@ -141,6 +141,18 @@ class Intervention(BaseAnnotation):
 
     def is_insertion(self):
         return self.intervention_type == TYPES.INSERTION
+
+    @property
+    def digital_edition(self):
+        '''digital edition this annotation is associated, via
+        :class:`djiffy.models.Canvas`'''
+        return self.canvas.manifest
+
+    @property
+    def work_instance(self):
+        '''Annotated library work :class:`derrida.books.models.Instance`,
+        via associated :attr:`digital_edition`.'''
+        return self.canvas.manifest.instance
 
     # NOTE: iiif_image_selection and admin_thumbnail borrowed
     # directly from cdh winthrop annotation code

@@ -56,7 +56,7 @@ class InstanceIndex(indexes.SearchIndex, indexes.Indexable):
         return [author.authorized_name[0].upper() for author in instance.work.authors.all()]
 
 
-class CitationIndex(indexes.SearchIndex, indexes.Indexable):
+class ReferenceIndex(indexes.SearchIndex, indexes.Indexable):
     '''Search index instance for :class:`derrida.books.models.Reference`'''
     text = indexes.CharField(document=True, use_template=True, stored=False)
     #: Short title for search form from :class:`~derrida.books.models.DerridaWork`

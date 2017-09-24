@@ -4,12 +4,14 @@ from dal import autocomplete
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.db.models import Q
+from django.views.generic import ListView
 from djiffy import views as djiffy_views
+from haystack.query import SearchQuerySet
 
 from derrida.books.models import Language
-from derrida.interventions.models import Intervention
+from derrida.interventions.models import Intervention, Tag, get_default_intervener
+from derrida.interventions.forms import InterventionSearchForm
 from derrida.people.models import Person
-from .models import Tag, get_default_intervener
 
 
 class TagAutocomplete(autocomplete.Select2QuerySetView):
@@ -148,3 +150,61 @@ class InterventionAutocomplete(LoginPermissionRequired, autocomplete.Select2Quer
                 canvas__manifest__instance__pk=instance
             )
         return interventions
+
+class InterventionListView(ListView):
+    # NOTE: adapted directly from derrida.books.views.InstanceListView
+    # (probably could be generalized into a haystack faceted list view)
+
+    model = Intervention
+    form_class = InterventionSearchForm
+    paginate_by = 16
+    template_name = 'interventions/intervention_list.html'
+
+    def get_queryset(self):
+        sqs = SearchQuerySet().models(self.model)
+
+        # if search parameters are specified, use them to initialize the form;
+        # otherwise, use form defaults
+        self.form = self.form_class(self.request.GET or
+                                    self.form_class.defaults)
+
+        for facet_field in self.form.facet_fields:
+            # sort by alpha instead of solr default of count
+            sqs = sqs.facet(facet_field, sort='index')
+
+        # form shouldn't normally be invalid since no fields are
+        # required, but cleaned data isn't available until we validate
+        if self.form.is_valid():
+            search_opts = self.form.cleaned_data
+        else:
+            # fallback to defaults (i.e. sort only)
+            search_opts = self.form.defaults
+
+        # filter solr query based on search options
+        if search_opts.get('query', None):
+            sqs = sqs.filter(text=search_opts['query'])
+
+        for facet in self.form.facet_fields:
+            if facet in search_opts and search_opts[facet]:
+                sqs = sqs.filter(**{'%s__in' % facet: search_opts[facet]})
+
+        # sort should always be set
+        if search_opts['order_by']:
+            sqs = sqs.order_by(search_opts['order_by'])
+
+        return sqs
+
+    def get_context_data(self, **kwargs):
+        context = super(InterventionListView, self).get_context_data(**kwargs)
+        sqs = self.get_queryset()
+        facets = sqs.facet_counts()
+        # print(self.form)
+        # update multi-choice fields based on facets in the data
+        self.form.set_choices_from_facets(facets.get('fields'))
+        context.update({
+            'facets': facets,
+            'total': sqs.count(),
+            'form': self.form
+        })
+        return context
+

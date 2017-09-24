@@ -7,8 +7,8 @@ class SearchForm(forms.Form):
     content_type = forms.ChoiceField(choices=[
         ('all', 'All'),
         ('book', 'Books'),
-        ('reference', 'Citations'),  # FIXME: References
-        ('annotation', 'Annotations'),  # Interventions?
+        ('reference', 'References'),
+        ('intervention', 'Interventions'),
     ], required=False, initial='all')
 
 
@@ -30,6 +30,10 @@ class FacetChoiceField(forms.MultipleChoiceField):
 
 
 class InstanceSearchForm(forms.Form):
+    defaults = {
+        'order_by': 'first_author'
+    }
+
     query = forms.CharField(label='Search', required=False)
     is_extant = forms.BooleanField(label="Extant in Derrida's Library",
         required=False)
@@ -39,7 +43,7 @@ class InstanceSearchForm(forms.Form):
             ('first_author', 'Author'),
             ('-work_year', 'Publication date: oldest to newest'),
             ('work_year', 'Publication date: newest to oldest'),
-        ], required=False, initial='first_author',
+        ], required=False, initial=defaults['order_by'],
         widget=forms.RadioSelect)
 
     facet_fields = ['author', 'subject', 'item_type', 'pub_place', 'language',
@@ -53,9 +57,6 @@ class InstanceSearchForm(forms.Form):
     item_type = FacetChoiceField(label='Publication Type')
     cited_in = FacetChoiceField()
 
-    defaults = {
-        'order_by': 'first_author'
-    }
 
     def set_choices_from_facets(self, facets):
         # configure field choices based on facets returned from Solr
@@ -66,7 +67,7 @@ class InstanceSearchForm(forms.Form):
                     for val, count in counts]
 
 
-class CitationSearchForm(forms.Form):
+class ReferenceSearchForm(forms.Form):
 
     query = forms.CharField(label='Search', required=False)
 

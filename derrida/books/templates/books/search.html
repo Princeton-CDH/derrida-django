@@ -20,7 +20,7 @@
   <article class="collection collection--no-images">
     <header class="collection__header">
       <h2 class="collection__title">
-        <a href="{% url 'books:list' %}?query={{ query }}">Library Books <span class="arrow_icon">→</span><span>View All {{ instance_count }} Results</span></a>
+        <a href="{% url 'books:list' %}?query={{ query }}">Library Books {% if instance_count %}<span class="arrow_icon">→</span><span>View {{ instance_count }} Result{{ instance_count|pluralize }}</span>{% endif %}</a>
       </h2>
     </header>
     {% for book in instance_list %}
@@ -29,18 +29,12 @@
       {% empty %}
       <p>No results were found. Try a different keyword.</p>
     {% endfor %}
-
-    {# {% include 'components/collection-item.html' with href='books:list' img='img/bookimg/cover1.png' itemType='book--short' %} #}
-    {# {% include 'components/collection-item.html' with href='books:list' img='img/bookimg/cover2.png' itemType='book--short' %} #}
-
-    {# {% include 'components/collection-item.html' with href='books:list' img='img/bookimg/cover3.png' itemType='book--short' %} #}
-
   </article>
 
   <article class="collection collection--no-images">
     <header class="collection__header">
       <h2 class="collection__title">
-        <a href="{% url 'books:reference-list' %}">Citations {% if reference_count %}<span class="arrow_icon">→</span><span>View All {{ reference_count }} Results</span>{% endif %}</a>
+        <a href="{% url 'books:reference-list' %}">References {% if reference_count %}<span class="arrow_icon">→</span><span>View {{ reference_count }} Result{{ reference_count|pluralize }}</span>{% endif %}</a>
       </h2>
     </header>
 
@@ -62,15 +56,17 @@
   <article class="collection collection--no-images">
     <header class="collection__header">
       <h2 class="collection__title">
-      <a href="#">Annotations <span class="=arrow_icon">→</span><span>View All</span></a>
+      <a href="{% url 'interventions:list' %}?query={{ query }}">Annotations <span class="=arrow_icon">→</span>
+        <span>View {{ intervention_count }} Result{{ intervention_count|pluralize }}</span></a>
     </h2>
     </header>
+    {% for intervention in intervention_list %}
+        {% include 'components/intervention-list-item.html' %}
+    {% empty %}
+      <p>No results were found. Try a different keyword.</p>
+    {% endfor %}
 
-    {% include 'components/collection-item.html' with href='books:list' img='img/bookimg/cover1.png' itemType='annotation' %}
-
-    {% include 'components/collection-item.html' with href='books:list' img='img/bookimg/cover2.png' itemType='annotation' %}
-
-    {% include 'components/collection-item.html' with href='books:list' img='img/bookimg/cover3.png' itemType='annotation' %}
+    {# {% include 'components/collection-item.html' with href='books:list' img='img/bookimg/cover3.png' itemType='annotation' %} #}
 
   </article>
 

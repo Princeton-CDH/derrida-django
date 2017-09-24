@@ -5,8 +5,9 @@ from django.views.generic.base import TemplateView
 from django.views.generic import DetailView, ListView
 from haystack.query import SearchQuerySet
 
-from .forms import CitationSearchForm, InstanceSearchForm, SearchForm
+from .forms import ReferenceSearchForm, InstanceSearchForm, SearchForm
 from .models import Publisher, Language, Instance, Reference, DerridaWorkSection
+from derrida.interventions.models import Intervention
 
 
 class PublisherAutocomplete(autocomplete.Select2QuerySetView):
@@ -96,21 +97,16 @@ class InstanceListView(ListView):
         context.update({
             'facets': facets,
             'total': sqs.count(),
-            'form': self.form,
+            'form': self.form
         })
         return context
 
 
 class ReferenceListView(ListView):
-    # full citation/reference list; eventually will have filter/sort options
-    # (sticking with 'reference' for now until project team confirms
-    # which term is more general / preferred for public site)
-
-    # NOTE: Still leaving this as Reference, but perhaps it should change since
-    # citation is firmly in place on the public site?
+    # full reference list; eventually will have filter/sort options
 
     model = Reference
-    form_class = CitationSearchForm
+    form_class = ReferenceSearchForm
     paginate_by = 16
     template_name = 'books/reference_list.html'
 
@@ -153,6 +149,7 @@ class ReferenceListView(ListView):
             'form': self.form,
         })
         return context
+
 
 class ReferenceHistogramView(ListView):
     template_name = 'books/reference_histogram.html'
@@ -216,6 +213,8 @@ class SearchView(TemplateView):
                     url = reverse('books:list')
                 elif search_opts['content_type'] == 'reference':
                     url = reverse('books:reference-list')
+                elif search_opts['content_type'] == 'intervention':
+                    url = reverse('interventions:list')
 
                 url = '%s?query=%s' % (url, search_opts['query'])
                 response = HttpResponseRedirect(url)
@@ -236,13 +235,15 @@ class SearchView(TemplateView):
 
         instance_query = sqs.models(Instance).all()
         reference_query = sqs.models(Reference).all()
+        intervention_query = sqs.models(Intervention).all()
 
         return {
             'query': search_opts['query'],
             'instance_list': instance_query[:self.max_per_type],
             'instance_count': instance_query.count(),
             'reference_list': reference_query[:self.max_per_type],
-            'reference_count': reference_query.count()
-            # annotations todo
+            'reference_count': reference_query.count(),
+            'intervention_list': intervention_query[:self.max_per_type],
+            'intervention_count': intervention_query.count()
             # outwork TODO
         }

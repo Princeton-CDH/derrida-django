@@ -1,0 +1,38 @@
+{% extends 'djiffy/base.html' %}
+{% load static %}
+
+{% block nav-title %} Interventions {% endblock %}
+
+{% block header_class %}mdl-layout__header--transparent{% endblock %}
+
+{% block page-context-id %}interventions-list{% endblock %}
+
+{% block content %}
+  <header class="page-header">
+    <div class="container page-header__container">
+      <h1 class="page-header__heading">Interventions in Derrida's Library</h1>
+      <div class="page-header__callout">
+        <p class="lead">Annotations and insertions in Derrida's books.</p>
+        {# <p><a class="callout__link" href="/">A full list of citations is accessible through Citation List.</a></p> #}
+      </div>
+    </div>
+  </header>
+
+  {% include "components/page-filter.html" with show_filter=False formItems=form %}
+  {% include "components/page-sort.html" with number=count orderBy=orderBy %}
+
+  <div class="container">
+  {# TEST version of the form for implementing functionality; integration with design still TODO #}
+
+{# NOTE: author first letters available via solr facet, but may need some processing in the view for display #}
+
+    <article class="collection">
+       {% for intervention in object_list %}
+            {% include 'components/intervention-list-item.html' %}
+        {% endfor %}
+    </article>
+    {% if is_paginated %}
+      {% include "components/page-pagination.html" with page_obj=page_obj %}
+    {% endif %}
+  </div>
+{% endblock %}
