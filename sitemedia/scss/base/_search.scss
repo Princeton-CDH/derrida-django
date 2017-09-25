@@ -157,3 +157,11 @@
     background: $base-background-color;
   }
 }
+
+.search__no-results {
+  @include grid-column(4);
+
+  @include grid-media($large-medium-viewport-grid) {
+    @include grid-column(12);
+  }
+}
