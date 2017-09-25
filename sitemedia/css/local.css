@@ -2378,6 +2378,22 @@ hr {
   line-height: 2em;
   padding: 0 0.5em; }
 
+form#grp-changelist-search-form {
+  border: none; }
+
+input#grp-changelist-search {
+  width: 75%; }
+
+#grp-breadcrumbs > ul a, #grp-breadcrumbs > ul a:hover, #grp-breadcrumbs > ul a:active {
+  background-position: 100% -258px; }
+
+a.grp-add-link.grp-state-focus, a.grp-add-link.grp-state-focus:hover, a.grp-add-link.grp-state-focus:active {
+  background-position: 0 -728px, 0 0;
+  color: #fff; }
+
+#grp-filters {
+  width: 200px; }
+
 #sw-version {
   color: #eee;
   padding: 10px 0;
