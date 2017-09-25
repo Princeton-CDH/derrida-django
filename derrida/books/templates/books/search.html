@@ -24,7 +24,8 @@
       </h2>
     </header>
     {% for book in instance_list %}
-      {% include 'components/books-list-item.html' %}
+      {% url 'books:detail' book.slug as instance_url %}
+      {% include 'components/books-list-item.html' with href=instance_url %}
       {% empty %}
       <p>No results were found. Try a different keyword.</p>
     {% endfor %}
