@@ -27,7 +27,9 @@
       {% url 'books:detail' book.slug as instance_url %}
       {% include 'components/books-list-item.html' with href=instance_url %}
       {% empty %}
-      <p>No results were found. Try a different keyword.</p>
+      <section class="search__no-results">
+        <p>No results were found. Try a different keyword.</p>
+      </section>
     {% endfor %}
   </article>
 
@@ -41,7 +43,9 @@
     {% for reference in reference_list %}
       {% include 'components/citation-list-item.html' with reference=reference %}
       {% empty %}
-      <p>No results were found. Try a different keyword.</p>
+      <section class="search__no-results">
+        <p>No results were found. Try a different keyword.</p>
+      </section>
     {% endfor %}
   </article>
 
@@ -55,7 +59,9 @@
     {% for intervention in intervention_list %}
         {% include 'components/intervention-list-item.html' %}
     {% empty %}
-      <p>No results were found. Try a different keyword.</p>
+      <section class="search__no-results">
+        <p>No results were found. Try a different keyword.</p>
+      </section>
     {% endfor %}
   </article>
 
