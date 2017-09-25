@@ -25,7 +25,6 @@
     </header>
     {% for book in instance_list %}
       {% include 'components/books-list-item.html' %}
-       {# with href='books:list' img='img/bookimg/cover1.png' itemType='book--short' %}π #}
       {% empty %}
       <p>No results were found. Try a different keyword.</p>
     {% endfor %}
@@ -43,14 +42,6 @@
       {% empty %}
       <p>No results were found. Try a different keyword.</p>
     {% endfor %}
-
-
-    {# {% include 'components/collection-item.html' with href='books:list' img='img/bookimg/cover1.png' %} #}
-
-    {# {% include 'components/collection-item.html' with href='books:list' img='img/bookimg/cover2.png' %} #}
-
-    {# {% include 'components/collection-item.html' with href='books:list' img='img/bookimg/cover3.png' %} #}
-
   </article>
 
   <article class="collection collection--no-images">
@@ -65,9 +56,6 @@
     {% empty %}
       <p>No results were found. Try a different keyword.</p>
     {% endfor %}
-
-    {# {% include 'components/collection-item.html' with href='books:list' img='img/bookimg/cover3.png' itemType='annotation' %} #}
-
   </article>
 
   <article class="collection collection--no-images">
