@@ -385,6 +385,35 @@ class Instance(Notable):
         if self.print_date and self.print_date_year_known:
             return self.print_date.year
 
+    def images(self):
+        '''Queryset containing all :class:`djiffy.models.Canvas` objects
+        associated with the digital edition for this item.'''
+        if self.digital_edition:
+            return self.digital_edition.canvases.all()
+        return Canvas.objects.empty()
+
+    def overview_images(self):
+        '''Overview images for this book - cover, spine, etc.
+        Filtered based on canvas label naming conventions.'''
+        return self.images().filter(
+                models.Q(label__icontains='cover') |
+                models.Q(label__icontains='spine') |
+                models.Q(label__icontains='back') |
+                models.Q(label__icontains='edge') |
+                models.Q(label__icontains='view')
+            ).exclude(label__icontains='insertion')
+
+    def annotated_pages(self):
+        '''Annotated pages for this book. Filtered based on the presence
+        of a documented :class:`~derrida.interventions.models.Intervention`
+        in the database.'''
+        return self.images().filter(intervention__isnull=False)
+
+    def insertions(self):
+        '''Insertion images for this book.
+        Filtered based on canvas label naming conventions.'''
+        return self.images().filter(label__icontains='insertion')
+
 
 class WorkSubject(Notable):
     '''Through-model for work-subject relationship, to allow designating

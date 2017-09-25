@@ -13,39 +13,65 @@
 <section class="item-section">
   {% include "components/navigation-tabs.html" with book=instance is_gallery=True %}
   <div class="item-gallery">
-    {% for canvas in book.digital_edition.canvases.all  %}
-    {% if forloop.first and forloop.counter < 4 %}
-      <header class="item-gallery__heading">
-        <h2 class="item-gallery__title"><a name="overview">Overview Images</a></h2>
-      </header>
-    {% endif %}
+      {# overview images #}
+      {% for canvas in book.overview_images %}
+        {% if forloop.first %}
+         <header class="item-gallery__heading">
+          <h2 class="item-gallery__title"><a name="overview">Overview Images</a></h2>
+        </header>
+        {% endif %}
+          <figure class="item__image item__image--gallery">
+            <a class="item__image-link" href="{{ canvas.get_absolute_url }}">
+              <img class="img" src="{{ canvas.image.thumbnail }}" />
+            </a>
+            <figcaption class="item__image-caption">
+              <p>{{ canvas.label }}</p>
+            </figcaption>
+          </figure>
+      {% endfor %}
 
-    {% if forloop.counter == 5 %}
-      <header class="item-gallery__heading">
+      {% for canvas in book.annotated_pages %}
+        {% if forloop.first %}
+       <header class="item-gallery__heading">
         <h2 class="item-gallery__title"><a name="annotated">Annotated pages</a></h2>
       </header>
-    {% endif %}
+        {% endif %}
+          <figure class="item__image item__image--gallery">
+            <a class="item__image-link" href="{{ canvas.get_absolute_url }}">
+              <img class="img" src="{{ canvas.image.thumbnail }}" />
+            </a>
+            <figcaption class="item__image-caption">
+              <p>{{ canvas.label }}</p>
+            </figcaption>
+          </figure>
+      {% endfor %}
 
+   {% for canvas in book.insertions %}
+        {% if forloop.first %}
+       <header class="item-gallery__heading">
+        <h2 class="item-gallery__title"><a name="insertions">Insertions</a></h2>
+      </header>
+        {% endif %}
+          <figure class="item__image item__image--gallery">
+            <a class="item__image-link" href="{{ canvas.get_absolute_url }}">
+              <img class="img" src="{{ canvas.image.thumbnail }}" />
+            </a>
+            <figcaption class="item__image-caption">
+              <p>{{ canvas.label }}</p>
+            </figcaption>
+          </figure>
+      {% endfor %}
+
+      {# placeholder design stuff #}
+
+{% comment %}
     {% if forloop.counter == 10 %}
       <header class="item-gallery__heading">
         <h2 class="item-gallery__title"><a name="relevant">Relevant markings</h2>
       </header>
     {% endif %}
+    {% endcomment %}
 
-    {% if forloop.counter == 20 %}
-      <header class="item-gallery__heading">
-        <h2 class="item-gallery__title"><a name="insertions">Insertions</a></h2>
-      </header>
-    {% endif %}
 
-    <figure class="item__image item__image--gallery">
-      <a class="item__image-link" href="{{ canvas.get_absolute_url }}">
-        <img class="img" src="{{ canvas.image.thumbnail }}" />
-      </a>
-      <figcaption class="item__image-caption">
-        <p>{{ canvas.label }}</p>
-      </figcaption>
-    </figure>
-    {% endfor %}
   </div>
 </section>
