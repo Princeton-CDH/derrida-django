@@ -14,8 +14,9 @@
       </header>
       <section class="item-section">
         {% include "components/navigation-tabs.html" with book=instance is_citations=True %}
-        {% for citation in instance.cited_in.all %}
-          {% include 'components/books-list-item.html' with href='books:detail' book=citation %}
+        {% include "components/page-sort.html" with total=references.count orderBy=orderBy %} {# preliminary #}
+        {% for reference in references %}
+          {% include 'components/citation-list-item.html' %}
         {% endfor %}
       </section>
     </article>

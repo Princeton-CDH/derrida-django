@@ -31,9 +31,9 @@ class InstanceIndex(indexes.SearchIndex, indexes.Indexable):
         faceted=True, null=True)
     work_language = indexes.MultiValueField(model_attr='work__languages__name',
         faceted=True, null=True)
-    work_year = indexes.DecimalField(model_attr='work__year', null=True)
-    copyright_year = indexes.DecimalField(model_attr='copyright_year', null=True)
-    print_year = indexes.DecimalField(model_attr='print_year', null=True)
+    work_year = indexes.IntegerField(model_attr='work__year', null=True)
+    copyright_year = indexes.IntegerField(model_attr='copyright_year', null=True)
+    print_year = indexes.IntegerField(model_attr='print_year', null=True)
     cited_in = indexes.MultiValueField(model_attr='reference_set__derridawork__short_title',
         faceted=True, null=True)
     is_extant = indexes.FacetBooleanField(model_attr='is_extant')
@@ -70,6 +70,8 @@ class ReferenceIndex(indexes.SearchIndex, indexes.Indexable):
     derridawork_pageloc = indexes.CharField(model_attr='derridawork_pageloc')
     #: Cited page in referenced work; :attr:`derrida.books.models.Reference.book_page`
     book_page = indexes.CharField(model_attr='book_page', null=True)
+    #: anchor text
+    anchor_text = indexes.CharField(model_attr='anchor_text', null=True)
     # - related instance and work info
     #: Title of instance to which citation points; :method:`derrida.books.models.Instance.display_title`
     instance_title = indexes.CharField(model_attr='instance__display_title')
@@ -93,6 +95,8 @@ class ReferenceIndex(indexes.SearchIndex, indexes.Indexable):
     instance_is_extant = indexes.FacetBooleanField(model_attr='instance__is_extant')
     #: is instance annotated?; :attr:`derrida.books.models.Instance.is_annotated`
     instance_is_annotated = indexes.FacetBooleanField(model_attr='instance__is_annotated')
+    #: instance slug, for generating urls and filtering by instance
+    instance_slug = indexes.CharField(model_attr='instance__slug')
 
     def get_model(self):
         return Reference

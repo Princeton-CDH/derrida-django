@@ -41,6 +41,21 @@ class InstanceDetailView(DetailView):
         return instances.filter(digital_edition__isnull=False)
 
 
+class InstanceReferenceDetailView(InstanceDetailView):
+
+    template_name = 'books/detail/citations.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(InstanceReferenceDetailView, self)\
+            .get_context_data(*args, **kwargs)
+        refs = SearchQuerySet().models(Reference) \
+            .filter(instance_slug=self.object.slug)
+        context['references'] = refs
+
+        # sorting todo
+        return context
+
+
 class InstanceListView(ListView):
     # NOTE: haystack includes generic views, but they are not well documented
     # and don't seem to work quite right, so sticking with stock django

@@ -19,16 +19,23 @@
   <div class="item__body">
     <a class="text-badge text-badge--blue text-badge--link" href="#">{{ reference.reference_type }}</a>
     {% with instance=reference.instance %}
+      {% url 'books:detail' reference.instance_slug as instance_url %}
       <h3 class="item__heading">
-        <a class="item__link" href="{{ reference.instance.get_absolute_url }}">{{ instance.display_title }}</a>
+        <a class="item__link" href="{% firstof instance_url reference.instance.get_absolute_url %}">{% firstof reference.instance_title instance.display_title %}</a>
       </h3>
 
       <p class="item__author">
+        {{ reference.instance_author|join:'; ' }}
         {% for author in instance.work.authors.all %}
           {{ author.firstname_last }}{% if not forloop.last %}; {% endif %}
         {% endfor %}
       </p>
 
+      {# solr #}
+      {% if reference.instance_copyright_year %}
+        <p class="item__date">{{ reference.instance_copyright_year }}{% if instance.copy %} - {{ instance.copy }}{% endif %}</p>
+      {% endif %}
+      {# db model #}
       {% if instance.copyright_year %}
         <p class="item__date">{{ instance.copyright_year }}{% if instance.copy %} - {{ instance.copy }}{% endif %}</p>
       {% endif %}
@@ -37,7 +44,7 @@
         <p class="item__location">p{% if '-' in reference.book_page %}p{% endif %}. {{ reference.book_page }}</p>
       {% endif %}
 
-      <p class="item__excerpt">{{ reference.anchor_text }}</p>
+      <p class="item__excerpt">{{ reference.anchor_text|default:'' }}</p>
 
       <p class="item__citation">
         Cited in <em>{{ reference.derridawork }}</em> p.{{ reference.derridawork_page }} {{ reference.derridawork_pageloc }}
