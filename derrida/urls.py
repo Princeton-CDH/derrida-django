@@ -15,7 +15,7 @@ from derrida.books.views import SearchView
 urlpatterns = [
     # for now, since there is not yet any public-facing site,
     # redirect base url to admin index page
-    url(r'^$', RedirectView.as_view(pattern_name='admin:index'), name='site-index'),
+    url(r'^$', TemplateView.as_view(template_name='public/index.html'), name="home"),
 
     # placeholders for new design
     url(r'^citations/$', RedirectView.as_view(pattern_name='admin:index'), name='citations-list'),
@@ -41,7 +41,6 @@ urlpatterns = [
     # annotatorjs doesn't handle trailing slash in api prefix url
     url(r'^annotations/api', annotator_views.AnnotationIndex.as_view(), name='annotation-api-prefix'),
 
-    url(r'^index', TemplateView.as_view(template_name='public/index.html'), name="home"),
     # url(r'^library', TemplateView.as_view(template_name='public/library.html'), name="library"),
     url(r'^visualization', TemplateView.as_view(template_name='public/visualization.html'), name="visualization"),
 
