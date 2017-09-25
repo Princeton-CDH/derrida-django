@@ -68,6 +68,9 @@ class InstanceListView(ListView):
 
     def get_queryset(self):
         sqs = SearchQuerySet().models(self.model)
+        # restrict to extant books
+        sqs = sqs.filter(is_extant=True, item_type='Book')
+
         # if search parameters are specified, use them to initialize the form;
         # otherwise, use form defaults
         self.form = self.form_class(self.request.GET or
@@ -76,7 +79,6 @@ class InstanceListView(ListView):
         for facet_field in self.form.facet_fields:
             # sort by alpha instead of solr default of count
             sqs = sqs.facet(facet_field, sort='index')
-
         # form shouldn't normally be invalid since no fields are
         # required, but cleaned data isn't available until we validate
         if self.form.is_valid():
@@ -88,15 +90,13 @@ class InstanceListView(ListView):
         # filter solr query based on search options
         if search_opts.get('query', None):
             sqs = sqs.filter(text=search_opts['query'])
-        if search_opts.get('is_extant', None):
-            sqs = sqs.filter(is_extant=search_opts['is_extant'])
+        # if search_opts.get('is_extant', None):
+            # sqs = sqs.filter(is_extant=search_opts['is_extant'])
         if search_opts.get('is_annotated', None):
             sqs = sqs.filter(is_annotated=search_opts['is_annotated'])
-
         for facet in self.form.facet_fields:
             if facet in search_opts and search_opts[facet]:
                 sqs = sqs.filter(**{'%s__in' % facet: search_opts[facet]})
-
         # sort should always be set
         if search_opts['order_by']:
             sqs = sqs.order_by(search_opts['order_by'])

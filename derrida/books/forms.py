@@ -31,16 +31,21 @@ class FacetChoiceField(forms.MultipleChoiceField):
 
 class InstanceSearchForm(forms.Form):
     defaults = {
-        'order_by': 'first_author'
+        'order_by': 'first_author',
+        # TODO
+        # 'cited_in': 'de la grammatologie'
     }
 
     query = forms.CharField(label='Search', required=False)
-    is_extant = forms.BooleanField(label="Extant in Derrida's Library",
-        required=False)
+    # is_extant = forms.BooleanField(label="Extant in Derrida's Library",
+        # required=False)
     is_annotated = forms.BooleanField(label='Contains annotation',
         required=False)
+    #  FIXME: don't expose solr fields here
     order_by = forms.ChoiceField(choices=[
             ('first_author', 'Author'),
+            # TODO
+            # ('display_title', 'Title'),
             ('-work_year', 'Publication date: oldest to newest'),
             ('work_year', 'Publication date: newest to oldest'),
         ], required=False, initial=defaults['order_by'],
@@ -54,7 +59,7 @@ class InstanceSearchForm(forms.Form):
     work_language = FacetChoiceField('Original Language')
     pub_place = FacetChoiceField('Place of Publication')
     # TODO: work_year. range facet?
-    item_type = FacetChoiceField(label='Publication Type')
+    # item_type = FacetChoiceField(label='Publication Type')
     cited_in = FacetChoiceField()
 
 
