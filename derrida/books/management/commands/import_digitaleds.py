@@ -21,6 +21,7 @@ to link the cached manifest in the django database with the appropriate
 from collections import defaultdict
 
 from django.core.management.base import BaseCommand
+from django.core.exceptions import ObjectDoesNotExist
 from djiffy.importer import ManifestImporter
 
 from derrida.books.models import Instance
@@ -44,6 +45,16 @@ class DerridaManifestImporter(ManifestImporter):
 
         short_id = db_manifest.short_id
         self.stats['manifests'] += 1
+
+        # if updating an existing db manifest that already has an
+        # associated instance, bail out
+        if self.update:
+            try:
+                db_manifest.instance
+                return db_manifest
+            except ObjectDoesNotExist:
+                pass
+
 
         self.output('Imported %s "%s"' % (short_id, db_manifest.label))
 
@@ -100,13 +111,15 @@ class Command(BaseCommand):
         parser.add_argument('path', nargs='+',
             help='''One or more IIIF Collections or Manifests as file or URL.
             Use 'PUL' to import PUL Derrida materials.''')
+        parser.add_argument('--update', action='store_true',
+            help='Update previously imported manifests')
 
     def handle(self, *args, **kwargs):
         # convert any shorthand ids into the appropriate manifest uri
         manifest_paths = [self.manifest_uris[p] if p in self.manifest_uris else p
                           for p in kwargs['path']]
         dmi = DerridaManifestImporter(stdout=self.stdout, stderr=self.stderr,
-                                     style=self.style)
+                                     style=self.style, update=kwargs['update'])
         dmi.import_paths(manifest_paths)
         self.summarize(dmi.stats)
 
@@ -114,7 +127,7 @@ class Command(BaseCommand):
         # briefly summarize what was done
         self.stdout.write('\nURLs processed: %(urls)d' % stats)
         if stats['manifests']:
-            self.stdout.write('Manifests imported: %(manifests)d' % stats)
+            self.stdout.write('Manifests imported or updated: %(manifests)d' % stats)
             if stats['nomatch']:
                 self.stdout.write('Manifests not matched to library work instances: %(nomatch)d' \
                     % stats)

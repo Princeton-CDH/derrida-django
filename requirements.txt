@@ -9,7 +9,8 @@ attrdict
 pucas>=0.5
 # unreleased py3 piffle currently needs to be required explicitly
 git+https://github.com/Princeton-CDH/piffle.git@feature/python3-compatibility#egg=piffle
-djiffy>=0.2
+# develop version of djiffy until release 0.3 for import update logic
+git+https://github.com/Princeton-CDH/djiffy.git@develop#egg=djiffy
 annotator_store>=0.6
 # develop version of viapy until we have a release
 git+https://github.com/Princeton-CDH/viapy.git@develop#egg=viapy
