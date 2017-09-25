@@ -1017,7 +1017,6 @@ figure {
 table {
   border-collapse: collapse;
   margin: 1.5em 0;
-  table-layout: fixed;
   text-align: left;
   width: 100%; }
 
