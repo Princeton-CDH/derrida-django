@@ -2321,9 +2321,13 @@ hr {
   .page-sort__header .sort-link {
     margin-right: 1em; }
   .page-sort__header .sort-label {
-    font-weight: 400; }
+    font-family: "UniversLTPro-65Bold", "Helvetica", "Arial", sans-serif;
+    font-weight: normal;
+    font-style: normal; }
     .page-sort__header .sort-label.sort-label--diminished {
-      font-size: 300;
+      font-family: "UniversLTPro-55Roman", "Helvetica", "Arial", sans-serif;
+      font-weight: normal;
+      font-style: normal;
       color: #9e9e9e; }
   .page-sort__header .sort-link {
     cursor: pointer;

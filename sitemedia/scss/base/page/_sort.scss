@@ -15,10 +15,10 @@
   }
 
   .sort-label {
-    font-weight: 400;
+    @include primary-font-style("bold");
 
     &.sort-label--diminished {
-      font-size: 300;
+      @include primary-font-style();
       color: $medium-grey;
     }
   }
