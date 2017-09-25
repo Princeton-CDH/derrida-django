@@ -67,16 +67,16 @@ class TestImportDigitalEds(TestCase):
     def test_command(self, mockimporter):
         # normal file/uri
         test_paths = ['one', 'two']
-        self.cmd.handle(path=test_paths)
+        self.cmd.handle(path=test_paths, update=False)
         assert mockimporter.return_value.import_paths.called_with(test_paths)
 
         # shortcut for PUL derrida collection
-        self.cmd.handle(path=['PUL'])
+        self.cmd.handle(path=['PUL'], update=False)
         assert mockimporter.return_value.import_paths \
             .called_with([self.cmd.manifest_uris['PUL']])
 
         # works within a list also
-        self.cmd.handle(path=['one', 'PUL', 'two'])
+        self.cmd.handle(path=['one', 'PUL', 'two'], update=False)
         assert mockimporter.return_value.import_paths \
             .called_with(['one', self.cmd.manifest_uris['PUL'], 'two'])
 
@@ -91,7 +91,7 @@ class TestImportDigitalEds(TestCase):
 
         self.cmd.summarize({'urls': 3, 'manifests': 1, 'nomatch': 0})
         output = self.cmd.stdout.getvalue()
-        assert 'Manifests imported: 1' in output
+        assert 'Manifests imported or updated: 1' in output
         # import/error not reported if there are none
         assert 'not matched' not in output
 
