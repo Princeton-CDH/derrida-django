@@ -52,6 +52,11 @@
     width: 100%;
   }
 
+  .mdl-textfield--floating-label.is-focused .mdl-textfield__label,
+  .mdl-textfield--floating-label.is-dirty .mdl-textfield__label {
+    opacity: 0;
+  }
+
   .mdl-selectfield {
     align-self: center;
     width: 150px;
