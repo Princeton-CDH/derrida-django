@@ -31,7 +31,7 @@ class FacetChoiceField(forms.MultipleChoiceField):
 
 class InstanceSearchForm(forms.Form):
     defaults = {
-        'order_by': 'sort_author',
+        'order_by': 'author',
         # TODO
         # 'cited_in': 'de la grammatologie'
     }
@@ -39,14 +39,22 @@ class InstanceSearchForm(forms.Form):
     query = forms.CharField(label='Search', required=False)
     is_annotated = forms.BooleanField(label='Contains annotation',
         required=False)
-    #  FIXME: don't expose solr fields here!
+
     order_by = forms.ChoiceField(choices=[
-            ('sort_author', 'Author'),
-            ('display_title_exact', 'Title'),
-            ('year', 'Publication date: oldest to newest'),
-            ('-year', 'Publication date: newest to oldest'),
+            ('author', 'Author'),
+            ('title', 'Title'),
+            ('oldest', 'Publication date: oldest to newest'),
+            ('newest', 'Publication date: newest to oldest'),
         ], required=False, initial=defaults['order_by'],
         widget=forms.RadioSelect)
+
+    #: order options and corresponding solr field
+    sort_fields = {
+        'author': 'sort_author',
+        'title': 'display_title_exact',
+        'oldest': 'year',
+        'newest': '-year'
+    }
 
     facet_fields = ['author', 'subject', 'item_type', 'pub_place', 'language',
         'work_language', 'cited_in', 'author_letter']

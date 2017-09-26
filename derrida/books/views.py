@@ -103,7 +103,10 @@ class InstanceListView(ListView):
                 sqs = sqs.filter(**{'%s__in' % facet: search_opts[facet]})
         # sort should always be set
         if search_opts['order_by']:
-            sqs = sqs.order_by(search_opts['order_by'])
+            sort = search_opts['order_by']
+            # convert sort option to corresponding solr field
+            if sort in self.form.sort_fields:
+                sqs = sqs.order_by(self.form.sort_fields[sort])
 
         return sqs
 
