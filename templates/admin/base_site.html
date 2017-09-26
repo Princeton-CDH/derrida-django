@@ -1,5 +1,5 @@
 {% extends "admin/base.html" %}
-{% load i18n grp_tags static %}
+{% load i18n grp_tags static compress %}
 
 {% block title %}{{ title }} | {% get_site_title %}{% endblock %}
 
@@ -30,6 +30,9 @@
 
 {% block extrahead %}
     {{ block.super }}
+    {# Since both are in tandem, include both js files in compressor #}
+    {% compress js %}
     <script src="{% static 'js/material.min.js' %}"></script>
     <script src="{% static 'js/local.js' %}"></script>
+    {% endcompress %}
 {% endblock %}
