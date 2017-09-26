@@ -14,7 +14,11 @@
 
 .collection--condensed {
   .collection__item {
-    @include grid-column(2);
+    @include grid-column(4);
+
+    @media screen and (min-width: 550px) {
+      @include grid-column(2);
+    }
 
     @include grid-media($large-medium-viewport-grid) {
       @include grid-column(3);
@@ -35,7 +39,11 @@
   padding-bottom: 2rem;
 
   .collection__item {
-    @include grid-column(2);
+    @include grid-column(4);
+
+    @media screen and (min-width: 550px) {
+      @include grid-column(2);
+    }
 
     @include grid-media($large-medium-viewport-grid) {
       @include grid-column(4);
