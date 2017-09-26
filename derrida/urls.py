@@ -6,6 +6,7 @@ from annotator_store import views as annotator_views
 from django.conf import settings
 from django.conf.urls import url, include
 from django.contrib import admin
+from django.shortcuts import render
 from django.views.generic import TemplateView
 from django.views.generic.base import RedirectView
 
@@ -13,8 +14,10 @@ from derrida.books.views import SearchView
 
 
 urlpatterns = [
-    # for now, since there is not yet any public-facing site,
-    # redirect base url to admin index page
+
+    url(r'robots\.txt$', lambda request:
+        render(request, 'robots.txt',
+               content_type='text/plain', context={'DEBUG': settings.DEBUG})),
     url(r'^$', TemplateView.as_view(template_name='public/index.html'), name="home"),
 
     # placeholders for new design
