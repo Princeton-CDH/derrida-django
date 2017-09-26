@@ -89,6 +89,25 @@ TEMPLATES = [
     },
 ]
 
+# django-compressor settings
+COMPRESS_PRECOMPILERS = (
+    ('text/x-scss', 'sass --scss {infile} {outfile}'),
+)
+
+COMPRESS_CSS_FILTERS = (
+    'compressor.filters.css_default.CssAbsoluteFilter',
+    # NOTE: requires COMPRESS_ENABLED = True when DEBUG is True
+    'django_compressor_autoprefixer.AutoprefixerFilter',
+)
+
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    # other finders..
+    'compressor.finders.CompressorFinder',
+)
+
+
 GRAPPELLI_ADMIN_TITLE = 'Derrida Admin'
 
 WSGI_APPLICATION = 'derrida.wsgi.application'

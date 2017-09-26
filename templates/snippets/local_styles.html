@@ -1,4 +1,4 @@
-{% load static %}
+{% load static compress %}
 <!--
 /**
  * @license
@@ -65,8 +65,13 @@
 */
 
 -->
+{# Using djangoc-compressor for font include and scss #}
+{% compress css %}
 <link rel="stylesheet" type="text/css" href="/fonts/MyFontsWebfontsKit.css">
+{% end compress %}
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
 <link rel="stylesheet" type="text/css" href="{% static "css/material.min.css" %}" />
 <link rel="stylesheet" type="text/css" href="{% static "css/webui-popover.min.css" %}" />
-<link rel="stylesheet" type="text/css" href="{% static "css/local.css" %}" />
+{% compress css %}
+<link rel="stylesheet" type="text/css" href="{% static "scss/styles.css" %}" />
+{% endcompress %}
