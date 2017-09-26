@@ -32,8 +32,8 @@
         {% endif %}
       {% endfor %}
     </p>
-    {% if book.copyright_year %}
-    <p class="item__date">{{ book.copyright_year }}{% if book.copy %} - {{ book.copy }}{% endif %}</p>
+    {% if book.year %}
+    <p class="item__date">{{ book.year }}{% if book.copy %} - {{ book.copy }}{% endif %}</p>
     {% endif %}
     <p class="item__location">{{ book.location }}</p>
     <p class="item__excerpt">---</p>

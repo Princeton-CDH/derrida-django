@@ -37,17 +37,14 @@ class InstanceSearchForm(forms.Form):
     }
 
     query = forms.CharField(label='Search', required=False)
-    # is_extant = forms.BooleanField(label="Extant in Derrida's Library",
-        # required=False)
     is_annotated = forms.BooleanField(label='Contains annotation',
         required=False)
-    #  FIXME: don't expose solr fields here
+    #  FIXME: don't expose solr fields here!
     order_by = forms.ChoiceField(choices=[
             ('sort_author', 'Author'),
-            # TODO
             ('display_title_exact', 'Title'),
-            ('-work_year', 'Publication date: oldest to newest'),
-            ('work_year', 'Publication date: newest to oldest'),
+            ('year', 'Publication date: oldest to newest'),
+            ('-year', 'Publication date: newest to oldest'),
         ], required=False, initial=defaults['order_by'],
         widget=forms.RadioSelect)
 

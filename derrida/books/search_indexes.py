@@ -34,6 +34,7 @@ class InstanceIndex(indexes.SearchIndex, indexes.Indexable):
     work_year = indexes.IntegerField(model_attr='work__year', null=True)
     copyright_year = indexes.IntegerField(model_attr='copyright_year', null=True)
     print_year = indexes.IntegerField(model_attr='print_year', null=True)
+    year = indexes.IntegerField(null=True)
     cited_in = indexes.MultiValueField(model_attr='reference_set__derridawork__short_title',
         faceted=True, null=True)
     is_extant = indexes.FacetBooleanField(model_attr='is_extant')
@@ -54,6 +55,10 @@ class InstanceIndex(indexes.SearchIndex, indexes.Indexable):
     def prepare_author_letter(self, instance):
         # first letter of author
         return [author.authorized_name[0].upper() for author in instance.work.authors.all()]
+
+    def prepare_year(self, instance):
+        # sort/display year: print year if known; otherwise, copyright year.
+        return instance.print_year() or instance.copyright_year
 
 
 class ReferenceIndex(indexes.SearchIndex, indexes.Indexable):
