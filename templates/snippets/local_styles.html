@@ -65,13 +65,10 @@
 */
 
 -->
-{# Using djangoc-compressor for font include and scss #}
-{% compress css %}
 <link rel="stylesheet" type="text/css" href="/fonts/MyFontsWebfontsKit.css">
-{% endcompress %}
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
 <link rel="stylesheet" type="text/css" href="{% static "css/material.min.css" %}" />
 <link rel="stylesheet" type="text/css" href="{% static "css/webui-popover.min.css" %}" />
 {% compress css %}
-<link rel="stylesheet" type="text/css" href="{% static "scss/styles.css" %}" />
+<link rel="stylesheet" type="text/x-scss" href="{% static "scss/style.scss" %}" />
 {% endcompress %}
