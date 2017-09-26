@@ -1599,7 +1599,7 @@ hr {
         min-height: 16rem; } }
 
 .page-header__heading {
-  font-size: 1.25em;
+  font-size: 1.42857em;
   margin-top: 1rem;
   color: #3ca1ff;
   font-family: "SabonLTPro-Bold", "Georgia", serif;
@@ -1902,7 +1902,10 @@ hr {
 
 .collection__title {
   color: #424242;
-  font-size: 1.5em; }
+  font-size: 1.28571em;
+  font-family: "SabonLTPro-Bold", "Georgia", serif;
+  font-weight: normal;
+  font-style: normal; }
   .collection__title a {
     text-decoration: none; }
     .collection__title a:hover, .collection__title a:active {
@@ -1911,7 +1914,9 @@ hr {
         color: #3ca1ff; }
     .collection__title a span {
       color: #424242;
-      font-family: "UniversLTPro-55Roman", "Helvetica", "Arial", sans-serif;
+      font-family: "SabonLTPro-Roman", "Georgia", serif;
+      font-weight: normal;
+      font-style: normal;
       font-size: 1rem;
       text-decoration: none;
       transition: color 150ms ease; }

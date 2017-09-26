@@ -58,7 +58,8 @@
 
 .collection__title {
   color: $base-font-color;
-  font-size: 1.5em;
+  font-size: ems(18px, 14);
+  @include secondary-font-style("bold");
 
   a {
     text-decoration: none;
@@ -74,7 +75,7 @@
 
     span {
       color: $base-font-color;
-      font-family: $base-font-family;
+      @include secondary-font-style();
       font-size: 1rem;
       text-decoration: none;
       transition: color $base-duration $base-timing;

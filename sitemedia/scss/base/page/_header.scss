@@ -61,7 +61,7 @@
 }
 
 .page-header__heading {
-  font-size: ems(20px);
+  font-size: ems(20px, 14);
   margin-top: 1rem;
   color: $blue;
   @include secondary-font-style("bold");
