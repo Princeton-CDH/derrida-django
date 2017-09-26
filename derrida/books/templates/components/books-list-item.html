@@ -1,5 +1,5 @@
 {% load static %}
-<section class="collection__item book">
+<section class="collection__item book {% if shorten %}book--short{% endif %}">
   <figure class="item__image">
     {% with book.digital_edition|yesno:"a,span" as tag %}
     <{{tag}} class="img item__image__link"{% if tag == "a" %} href="{{ href }}"{% endif %}>

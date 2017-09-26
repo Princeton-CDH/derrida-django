@@ -25,7 +25,7 @@
     </header>
     {% for book in instance_list %}
       {% url 'books:detail' book.slug as instance_url %}
-      {% include 'components/books-list-item.html' with href=instance_url %}
+      {% include 'components/books-list-item.html' with href=instance_url shorten=True %}
       {% empty %}
       <section class="search__no-results">
         <p>No results were found. Try a different keyword.</p>
