@@ -1,5 +1,8 @@
-# Byte-compiled / optimized / DLL files
-__pycache__/
+# Compressor related static files
+static/
+CACHE/
+.sass-cache/
+
 *.py[cod]
 *$py.class
 
