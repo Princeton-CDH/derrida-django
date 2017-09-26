@@ -1,34 +1,35 @@
+{% load derrida_tags %}
 <div class="pagination">
     <span class="step-links">
         {% if page_obj.has_previous %}
-          <a class="pagination__nav-link" href="?page={{ page_obj.previous_page_number }}"><span class="arrow_icon">←</span></a>
+          <a class="pagination__nav-link" href="?{% querystring_replace page=page_obj.previous_page_number %}"><span class="arrow_icon">←</span></a>
         {% endif %}
 
         <nav class="pagination__page-links">
           {% for number in page_obj.paginator.page_range %}
             {# Make sure we get the first page #}
             {% if forloop.first and number != page_obj.number %}
-              <a class="pagination__page-link" href='?page={{ number }}'>{{ number }}</a>
+              <a class="pagination__page-link" href='?{% querystring_replace page=number %}'>{{ number }}</a>
               <span class="pagination__page-link-seperator">...</span>
             {% endif %}
             {% if number != 1 and number != page_obj.paginator.num_pages and number|add:"3" >= page_obj.number and number <= page_obj.number|add:"4" and number != page_obj.number  %}
-              <a class="pagination__page-link" href='?page={{ number }}'>{{ number }}</a>
+              <a class="pagination__page-link" href='?{% querystring_replace page=number %}'>{{ number }}</a>
             {% endif %}
 
             {% if number == page_obj.number %}
-              <a class="pagination__page-link pagination__page-link--current" href='?page={{ number}}'>{{ number }}</a>
+              <a class="pagination__page-link pagination__page-link--current" href='?{% querystring_replace page=number %}'>{{ number }}</a>
             {% endif %}
 
             {# Make sure we get the last page#}
             {% if forloop.last and number != page_obj.number %}
               <span class="pagination__page-link-seperator">...</span>
-              <a class="pagination__page-link" href='?page={{ number }}'>{{ number}}</a>
+              <a class="pagination__page-link" href='?{% querystring_replace page=number %}'>{{ number}}</a>
             {% endif%}
           {% endfor %}
         </nav>
 
         {% if page_obj.has_next %}
-          <a class="pagination__nav-link" href="?page={{ page_obj.next_page_number }}"><span class="arrow_icon">←</span></a>
+          <a class="pagination__nav-link" href="?{% querystring_replace page=page_obj.next_page_number %}"><span class="arrow_icon">←</span></a>
         {% endif %}
     </span>
 </div>
