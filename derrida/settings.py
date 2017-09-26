@@ -92,7 +92,7 @@ TEMPLATES = [
 
 # django-compressor settings
 COMPRESS_PRECOMPILERS = (
-    ('text/x-scss', 'sass --scss {infile} {outfile}'),
+    ('text/x-scss', 'sass --scss --quiet {infile} {outfile}'),
 )
 
 COMPRESS_CSS_FILTERS = (
