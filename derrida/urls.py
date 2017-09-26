@@ -6,7 +6,6 @@ from annotator_store import views as annotator_views
 from django.conf import settings
 from django.conf.urls import url, include
 from django.contrib import admin
-from django.shortcuts import render
 from django.views.generic import TemplateView
 from django.views.generic.base import RedirectView
 
@@ -14,12 +13,9 @@ from derrida.books.views import SearchView
 
 
 urlpatterns = [
-
-    url(r'robots\.txt$', lambda request:
-        render(request, 'robots.txt',
-               content_type='text/plain', context={'DEBUG': settings.DEBUG})),
+     url(r'^robots\.txt$', TemplateView.as_view(template_name='robots.txt',
+        content_type='text/plain')),
     url(r'^$', TemplateView.as_view(template_name='public/index.html'), name="home"),
-
     # placeholders for new design
     url(r'^citations/$', RedirectView.as_view(pattern_name='admin:index'), name='citations-list'),
 
