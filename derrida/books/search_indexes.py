@@ -11,14 +11,14 @@ from derrida.books.models import Instance, Reference
 
 class InstanceIndex(indexes.SearchIndex, indexes.Indexable):
     text = indexes.CharField(document=True, use_template=True, stored=False)
-    display_title = indexes.CharField(model_attr='display_title')
+    display_title = indexes.CharField(model_attr='display_title', faceted=True)
     item_type = indexes.CharField(model_attr='item_type', faceted=True)
     copy = indexes.CharField(model_attr='copy', null=True)
     #: author names in lastname, first for sort/facet
     author = indexes.MultiValueField(model_attr='work__authors__authorized_name',
         faceted=True)
-    #: first author to allow sorting by author
-    first_author = indexes.CharField(model_attr='work__authors__authorized_name',
+    #: non-multifield for first author to allow sorting by author
+    sort_author = indexes.CharField(model_attr='work__authors__authorized_name',
         faceted=True)
     author_letter = indexes.MultiValueField(faceted=True)
     #: author in firstname last for display

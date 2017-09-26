@@ -31,7 +31,7 @@ class FacetChoiceField(forms.MultipleChoiceField):
 
 class InstanceSearchForm(forms.Form):
     defaults = {
-        'order_by': 'first_author',
+        'order_by': 'sort_author',
         # TODO
         # 'cited_in': 'de la grammatologie'
     }
@@ -43,9 +43,9 @@ class InstanceSearchForm(forms.Form):
         required=False)
     #  FIXME: don't expose solr fields here
     order_by = forms.ChoiceField(choices=[
-            ('first_author', 'Author'),
+            ('sort_author', 'Author'),
             # TODO
-            # ('display_title', 'Title'),
+            ('display_title_exact', 'Title'),
             ('-work_year', 'Publication date: oldest to newest'),
             ('work_year', 'Publication date: newest to oldest'),
         ], required=False, initial=defaults['order_by'],
