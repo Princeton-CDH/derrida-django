@@ -74,7 +74,7 @@
       {% if form.query %}
       <div class="filter__selector">
         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-          <input class="mdl-textfield__input" type="text" name="query" id="id_query">
+          {% render_field form.query class="mdl-textfield__input" id="id_query" %}
           <label class="mdl-textfield__label" for="query">Text Search</label>
         </div>
       </div>
