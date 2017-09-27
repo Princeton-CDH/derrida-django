@@ -1,6 +1,7 @@
 from unittest.mock import Mock
 
 from django.contrib.auth import get_user_model
+from django.contrib.sites.models import Site
 from django.core.exceptions import ValidationError
 from django.http import QueryDict
 from django.test import TestCase
@@ -8,6 +9,7 @@ from django.urls import reverse
 import pytest
 
 from derrida.common.models import Named, Notable, DateRange
+from derrida.common.utils import absolutize_url
 from derrida.common.templatetags.derrida_tags import querystring_replace
 
 
@@ -95,7 +97,6 @@ class TestAdminSite(TestCase):
             msg_prefix='no link to digital editions if user has no perms')
 
 
-
 def test_querystring_replace():
     mockrequest = Mock()
     mockrequest.GET = QueryDict('query=saussure')
@@ -119,6 +120,32 @@ def test_querystring_replace():
     assert 'language=english' in args
     assert 'language=french' in args
     assert 'page=10' in args
+
+
+@pytest.mark.django_db
+def test_absolutize_url():
+    https_url = 'https://example.com/some/path/'
+    # https url is returned unchanged
+    assert absolutize_url(https_url) == https_url
+    # testing with default site domain
+    current_site = Site.objects.get_current()
+
+    # test site domain without https
+    current_site.domain = 'example.org'
+    current_site.save()
+    local_path = '/foo/bar/'
+    assert absolutize_url(local_path) == 'https://example.org/foo/bar/'
+    # trailing slash in domain doesn't result in double slash
+    current_site.domain = 'example.org/'
+    current_site.save()
+    assert absolutize_url(local_path) == 'https://example.org/foo/bar/'
+    # site at subdomain should work too
+    current_site.domain = 'example.org/sub/'
+    current_site.save()
+    assert absolutize_url(local_path) == 'https://example.org/sub/foo/bar/'
+    # site with https:// included
+    current_site.domain = 'https://example.org'
+    assert absolutize_url(local_path) == 'https://example.org/sub/foo/bar/'
 
 
 
