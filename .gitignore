@@ -1,5 +1,8 @@
-# Byte-compiled / optimized / DLL files
-__pycache__/
+# Compressor related static files
+static/
+CACHE/
+.sass-cache/
+
 *.py[cod]
 *$py.class
 
@@ -100,6 +103,4 @@ ENV/
 
 # MacOS hidden files
 .DS_Store
-sitemedia/scss/bourbon
-sitemedia/scss/neat
 sitemedia/scss/.sass-cache

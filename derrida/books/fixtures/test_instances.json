@@ -1,393 +1,195 @@
 [
 {
-    "model": "books.work",
-    "pk": 183,
+    "model": "djiffy.manifest",
+    "pk": 16,
     "fields": {
-        "notes": "Stub collection work \u0152uvres compl\u00e8tes created from book section for Cratyle",
-        "primary_title": "\u0152uvres compl\u00e8tes",
-        "short_title": "\u0152uvres compl\u00e8tes",
-        "year": 1950,
-        "uri": "",
-        "authors": [
-            78
-        ]
+        "label": "Studio - Wall 4 - Martin Heidegger. Unterwegs zur Sprache",
+        "short_id": "p7h14cz28m",
+        "uri": "https://plum.princeton.edu/concern/scanned_resources/p7h14cz28m/manifest",
+        "metadata": "{\"Creator\":[\"Derrida, Jacques\"],\"Published/Created\":[\"Derrida, Jacques\"],\"Container\":[\"Box B-000210, Folder 2\"],\"Extent\":[\"1 folder\"],\"Collection\":[\"The Library of Jacques Derrida, Studio Series\"]}",
+        "created": "2017-08-01",
+        "last_modified": "2017-08-01",
+        "extra_data": "{\"https://plum.princeton.edu/concern/scanned_resources/p7h14cz28m.jsonld\":{\"edm_rights\":{\"pref_label\":\"In Copyright\",\"@type\":\"dcterms:RightsStatement\",\"@id\":\"http://rightsstatements.org/vocab/InC/1.0/\"},\"@context\":\"https://bibdata.princeton.edu/context.json\",\"memberOf\":[{\"title\":\"The Library of Jacques Derrida, Studio Series\",\"@type\":\"pcdm:Collection\",\"@id\":\"https://plum.princeton.edu/collections/pb5646r538\"}],\"title\":\"Studio - Wall 4 - Martin Heidegger. Unterwegs zur Sprache\",\"@id\":\"https://plum.princeton.edu/concern/scanned_resources/p7h14cz28m\"},\"https://findingaids.princeton.edu/collections/RBD1/c13228.xml?scope=record\":{}}"
+    }
+},
+{
+    "model": "books.publisher",
+    "pk": 34,
+    "fields": {
+        "name": "Verlag G\u00fcnther Neske",
+        "notes": ""
     }
 },
 {
     "model": "books.work",
-    "pk": 173,
+    "pk": 136,
     "fields": {
-        "notes": "Stub collection work De quoi demain\u2026 created from book section for \u00c9loge de la psychanalyse",
-        "primary_title": "De quoi demain\u2026",
-        "short_title": "De quoi demain\u2026",
-        "year": 2001,
+        "notes": "",
+        "primary_title": "Unterwegs zur Sprache",
+        "short_title": "Unterwegs zur Sprache",
+        "year": 1959,
         "uri": "",
         "authors": [
-            1,
-            84
-        ]
-    }
-},
-{
-    "model": "books.work",
-    "pk": 217,
-    "fields": {
-        "notes": "Stub collection work The Philosophical Writings of Peirce created from book section for Principles of Phenomenology",
-        "primary_title": "The Philosophical Writings of Peirce",
-        "short_title": "The Philosophical Writings of Peirce",
-        "year": 1940,
-        "uri": "",
-        "authors": [
-            81
-        ]
-    }
-},
-{
-    "model": "books.work",
-    "pk": 213,
-    "fields": {
-        "notes": "Stub collection work Le Banquet / Ph\u00e8dre created from book section for Ph\u00e8dre",
-        "primary_title": "Le Banquet / Ph\u00e8dre",
-        "short_title": "Le Banquet / Ph\u00e8dre",
-        "year": 1964,
-        "uri": "",
-        "authors": [
-            78
-        ]
-    }
-},
-{
-    "model": "books.work",
-    "pk": 225,
-    "fields": {
-        "notes": "Stub collection work Sociologie et anthropologie created from book section for Introduction \u00e0 l'\u0153uvre de",
-        "primary_title": "Sociologie et anthropologie",
-        "short_title": "Sociologie et anthropologie",
-        "year": 1950,
-        "uri": "",
-        "authors": [
-            87,
-            141
+            14
         ]
     }
 },
 {
     "model": "djiffy.manifest",
-    "pk": 23,
+    "pk": 73,
     "fields": {
-        "label": "Studio - Wall 1 - Plato. Platon. Oeuvres Compl\u00e8tes : Tome IV-3e partie.\n                                Ph\u00e8dre",
-        "short_id": "pdv142233k",
-        "uri": "https://plum.princeton.edu/concern/scanned_resources/pdv142233k/manifest",
-        "metadata": "{\"Creator\":[\"Derrida, Jacques\"],\"Published/Created\":[\"Derrida, Jacques\"],\"Container\":[\"Box B-000226, Folder 11\"],\"Extent\":[\"1 folder\"],\"Collection\":[\"The Library of Jacques Derrida, Studio Series\"]}",
-        "created": "2017-07-27",
-        "last_modified": "2017-07-27",
-        "extra_data": "{\"https://plum.princeton.edu/concern/scanned_resources/pdv142233k.jsonld\":{\"title\":\"Studio - Wall 1 - Plato. Platon. Oeuvres Compl\\u00e8tes : Tome IV-3e partie.\\n                                Ph\\u00e8dre\",\"memberOf\":[{\"title\":\"The Library of Jacques Derrida, Studio Series\",\"@id\":\"https://plum.princeton.edu/collections/pb5646r538\",\"@type\":\"pcdm:Collection\"}],\"@context\":\"https://bibdata.princeton.edu/context.json\",\"@id\":\"https://plum.princeton.edu/concern/scanned_resources/pdv142233k\",\"edm_rights\":{\"pref_label\":\"In Copyright\",\"@type\":\"dcterms:RightsStatement\",\"@id\":\"http://rightsstatements.org/vocab/InC/1.0/\"}},\"https://findingaids.princeton.edu/collections/RBD1/c10091.xml?scope=record\":{}}"
-    }
-},
-{
-    "model": "books.publisher",
-    "pk": 28,
-    "fields": {
-        "name": "Les Belles Lettres",
-        "notes": ""
-    }
-},
-{
-    "model": "djiffy.manifest",
-    "pk": 38,
-    "fields": {
-        "label": "Studio - Wall 1 - Platon. Platon. Oeuvres Compl\u00e8tes : Tome troisi\u00e8me. Le\n                                Banquet / Ph\u00e9don / Ph\u00e8dre / Th\u00e9\u00e9t\u00e8te / Parm\u00e9nide",
-        "short_id": "p5138mn35m",
-        "uri": "https://plum.princeton.edu/concern/scanned_resources/p5138mn35m/manifest",
-        "metadata": "{\"Creator\":[\"Derrida, Jacques\"],\"Published/Created\":[\"Derrida, Jacques\"],\"Container\":[\"Box B-000229, Folder 7\"],\"Extent\":[\"1 folder\"],\"Collection\":[\"The Library of Jacques Derrida, Studio Series\"]}",
-        "created": "2017-07-27",
-        "last_modified": "2017-07-27",
-        "extra_data": "{\"https://plum.princeton.edu/concern/scanned_resources/p5138mn35m.jsonld\":{\"title\":\"Studio - Wall 1 - Platon. Platon. Oeuvres Compl\\u00e8tes : Tome troisi\\u00e8me. Le\\n                                Banquet / Ph\\u00e9don / Ph\\u00e8dre / Th\\u00e9\\u00e9t\\u00e8te / Parm\\u00e9nide\",\"memberOf\":[{\"title\":\"The Library of Jacques Derrida, Studio Series\",\"@id\":\"https://plum.princeton.edu/collections/pb5646r538\",\"@type\":\"pcdm:Collection\"}],\"@context\":\"https://bibdata.princeton.edu/context.json\",\"@id\":\"https://plum.princeton.edu/concern/scanned_resources/p5138mn35m\",\"edm_rights\":{\"pref_label\":\"In Copyright\",\"@type\":\"dcterms:RightsStatement\",\"@id\":\"http://rightsstatements.org/vocab/InC/1.0/\"}},\"https://findingaids.princeton.edu/collections/RBD1/c10099.xml?scope=record\":{}}"
-    }
-},
-{
-    "model": "books.instance",
-    "pk": 183,
-    "fields": {
-        "notes": "Stub collection instance \u0152uvres compl\u00e8tes created from book section for Cratyle",
-        "work": 183,
-        "alternate_title": "",
-        "publisher": null,
-        "slug": "oeuvres-completes-1950",
-        "zotero_id": "",
-        "is_extant": false,
-        "is_annotated": false,
-        "is_translation": false,
-        "dimensions": "",
-        "copyright_year": null,
-        "journal": null,
-        "print_date": null,
-        "print_date_day_known": false,
-        "print_date_month_known": false,
-        "print_date_year_known": true,
-        "uri": "",
-        "has_dedication": false,
-        "has_insertions": false,
-        "start_page": null,
-        "end_page": null,
-        "copy": "",
-        "collected_in": null,
-        "digital_edition": null,
-        "pub_place": [],
-        "cited_in": []
-    }
-},
-{
-    "model": "books.publisher",
-    "pk": 23,
-    "fields": {
-        "name": "Garnier",
-        "notes": ""
+        "label": "Studio - Wall 1 - Tristes tropiques",
+        "short_id": "p0v83b6766",
+        "uri": "https://plum.princeton.edu/concern/scanned_resources/p0v83b6766/manifest",
+        "metadata": "{\"Creator\":[\"Derrida, Jacques\"],\"Published/Created\":[\"Derrida, Jacques\"],\"Container\":[\"Box B-000150, Folder 9\"],\"Extent\":[\"1 folder\"],\"Collection\":[\"The Library of Jacques Derrida, Studio Series\"]}",
+        "created": "2017-08-01",
+        "last_modified": "2017-08-01",
+        "extra_data": "{\"https://plum.princeton.edu/concern/scanned_resources/p0v83b6766.jsonld\":{\"edm_rights\":{\"pref_label\":\"In Copyright\",\"@type\":\"dcterms:RightsStatement\",\"@id\":\"http://rightsstatements.org/vocab/InC/1.0/\"},\"@context\":\"https://bibdata.princeton.edu/context.json\",\"memberOf\":[{\"title\":\"The Library of Jacques Derrida, Studio Series\",\"@type\":\"pcdm:Collection\",\"@id\":\"https://plum.princeton.edu/collections/pb5646r538\"}],\"title\":\"Studio - Wall 1 - Tristes tropiques\",\"@id\":\"https://plum.princeton.edu/concern/scanned_resources/p0v83b6766\"},\"https://findingaids.princeton.edu/collections/RBD1/c9179.xml?scope=record\":{}}"
     }
 },
 {
     "model": "books.work",
-    "pk": 209,
-    "fields": {
-        "notes": "Stub collection work \u0152uvres compl\u00e8tes created from book section for Lettre \u00e0 Mersenne, 20",
-        "primary_title": "\u0152uvres compl\u00e8tes",
-        "short_title": "\u0152uvres compl\u00e8tes",
-        "year": 1963,
-        "uri": "",
-        "authors": [
-            97
-        ]
-    }
-},
-{
-    "model": "books.work",
-    "pk": 223,
-    "fields": {
-        "notes": "Stub collection work \u0152uvres choisies created from book section for Scienza Nuova (Science Nouvelle)",
-        "primary_title": "\u0152uvres choisies",
-        "short_title": "\u0152uvres choisies",
-        "year": 1946,
-        "uri": "",
-        "authors": [
-            105
-        ]
-    }
-},
-{
-    "model": "books.instance",
-    "pk": 173,
-    "fields": {
-        "notes": "Stub collection instance De quoi demain\u2026 created from book section for \u00c9loge de la psychanalyse",
-        "work": 173,
-        "alternate_title": "",
-        "publisher": null,
-        "slug": "de-quoi-demain-2001",
-        "zotero_id": "",
-        "is_extant": false,
-        "is_annotated": false,
-        "is_translation": false,
-        "dimensions": "",
-        "copyright_year": null,
-        "journal": null,
-        "print_date": null,
-        "print_date_day_known": false,
-        "print_date_month_known": false,
-        "print_date_year_known": true,
-        "uri": "",
-        "has_dedication": false,
-        "has_insertions": false,
-        "start_page": null,
-        "end_page": null,
-        "copy": "",
-        "collected_in": null,
-        "digital_edition": null,
-        "pub_place": [],
-        "cited_in": []
-    }
-},
-{
-    "model": "books.publisher",
-    "pk": 9,
-    "fields": {
-        "name": "Fayard - Galil\u00e9e",
-        "notes": ""
-    }
-},
-{
-    "model": "books.work",
-    "pk": 172,
+    "pk": 134,
     "fields": {
         "notes": "",
-        "primary_title": "\u00c9loge de la psychanalyse",
-        "short_title": "\u00c9loge de la psychanalyse",
-        "year": 2001,
+        "primary_title": "Tristes Tropiques",
+        "short_title": "Tristes Tropiques",
+        "year": 1955,
         "uri": "",
         "authors": [
-            1,
-            84
-        ]
-    }
-},
-{
-    "model": "books.work",
-    "pk": 222,
-    "fields": {
-        "notes": "",
-        "primary_title": "Scienza Nuova",
-        "short_title": "Scienza Nuova",
-        "year": 1946,
-        "uri": "",
-        "authors": [
-            105
-        ]
-    }
-},
-{
-    "model": "books.instance",
-    "pk": 217,
-    "fields": {
-        "notes": "Stub collection instance The Philosophical Writings of Peirce created from book section for Principles of Phenomenology",
-        "work": 217,
-        "alternate_title": "",
-        "publisher": null,
-        "slug": "the-philosophical-writings-of-peirce-1940",
-        "zotero_id": "",
-        "is_extant": false,
-        "is_annotated": false,
-        "is_translation": false,
-        "dimensions": "",
-        "copyright_year": null,
-        "journal": null,
-        "print_date": null,
-        "print_date_day_known": false,
-        "print_date_month_known": false,
-        "print_date_year_known": true,
-        "uri": "",
-        "has_dedication": false,
-        "has_insertions": false,
-        "start_page": null,
-        "end_page": null,
-        "copy": "",
-        "collected_in": null,
-        "digital_edition": null,
-        "pub_place": [],
-        "cited_in": []
-    }
-},
-{
-    "model": "books.publisher",
-    "pk": 30,
-    "fields": {
-        "name": "Dover",
-        "notes": ""
-    }
-},
-{
-    "model": "books.work",
-    "pk": 216,
-    "fields": {
-        "notes": "In \"Philosophical Writings of Peirce\"",
-        "primary_title": "Principles of Phenomenology",
-        "short_title": "Principles of Phenomenology",
-        "year": 1940,
-        "uri": "",
-        "authors": [
-            81
+            87
         ]
     }
 },
 {
     "model": "djiffy.manifest",
-    "pk": 44,
+    "pk": 12,
     "fields": {
-        "label": "Studio - Wall 1 - Platon. Le Banquet / Ph\u00e8dre",
-        "short_id": "pff367w51s",
-        "uri": "https://plum.princeton.edu/concern/scanned_resources/pff367w51s/manifest",
-        "metadata": "{\"Creator\":[\"Derrida, Jacques\"],\"Published/Created\":[\"Derrida, Jacques\"],\"Container\":[\"Box 360, Folder 16\"],\"Extent\":[\"1 folder\"],\"Collection\":[\"The Library of Jacques Derrida, Studio Series\"]}",
-        "created": "2017-07-27",
-        "last_modified": "2017-07-27",
-        "extra_data": "{\"https://plum.princeton.edu/concern/scanned_resources/pff367w51s.jsonld\":{\"@context\":\"https://bibdata.princeton.edu/context.json\",\"@id\":\"https://plum.princeton.edu/concern/scanned_resources/pff367w51s\",\"edm_rights\":{\"pref_label\":\"No Known Copyright\",\"@type\":\"dcterms:RightsStatement\",\"@id\":\"http://rightsstatements.org/vocab/NKC/1.0/\"},\"memberOf\":[{\"@type\":\"pcdm:Collection\",\"@id\":\"https://plum.princeton.edu/collections/pb5646r538\",\"title\":\"The Library of Jacques Derrida, Studio Series\"}],\"title\":\"Studio - Wall 1 - Platon. Le Banquet / Ph\\u00e8dre\"},\"https://findingaids.princeton.edu/collections/RBD1/c10116.xml?scope=record\":{}}"
-    }
-},
-{
-    "model": "books.instance",
-    "pk": 213,
-    "fields": {
-        "notes": "Stub collection instance Le Banquet / Ph\u00e8dre created from book section for Ph\u00e8dre",
-        "work": 213,
-        "alternate_title": "",
-        "publisher": null,
-        "zotero_id": "",
-        "slug": "le-banquet-phedre-1964",
-        "is_extant": false,
-        "is_annotated": false,
-        "is_translation": false,
-        "dimensions": "",
-        "copyright_year": 1964,
-        "journal": null,
-        "print_date": null,
-        "print_date_day_known": false,
-        "print_date_month_known": false,
-        "print_date_year_known": true,
-        "uri": "",
-        "has_dedication": false,
-        "has_insertions": false,
-        "start_page": null,
-        "end_page": null,
-        "copy": "",
-        "collected_in": null,
-        "digital_edition": null,
-        "pub_place": [],
-        "cited_in": []
+        "label": "Studio - Wall 4 - Martin Heidegger. Sein und Zeit",
+        "short_id": "pdz012x47s",
+        "uri": "https://plum.princeton.edu/concern/scanned_resources/pdz012x47s/manifest",
+        "metadata": "{\"Creator\":[\"Derrida, Jacques\"],\"Published/Created\":[\"Derrida, Jacques\"],\"Container\":[\"Box B-000208, Folder 2\"],\"Extent\":[\"1 folder\"],\"Collection\":[\"The Library of Jacques Derrida, Studio Series\"]}",
+        "created": "2017-08-01",
+        "last_modified": "2017-08-01",
+        "extra_data": "{\"https://plum.princeton.edu/concern/scanned_resources/pdz012x47s.jsonld\":{\"edm_rights\":{\"pref_label\":\"In Copyright\",\"@type\":\"dcterms:RightsStatement\",\"@id\":\"http://rightsstatements.org/vocab/InC/1.0/\"},\"@context\":\"https://bibdata.princeton.edu/context.json\",\"memberOf\":[{\"title\":\"The Library of Jacques Derrida, Studio Series\",\"@type\":\"pcdm:Collection\",\"@id\":\"https://plum.princeton.edu/collections/pb5646r538\"}],\"title\":\"Studio - Wall 4 - Martin Heidegger. Sein und Zeit\",\"@id\":\"https://plum.princeton.edu/concern/scanned_resources/pdz012x47s\"},\"https://findingaids.princeton.edu/collections/RBD1/c13201.xml?scope=record\":{}}"
     }
 },
 {
     "model": "books.publisher",
-    "pk": 15,
+    "pk": 36,
     "fields": {
-        "name": "Flammarion",
+        "name": "Max Niemeyer Verlag",
         "notes": ""
     }
 },
 {
     "model": "books.work",
-    "pk": 215,
+    "pk": 141,
     "fields": {
         "notes": "",
-        "primary_title": "Phaedrus",
-        "short_title": "Phaedrus",
-        "year": -370,
+        "primary_title": "Sein und Zeit",
+        "short_title": "Sein und Zeit",
+        "year": 1927,
         "uri": "",
         "authors": [
-            78
+            14
         ]
     }
 },
 {
-    "model": "books.work",
-    "pk": 123,
+    "model": "djiffy.manifest",
+    "pk": 49,
     "fields": {
-        "notes": "",
-        "primary_title": "Logique formelle et logique transcendentale",
-        "short_title": "Logique formelle et logique transcendentale",
-        "year": 1957,
-        "uri": "",
-        "authors": [
-            83
-        ]
+        "label": "Studio - Wall 4 - Ernst Cassirer. The Philosophy of Symbolic Forms. Volume One : Language",
+        "short_id": "p5138n4623",
+        "uri": "https://plum.princeton.edu/concern/scanned_resources/p5138n4623/manifest",
+        "metadata": "{\"Creator\":[\"Derrida, Jacques\"],\"Published/Created\":[\"Derrida, Jacques\"],\"Container\":[\"Box 324, Folder 11\"],\"Extent\":[\"1 folder\"],\"Collection\":[\"The Library of Jacques Derrida, Studio Series\"]}",
+        "created": "2017-08-01",
+        "last_modified": "2017-08-01",
+        "extra_data": "{\"https://plum.princeton.edu/concern/scanned_resources/p5138n4623.jsonld\":{\"edm_rights\":{\"pref_label\":\"No Known Copyright\",\"@type\":\"dcterms:RightsStatement\",\"@id\":\"http://rightsstatements.org/vocab/NKC/1.0/\"},\"@context\":\"https://bibdata.princeton.edu/context.json\",\"memberOf\":[{\"title\":\"The Library of Jacques Derrida, Studio Series\",\"@type\":\"pcdm:Collection\",\"@id\":\"https://plum.princeton.edu/collections/pb5646r538\"}],\"title\":\"Studio - Wall 4 - Ernst Cassirer. The Philosophy of Symbolic Forms. Volume One : Language\",\"@id\":\"https://plum.princeton.edu/concern/scanned_resources/p5138n4623\"},\"https://findingaids.princeton.edu/collections/RBD1/c12840.xml?scope=record\":{}}"
+    }
+},
+{
+    "model": "books.publisher",
+    "pk": 31,
+    "fields": {
+        "name": "Yale University Press",
+        "notes": ""
     }
 },
 {
     "model": "books.work",
-    "pk": 169,
+    "pk": 129,
     "fields": {
         "notes": "",
-        "primary_title": "Lettre \u00e0 Vernes",
-        "short_title": "Lettre \u00e0 Vernes",
-        "year": null,
+        "primary_title": "Philosophie der Symbolischen Formen",
+        "short_title": "Philosophie der Symbolischen Formen",
+        "year": 1923,
         "uri": "",
         "authors": [
-            8
+            130
+        ]
+    }
+},
+{
+    "model": "djiffy.manifest",
+    "pk": 52,
+    "fields": {
+        "label": "Studio - Wall 1 - Karl Abraham. Oeuvres compl\u00e8tes : Tome II (1913-1925). D\u00e9veloppement de la libido / Formation du caract\u00e8re / \u00c9tudes cliniques",
+        "short_id": "p5d86rp83x",
+        "uri": "https://plum.princeton.edu/concern/scanned_resources/p5d86rp83x/manifest",
+        "metadata": "{\"Creator\":[\"Derrida, Jacques\"],\"Published/Created\":[\"Derrida, Jacques\"],\"Container\":[\"Box B-000165, Folder 11\"],\"Extent\":[\"1 folder\"],\"Collection\":[\"The Library of Jacques Derrida, Studio Series\"]}",
+        "created": "2017-08-01",
+        "last_modified": "2017-08-01",
+        "extra_data": "{\"https://plum.princeton.edu/concern/scanned_resources/p5d86rp83x.jsonld\":{\"edm_rights\":{\"pref_label\":\"No Known Copyright\",\"@type\":\"dcterms:RightsStatement\",\"@id\":\"http://rightsstatements.org/vocab/NKC/1.0/\"},\"@context\":\"https://bibdata.princeton.edu/context.json\",\"memberOf\":[{\"title\":\"The Library of Jacques Derrida, Studio Series\",\"@type\":\"pcdm:Collection\",\"@id\":\"https://plum.princeton.edu/collections/pb5646r538\"}],\"title\":\"Studio - Wall 1 - Karl Abraham. Oeuvres compl\\u00e8tes : Tome II (1913-1925). D\\u00e9veloppement de la libido / Formation du caract\\u00e8re / \\u00c9tudes cliniques\",\"@id\":\"https://plum.princeton.edu/concern/scanned_resources/p5d86rp83x\"},\"https://findingaids.princeton.edu/collections/RBD1/c9354.xml?scope=record\":{}}"
+    }
+},
+{
+    "model": "books.work",
+    "pk": 124,
+    "fields": {
+        "notes": "",
+        "primary_title": "Oeuvres compl\u00e8tes",
+        "short_title": "Oeuvres compl\u00e8tes de Karl Abraham",
+        "year": 1966,
+        "uri": "",
+        "authors": [
+            124
+        ]
+    }
+},
+{
+    "model": "djiffy.manifest",
+    "pk": 14,
+    "fields": {
+        "label": "Studio - Wall 1 - Yvon Belaval. Leibniz critique de Descartes",
+        "short_id": "pf7625m877",
+        "uri": "https://plum.princeton.edu/concern/scanned_resources/pf7625m877/manifest",
+        "metadata": "{\"Creator\":[\"Derrida, Jacques\"],\"Published/Created\":[\"Derrida, Jacques\"],\"Container\":[\"Box B-000140, Folder 10\"],\"Extent\":[\"1 folder\"],\"Collection\":[\"The Library of Jacques Derrida, Studio Series\"]}",
+        "created": "2017-08-01",
+        "last_modified": "2017-08-01",
+        "extra_data": "{\"https://plum.princeton.edu/concern/scanned_resources/pf7625m877.jsonld\":{\"edm_rights\":{\"pref_label\":\"In Copyright\",\"@type\":\"dcterms:RightsStatement\",\"@id\":\"http://rightsstatements.org/vocab/InC/1.0/\"},\"@context\":\"https://bibdata.princeton.edu/context.json\",\"memberOf\":[{\"title\":\"The Library of Jacques Derrida, Studio Series\",\"@type\":\"pcdm:Collection\",\"@id\":\"https://plum.princeton.edu/collections/pb5646r538\"}],\"title\":\"Studio - Wall 1 - Yvon Belaval. Leibniz critique de Descartes\",\"@id\":\"https://plum.princeton.edu/concern/scanned_resources/pf7625m877\"},\"https://findingaids.princeton.edu/collections/RBD1/c9159.xml?scope=record\":{}}"
+    }
+},
+{
+    "model": "books.publisher",
+    "pk": 11,
+    "fields": {
+        "name": "Gallimard",
+        "notes": ""
+    }
+},
+{
+    "model": "books.work",
+    "pk": 118,
+    "fields": {
+        "notes": "",
+        "primary_title": "Leibniz critique de Descartes",
+        "short_title": "Leibniz critique de Descartes",
+        "year": 1960,
+        "uri": "",
+        "authors": [
+            115
         ]
     }
 },
@@ -406,105 +208,192 @@
     }
 },
 {
-    "model": "books.journal",
-    "pk": 7,
+    "model": "djiffy.manifest",
+    "pk": 71,
     "fields": {
-        "name": "Travaux du Cercle linguistique de Copenhague vol. V",
-        "notes": ""
+        "label": "Studio - Wall 1 - La Pens\u00e9e sauvage",
+        "short_id": "p9p292b05k",
+        "uri": "https://plum.princeton.edu/concern/scanned_resources/p9p292b05k/manifest",
+        "metadata": "{\"Creator\":[\"Derrida, Jacques\"],\"Published/Created\":[\"Derrida, Jacques\"],\"Container\":[\"Box B-000145, Folder 2\"],\"Extent\":[\"1 folder\"],\"Collection\":[\"The Library of Jacques Derrida, Studio Series\"]}",
+        "created": "2017-08-01",
+        "last_modified": "2017-08-01",
+        "extra_data": "{\"https://plum.princeton.edu/concern/scanned_resources/p9p292b05k.jsonld\":{\"edm_rights\":{\"pref_label\":\"In Copyright\",\"@type\":\"dcterms:RightsStatement\",\"@id\":\"http://rightsstatements.org/vocab/InC/1.0/\"},\"@context\":\"https://bibdata.princeton.edu/context.json\",\"memberOf\":[{\"title\":\"The Library of Jacques Derrida, Studio Series\",\"@type\":\"pcdm:Collection\",\"@id\":\"https://plum.princeton.edu/collections/pb5646r538\"}],\"title\":\"Studio - Wall 1 - La Pens\\u00e9e sauvage\",\"@id\":\"https://plum.princeton.edu/concern/scanned_resources/p9p292b05k\"},\"https://findingaids.princeton.edu/collections/RBD1/c9167.xml?scope=record\":{}}"
     }
 },
 {
     "model": "books.work",
-    "pk": 167,
+    "pk": 117,
     "fields": {
         "notes": "",
-        "primary_title": "La notion de signe dans la gloss\u00e9matique et dans l'esth\u00e9tique",
-        "short_title": "La notion de signe dans la gloss\u00e9matique et dans l'esth\u00e9tique",
-        "year": 1949,
+        "primary_title": "La pens\u00e9e sauvage",
+        "short_title": "La pens\u00e9e sauvage",
+        "year": 1962,
         "uri": "",
         "authors": [
-            74
+            87
         ]
     }
 },
 {
     "model": "djiffy.manifest",
-    "pk": 25,
+    "pk": 26,
     "fields": {
-        "label": "Studio - Wall 1 - Jean Starobinski. L'Oeil vivant",
-        "short_id": "p41689r884",
-        "uri": "https://plum.princeton.edu/concern/scanned_resources/p41689r884/manifest",
-        "metadata": "{\"Creator\":[\"Derrida, Jacques\"],\"Published/Created\":[\"Derrida, Jacques\"],\"Container\":[\"Box B-000228, Folder 1\"],\"Extent\":[\"1 folder\"],\"Collection\":[\"The Library of Jacques Derrida, Studio Series\"]}",
-        "created": "2017-07-27",
-        "last_modified": "2017-07-27",
-        "extra_data": "{\"https://plum.princeton.edu/concern/scanned_resources/p41689r884.jsonld\":{\"title\":\"Studio - Wall 1 - Jean Starobinski. L'Oeil vivant\",\"memberOf\":[{\"title\":\"The Library of Jacques Derrida, Studio Series\",\"@id\":\"https://plum.princeton.edu/collections/pb5646r538\",\"@type\":\"pcdm:Collection\"}],\"@context\":\"https://bibdata.princeton.edu/context.json\",\"@id\":\"https://plum.princeton.edu/concern/scanned_resources/p41689r884\",\"edm_rights\":{\"pref_label\":\"In Copyright\",\"@type\":\"dcterms:RightsStatement\",\"@id\":\"http://rightsstatements.org/vocab/InC/1.0/\"}},\"https://findingaids.princeton.edu/collections/RBD1/c10447.xml?scope=record\":{}}"
+        "label": "Studio - Wall 1 - Martinet, Andr\u00e9. La linguistique synchronique : \u00c9tudes et\n                                recherches",
+        "short_id": "pgb19hd498",
+        "uri": "https://plum.princeton.edu/concern/scanned_resources/pgb19hd498/manifest",
+        "metadata": "{\"Creator\":[\"Derrida, Jacques\"],\"Published/Created\":[\"Derrida, Jacques\"],\"Container\":[\"Box B-000157, Folder 12\"],\"Extent\":[\"1 folder\"],\"Collection\":[\"The Library of Jacques Derrida, Studio Series\"]}",
+        "created": "2017-08-01",
+        "last_modified": "2017-08-01",
+        "extra_data": "{\"https://plum.princeton.edu/concern/scanned_resources/pgb19hd498.jsonld\":{\"edm_rights\":{\"pref_label\":\"In Copyright\",\"@type\":\"dcterms:RightsStatement\",\"@id\":\"http://rightsstatements.org/vocab/InC/1.0/\"},\"@context\":\"https://bibdata.princeton.edu/context.json\",\"memberOf\":[{\"title\":\"The Library of Jacques Derrida, Studio Series\",\"@type\":\"pcdm:Collection\",\"@id\":\"https://plum.princeton.edu/collections/pb5646r538\"}],\"title\":\"Studio - Wall 1 - Martinet, Andr\\u00e9. La linguistique synchronique : \\u00c9tudes et\\n                                recherches\",\"@id\":\"https://plum.princeton.edu/concern/scanned_resources/pgb19hd498\"},\"https://findingaids.princeton.edu/collections/RBD1/c9661.xml?scope=record\":{}}"
+    }
+},
+{
+    "model": "books.work",
+    "pk": 23,
+    "fields": {
+        "notes": "",
+        "primary_title": "La linguistique synchronique: \u00c9tudes et Recherches",
+        "short_title": "La linguistique synchronique: \u00c9tudes et Recherches",
+        "year": 1965,
+        "uri": "",
+        "authors": [
+            23
+        ]
+    }
+},
+{
+    "model": "books.work",
+    "pk": 92,
+    "fields": {
+        "notes": "",
+        "primary_title": "La grande invention de l'\u00e9criture",
+        "short_title": "La grande invention de l'\u00e9criture",
+        "year": 1958,
+        "uri": "",
+        "authors": [
+            80
+        ]
     }
 },
 {
     "model": "books.publisher",
-    "pk": 11,
+    "pk": 6,
     "fields": {
-        "name": "Gallimard",
+        "name": "Armand Colin",
         "notes": ""
     }
 },
 {
     "model": "books.work",
-    "pk": 122,
+    "pk": 2,
     "fields": {
         "notes": "",
-        "primary_title": "L'\u0152il vivant",
-        "short_title": "L'\u0152il vivant",
-        "year": 1961,
+        "primary_title": "L'Ecriture et la psychologie des peuples: actes de colloque",
+        "short_title": "L'Ecriture et la psychologie des peuples: actes de colloque",
+        "year": 1963,
         "uri": "",
         "authors": [
-            123
+            152,
+            157,
+            151,
+            150,
+            148,
+            143,
+            145,
+            147,
+            158,
+            153,
+            155,
+            146,
+            142,
+            149,
+            144,
+            154,
+            156
         ]
     }
 },
 {
     "model": "djiffy.manifest",
-    "pk": 30,
+    "pk": 33,
     "fields": {
-        "label": "Studio - Wall 1 - Marcel Mauss. Sociologie et anthropologie, pr\u00e9c\u00e9d\u00e9 d'une\n                                Introduction \u00e0 l'oeuvre de Marcel Mauss par Claude\n                                L\u00e9vi-Strauss",
-        "short_id": "pb8517x924",
-        "uri": "https://plum.princeton.edu/concern/scanned_resources/pb8517x924/manifest",
-        "metadata": "{\"Creator\":[\"Derrida, Jacques\"],\"Published/Created\":[\"Derrida, Jacques\"],\"Container\":[\"Box B-000162, Folder 10\"],\"Extent\":[\"1 folder\"],\"Collection\":[\"The Library of Jacques Derrida, Studio Series\"]}",
-        "created": "2017-07-27",
-        "last_modified": "2017-07-27",
-        "extra_data": "{\"https://plum.princeton.edu/concern/scanned_resources/pb8517x924.jsonld\":{\"title\":\"Studio - Wall 1 - Marcel Mauss. Sociologie et anthropologie, pr\\u00e9c\\u00e9d\\u00e9 d'une\\n                                Introduction \\u00e0 l'oeuvre de Marcel Mauss par Claude\\n                                L\\u00e9vi-Strauss\",\"memberOf\":[{\"title\":\"The Library of Jacques Derrida, Studio Series\",\"@id\":\"https://plum.princeton.edu/collections/pb5646r538\",\"@type\":\"pcdm:Collection\"}],\"@context\":\"https://bibdata.princeton.edu/context.json\",\"@id\":\"https://plum.princeton.edu/concern/scanned_resources/pb8517x924\",\"edm_rights\":{\"pref_label\":\"In Copyright\",\"@type\":\"dcterms:RightsStatement\",\"@id\":\"http://rightsstatements.org/vocab/InC/1.0/\"}},\"https://findingaids.princeton.edu/collections/RBD1/c8933.xml?scope=record\":{}}"
+        "label": "Studio - Wall 1 - Essais de linguistique g\u00e9n\u00e9rale",
+        "short_id": "p0p098h28m",
+        "uri": "https://plum.princeton.edu/concern/scanned_resources/p0p098h28m/manifest",
+        "metadata": "{\"Creator\":[\"Derrida, Jacques\"],\"Published/Created\":[\"Derrida, Jacques\"],\"Container\":[\"Box B-000159, Folder 4\"],\"Extent\":[\"1 folder\"],\"Collection\":[\"The Library of Jacques Derrida, Studio Series\"]}",
+        "created": "2017-08-01",
+        "last_modified": "2017-08-01",
+        "extra_data": "{\"https://plum.princeton.edu/concern/scanned_resources/p0p098h28m.jsonld\":{\"edm_rights\":{\"pref_label\":\"In Copyright\",\"@type\":\"dcterms:RightsStatement\",\"@id\":\"http://rightsstatements.org/vocab/InC/1.0/\"},\"@context\":\"https://bibdata.princeton.edu/context.json\",\"memberOf\":[{\"title\":\"The Library of Jacques Derrida, Studio Series\",\"@type\":\"pcdm:Collection\",\"@id\":\"https://plum.princeton.edu/collections/pb5646r538\"}],\"title\":\"Studio - Wall 1 - Essais de linguistique g\\u00e9n\\u00e9rale\",\"@id\":\"https://plum.princeton.edu/concern/scanned_resources/p0p098h28m\"},\"https://findingaids.princeton.edu/collections/RBD1/c9654.xml?scope=record\":{}}"
     }
 },
 {
-    "model": "books.instance",
-    "pk": 225,
+    "model": "books.publisher",
+    "pk": 22,
     "fields": {
-        "notes": "Stub collection instance Sociologie et anthropologie created from book section for Introduction \u00e0 l'\u0153uvre de",
-        "work": 225,
-        "alternate_title": "",
-        "publisher": null,
-        "slug": "sociologie-et-anthropologie-1950",
-        "zotero_id": "",
-        "is_extant": false,
-        "is_annotated": false,
-        "is_translation": false,
-        "dimensions": "",
-        "copyright_year": null,
-        "journal": null,
-        "print_date": null,
-        "print_date_day_known": false,
-        "print_date_month_known": false,
-        "print_date_year_known": true,
+        "name": "Les Editions de Minuit",
+        "notes": ""
+    }
+},
+{
+    "model": "books.work",
+    "pk": 107,
+    "fields": {
+        "notes": "",
+        "primary_title": "Fundamentals of Language",
+        "short_title": "Fundamentals of Language",
+        "year": 1956,
         "uri": "",
-        "has_dedication": false,
-        "has_insertions": false,
-        "start_page": null,
-        "end_page": null,
-        "copy": "",
-        "collected_in": null,
-        "digital_edition": null,
-        "pub_place": [],
-        "cited_in": []
+        "authors": [
+            13
+        ]
+    }
+},
+{
+    "model": "djiffy.manifest",
+    "pk": 35,
+    "fields": {
+        "label": "Studio - Wall 1 - Entretiens avec Claude L\u00e9vi-Strauss",
+        "short_id": "pfj238895n",
+        "uri": "https://plum.princeton.edu/concern/scanned_resources/pfj238895n/manifest",
+        "metadata": "{\"Creator\":[\"Derrida, Jacques\"],\"Published/Created\":[\"Derrida, Jacques\"],\"Container\":[\"Box B-000145, Folder 7\"],\"Extent\":[\"1 folder\"],\"Collection\":[\"The Library of Jacques Derrida, Studio Series\"]}",
+        "created": "2017-08-01",
+        "last_modified": "2017-08-01",
+        "extra_data": "{\"https://plum.princeton.edu/concern/scanned_resources/pfj238895n.jsonld\":{\"edm_rights\":{\"pref_label\":\"In Copyright\",\"@type\":\"dcterms:RightsStatement\",\"@id\":\"http://rightsstatements.org/vocab/InC/1.0/\"},\"@context\":\"https://bibdata.princeton.edu/context.json\",\"memberOf\":[{\"title\":\"The Library of Jacques Derrida, Studio Series\",\"@type\":\"pcdm:Collection\",\"@id\":\"https://plum.princeton.edu/collections/pb5646r538\"}],\"title\":\"Studio - Wall 1 - Entretiens avec Claude L\\u00e9vi-Strauss\",\"@id\":\"https://plum.princeton.edu/concern/scanned_resources/pfj238895n\"},\"https://findingaids.princeton.edu/collections/RBD1/c9168.xml?scope=record\":{}}"
+    }
+},
+{
+    "model": "books.publisher",
+    "pk": 21,
+    "fields": {
+        "name": "Plon / Julliard",
+        "notes": ""
+    }
+},
+{
+    "model": "books.work",
+    "pk": 106,
+    "fields": {
+        "notes": "",
+        "primary_title": "Entretiens avec Claude L\u00e9vi-Strauss",
+        "short_title": "Entretiens avec Claude L\u00e9vi-Strauss",
+        "year": 1961,
+        "uri": "",
+        "authors": [
+            98
+        ]
+    }
+},
+{
+    "model": "djiffy.manifest",
+    "pk": 34,
+    "fields": {
+        "label": "Studio - Wall 4 - Introduction \u00e0 la m\u00e9taphysique,",
+        "short_id": "p4q77j0547",
+        "uri": "https://plum.princeton.edu/concern/scanned_resources/p4q77j0547/manifest",
+        "metadata": "{\"Creator\":[\"Derrida, Jacques\"],\"Published/Created\":[\"Derrida, Jacques\"],\"Container\":[\"Box B-000201, Folder 13\"],\"Extent\":[\"1 folder\"],\"Collection\":[\"The Library of Jacques Derrida, Studio Series\"]}",
+        "created": "2017-08-01",
+        "last_modified": "2017-08-01",
+        "extra_data": "{\"https://plum.princeton.edu/concern/scanned_resources/p4q77j0547.jsonld\":{\"edm_rights\":{\"pref_label\":\"In Copyright\",\"@type\":\"dcterms:RightsStatement\",\"@id\":\"http://rightsstatements.org/vocab/InC/1.0/\"},\"@context\":\"https://bibdata.princeton.edu/context.json\",\"memberOf\":[{\"title\":\"The Library of Jacques Derrida, Studio Series\",\"@type\":\"pcdm:Collection\",\"@id\":\"https://plum.princeton.edu/collections/pb5646r538\"}],\"title\":\"Studio - Wall 4 - Introduction \\u00e0 la m\\u00e9taphysique,\",\"@id\":\"https://plum.princeton.edu/concern/scanned_resources/p4q77j0547\"},\"https://findingaids.princeton.edu/collections/RBD1/c13182.xml?scope=record\":{}}"
     }
 },
 {
@@ -517,16 +406,37 @@
 },
 {
     "model": "books.work",
-    "pk": 224,
+    "pk": 115,
     "fields": {
         "notes": "",
-        "primary_title": "Introduction \u00e0 l'\u0153uvre de Marcel Mauss",
-        "short_title": "Introduction \u00e0 l'\u0153uvre de Marcel Mauss",
-        "year": 1950,
+        "primary_title": "Einf\u00fchrung in die Metaphysic",
+        "short_title": "Einf\u00fchrung in die Metaphysic",
+        "year": 1953,
         "uri": "",
         "authors": [
-            87
+            14
         ]
+    }
+},
+{
+    "model": "djiffy.manifest",
+    "pk": 39,
+    "fields": {
+        "label": "Studio - Wall 4 - Descartes. Discours de la m\u00e9thode",
+        "short_id": "pdn4008594",
+        "uri": "https://plum.princeton.edu/concern/scanned_resources/pdn4008594/manifest",
+        "metadata": "{\"Creator\":[\"Derrida, Jacques\"],\"Published/Created\":[\"Derrida, Jacques\"],\"Container\":[\"Box B-000198, Folder 12\"],\"Extent\":[\"1 folder\"],\"Collection\":[\"The Library of Jacques Derrida, Studio Series\"]}",
+        "created": "2017-08-01",
+        "last_modified": "2017-08-01",
+        "extra_data": "{\"https://plum.princeton.edu/concern/scanned_resources/pdn4008594.jsonld\":{\"edm_rights\":{\"pref_label\":\"In Copyright\",\"@type\":\"dcterms:RightsStatement\",\"@id\":\"http://rightsstatements.org/vocab/InC/1.0/\"},\"@context\":\"https://bibdata.princeton.edu/context.json\",\"memberOf\":[{\"title\":\"The Library of Jacques Derrida, Studio Series\",\"@type\":\"pcdm:Collection\",\"@id\":\"https://plum.princeton.edu/collections/pb5646r538\"}],\"title\":\"Studio - Wall 4 - Descartes. Discours de la m\\u00e9thode\",\"@id\":\"https://plum.princeton.edu/concern/scanned_resources/pdn4008594\"},\"https://findingaids.princeton.edu/collections/RBD1/c12860.xml?scope=record\":{}}"
+    }
+},
+{
+    "model": "books.publisher",
+    "pk": 20,
+    "fields": {
+        "name": "Vrin",
+        "notes": ""
     }
 },
 {
@@ -552,36 +462,148 @@
     }
 },
 {
-    "model": "books.work",
-    "pk": 93,
+    "model": "djiffy.manifest",
+    "pk": 51,
     "fields": {
-        "notes": "",
-        "primary_title": "Collected Papers of Charles Sanders Peirce, Vol. 2",
-        "short_title": "Elements of Logic",
-        "year": 1932,
-        "uri": "",
-        "authors": [
-            81
-        ]
+        "label": "Studio - Wall 1 - Emmanuel Levinas. Difficile libert\u00e9 : essais sur le juda\u00efsme",
+        "short_id": "pnk325542g",
+        "uri": "https://plum.princeton.edu/concern/scanned_resources/pnk325542g/manifest",
+        "metadata": "{\"Creator\":[\"Derrida, Jacques\"],\"Published/Created\":[\"Derrida, Jacques\"],\"Container\":[\"Box B-000150, Folder 11\"],\"Extent\":[\"1 folder\"],\"Collection\":[\"The Library of Jacques Derrida, Studio Series\"]}",
+        "created": "2017-08-01",
+        "last_modified": "2017-08-01",
+        "extra_data": "{\"https://plum.princeton.edu/concern/scanned_resources/pnk325542g.jsonld\":{\"edm_rights\":{\"pref_label\":\"No Known Copyright\",\"@type\":\"dcterms:RightsStatement\",\"@id\":\"http://rightsstatements.org/vocab/NKC/1.0/\"},\"@context\":\"https://bibdata.princeton.edu/context.json\",\"memberOf\":[{\"title\":\"The Library of Jacques Derrida, Studio Series\",\"@type\":\"pcdm:Collection\",\"@id\":\"https://plum.princeton.edu/collections/pb5646r538\"}],\"title\":\"Studio - Wall 1 - Emmanuel Levinas. Difficile libert\\u00e9 : essais sur le juda\\u00efsme\",\"@id\":\"https://plum.princeton.edu/concern/scanned_resources/pnk325542g\"},\"https://findingaids.princeton.edu/collections/RBD1/c9412.xml?scope=record\":{}}"
+    }
+},
+{
+    "model": "books.publisher",
+    "pk": 18,
+    "fields": {
+        "name": "Albin Michel",
+        "notes": ""
     }
 },
 {
     "model": "books.work",
-    "pk": 144,
+    "pk": 102,
     "fields": {
         "notes": "",
-        "primary_title": "A la recherche de l'essence du langage",
-        "short_title": "A la recherche de l'essence du langage",
-        "year": null,
+        "primary_title": "Difficile libert\u00e9: essais sur le juda\u00efsme",
+        "short_title": "Difficile libert\u00e9",
+        "year": 1963,
         "uri": "",
         "authors": [
-            13
+            96
         ]
     }
 },
 {
     "model": "djiffy.manifest",
-    "pk": 75,
+    "pk": 63,
+    "fields": {
+        "label": "Studio - Wall 4 - David Hume. Dialogues sur la religion naturelle",
+        "short_id": "p9880zf928",
+        "uri": "https://plum.princeton.edu/concern/scanned_resources/p9880zf928/manifest",
+        "metadata": "{\"Creator\":[\"Derrida, Jacques\"],\"Published/Created\":[\"Derrida, Jacques\"],\"Container\":[\"Box B-000211, Folder 5\"],\"Extent\":[\"1 folder\"],\"Collection\":[\"The Library of Jacques Derrida, Studio Series\"]}",
+        "created": "2017-08-01",
+        "last_modified": "2017-08-01",
+        "extra_data": "{\"https://plum.princeton.edu/concern/scanned_resources/p9880zf928.jsonld\":{\"edm_rights\":{\"pref_label\":\"No Known Copyright\",\"@type\":\"dcterms:RightsStatement\",\"@id\":\"http://rightsstatements.org/vocab/NKC/1.0/\"},\"@context\":\"https://bibdata.princeton.edu/context.json\",\"memberOf\":[{\"title\":\"The Library of Jacques Derrida, Studio Series\",\"@type\":\"pcdm:Collection\",\"@id\":\"https://plum.princeton.edu/collections/pb5646r538\"}],\"title\":\"Studio - Wall 4 - David Hume. Dialogues sur la religion naturelle\",\"@id\":\"https://plum.princeton.edu/concern/scanned_resources/p9880zf928\"},\"https://findingaids.princeton.edu/collections/RBD1/c13389.xml?scope=record\":{}}"
+    }
+},
+{
+    "model": "books.publisher",
+    "pk": 16,
+    "fields": {
+        "name": "Pauvert",
+        "notes": ""
+    }
+},
+{
+    "model": "books.work",
+    "pk": 101,
+    "fields": {
+        "notes": "",
+        "primary_title": "Dialogues Concerning Natural Religion",
+        "short_title": "Dialogues Concerning Natural Religion",
+        "year": 1779,
+        "uri": "",
+        "authors": [
+            93
+        ]
+    }
+},
+{
+    "model": "djiffy.manifest",
+    "pk": 21,
+    "fields": {
+        "label": "Studio - Wall 1 - Ferdinand De Saussure. Cours de linguistique\n                                g\u00e9n\u00e9rale",
+        "short_id": "pwp98bk19d",
+        "uri": "https://plum.princeton.edu/concern/scanned_resources/pwp98bk19d/manifest",
+        "metadata": "{\"Creator\":[\"Derrida, Jacques\"],\"Published/Created\":[\"Derrida, Jacques\"],\"Container\":[\"Box B-000159, Folder 8\"],\"Extent\":[\"1 folder\"],\"Collection\":[\"The Library of Jacques Derrida, Studio Series\"]}",
+        "created": "2017-08-01",
+        "last_modified": "2017-09-24",
+        "extra_data": "{\"https://plum.princeton.edu/concern/scanned_resources/pwp98bk19d.jsonld\":{\"memberOf\":[{\"title\":\"The Library of Jacques Derrida, Studio Series\",\"@type\":\"pcdm:Collection\",\"@id\":\"https://plum.princeton.edu/collections/pb5646r538\"}],\"title\":\"Studio - Wall 1 - Ferdinand De Saussure. Cours de linguistique\\n                                g\\u00e9n\\u00e9rale\",\"edm_rights\":{\"pref_label\":\"In Copyright\",\"@type\":\"dcterms:RightsStatement\",\"@id\":\"http://rightsstatements.org/vocab/InC/1.0/\"},\"@context\":\"https://bibdata.princeton.edu/context.json\",\"@id\":\"https://plum.princeton.edu/concern/scanned_resources/pwp98bk19d\"},\"https://findingaids.princeton.edu/collections/RBD1/c9626.xml?scope=record\":{},\"logo\":\"https://plum.princeton.edu/assets/pul_logo_icon-7b5f9384dfa5ca04f4851c6ee9e44e2d6953e55f893472a3e205e1591d3b2ca6.png\",\"license\":\"http://rightsstatements.org/vocab/InC/1.0/\"}"
+    }
+},
+{
+    "model": "books.publisher",
+    "pk": 14,
+    "fields": {
+        "name": "Payot",
+        "notes": ""
+    }
+},
+{
+    "model": "books.work",
+    "pk": 100,
+    "fields": {
+        "notes": "",
+        "primary_title": "Cours de linguistique g\u00e9n\u00e9rale",
+        "short_title": "Cours de linguistique g\u00e9n\u00e9rale",
+        "year": 1916,
+        "uri": "",
+        "authors": [
+            9
+        ]
+    }
+},
+{
+    "model": "djiffy.manifest",
+    "pk": 20,
+    "fields": {
+        "label": "Studio - Wall 1 - Anthropologie structurale",
+        "short_id": "pz029rb96r",
+        "uri": "https://plum.princeton.edu/concern/scanned_resources/pz029rb96r/manifest",
+        "metadata": "{\"Creator\":[\"Derrida, Jacques\"],\"Published/Created\":[\"Derrida, Jacques\"],\"Container\":[\"Box B-000150, Folder 10\"],\"Extent\":[\"1 folder\"],\"Collection\":[\"The Library of Jacques Derrida, Studio Series\"]}",
+        "created": "2017-08-01",
+        "last_modified": "2017-08-01",
+        "extra_data": "{\"https://plum.princeton.edu/concern/scanned_resources/pz029rb96r.jsonld\":{\"edm_rights\":{\"pref_label\":\"In Copyright\",\"@type\":\"dcterms:RightsStatement\",\"@id\":\"http://rightsstatements.org/vocab/InC/1.0/\"},\"@context\":\"https://bibdata.princeton.edu/context.json\",\"memberOf\":[{\"title\":\"The Library of Jacques Derrida, Studio Series\",\"@type\":\"pcdm:Collection\",\"@id\":\"https://plum.princeton.edu/collections/pb5646r538\"}],\"title\":\"Studio - Wall 1 - Anthropologie structurale\",\"@id\":\"https://plum.princeton.edu/concern/scanned_resources/pz029rb96r\"},\"https://findingaids.princeton.edu/collections/RBD1/c9166.xml?scope=record\":{}}"
+    }
+},
+{
+    "model": "books.publisher",
+    "pk": 10,
+    "fields": {
+        "name": "Plon",
+        "notes": ""
+    }
+},
+{
+    "model": "books.work",
+    "pk": 97,
+    "fields": {
+        "notes": "",
+        "primary_title": "Anthropologie structurale",
+        "short_title": "Anthropologie structurale",
+        "year": 1958,
+        "uri": "",
+        "authors": [
+            87
+        ]
+    }
+},
+{
+    "model": "djiffy.manifest",
+    "pk": 72,
     "fields": {
         "label": "Studio - Wall 1 - A Study of Writing : A Discussion of the general principles governing the use and evolution of writing",
         "short_id": "prj432v451",
@@ -589,7 +611,7 @@
         "metadata": "{\"Creator\":[\"Derrida, Jacques\"],\"Published/Created\":[\"Derrida, Jacques\"],\"Container\":[\"Box B-000157, Folder 5\"],\"Extent\":[\"1 folder\"],\"Collection\":[\"The Library of Jacques Derrida, Studio Series\"]}",
         "created": "2017-08-01",
         "last_modified": "2017-08-01",
-        "extra_data": "{\"https://plum.princeton.edu/concern/scanned_resources/prj432v451.jsonld\":{\"@context\":\"https://bibdata.princeton.edu/context.json\",\"@id\":\"https://plum.princeton.edu/concern/scanned_resources/prj432v451\",\"edm_rights\":{\"@id\":\"http://rightsstatements.org/vocab/NKC/1.0/\",\"pref_label\":\"No Known Copyright\",\"@type\":\"dcterms:RightsStatement\"},\"title\":\"Studio - Wall 1 - A Study of Writing : A Discussion of the general principles governing the use and evolution of writing\",\"memberOf\":[{\"@id\":\"https://plum.princeton.edu/collections/pb5646r538\",\"title\":\"The Library of Jacques Derrida, Studio Series\",\"@type\":\"pcdm:Collection\"}]},\"https://findingaids.princeton.edu/collections/RBD1/c9643.xml?scope=record\":{}}"
+        "extra_data": "{\"https://plum.princeton.edu/concern/scanned_resources/prj432v451.jsonld\":{\"edm_rights\":{\"pref_label\":\"No Known Copyright\",\"@type\":\"dcterms:RightsStatement\",\"@id\":\"http://rightsstatements.org/vocab/NKC/1.0/\"},\"@context\":\"https://bibdata.princeton.edu/context.json\",\"memberOf\":[{\"title\":\"The Library of Jacques Derrida, Studio Series\",\"@type\":\"pcdm:Collection\",\"@id\":\"https://plum.princeton.edu/collections/pb5646r538\"}],\"title\":\"Studio - Wall 1 - A Study of Writing : A Discussion of the general principles governing the use and evolution of writing\",\"@id\":\"https://plum.princeton.edu/concern/scanned_resources/prj432v451\"},\"https://findingaids.princeton.edu/collections/RBD1/c9643.xml?scope=record\":{}}"
     }
 },
 {
@@ -616,214 +638,48 @@
 },
 {
     "model": "books.instance",
-    "pk": 215,
-    "fields": {
-        "notes": "three candidates: http://findingaids.princeton.edu/collections/RBD1?v1=Ph\u00e8dre&f1=kw&b1=AND&v2=&f2=kw&b2=AND&v3=&f3=kw&year=before&ed=&ld=&rpp=10&start=0",
-        "work": 215,
-        "alternate_title": "Ph\u00e8dre",
-        "publisher": 28,
-        "slug": "phaedrus-1961",
-        "zotero_id": "",
-        "is_extant": true,
-        "is_annotated": true,
-        "is_translation": false,
-        "dimensions": "",
-        "copyright_year": 1961,
-        "journal": null,
-        "print_date": null,
-        "print_date_day_known": true,
-        "print_date_month_known": true,
-        "print_date_year_known": true,
-        "uri": "http://findingaids.princeton.edu/collections/RBD1/c10091",
-        "has_dedication": false,
-        "has_insertions": false,
-        "start_page": null,
-        "end_page": null,
-        "copy": "",
-        "collected_in": 183,
-        "digital_edition": 23,
-        "pub_place": [
-            3
-        ],
-        "cited_in": []
-    }
-},
-{
-    "model": "books.instance",
-    "pk": 214,
+    "pk": 136,
     "fields": {
         "notes": "",
-        "work": 215,
-        "alternate_title": "Ph\u00e8dre",
-        "publisher": 23,
-        "slug": "phaedrus-1938",
+        "work": 136,
+        "alternate_title": "",
+        "publisher": 34,
         "zotero_id": "",
+        "slug": "heidegger-unterwegs-zur-sprache-1959",
         "is_extant": true,
         "is_annotated": true,
         "is_translation": false,
         "dimensions": "",
-        "copyright_year": 1938,
+        "copyright_year": 1959,
         "journal": null,
         "print_date": null,
         "print_date_day_known": true,
         "print_date_month_known": true,
         "print_date_year_known": true,
-        "uri": "http://findingaids.princeton.edu/collections/RBD1/c10099",
-        "has_dedication": false,
-        "has_insertions": false,
-        "start_page": null,
-        "end_page": null,
-        "copy": "",
-        "collected_in": 183,
-        "digital_edition": 38,
-        "pub_place": [
-            3
-        ],
-        "cited_in": []
-    }
-},
-{
-    "model": "books.instance",
-    "pk": 209,
-    "fields": {
-        "notes": "Stub collection instance \u0152uvres compl\u00e8tes created from book section for Lettre \u00e0 Mersenne, 20",
-        "work": 209,
-        "alternate_title": "",
-        "publisher": null,
-        "slug": "oeuvres-completes-1963",
-        "zotero_id": "",
-        "is_extant": false,
-        "is_annotated": false,
-        "is_translation": false,
-        "dimensions": "",
-        "copyright_year": null,
-        "journal": null,
-        "print_date": null,
-        "print_date_day_known": false,
-        "print_date_month_known": false,
-        "print_date_year_known": true,
-        "uri": "",
+        "uri": "http://findingaids.princeton.edu/collections/RBD1/c13228",
         "has_dedication": false,
         "has_insertions": false,
         "start_page": null,
         "end_page": null,
         "copy": "",
         "collected_in": null,
-        "digital_edition": null,
-        "pub_place": [],
-        "cited_in": []
-    }
-},
-{
-    "model": "books.instance",
-    "pk": 223,
-    "fields": {
-        "notes": "Stub collection instance \u0152uvres choisies created from book section for Scienza Nuova (Science Nouvelle)",
-        "work": 223,
-        "alternate_title": "",
-        "publisher": null,
-        "slug": "oeuvres-choisies-1946",
-        "zotero_id": "",
-        "is_extant": false,
-        "is_annotated": false,
-        "is_translation": false,
-        "dimensions": "",
-        "copyright_year": null,
-        "journal": null,
-        "print_date": null,
-        "print_date_day_known": false,
-        "print_date_month_known": false,
-        "print_date_year_known": true,
-        "uri": "",
-        "has_dedication": false,
-        "has_insertions": false,
-        "start_page": null,
-        "end_page": null,
-        "copy": "",
-        "collected_in": null,
-        "digital_edition": null,
-        "pub_place": [],
-        "cited_in": []
-    }
-},
-{
-    "model": "books.instance",
-    "pk": 172,
-    "fields": {
-        "notes": "",
-        "work": 172,
-        "alternate_title": "",
-        "publisher": 9,
-        "slug": "eloge-de-la-psychanalyse-2001",
-        "zotero_id": "",
-        "is_extant": false,
-        "is_annotated": false,
-        "is_translation": false,
-        "dimensions": "",
-        "copyright_year": 2001,
-        "journal": null,
-        "print_date": null,
-        "print_date_day_known": true,
-        "print_date_month_known": true,
-        "print_date_year_known": true,
-        "uri": "",
-        "has_dedication": false,
-        "has_insertions": false,
-        "start_page": "269",
-        "end_page": "316",
-        "copy": "",
-        "collected_in": 173,
-        "digital_edition": null,
+        "digital_edition": 16,
         "pub_place": [
-            3
+            12
         ],
         "cited_in": []
     }
 },
 {
     "model": "books.instance",
-    "pk": 222,
-    "fields": {
-        "notes": "(nearly certain this is the edition he used: the citations, which ended up in Grammatologie, are coded with letters, a-o ) dg152cF___ = dg152cF82pY dg367bF174p_ = dg367bF76pY dg367cF32p_  = dg367cF76-77Y dg367dF163p_  = dg367dF78pY dg367fF95p_ = dg367fF77pY dg367hF178p_  = dg367hF77pY dg376bF18p_  = dg376bF94-95Y dg404bF61-62_ = dg404bF87pY dg404cF181-182_ = dg404cF85-86Y dg404dF194p_  = dg404dF86pY",
-        "work": 222,
-        "alternate_title": "",
-        "publisher": 1,
-        "slug": "scienza-nuova-1946",
-        "zotero_id": "",
-        "is_extant": true,
-        "is_annotated": true,
-        "is_translation": true,
-        "dimensions": "",
-        "copyright_year": 1946,
-        "journal": null,
-        "print_date": null,
-        "print_date_day_known": true,
-        "print_date_month_known": true,
-        "print_date_year_known": true,
-        "uri": "http://findingaids.princeton.edu/collections/RBD1/c10922",
-        "has_dedication": false,
-        "has_insertions": false,
-        "start_page": null,
-        "end_page": null,
-        "copy": "",
-        "collected_in": 223,
-        "digital_edition": null,
-        "pub_place": [
-            3
-        ],
-        "cited_in": []
-    }
-},
-{
-    "model": "books.instance",
-    "pk": 216,
+    "pk": 134,
     "fields": {
         "notes": "",
-        "work": 216,
+        "work": 134,
         "alternate_title": "",
-        "publisher": 30,
-        "slug": "principles-of-phenomenology-1955",
+        "publisher": 10,
         "zotero_id": "",
+        "slug": "levi-strauss-tristes-tropiques-1955",
         "is_extant": true,
         "is_annotated": true,
         "is_translation": false,
@@ -834,48 +690,14 @@
         "print_date_day_known": true,
         "print_date_month_known": true,
         "print_date_year_known": true,
-        "uri": "http://findingaids.princeton.edu/collections/RBD1/c9670",
+        "uri": "http://findingaids.princeton.edu/collections/RBD1/c9179",
         "has_dedication": false,
         "has_insertions": false,
         "start_page": null,
         "end_page": null,
         "copy": "",
-        "collected_in": 217,
-        "digital_edition": null,
-        "pub_place": [
-            9
-        ],
-        "cited_in": []
-    }
-},
-{
-    "model": "books.instance",
-    "pk": 212,
-    "fields": {
-        "notes": "",
-        "work": 215,
-        "alternate_title": "",
-        "publisher": 15,
-        "slug": "phaedrus-1964",
-        "zotero_id": "",
-        "is_extant": true,
-        "is_annotated": false,
-        "is_translation": false,
-        "dimensions": "",
-        "copyright_year": 1964,
-        "journal": null,
-        "print_date": null,
-        "print_date_day_known": true,
-        "print_date_month_known": true,
-        "print_date_year_known": true,
-        "uri": "http://findingaids.princeton.edu/collections/RBD1/c10116",
-        "has_dedication": false,
-        "has_insertions": false,
-        "start_page": null,
-        "end_page": null,
-        "copy": "",
-        "collected_in": 213,
-        "digital_edition": 44,
+        "collected_in": null,
+        "digital_edition": 73,
         "pub_place": [
             3
         ],
@@ -884,32 +706,100 @@
 },
 {
     "model": "books.instance",
-    "pk": 123,
+    "pk": 141,
     "fields": {
-        "notes": "two boxes for this item: http://findingaids.princeton.edu/collections/RBD1/c8943 http://findingaids.princeton.edu/collections/RBD1/c8950 Logique formelle et logique transcendantale : Essai d'une critique de la raison logique dg393aQ386pY (Y) refers to Box 48, folder 1 of B-000154.  dg393aQ386pY (Y): for folder 2 of the same box. Derrida has two copies in the same box: folder 2 is another, more intensely read copie of Husserl's book. We need scans of pp. 386-387 from both copies.",
-        "work": 123,
+        "notes": "",
+        "work": 141,
         "alternate_title": "",
-        "publisher": 1,
-        "slug": "logique-formelle-et-logique-transcendentale-1957",
+        "publisher": 36,
         "zotero_id": "",
+        "slug": "heidegger-sein-und-zeit-1963",
         "is_extant": true,
         "is_annotated": true,
         "is_translation": false,
         "dimensions": "",
-        "copyright_year": 1957,
+        "copyright_year": 1963,
         "journal": null,
         "print_date": null,
         "print_date_day_known": true,
         "print_date_month_known": true,
         "print_date_year_known": true,
-        "uri": "",
+        "uri": "http://findingaids.princeton.edu/collections/RBD1/c13201",
         "has_dedication": false,
         "has_insertions": false,
         "start_page": null,
         "end_page": null,
         "copy": "",
         "collected_in": null,
-        "digital_edition": null,
+        "digital_edition": 12,
+        "pub_place": [
+            5
+        ],
+        "cited_in": []
+    }
+},
+{
+    "model": "books.instance",
+    "pk": 129,
+    "fields": {
+        "notes": "",
+        "work": 129,
+        "alternate_title": "",
+        "publisher": 31,
+        "zotero_id": "",
+        "slug": "cassirer-philosophie-der-symbolischen-formen-1953",
+        "is_extant": true,
+        "is_annotated": true,
+        "is_translation": false,
+        "dimensions": "",
+        "copyright_year": 1953,
+        "journal": null,
+        "print_date": null,
+        "print_date_day_known": true,
+        "print_date_month_known": true,
+        "print_date_year_known": true,
+        "uri": "http://findingaids.princeton.edu/collections/RBD1/c12840",
+        "has_dedication": false,
+        "has_insertions": false,
+        "start_page": null,
+        "end_page": null,
+        "copy": "",
+        "collected_in": null,
+        "digital_edition": 49,
+        "pub_place": [
+            10
+        ],
+        "cited_in": []
+    }
+},
+{
+    "model": "books.instance",
+    "pk": 124,
+    "fields": {
+        "notes": "Translated by Ilse Barande",
+        "work": 124,
+        "alternate_title": "",
+        "publisher": 14,
+        "zotero_id": "",
+        "slug": "abraham-oeuvres-completes-1966",
+        "is_extant": true,
+        "is_annotated": false,
+        "is_translation": true,
+        "dimensions": "",
+        "copyright_year": 1966,
+        "journal": null,
+        "print_date": null,
+        "print_date_day_known": true,
+        "print_date_month_known": true,
+        "print_date_year_known": true,
+        "uri": "http://findingaids.princeton.edu/collections/RBD1/c9354",
+        "has_dedication": false,
+        "has_insertions": false,
+        "start_page": null,
+        "end_page": null,
+        "copy": "",
+        "collected_in": null,
+        "digital_edition": 52,
         "pub_place": [
             3
         ],
@@ -918,33 +808,35 @@
 },
 {
     "model": "books.instance",
-    "pk": 169,
+    "pk": 118,
     "fields": {
         "notes": "",
-        "work": 169,
+        "work": 118,
         "alternate_title": "",
-        "publisher": null,
-        "slug": "lettre-a-vernes",
+        "publisher": 11,
         "zotero_id": "",
-        "is_extant": false,
-        "is_annotated": false,
+        "slug": "belaval-leibniz-critique-de-descartes-1960",
+        "is_extant": true,
+        "is_annotated": true,
         "is_translation": false,
         "dimensions": "",
-        "copyright_year": null,
+        "copyright_year": 1960,
         "journal": null,
         "print_date": null,
         "print_date_day_known": true,
         "print_date_month_known": true,
         "print_date_year_known": true,
-        "uri": "",
+        "uri": "http://findingaids.princeton.edu/collections/RBD1/c9159",
         "has_dedication": false,
         "has_insertions": false,
         "start_page": null,
         "end_page": null,
         "copy": "",
         "collected_in": null,
-        "digital_edition": null,
-        "pub_place": [],
+        "digital_edition": 14,
+        "pub_place": [
+            3
+        ],
         "cited_in": []
     }
 },
@@ -956,8 +848,8 @@
         "work": 45,
         "alternate_title": "",
         "publisher": null,
-        "slug": "la-vie-familiale-et-sociale-des-indiens-nambikwara-1948",
         "zotero_id": "",
+        "slug": "levi-strauss-la-vie-familiale-et-sociale-des-indiens-nambikwara-1948",
         "is_extant": false,
         "is_annotated": false,
         "is_translation": false,
@@ -982,31 +874,99 @@
 },
 {
     "model": "books.instance",
-    "pk": 167,
+    "pk": 117,
     "fields": {
-        "notes": "",
-        "work": 167,
+        "notes": "dg147fF___ is where D simply evokes a section entitled \"le temps retrouv\u00e9e\", without citing a page. dg155cF___ = D mentions simply the ch. \"L'individu comme esp\u00e8ce\"",
+        "work": 117,
         "alternate_title": "",
-        "publisher": null,
+        "publisher": 10,
         "zotero_id": "",
-        "slug": "la-notion-de-signe-dans-la-glossematique-et-dans-1949",
-        "is_extant": false,
-        "is_annotated": false,
+        "slug": "levi-strauss-la-pensee-sauvage-1962",
+        "is_extant": true,
+        "is_annotated": true,
         "is_translation": false,
         "dimensions": "",
-        "copyright_year": 1949,
-        "journal": 7,
+        "copyright_year": 1962,
+        "journal": null,
         "print_date": null,
         "print_date_day_known": true,
         "print_date_month_known": true,
         "print_date_year_known": true,
-        "uri": "",
+        "uri": "http://findingaids.princeton.edu/collections/RBD1/c9167",
         "has_dedication": false,
         "has_insertions": false,
         "start_page": null,
         "end_page": null,
         "copy": "",
         "collected_in": null,
+        "digital_edition": 71,
+        "pub_place": [
+            3
+        ],
+        "cited_in": []
+    }
+},
+{
+    "model": "books.instance",
+    "pk": 23,
+    "fields": {
+        "notes": "",
+        "work": 23,
+        "alternate_title": "",
+        "publisher": 1,
+        "zotero_id": "",
+        "slug": "martinet-la-linguistique-synchronique-etudes-et-recherches-1965",
+        "is_extant": true,
+        "is_annotated": true,
+        "is_translation": false,
+        "dimensions": "",
+        "copyright_year": 1965,
+        "journal": null,
+        "print_date": null,
+        "print_date_day_known": true,
+        "print_date_month_known": true,
+        "print_date_year_known": true,
+        "uri": "http://findingaids.princeton.edu/collections/RBD1/c9661",
+        "has_dedication": false,
+        "has_insertions": false,
+        "start_page": null,
+        "end_page": null,
+        "copy": "",
+        "collected_in": null,
+        "digital_edition": 26,
+        "pub_place": [
+            3
+        ],
+        "cited_in": []
+    }
+},
+{
+    "model": "books.instance",
+    "pk": 92,
+    "fields": {
+        "notes": "",
+        "work": 92,
+        "alternate_title": "",
+        "publisher": null,
+        "zotero_id": "",
+        "slug": "cohen-la-grande-invention-de-lecriture-1958",
+        "is_extant": true,
+        "is_annotated": false,
+        "is_translation": false,
+        "dimensions": "",
+        "copyright_year": 1958,
+        "journal": null,
+        "print_date": null,
+        "print_date_day_known": true,
+        "print_date_month_known": true,
+        "print_date_year_known": true,
+        "uri": "http://findingaids.princeton.edu/collections/RBD1.1/c13577",
+        "has_dedication": false,
+        "has_insertions": false,
+        "start_page": null,
+        "end_page": null,
+        "copy": "",
+        "collected_in": 2,
         "digital_edition": null,
         "pub_place": [],
         "cited_in": []
@@ -1014,14 +974,82 @@
 },
 {
     "model": "books.instance",
-    "pk": 122,
+    "pk": 2,
+    "fields": {
+        "notes": "P. 87\r\nContains: - Alfred M\u00e9traux: Les primitifs, signaux et symboles, pictogrammes et proto\u00e9criture, 9-28 - Jacques Gernet: La Chine, Aspects et fonctions psychologiques de l'\u00e9criture, 29-50 - Jean Sainte Fare Garnot: Les hi\u00e9roglyphes, l'\u00e9volution des \u00e9critures \u00e9gyptiennes, 51-72 - Ren\u00e9 Labat: L'\u00e9criture cun\u00e9iforme et la civilisation m\u00e9sopotamienne, 73-92 - Olivier Masson: La civilisation \u00e9g\u00e9enne, 93-102 - Emmanuel Laroche: L'Asie Mineure, 103-116 - James F\u00e9vrier: Les S\u00e9mites et l'alphabet, 117-130 - Maxime Rodinson: Les S\u00e9mites et l'alphabet, 131-146 - Jean Filliozat, Les Ecritures indiennes, 147-166 -Alphonse Dain, L'Ecriture grecque..., 167-182 - Raymond Bloch, Etrusques et Romains, 183-198 -Robert Marichal, L'\u00e9riture latine..., 199-148 - Janine Sourdel-Thomine, L'ecriture arabe et son \u00e9volution ornementale, 249-262 - Maxime Rodinson, Le monde islamique et l'\u00e9criture arabe, 263-278 - Henri-Jean Martin, L'Imprimerie, 279-300 - Andr\u00e9 Vaillant, L'\u00e9criture  cyrillique..., 301-312 - Marcel Cohen, Les \u00e9critures latines, 313-325 - Henri Levy-Bruhl,  L'ecriture et le droit, 325-334 - Confrontations et conclusions, 335-360",
+        "work": 2,
+        "alternate_title": "",
+        "publisher": 6,
+        "zotero_id": "",
+        "slug": "bloch-lecriture-et-la-psychologie-des-peuples-actes-de-colloque-1963",
+        "is_extant": true,
+        "is_annotated": true,
+        "is_translation": false,
+        "dimensions": "",
+        "copyright_year": 1963,
+        "journal": null,
+        "print_date": null,
+        "print_date_day_known": true,
+        "print_date_month_known": true,
+        "print_date_year_known": true,
+        "uri": "http://findingaids.princeton.edu/collections/RBD1.1/c13577",
+        "has_dedication": false,
+        "has_insertions": false,
+        "start_page": null,
+        "end_page": null,
+        "copy": "",
+        "collected_in": null,
+        "digital_edition": null,
+        "pub_place": [
+            3
+        ],
+        "cited_in": []
+    }
+},
+{
+    "model": "books.instance",
+    "pk": 107,
     "fields": {
         "notes": "",
-        "work": 122,
+        "work": 107,
         "alternate_title": "",
-        "publisher": 11,
-        "slug": "loeil-vivant-1961",
+        "publisher": 22,
         "zotero_id": "",
+        "slug": "jakobson-fundamentals-of-language-1963",
+        "is_extant": true,
+        "is_annotated": true,
+        "is_translation": true,
+        "dimensions": "",
+        "copyright_year": 1963,
+        "journal": null,
+        "print_date": null,
+        "print_date_day_known": true,
+        "print_date_month_known": true,
+        "print_date_year_known": true,
+        "uri": "http://findingaids.princeton.edu/collections/RBD1/c9654",
+        "has_dedication": false,
+        "has_insertions": false,
+        "start_page": null,
+        "end_page": null,
+        "copy": "",
+        "collected_in": null,
+        "digital_edition": 33,
+        "pub_place": [
+            3
+        ],
+        "cited_in": []
+    }
+},
+{
+    "model": "books.instance",
+    "pk": 106,
+    "fields": {
+        "notes": "",
+        "work": 106,
+        "alternate_title": "",
+        "publisher": 21,
+        "zotero_id": "",
+        "slug": "charbonnier-entretiens-avec-claude-levi-strauss-1961",
         "is_extant": true,
         "is_annotated": true,
         "is_translation": false,
@@ -1032,14 +1060,14 @@
         "print_date_day_known": true,
         "print_date_month_known": true,
         "print_date_year_known": true,
-        "uri": "http://findingaids.princeton.edu/collections/RBD1/c10447",
+        "uri": "http://findingaids.princeton.edu/collections/RBD1/c9168",
         "has_dedication": false,
         "has_insertions": false,
         "start_page": null,
         "end_page": null,
         "copy": "",
         "collected_in": null,
-        "digital_edition": 25,
+        "digital_edition": 35,
         "pub_place": [
             3
         ],
@@ -1048,32 +1076,66 @@
 },
 {
     "model": "books.instance",
-    "pk": 224,
+    "pk": 115,
     "fields": {
         "notes": "",
-        "work": 224,
+        "work": 115,
         "alternate_title": "",
         "publisher": 1,
-        "slug": "introduction-a-loeuvre-de-marcel-mauss-1950",
         "zotero_id": "",
+        "slug": "heidegger-einfuhrung-in-die-metaphysic-1967",
         "is_extant": true,
         "is_annotated": true,
-        "is_translation": false,
+        "is_translation": true,
         "dimensions": "",
-        "copyright_year": 1950,
+        "copyright_year": 1967,
         "journal": null,
         "print_date": null,
         "print_date_day_known": true,
         "print_date_month_known": true,
         "print_date_year_known": true,
-        "uri": "http://findingaids.princeton.edu/collections/RBD1/c8933",
+        "uri": "http://findingaids.princeton.edu/collections/RBD1/c13182",
         "has_dedication": false,
         "has_insertions": false,
-        "start_page": "I",
-        "end_page": "LII",
+        "start_page": null,
+        "end_page": null,
         "copy": "",
-        "collected_in": 225,
-        "digital_edition": 30,
+        "collected_in": null,
+        "digital_edition": 34,
+        "pub_place": [
+            3
+        ],
+        "cited_in": []
+    }
+},
+{
+    "model": "books.instance",
+    "pk": 104,
+    "fields": {
+        "notes": "",
+        "work": 104,
+        "alternate_title": "",
+        "publisher": 20,
+        "zotero_id": "",
+        "slug": "descartes-discours-de-la-methode-1961",
+        "is_extant": true,
+        "is_annotated": false,
+        "is_translation": false,
+        "dimensions": "",
+        "copyright_year": 1961,
+        "journal": null,
+        "print_date": null,
+        "print_date_day_known": true,
+        "print_date_month_known": true,
+        "print_date_year_known": true,
+        "uri": "http://findingaids.princeton.edu/collections/RBD1/c12860",
+        "has_dedication": false,
+        "has_insertions": false,
+        "start_page": null,
+        "end_page": null,
+        "copy": "",
+        "collected_in": null,
+        "digital_edition": 39,
         "pub_place": [
             3
         ],
@@ -1088,8 +1150,8 @@
         "work": 104,
         "alternate_title": "",
         "publisher": 19,
-        "slug": "discours-de-la-methode-1943",
         "zotero_id": "",
+        "slug": "descartes-discours-de-la-methode-1943",
         "is_extant": true,
         "is_annotated": true,
         "is_translation": false,
@@ -1116,65 +1178,133 @@
 },
 {
     "model": "books.instance",
-    "pk": 93,
+    "pk": 102,
     "fields": {
-        "notes": "***See Notecards inserted under front cover of \"Philosophical writings of Perice\" - there are notes from \"Elements of Logic\" - all citations (all from from pg. 302) are there, on two cards (front and back); MUST SCAN This book is not in D's library; the url below is to the \"Philosophical writings book\"",
-        "work": 93,
+        "notes": "",
+        "work": 102,
         "alternate_title": "",
-        "publisher": null,
-        "slug": "collected-papers-of-charles-sanders-peirce-vol-2-1932",
+        "publisher": 18,
         "zotero_id": "",
+        "slug": "levinas-difficile-liberte-essais-sur-le-judaisme-1963",
         "is_extant": true,
-        "is_annotated": false,
+        "is_annotated": true,
         "is_translation": false,
         "dimensions": "",
-        "copyright_year": null,
+        "copyright_year": 1963,
         "journal": null,
         "print_date": null,
         "print_date_day_known": true,
         "print_date_month_known": true,
         "print_date_year_known": true,
-        "uri": "http://findingaids.princeton.edu/collections/RBD1/c9670",
+        "uri": "http://findingaids.princeton.edu/collections/RBD1/c9412",
         "has_dedication": false,
         "has_insertions": false,
         "start_page": null,
         "end_page": null,
         "copy": "",
         "collected_in": null,
-        "digital_edition": null,
+        "digital_edition": 51,
         "pub_place": [],
         "cited_in": []
     }
 },
 {
     "model": "books.instance",
-    "pk": 227,
+    "pk": 101,
     "fields": {
         "notes": "",
-        "work": 144,
+        "work": 101,
         "alternate_title": "",
-        "publisher": null,
+        "publisher": 16,
         "zotero_id": "",
-        "slug": "a-la-recherche-de-lessence-du-langage",
-        "is_extant": false,
-        "is_annotated": false,
-        "is_translation": false,
+        "slug": "hume-dialogues-concerning-natural-religion-1964",
+        "is_extant": true,
+        "is_annotated": true,
+        "is_translation": true,
         "dimensions": "",
-        "copyright_year": null,
+        "copyright_year": 1964,
         "journal": null,
         "print_date": null,
-        "print_date_day_known": false,
-        "print_date_month_known": false,
+        "print_date_day_known": true,
+        "print_date_month_known": true,
         "print_date_year_known": true,
-        "uri": "",
+        "uri": "http://findingaids.princeton.edu/collections/RBD1/c13389",
         "has_dedication": false,
         "has_insertions": false,
         "start_page": null,
         "end_page": null,
         "copy": "",
         "collected_in": null,
-        "digital_edition": null,
+        "digital_edition": 63,
         "pub_place": [],
+        "cited_in": []
+    }
+},
+{
+    "model": "books.instance",
+    "pk": 100,
+    "fields": {
+        "notes": "",
+        "work": 100,
+        "alternate_title": "",
+        "publisher": 14,
+        "zotero_id": "",
+        "slug": "saussure-cours-de-linguistique-generale-1960",
+        "is_extant": true,
+        "is_annotated": true,
+        "is_translation": false,
+        "dimensions": "",
+        "copyright_year": 1960,
+        "journal": null,
+        "print_date": null,
+        "print_date_day_known": true,
+        "print_date_month_known": true,
+        "print_date_year_known": true,
+        "uri": "http://findingaids.princeton.edu/collections/RBD1/c9626",
+        "has_dedication": false,
+        "has_insertions": false,
+        "start_page": null,
+        "end_page": null,
+        "copy": "",
+        "collected_in": null,
+        "digital_edition": 21,
+        "pub_place": [
+            3
+        ],
+        "cited_in": []
+    }
+},
+{
+    "model": "books.instance",
+    "pk": 97,
+    "fields": {
+        "notes": "",
+        "work": 97,
+        "alternate_title": "",
+        "publisher": 10,
+        "zotero_id": "",
+        "slug": "levi-strauss-anthropologie-structurale-1958",
+        "is_extant": true,
+        "is_annotated": true,
+        "is_translation": false,
+        "dimensions": "",
+        "copyright_year": 1958,
+        "journal": null,
+        "print_date": null,
+        "print_date_day_known": true,
+        "print_date_month_known": true,
+        "print_date_year_known": true,
+        "uri": "http://findingaids.princeton.edu/collections/RBD1/c9166",
+        "has_dedication": false,
+        "has_insertions": false,
+        "start_page": null,
+        "end_page": null,
+        "copy": "",
+        "collected_in": null,
+        "digital_edition": 20,
+        "pub_place": [
+            3
+        ],
         "cited_in": []
     }
 },
@@ -1186,8 +1316,8 @@
         "work": 98,
         "alternate_title": "",
         "publisher": 12,
-        "slug": "a-study-of-writing-1963",
         "zotero_id": "",
+        "slug": "gelb-a-study-of-writing-1963",
         "is_extant": true,
         "is_annotated": false,
         "is_translation": false,
@@ -1195,9 +1325,9 @@
         "copyright_year": 1963,
         "journal": null,
         "print_date": null,
-        "print_date_day_known": true,
-        "print_date_month_known": true,
-        "print_date_year_known": true,
+        "print_date_day_known": false,
+        "print_date_month_known": false,
+        "print_date_year_known": false,
         "uri": "http://findingaids.princeton.edu/collections/RBD1/c9643",
         "has_dedication": false,
         "has_insertions": false,
@@ -1205,7 +1335,7 @@
         "end_page": null,
         "copy": "",
         "collected_in": null,
-        "digital_edition": 75,
+        "digital_edition": 72,
         "pub_place": [
             6,
             7

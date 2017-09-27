@@ -1,5 +1,7 @@
 django>=1.11
 mysqlclient
+django-compressor
+django-compressor-autoprefixer
 django-grappelli
 django-autocomplete-light
 requests

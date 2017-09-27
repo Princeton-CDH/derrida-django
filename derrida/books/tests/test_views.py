@@ -57,9 +57,12 @@ class TestInstanceViews(TestCase):
         assert 'object_list' in response.context
         # Should find 16 objects and a paginator in context
         assert len(response.context['object_list']) == 16
-        # 23 total instances in the fixture
-        assert response.context['total'] == 23
-        self.assertContains(response, '23 Results',
+
+        extant_bks = Instance.objects.filter(is_extant=True,
+            journal__isnull=True, collected_in__isnull=True)
+        # 19 extant books in the fixture (excludes non-extant and book section)
+        assert response.context['total'] == extant_bks.count()
+        self.assertContains(response, '19 Results',
             msg_prefix='total number of results displayed')
         assert isinstance(response.context['object_list'][0], SearchResult)
         assert response.context['object_list'][0].model == Instance
@@ -78,8 +81,8 @@ class TestInstanceViews(TestCase):
         assert page_obj
         assert page_obj.paginator.page_range == range(1, 3)
         assert page_obj.number == 2
-        # only 7 of 23 items on pg. 2
-        assert len(response.context['object_list']) == 7
+        # only 3 items on pg. 2
+        assert len(response.context['object_list']) == 3
 
 
 class TestReferenceViews(TestCase):

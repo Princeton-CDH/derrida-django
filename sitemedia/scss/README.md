@@ -35,8 +35,11 @@ To build the style assets, run the following command from the `scss` directory:
 To generate a compressed version of the styles, use the command:
 `sass --scss -t compressed style.scss ../css/local.min.css`
 
-This will compile the scss file `style.scss` into css, minify the css, and move it to the css folder. Changes made to the scss file will not be reflected until that command is executed.
+This will compile the scss file `style.scss` into css, minify the css, and move it to the css folder.
 
+Templates are current pointed to the `style.scss` file directly via [django-compressor](https://github.com/django-compressor/django-compressor), which
+also minimizes project css and some Javascript assets that are not already minimized.
+This means that the project scss also no longer needs to be manually compiled.
 
 ## Conventions for Development
 

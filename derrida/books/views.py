@@ -4,6 +4,7 @@ from django.urls import reverse
 from django.views.generic.base import TemplateView
 from django.views.generic import DetailView, ListView
 from haystack.query import SearchQuerySet
+from haystack.inputs import Clean
 
 from .forms import ReferenceSearchForm, InstanceSearchForm, SearchForm
 from .models import Publisher, Language, Instance, Reference, DerridaWorkSection
@@ -69,7 +70,10 @@ class InstanceListView(ListView):
     def get_queryset(self):
         sqs = SearchQuerySet().models(self.model)
         # restrict to extant books
-        sqs = sqs.filter(is_extant=True, item_type='Book')
+        sqs = sqs.filter(is_extant=True, item_type='Book') \
+            .exclude(item_type='Book Section')
+        # book also matches book section, so explicitly exclude partial items
+        # (exact match doesn't seem to help here)
 
         # if search parameters are specified, use them to initialize the form;
         # otherwise, use form defaults
@@ -89,7 +93,7 @@ class InstanceListView(ListView):
 
         # filter solr query based on search options
         if search_opts.get('query', None):
-            sqs = sqs.filter(text=search_opts['query'])
+            sqs = sqs.filter(text=Clean(search_opts['query']))
         # if search_opts.get('is_extant', None):
             # sqs = sqs.filter(is_extant=search_opts['is_extant'])
         if search_opts.get('is_annotated', None):
