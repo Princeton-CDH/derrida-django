@@ -390,7 +390,7 @@ class Instance(Notable):
         associated with the digital edition for this item.'''
         if self.digital_edition:
             return self.digital_edition.canvases.all()
-        return Canvas.objects.empty()
+        return Canvas.objects.none()
 
     def overview_images(self):
         '''Overview images for this book - cover, spine, etc.
@@ -407,9 +407,9 @@ class Instance(Notable):
         '''Annotated pages for this book. Filtered based on the presence
         of a documented :class:`~derrida.interventions.models.Intervention`
         in the database.'''
-        return self.images().filter(intervention__isnull=False)
+        return self.images().filter(intervention__isnull=False).distinct()
 
-    def insertions(self):
+    def insertion_images(self):
         '''Insertion images for this book.
         Filtered based on canvas label naming conventions.'''
         return self.images().filter(label__icontains='insertion')

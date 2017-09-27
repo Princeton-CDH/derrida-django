@@ -2,18 +2,18 @@
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 from django.urls import reverse, resolve
-from djiffy.models import Manifest
+from djiffy.models import Manifest, Canvas
 import pytest
 import json
 
 from derrida.places.models import Place
-from derrida.people.models import Person
 # Common models between projects and associated new types
-from derrida.books.models import CreatorType, Publisher, OwningInstitution, \
+from derrida.books.models import Publisher, OwningInstitution, \
     Journal, DerridaWork, DerridaWorkSection, Reference, \
     ReferenceType, Work, Instance, InstanceCatalogue, WorkLanguage, \
     InstanceLanguage, Language, WorkSubject, Subject
-from derrida.interventions.models import Canvas
+from derrida.interventions.models import Intervention
+
 
 class TestOwningInstitution(TestCase):
     fixtures = ['sample_work_data.json']
@@ -78,7 +78,6 @@ class TestDerridaSection(TestCase):
 
     def test_str(self):
         assert str(DerridaWorkSection(name='Chapter 1')) == 'Chapter 1'
-
 
 
 class TestReference(TestCase):
@@ -234,7 +233,6 @@ class TestInstance(TestCase):
         la_vie = Instance.objects.get(slug=la_vie.generate_base_slug())
         la_vie.generate_safe_slug() == la_vie.generate_base_slug() + '-C'
 
-
     def test_get_absolute_url(self):
         la_vie = Instance.objects.get(work__short_title__contains="La vie")
         item_url = la_vie.get_absolute_url()
@@ -303,6 +301,96 @@ class TestInstance(TestCase):
             label='House - Gift Books, Works By and About Derrida, and Related Items - Derrida, Jacques. De la grammatologie.'
         )
         assert la_vie.location == 'House'
+
+    def test_images(self):
+        la_vie = Instance.objects.get(work__short_title__contains="La vie")
+        # no digital edition - empty queryset
+        assert la_vie.images().count() == 0
+        # digital edition, no pages
+        la_vie.digital_edition = mfst = Manifest.objects.create(short_id='m1')
+        assert la_vie.images().count() == 0
+        Canvas.objects.bulk_create([
+            Canvas(manifest=mfst, label='p1', order=1, short_id='c1'),
+            Canvas(manifest=mfst, label='p2', order=2, short_id='c2'),
+            Canvas(manifest=mfst, label='p3', order=3, short_id='c3'),
+        ])
+        assert la_vie.images().count() == 3
+        assert Canvas.objects.first() in la_vie.images()
+
+    def test_overview_images(self):
+        la_vie = Instance.objects.get(work__short_title__contains="La vie")
+        # no digital edition - empty queryset
+        assert la_vie.overview_images().count() == 0
+        # digital edition, no pages
+        la_vie.digital_edition = mfst = Manifest.objects.create(short_id='m1')
+        assert la_vie.overview_images().count() == 0
+        # create some test canvases to include/exclude
+        outside_views = ['Front Cover', 'Inside Cover', 'Back Cover',
+            'Spine', 'Edge View']
+        for i, label in enumerate(outside_views):
+            Canvas.objects.create(manifest=mfst, label=label,
+                short_id='cover%d' % i, order=i)
+        # normal page
+        page = Canvas.objects.create(manifest=mfst, label='p. 33',
+            short_id='page33', order=len(outside_views) + 1)
+        # insertion
+        insertion = Canvas.objects.create(manifest=mfst,
+            label='pp. 33-34 Insertion A recto', short_id='insa',
+            order=len(outside_views) + 2)
+
+        overview_images = la_vie.overview_images()
+        assert page not in overview_images
+        assert insertion not in overview_images
+        overview_labels = [c.label for c in overview_images]
+        for label in outside_views:
+            assert label in overview_labels
+
+    def test_annotated_pages(self):
+        la_vie = Instance.objects.get(work__short_title__contains="La vie")
+        # no digital edition - empty queryset
+        assert la_vie.annotated_pages().count() == 0
+        # digital edition, no pages
+        la_vie.digital_edition = mfst = Manifest.objects.create(short_id='m1')
+        assert la_vie.annotated_pages().count() == 0
+        # normal pages, no annotations
+        page = Canvas.objects.create(manifest=mfst, label='p. 33',
+            short_id='page33', order=1)
+        page2 = Canvas.objects.create(manifest=mfst, label='p. 35',
+            short_id='page35', order=2)
+        assert la_vie.annotated_pages().count() == 0
+        # create an annotation
+        Intervention.objects.create(canvas=page)
+        assert la_vie.annotated_pages().count() == 1
+        assert la_vie.annotated_pages().first() == page
+        assert page2 not in la_vie.annotated_pages()
+        # multiple annotations on the same page- should still only show once
+        Intervention.objects.create(canvas=page)
+        assert la_vie.annotated_pages().count() == 1
+
+    def test_insertion_images(self):
+        la_vie = Instance.objects.get(work__short_title__contains="La vie")
+        # no digital edition - empty queryset
+        assert la_vie.insertion_images().count() == 0
+        # digital edition, no pages
+        la_vie.digital_edition = mfst = Manifest.objects.create(short_id='m1')
+        assert la_vie.insertion_images().count() == 0
+        # cover
+        cover = Canvas.objects.create(manifest=mfst, label='Front Coverg',
+            short_id='cov1', order=1)
+        # normal page
+        page = Canvas.objects.create(manifest=mfst, label='p. 33',
+            short_id='page33', order=2)
+        # insertion
+        insertion = Canvas.objects.create(manifest=mfst,
+            label='pp. 33-34 Insertion A recto', short_id='insa', order=3)
+        insertion2 = Canvas.objects.create(manifest=mfst,
+            label='pp. 33-34 Insertion A verso', short_id='insb', order=4)
+
+        insertions = la_vie.insertion_images()
+        assert page not in insertions
+        assert cover not in insertions
+        assert insertion in insertions
+        assert insertion2 in insertions
 
 
 class TestInstanceQuerySet(TestCase):
