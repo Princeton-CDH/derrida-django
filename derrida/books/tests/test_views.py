@@ -14,11 +14,12 @@ from derrida.books.models import Instance, Reference, DerridaWorkSection
 from derrida.interventions.models import Intervention, INTERVENTION_TYPES
 
 
-#: reusable version of override_settings that sets test haystack connection
+#: override_settings and use test haystack connection
 USE_TEST_HAYSTACK = override_settings(
     HAYSTACK_CONNECTIONS=settings.HAYSTACK_TEST_CONNECTIONS)
 
 
+@USE_TEST_HAYSTACK
 class TestInstanceViews(TestCase):
     fixtures = ['test_instances.json']
 
@@ -45,7 +46,7 @@ class TestInstanceViews(TestCase):
         # it should be the copy of la_view we looked up
         assert response.context['instance'] == la_vie
 
-    @USE_TEST_HAYSTACK
+
     @pytest.mark.haystack
     def test_instance_list_view(self):
         list_view_url = reverse('books:list')
@@ -85,6 +86,7 @@ class TestInstanceViews(TestCase):
         assert len(response.context['object_list']) == 3
 
 
+@USE_TEST_HAYSTACK
 class TestReferenceViews(TestCase):
     fixtures = ['test_references.json']
 
@@ -94,7 +96,6 @@ class TestReferenceViews(TestCase):
             instance.slug = instance.generate_safe_slug()
             instance.save()
 
-    @USE_TEST_HAYSTACK
     @pytest.mark.haystack
     def test_reference_list(self):
         reference_list_url = reverse('books:reference-list')
