@@ -13,12 +13,56 @@
     }
 },
 {
+  "model": "places.place",
+  "pk": 3,
+  "fields": {
+    "name": "Paris",
+    "notes": "",
+    "geonames_id": "http://sws.geonames.org/2988507/",
+    "latitude": 48.85341,
+    "longitude": 2.3488
+  }
+},
+{
+  "model": "places.place",
+  "pk": 10,
+  "fields": {
+    "name": "New Haven",
+    "notes": "",
+    "geonames_id": "http://sws.geonames.org/4839366/",
+    "latitude": 41.30815,
+    "longitude": -72.92816
+  }
+},
+{
+  "model": "places.place",
+  "pk": 12,
+  "fields": {
+    "name": "Pfullingen",
+    "notes": "",
+    "geonames_id": "http://sws.geonames.org/2853928/",
+    "latitude": 48.46458,
+    "longitude": 9.22796
+  }
+},
+{
     "model": "books.publisher",
     "pk": 34,
     "fields": {
         "name": "Verlag G\u00fcnther Neske",
         "notes": ""
     }
+},
+{
+  "model": "books.derridawork",
+  "pk": 1,
+  "fields": {
+    "notes": "",
+    "short_title": "De la grammatologie",
+    "full_citation": "Placeholder citation",
+    "is_primary": false,
+    "slug": "de-la-grammatologie"
+  }
 },
 {
     "model": "books.work",
@@ -667,7 +711,7 @@
         "pub_place": [
             12
         ],
-        "cited_in": []
+        "cited_in": [1]
     }
 },
 {
@@ -701,7 +745,7 @@
         "pub_place": [
             3
         ],
-        "cited_in": []
+        "cited_in": [1]
     }
 },
 {
@@ -735,7 +779,7 @@
         "pub_place": [
             5
         ],
-        "cited_in": []
+        "cited_in": [1]
     }
 },
 {
@@ -769,7 +813,7 @@
         "pub_place": [
             10
         ],
-        "cited_in": []
+        "cited_in": [1]
     }
 },
 {
@@ -803,7 +847,7 @@
         "pub_place": [
             3
         ],
-        "cited_in": []
+        "cited_in": [1]
     }
 },
 {
@@ -837,7 +881,7 @@
         "pub_place": [
             3
         ],
-        "cited_in": []
+        "cited_in": [1]
     }
 },
 {
@@ -869,7 +913,7 @@
         "collected_in": null,
         "digital_edition": null,
         "pub_place": [],
-        "cited_in": []
+        "cited_in": [1]
     }
 },
 {
@@ -903,7 +947,7 @@
         "pub_place": [
             3
         ],
-        "cited_in": []
+        "cited_in": [1]
     }
 },
 {
@@ -937,7 +981,7 @@
         "pub_place": [
             3
         ],
-        "cited_in": []
+        "cited_in": [1]
     }
 },
 {
@@ -969,7 +1013,7 @@
         "collected_in": 2,
         "digital_edition": null,
         "pub_place": [],
-        "cited_in": []
+        "cited_in": [1]
     }
 },
 {
@@ -1003,7 +1047,7 @@
         "pub_place": [
             3
         ],
-        "cited_in": []
+        "cited_in": [1]
     }
 },
 {
@@ -1037,7 +1081,7 @@
         "pub_place": [
             3
         ],
-        "cited_in": []
+        "cited_in": [1]
     }
 },
 {
@@ -1071,7 +1115,7 @@
         "pub_place": [
             3
         ],
-        "cited_in": []
+        "cited_in": [1]
     }
 },
 {
@@ -1105,7 +1149,7 @@
         "pub_place": [
             3
         ],
-        "cited_in": []
+        "cited_in": [1]
     }
 },
 {
@@ -1139,7 +1183,7 @@
         "pub_place": [
             3
         ],
-        "cited_in": []
+        "cited_in": [1]
     }
 },
 {
@@ -1173,7 +1217,7 @@
         "pub_place": [
             3
         ],
-        "cited_in": []
+        "cited_in": [1]
     }
 },
 {
@@ -1205,7 +1249,7 @@
         "collected_in": null,
         "digital_edition": 51,
         "pub_place": [],
-        "cited_in": []
+        "cited_in": [1]
     }
 },
 {
@@ -1237,7 +1281,7 @@
         "collected_in": null,
         "digital_edition": 63,
         "pub_place": [],
-        "cited_in": []
+        "cited_in": [1]
     }
 },
 {
@@ -1271,7 +1315,7 @@
         "pub_place": [
             3
         ],
-        "cited_in": []
+        "cited_in": [1]
     }
 },
 {
@@ -1305,7 +1349,7 @@
         "pub_place": [
             3
         ],
-        "cited_in": []
+        "cited_in": [1]
     }
 },
 {
@@ -1340,7 +1384,7 @@
             6,
             7
         ],
-        "cited_in": []
+        "cited_in": [0]
     }
 }
 ]

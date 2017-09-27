@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.db.models import Min, Q
+from django.db.models import Min
 from django.test import TestCase, override_settings
 from django.urls import reverse
 from django.utils.html import escape
@@ -46,12 +46,14 @@ class TestInstanceViews(TestCase):
         # it should be the copy of la_view we looked up
         assert response.context['instance'] == la_vie
 
-
     @pytest.mark.haystack
     def test_instance_list_view(self):
         list_view_url = reverse('books:list')
         # an anonymous user can see the view
         response = self.client.get(list_view_url)
+
+        extant_bks = Instance.objects.filter(is_extant=True,
+            journal__isnull=True, collected_in__isnull=True)
 
         assert response.status_code == 200
         # an object list is returned
@@ -63,6 +65,8 @@ class TestInstanceViews(TestCase):
             journal__isnull=True, collected_in__isnull=True)
         # 19 extant books in the fixture (excludes non-extant and book section)
         assert response.context['total'] == extant_bks.count()
+        # facets should be set
+        assert response.context['facets']
         self.assertContains(response, '19 Results',
             msg_prefix='total number of results displayed')
         assert isinstance(response.context['object_list'][0], SearchResult)
@@ -84,6 +88,28 @@ class TestInstanceViews(TestCase):
         assert page_obj.number == 2
         # only 3 items on pg. 2
         assert len(response.context['object_list']) == 3
+
+        # test search/facet/order by
+        response = self.client.get(list_view_url, {'query': 'anthropologie'})
+        assert response.context['object_list'][0].display_title == \
+            "Anthropologie structurale"
+        # sort
+        response = self.client.get(list_view_url, {'order_by': 'title'})
+        assert response.context['object_list'][0].display_title == \
+            'A Study of Writing'
+        # annotated only
+        response = self.client.get(list_view_url, {'is_annotated': True})
+        assert len(response.context['object_list']) == \
+            extant_bks.filter(is_annotated=True).count()
+        # multiple facets should return both
+        response = self.client.get(list_view_url, {'pub_place': ['Paris', 'Pfullingen']})
+        # fixture has 12 published in Paris and 1 in Pfulligen
+        assert len(response.context['object_list']) == 14
+
+        # search for non-cited volume
+        response = self.client.get(list_view_url, {'query': 'gelb'})
+        # should not be found
+        assert len(response.context['object_list']) == 0
 
 
 @USE_TEST_HAYSTACK

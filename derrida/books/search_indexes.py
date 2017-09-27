@@ -35,10 +35,11 @@ class InstanceIndex(indexes.SearchIndex, indexes.Indexable):
     copyright_year = indexes.IntegerField(model_attr='copyright_year', null=True)
     print_year = indexes.IntegerField(model_attr='print_year', null=True)
     year = indexes.IntegerField(null=True)
+    # FIXME: a book is cited if items it collects are cited
     cited_in = indexes.MultiValueField(model_attr='reference_set__derridawork__short_title',
         faceted=True, null=True)
     is_extant = indexes.FacetBooleanField(model_attr='is_extant')
-    is_annotated = indexes.FacetBooleanField(model_attr='is_extant')
+    is_annotated = indexes.FacetBooleanField(model_attr='is_annotated')
     digital_edition = indexes.FacetBooleanField(model_attr='digital_edition')
     slug = indexes.CharField(model_attr='slug')
 
