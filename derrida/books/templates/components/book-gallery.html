@@ -3,10 +3,16 @@
 <header class="item-header" id="book-header">
   {% include "components/book-header.html" with book=instance %}
   <nav class="item-navigation">
+    {% if book.overview_images %}
     <a class="item-navigation-link item-navigation-link--active" href="#overview">Overview Images</a>
+    {% endif %}
+    {% if book.annotated_pages %}
     <a class="item-navigation-link" href="#annotated">Annotated Pages</a>
-    <a class="item-navigation-link" href="#relevant">Relevant Markings</a>
+    {% endif %}
+    {# <a class="item-navigation-link" href="#relevant">Relevant Markings</a> #}
+    {% if book.insertion_images %}
     <a class="item-navigation-link" href="#insertions">Insertions</a>
+    {% endif %}
   </nav>
 </header>
 
