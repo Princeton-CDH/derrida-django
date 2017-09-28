@@ -26,14 +26,7 @@
           <h2 class="item-gallery__title"><a name="overview">Overview Images</a></h2>
         </header>
         {% endif %}
-          <figure class="item__image item__image--gallery">
-            <a class="item__image-link" href="{{ canvas.get_absolute_url }}">
-              <img class="img" src="{{ canvas.image.thumbnail }}" />
-            </a>
-            <figcaption class="item__image-caption">
-              <p>{{ canvas.label }}</p>
-            </figcaption>
-          </figure>
+        {% include 'books/detail/gallery-image.html' %}
       {% endfor %}
 
       {% for canvas in book.annotated_pages %}
@@ -42,14 +35,7 @@
         <h2 class="item-gallery__title"><a name="annotated">Annotated pages</a></h2>
       </header>
         {% endif %}
-          <figure class="item__image item__image--gallery">
-            <a class="item__image-link" href="{{ canvas.get_absolute_url }}">
-              <img class="img" src="{{ canvas.image.thumbnail }}" />
-            </a>
-            <figcaption class="item__image-caption">
-              <p>{{ canvas.label }}</p>
-            </figcaption>
-          </figure>
+        {% include 'books/detail/gallery-image.html' %}
       {% endfor %}
 
    {% for canvas in book.insertion_images %}
@@ -58,19 +44,11 @@
         <h2 class="item-gallery__title"><a name="insertions">Insertions</a></h2>
       </header>
         {% endif %}
-          <figure class="item__image item__image--gallery">
-            <a class="item__image-link" href="{{ canvas.get_absolute_url }}">
-              <img class="img" src="{{ canvas.image.thumbnail }}" />
-            </a>
-            <figcaption class="item__image-caption">
-              <p>{{ canvas.label }}</p>
-            </figcaption>
-          </figure>
+        {% include 'books/detail/gallery-image.html' %}
       {% endfor %}
 
-      {# placeholder design stuff #}
 
-{% comment %}
+{% comment %}    {# no relevant markings data (?) #}
     {% if forloop.counter == 10 %}
       <header class="item-gallery__heading">
         <h2 class="item-gallery__title"><a name="relevant">Relevant markings</h2>
