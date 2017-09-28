@@ -5,7 +5,7 @@ from django.db.models import Min
 from django.test import TestCase, override_settings
 from django.urls import reverse
 from django.utils.html import escape
-from djiffy.models import Manifest
+from djiffy.models import Manifest, Canvas
 import json
 from haystack.models import SearchResult
 import pytest
@@ -110,6 +110,55 @@ class TestInstanceViews(TestCase):
         response = self.client.get(list_view_url, {'query': 'gelb'})
         # should not be found
         assert len(response.context['object_list']) == 0
+
+    def test_canvas_by_pagenum(self):
+        # get an instance with no digital edition
+        item = Instance.objects.filter(digital_edition__isnull=True).first()
+        canvas_page_url = reverse('books:canvas-by-page',
+            kwargs={'slug': item.slug, 'page_num': '23'})
+        response = self.client.get(canvas_page_url)
+        # no digital edition - should 404
+        assert response.status_code == 404
+
+        # get an instance with no digital edition
+        item = Instance.objects.filter(digital_edition__isnull=False).first()
+        canvas_page_url = reverse('books:canvas-by-page',
+            kwargs={'slug': item.slug, 'page_num': '23'})
+        response = self.client.get(canvas_page_url)
+        # digital edition has no canvases - should still 404
+        assert response.status_code == 404
+
+        # create a canvas with matching label
+        canvas = Canvas.objects.create(manifest=item.digital_edition, order=1,
+            label='p. 23', short_id='c00123')
+        response = self.client.get(canvas_page_url)
+        assert response.status_code == 303
+        canvas_image_url = reverse('books:canvas-image',
+            kwargs={'slug': item.slug, 'short_id': canvas.short_id,
+                    'mode': 'thumbnail'})
+        assert response.url == canvas_image_url
+
+        # variant page numbers and page ranges should all work
+        # - page range
+        canvas_page_url = reverse('books:canvas-by-page',
+            kwargs={'slug': item.slug, 'page_num': '23-24'})
+        response = self.client.get(canvas_page_url)
+        assert response.url == canvas_image_url
+        # - some reference pages currently have an extra letter
+        canvas_page_url = reverse('books:canvas-by-page',
+            kwargs={'slug': item.slug, 'page_num': '23p'})
+        response = self.client.get(canvas_page_url)
+        assert response.url == canvas_image_url
+        # - other extra characters
+        canvas_page_url = reverse('books:canvas-by-page',
+            kwargs={'slug': item.slug, 'page_num': '23s'})
+        response = self.client.get(canvas_page_url)
+        assert response.url == canvas_image_url
+        # page range + character
+        canvas_page_url = reverse('books:canvas-by-page',
+            kwargs={'slug': item.slug, 'page_num': '23-24p'})
+        response = self.client.get(canvas_page_url)
+        assert response.url == canvas_image_url
 
 
 @USE_TEST_HAYSTACK

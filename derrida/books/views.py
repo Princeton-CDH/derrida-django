@@ -1,13 +1,16 @@
 from dal import autocomplete
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse, Http404
+from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.views.generic.base import TemplateView
-from django.views.generic import DetailView, ListView
+from django.views.generic import DetailView, ListView, View
 from haystack.query import SearchQuerySet
-from haystack.inputs import Clean, Exact, Raw
+from haystack.inputs import Clean
+import requests
 
-from .forms import ReferenceSearchForm, InstanceSearchForm, SearchForm
-from .models import Publisher, Language, Instance, Reference, DerridaWorkSection
+from derrida.books.forms import ReferenceSearchForm, InstanceSearchForm, SearchForm
+from derrida.books.models import Publisher, Language, Instance, Reference, DerridaWorkSection
+from derrida.common.utils import absolutize_url
 from derrida.interventions.models import Intervention
 
 
@@ -179,7 +182,8 @@ class ReferenceHistogramView(ListView):
     def get_queryset(self):
         refs = super(ReferenceHistogramView, self).get_queryset()
         # sort based on specified mode
-        # TODO: filter on specific derrida work, for when we have more than one?
+        # NOTE: eventually this willl need to filter/segment
+        # on derrida work, when we have more than one.
         if self.kwargs.get('mode', None) == 'section':
             refs = refs.order_by_source_page()
         else:
@@ -208,9 +212,8 @@ class ReferenceDetailView(DetailView):
     def get_object(self, queryset=None):
         if queryset is None:
             queryset = self.get_queryset()
-        # FIXME: this is returning two results for some cases
-        # (must be an error in the data)
-        # return queryset.get(derridawork_page=self.kwargs['page'],
+        # NOTE: this is returning two results for some cases
+        # (seems to be an error in the data; just return the first match)
         return queryset.filter(
             derridawork_page=self.kwargs['page'],
             derridawork_pageloc=self.kwargs['pageloc'],
@@ -268,3 +271,98 @@ class SearchView(TemplateView):
             'intervention_count': intervention_query.count()
             # outwork TODO
         }
+
+
+class ProxyView(View):
+    # ProxyView, modeled on Django's RedirectView
+    # adapted from the Readux codebase (readux.books.views)
+
+    def get(self, request, *args, **kwargs):
+        url = self.get_proxy_url(*args, **kwargs)
+        # use headers to allow browsers to cache downloaded copies
+        headers = {}
+        for header in ['HTTP_IF_MODIFIED_SINCE', 'HTTP_IF_UNMODIFIED_SINCE',
+                       'HTTP_IF_MATCH', 'HTTP_IF_NONE_MATCH']:
+            if header in request.META:
+                headers[header.replace('HTTP_', '')] = request.META.get(header)
+        remote_response = requests.get(url, headers=headers)
+        local_response = HttpResponse()
+        local_response.status_code = remote_response.status_code
+
+        # include response headers, except for server-specific items
+        for header, value in remote_response.headers.items():
+            if header not in ['Connection', 'Server', 'Keep-Alive', 'Link']:
+                             # 'Access-Control-Allow-Origin', 'Link']:
+                # NOTE: link header is valuable, but would
+                # need to be made relative to current url
+                local_response[header] = value
+
+        # special case, for deep zoom (hack)
+        if kwargs['mode'] == 'info':
+            data = remote_response.json()
+            # need to adjust the id to be relative to current url
+            # this is a hack, patching in a proxy iiif interface at this url
+            data['@id'] = absolutize_url(request.path.replace('/info/', '/iiif'))
+            local_response.content = json.dumps(data)
+            # upate content-length for change in data
+            local_response['content-length'] = len(local_response.content)
+            # needed to allow external site (i.e. jekyll export)
+            # to use deepzoom
+            local_response['Access-Control-Allow-Origin'] = '*'
+        else:
+            # include response content if any
+            local_response.content = remote_response.content
+
+        return local_response
+
+    def head(self, request, *args, **kwargs):
+        url = self.get_proxy_url(*args, **kwargs)
+        remote_response = requests.head(url)
+        response = HttpResponse()
+        for header, value in remote_response.headers.iteritems():
+            if header not in ['Connection', 'Server', 'Keep-Alive',
+                             'Access-Control-Allow-Origin', 'Link']:
+                response[header] = value
+        return response
+
+
+class CanvasImage(ProxyView):
+    '''Local view for canvas images.  This proxies the
+    configured IIIF image viewer in order to avoid exposing IIIF image
+    urls for copyright content and to allow controlled access
+    to restrict public viewable material to annotated pages,
+    overview images, and insertions.'''
+
+    def get(self, request, *args, **kwargs):
+        self.instance = get_object_or_404(Instance, slug=self.kwargs['slug'])
+        # if mode is page number, lookup and redirect
+        if kwargs.get('mode', None) == 'by-page':
+            page = 'p. %s' % self.kwargs['page_num']
+            canvas = self.instance.images().filter(label=page).first()
+            # if page is not found, fallback to book cover
+            if self.instance.digital_edition and not canvas:
+                canvas = self.instance.digital_edition.thumbnail
+            if not canvas:
+                raise Http404
+
+            canvas_url = reverse('books:canvas-image',
+                kwargs={'slug': self.kwargs['slug'],
+                        'short_id': canvas.short_id, 'mode': 'thumbnail'})
+
+            response = HttpResponseRedirect(canvas_url)
+            response.status_code = 303  # see other
+            return response
+
+        return super(CanvasImage, self).get(request, *args, **kwargs)
+
+    def get_proxy_url(self, *args, **kwargs):
+        canvas_id = self.kwargs.get('short_id', None)
+        if canvas_id:
+            canvas = self.instance.images() \
+                .filter(short_id=self.kwargs['short_id']).first()
+        else:
+            canvas = self.instance.digital_edition.thumbnail
+
+        if kwargs['mode'] == 'thumbnail':
+            return canvas.image.thumbnail()
+
