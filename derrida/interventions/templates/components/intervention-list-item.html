@@ -15,7 +15,7 @@
   <div class="item__body">
     {% for annotype in intervention.annotation_type %}
     {% if annotype != 'nonverbal annotation' and anontype != 'verbal annotation' %}
-    <a class="text-badge text-badge--red text-badge--link" href="#">{{ annotype }}</a>
+    <a class="text-badge text-badge--red text-badge--link" href="{% url 'interventions:list' %}?annotation_type={{ annotype }}">{{ annotype }}</a>
     {% endif %}
     {% endfor %}
     <h3 class="item__heading"><a class="item__link" href="{% url 'books:detail' intervention.item_slug %}">{{ intervention.item_title }}</a></h3>

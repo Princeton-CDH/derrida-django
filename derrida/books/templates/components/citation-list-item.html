@@ -17,7 +17,7 @@
   </figure>
 
   <div class="item__body">
-    <a class="text-badge text-badge--blue text-badge--link" href="#">{{ reference.reference_type }}</a>
+    <a class="text-badge text-badge--blue text-badge--link" href="{% url 'books:reference-list' %}?reference_type={{ reference.reference_type }}">{{ reference.reference_type }}</a>
     {% with instance=reference.instance %}
       {% url 'books:detail' reference.instance_slug as instance_url %}
       <h3 class="item__heading">
