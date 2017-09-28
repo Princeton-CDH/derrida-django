@@ -57,7 +57,7 @@ class InstanceSearchForm(forms.Form):
     }
 
     facet_fields = ['author', 'subject', 'item_type', 'pub_place', 'language',
-        'work_language', 'cited_in', 'author_letter']
+        'work_language', 'cited_in']
     author = FacetChoiceField()
     subject = FacetChoiceField()
     language = FacetChoiceField('Language of Publication')
@@ -89,8 +89,6 @@ class ReferenceSearchForm(forms.Form):
         required=False)
     derridawork = FacetChoiceField(label='Cited by Derrida in', required=False)
     reference_type = FacetChoiceField(label='Citation Type', required=False)
-    # Placeholder for the letter search that at passes the facets
-    instance_author_letter = FacetChoiceField()
     instance_author = FacetChoiceField(label='Publication Author')
     instance_subject = FacetChoiceField(label='Publication Subject')
     instance_language = FacetChoiceField(label='Language of Publication')

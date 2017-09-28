@@ -20,7 +20,6 @@ class InstanceIndex(indexes.SearchIndex, indexes.Indexable):
     #: non-multifield for first author to allow sorting by author
     sort_author = indexes.CharField(model_attr='work__authors__authorized_name',
         faceted=True)
-    author_letter = indexes.MultiValueField(faceted=True)
     #: author in firstname last for display
     author_firstname_last = indexes.MultiValueField(model_attr='work__authors__firstname_last')
     subject = indexes.MultiValueField(model_attr='work__subjects__name',
@@ -45,10 +44,6 @@ class InstanceIndex(indexes.SearchIndex, indexes.Indexable):
 
     def get_model(self):
         return Instance
-
-    def prepare_author_letter(self, instance):
-        # first letter of author
-        return [author.authorized_name[0].upper() for author in instance.work.authors.all()]
 
     def prepare_year(self, instance):
         # sort/display year: print year if known; otherwise, copyright year.
@@ -81,8 +76,6 @@ class ReferenceIndex(indexes.SearchIndex, indexes.Indexable):
     #: non-multifield for instance first author to allow sorting by author
     instance_sort_author = indexes.CharField(model_attr='instance__work__authors__authorized_name',
         faceted=True)
-    #: author in firstname last for display
-    instance_author_letter = indexes.MultiValueField(faceted=True)
     #: subjects for associated instance; :attr:`derrida.books.models.Instance.subjects`
     instance_subject = indexes.MultiValueField(model_attr='instance__work__subjects__name',
         faceted=True, null=True)
@@ -108,12 +101,6 @@ class ReferenceIndex(indexes.SearchIndex, indexes.Indexable):
 
     def get_model(self):
         return Reference
-
-    def prepare_instance_author_letter(self, reference):
-        # first letter of author
-        # slightly odd notation of instance.instance is correct here
-        return [author.authorized_name[0].upper()
-                for author in reference.instance.work.authors.all()]
 
     def prepare_instance_sort_author(self, reference):
         first_author = reference.instance.work.authors.first()
