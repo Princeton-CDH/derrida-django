@@ -35,7 +35,7 @@
     {% if book.year %}
     <p class="item__date">{{ book.year }}{% if book.copy %} - {{ book.copy }}{% endif %}</p>
     {% endif %}
-    <p class="item__location">{{ book.location }}</p>
+    <p class="item__location">{{ book.location|default:'' }}</p>
     <p class="item__excerpt">---</p>
     {% if book.cited_in %}
     <p class="item__citation">
