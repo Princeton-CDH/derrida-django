@@ -1,6 +1,7 @@
 {% extends 'djiffy/base.html' %}
 {% load static %}
 
+{% block page-subtitle %}{{ instance.work.primary_title }}{% if instance.work.authors.count == 1 %}, {{ instance.work.authors.first.lastname }}{% endif %} {% if instance.print_year or instance.copyright_year %}({% firstof instance.print_year instance.copyright_year %}{% if instance.copy %} - {{ instance.copy }}{% endif %}){% endif %} ‖ {% endblock %}
 {% block nav-title %} Derrida's Library {% endblock %}
 
 {% block header_class %}mdl-layout__header--transparent{% endblock %}
