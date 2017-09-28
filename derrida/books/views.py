@@ -223,7 +223,7 @@ class ReferenceDetailView(DetailView):
 
 class SearchView(TemplateView):
     form_class = SearchForm
-    template_name = 'books/search.html'
+    template_name = 'books/multi_search.html'
     max_per_type = 3
 
     def get(self, *args, **kwargs):
