@@ -93,6 +93,19 @@
        {% endfor %}
     </article>
 
+<div id="deep-zoom" style="width: 800px; height: 600px;"></div>
+<script src="{% static 'js//openseadragon/openseadragon.min.js' %}"></script>
+<script type="text/javascript" charset="utf-8">
+   $(document).ready(function () {
+      // seadragon configuration  for deep zoom
+        var viewer = OpenSeadragon({
+          id: "deep-zoom",
+          prefixUrl: "{% static 'js/openseadragon/images/' %}",
+          tileSources: "{% url 'books:canvas-image' instance.slug canvas.short_id 'info' %}",
+      });
+    });
+</script>
+
     </div>
   </article>
 {% endblock %}

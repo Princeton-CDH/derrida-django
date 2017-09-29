@@ -1,6 +1,7 @@
 import json
 
 from dal import autocomplete
+from django.conf import settings
 from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
@@ -322,7 +323,9 @@ class ProxyView(View):
             data = remote_response.json()
             # need to adjust the id to be relative to current url
             # this is a hack, patching in a proxy iiif interface at this url
-            data['@id'] = absolutize_url(request.path.replace('/info/', '/iiif'))
+            data['@id'] = absolutize_url(request.path.replace('/info/', '/iiif'),
+                request)
+
             local_response.content = json.dumps(data)
             # upate content-length for change in data
             local_response['content-length'] = len(local_response.content)
@@ -399,3 +402,8 @@ class CanvasImage(ProxyView):
         if kwargs['mode'] == 'large':
             return canvas.image.size(height=850, width=850,
                 exact=True)    # exact = preserve aspect
+
+        if kwargs['mode'] == 'info':
+            return canvas.image.info()
+        elif kwargs['mode'] == 'iiif':
+            return canvas.image.info().replace('info.json', kwargs['url'].strip('/'))

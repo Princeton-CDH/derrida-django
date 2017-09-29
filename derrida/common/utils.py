@@ -1,7 +1,8 @@
+from django.conf import settings
 from django.contrib.sites.models import Site
 
 
-def absolutize_url(local_url):
+def absolutize_url(local_url, request=None):
     '''Convert a local url to an absolute url, with scheme and server name,
     based on the current configured :class:`~django.contrib.sites.models.Site`.
 
@@ -14,11 +15,16 @@ def absolutize_url(local_url):
     # add scheme and server (i.e., the http://example.com) based
     # on the django Sites infrastructure.
     root = Site.objects.get_current().domain
-    # but also add the http:// if necessary, since most sites docs
+    # add http:// if necessary, since most sites docs
     # suggest using just the domain name
-    # NOTE: this is problematic for dev/test sites without https
-    if not root.startswith('https'):
-        root = 'https://' + root
+    if not root.startswith('http'):
+        # if in debug mode and request is passed in, use
+        # the current scheme (i.e. http for localhost/runserver)
+        if settings.DEBUG and request:
+            root = '%s://%s' % (request.scheme, root)
+        # assume https for production sites
+        else:
+            root = 'https://' + root
 
     # make sure there is no double slash between site url and local url
     if local_url.startswith('/'):
