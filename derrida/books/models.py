@@ -414,6 +414,19 @@ class Instance(Notable):
         Filtered based on canvas label naming conventions.'''
         return self.images().filter(label__icontains='insertion')
 
+    @property
+    def related_instances(self):
+        authors = [author.authorized_name
+                   for author in self.work.authors.all()]
+        same_author = Instance.objects.filter(
+            work__authors__authorized_name__in=authors
+        )
+        # don't want the same instance as object, so filter it out
+        # unless list is very long, the comprehension should be less overhead
+        # than a more complex query above
+        return [instance for instance in same_author
+                if instance.pk != self.pk]
+
 
 class WorkSubject(Notable):
     '''Through-model for work-subject relationship, to allow designating

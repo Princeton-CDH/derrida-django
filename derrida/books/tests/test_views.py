@@ -10,8 +10,7 @@ import json
 from haystack.models import SearchResult
 import pytest
 
-from derrida.people.models import Person
-from derrida.books.models import Instance, Reference, DerridaWorkSection, Work
+from derrida.books.models import Instance, Reference, DerridaWorkSection
 from derrida.interventions.models import Intervention, INTERVENTION_TYPES
 
 
@@ -46,30 +45,6 @@ class TestInstanceViews(TestCase):
         assert 'instance' in response.context
         # it should be the copy of la_view we looked up
         assert response.context['instance'] == la_vie
-
-        # make an instance have the same author and different work
-        # make a person
-        person = Person.objects.create(authorized_name='Foobar')
-        # get another work with one instance
-        work = Work.objects.get(primary_title__icontains='Philosophie')
-        # get its instance
-        related_instance = work.instance_set.first()
-
-        # add the person to its authors
-        work.authors.add(person)
-        work.save()
-        # add the person to la_vie's authors
-        la_vie_work = la_vie.work
-        la_vie_work.authors.add(person)
-        la_vie_work.save()
-
-        response = self.client.get(detail_view_url)
-        # view has related_instances in context
-        assert 'related_instances' in response.context
-        # related instances are just one - the instance for Philosophie
-        assert len(response.context['related_instances']) == 1
-        assert response.context['related_instances'][0] == related_instance
-
 
     @pytest.mark.haystack
     def test_instance_list_view(self):

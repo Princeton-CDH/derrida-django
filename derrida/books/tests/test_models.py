@@ -6,6 +6,7 @@ from djiffy.models import Manifest, Canvas
 import pytest
 import json
 
+from derrida.people.models import Person
 from derrida.places.models import Place
 # Common models between projects and associated new types
 from derrida.books.models import Publisher, OwningInstitution, \
@@ -392,6 +393,18 @@ class TestInstance(TestCase):
         assert insertion in insertions
         assert insertion2 in insertions
 
+    def test_related_instances(self):
+
+        # get la_vie and clone it
+        la_vie = Instance.objects.filter(work__primary_title__icontains='la vie').first()
+        pk = la_vie.pk
+        la_vie.pk = None
+        la_vie.save()
+        # refresh the object so it has its pk and related objects
+        la_vie.refresh_from_db()
+        # original la_vie should be the only related instance
+        assert len(la_vie.related_instances) == 1
+        assert la_vie.related_instances[0].pk == pk
 
 class TestInstanceQuerySet(TestCase):
     fixtures = ['sample_work_data.json']
