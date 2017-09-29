@@ -160,6 +160,17 @@ class TestInstanceViews(TestCase):
         response = self.client.get(canvas_page_url)
         assert response.url == canvas_image_url
 
+        # if no match for page, should fallback to item thumbnail
+        cover = Canvas.objects.create(manifest=item.digital_edition, order=2,
+            label='Front Cover', short_id='cover1', thumbnail=True)
+        canvas_page_url = reverse('books:canvas-by-page',
+            kwargs={'slug': item.slug, 'page_num': '1234'})
+        response = self.client.get(canvas_page_url)
+        cover_image_url = reverse('books:canvas-image',
+            kwargs={'slug': item.slug, 'short_id': cover.short_id,
+                    'mode': 'thumbnail'})
+        assert response.url == cover_image_url
+
 
 @USE_TEST_HAYSTACK
 class TestReferenceViews(TestCase):

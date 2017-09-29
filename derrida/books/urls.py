@@ -31,14 +31,16 @@ urlpatterns = [
     url(r'^library/(?P<slug>[-\w]+)/citations/$',
         views.InstanceReferenceDetailView.as_view(), name='detail-citations'),
 
+    url(r'^library/(?P<slug>[-\w]+)/gallery/(?P<short_id>[a-z0-9]+)/$',
+        views.CanvasDetail.as_view(), name='canvas-detail'),
     # canvas image views
-    url(r'^library/(?P<slug>[-\w]+)/gallery/(?P<page_num>[0-9]+)-?[0-9]*[a-z]?/$',
-        views.CanvasImage.as_view(), {'mode': 'by-page'}, name='canvas-by-page'),
-    url(r'^library/(?P<slug>[-\w]+)/gallery/(?P<short_id>[a-z0-9]+)/(?P<mode>thumbnail)/$',
+    url(r'^library/(?P<slug>[-\w]+)/gallery/images/(?P<page_num>[0-9]{1,4})-?[0-9]*[a-z]?/$',
+        views.CanvasImageByPageNumber.as_view(), {'mode': 'by-page'}, name='canvas-by-page'),
+    url(r'^library/(?P<slug>[-\w]+)/gallery/images/(?P<short_id>[a-z0-9]+)/(?P<mode>thumbnail|large)/$',
         views.CanvasImage.as_view(), name='canvas-image'),
 
     # default thumbnail for a book
-    url(r'^library/(?P<slug>[-\w]+)/thumbnail/$',
+    url(r'^library/(?P<slug>[-\w]+)/images/thumbnail/$',
         views.CanvasImage.as_view(), {'mode': 'thumbnail'}, name='book-thumbnail')
 
 ]

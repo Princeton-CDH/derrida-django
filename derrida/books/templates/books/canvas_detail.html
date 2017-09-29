@@ -1,0 +1,89 @@
+{% extends 'djiffy/base.html' %}
+{% load static %}
+
+{% block page-subtitle %}{{ instance.work.primary_title }}{% if instance.work.authors.count == 1 %}, {{ instance.work.authors.first.lastname }}{% endif %} {% if instance.print_year or instance.copyright_year %}({% firstof instance.print_year instance.copyright_year %}{% if instance.copy %} - {{ instance.copy }}{% endif %}){% endif %} ‖ {% endblock %}
+{% block nav-title %} Derrida's Library {% endblock %}
+
+{% block header_class %}mdl-layout__header--transparent{% endblock %}
+
+{% block page-context-id %}books-detail{% endblock %}
+
+{% block content %}
+  <header class="page-header page-header--link">
+    <div class="container">
+      <h1 class="page-header__heading"><a href="{% url 'books:detail-gallery' instance.slug %}"><span class="arrow_icon">←</span> Book Image Gallery</a></h1>
+    </div>
+  </header>
+  <article class="item">
+    <div class="container">
+
+        {# brief title information (copied from book-header) #}
+        {% with book=instance %}
+        <h1 class="item-title">{{ book.work.primary_title }}</h1>
+        <p class="item-author">
+          {% for author in book.work.authors.all %}
+            {% if not forloop.last %}
+              {{ author.authorized_name }};
+            {% else %}
+              {{ author.authorized_name }}
+            {% endif %}
+          {% endfor %}
+        </p>
+        <p class="item-term__value">{{ book.copyright_year }}{% if book.copy %} - {{ book.copy }}{% endif %}</p>
+        {% endwith %}
+
+        {# todo: cited in list #}
+
+
+      {# pages in this volume - navigation list #}
+
+      {# overview images #}
+      {% if instance.overview_images %}
+      <h3>Overview Images</h3>
+      <ul>
+      {% for canvas in instance.overview_images %}
+          <li><a href="{% url 'books:canvas-detail' instance.slug canvas.short_id %}">
+              {{ canvas.label }}</a></li>
+      {% endfor %}
+      </ul>
+      {% endif %}
+
+      {% if instance.annotated_pages %}
+      <h3>Annotated pages</h3>
+      <ul>
+     {% for canvas in instance.annotated_pages %}
+          <li><a href="{% url 'books:canvas-detail' instance.slug canvas.short_id %}">
+              {{ canvas.label }}</a></li>
+      {% endfor %}
+      </ul>
+      {% endif %}
+
+       {% if instance.insertion_images %}
+       <h3>Insertions</h3>
+       <ul>
+       {% for canvas in instance.insertion_images %}
+          <li><a href="{% url 'books:canvas-detail' instance.slug canvas.short_id %}">
+              {{ canvas.label }}</a></li>
+      {% endfor %}
+      </ul>
+      {% endif %}
+
+      {# large size image #}
+      <img class="img" src="{% url 'books:canvas-image' instance.slug canvas.short_id 'large' %}" />
+
+      {# image selection zones  #}
+       {# {% for intervention in canvas.intervention_set.all %} #}
+       {# provides x,y offset and width,height in percentages #}
+       {# {{ intervention.extra_data.image_selection }} #}
+       {# {% endfor %} #}
+
+        <article class="collection">
+       {% for intervention in canvas.intervention_set.all %}
+            {% include 'components/intervention-card.html' %}
+       {% endfor %}
+    </article>
+
+    </div>
+  </article>
+{% endblock %}
+

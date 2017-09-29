@@ -1,16 +1,9 @@
 <section class="collection__item item annotation">
+    {# an intervention should always have a canvas in current implementation #}
   <figure class="item__image">
-    {% if href %}
-    <a class="item__image-link" href="{% url href %}">
-    {% endif %}
-      {% if intervention.thumbnail %}
-      <img class="img" src="{{ intervention.thumbnail }}" />
-      {% else %}
-      <span class="img img--placeholder"></span>
-      {% endif %}
-    {% if href %}
+    <a class="item__image-link" href="{% url 'books:canvas-detail' intervention.item_slug intervention.canvas_id %}">
+      <img class="img" src="{% url 'books:canvas-image' intervention.item_slug intervention.canvas_id 'thumbnail' %}" />
     </a>
-    {% endif %}
   </figure>
   <div class="item__body">
     {% for annotype in intervention.annotation_type %}
@@ -29,7 +22,7 @@
     {# which for excerpt? both? #}
     <p class="item__excerpt">{{ intervention.anchor_text|default:'' }}</p>
     <p class="item__excerpt">{{ intervention.annotation_text|default:'' }}</p>
-     {# TODO #}
+     {# TODO - corresponding citation logic #}
     {# <p class="item__citation">Cited in De la grammatologie  p. 401</p> #}
   </div>
 </section>

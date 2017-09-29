@@ -1,9 +1,12 @@
+import json
+
 from dal import autocomplete
 from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.views.generic.base import TemplateView
 from django.views.generic import DetailView, ListView, View
+from djiffy.models import Canvas
 from haystack.query import SearchQuerySet
 from haystack.inputs import Clean
 import requests
@@ -273,6 +276,23 @@ class SearchView(TemplateView):
         }
 
 
+class CanvasDetail(DetailView):
+    model = Canvas
+    template_name = 'books/canvas_detail.html'
+
+    def get_object(self, queryset=None):
+        self.instance = get_object_or_404(Instance, slug=self.kwargs['slug'])
+        return self.instance.images() \
+            .filter(short_id=self.kwargs['short_id']).first()
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(CanvasDetail, self).get_context_data(*args, **kwargs)
+        context.update({
+            'instance': self.instance,
+        })
+        return context
+
+
 class ProxyView(View):
     # ProxyView, modeled on Django's RedirectView
     # adapted from the Readux codebase (readux.books.views)
@@ -326,6 +346,35 @@ class ProxyView(View):
         return response
 
 
+class CanvasImageByPageNumber(View):
+    '''Get a canvas image from an :class:`~derrida.books.models.Instance`
+    by page number. Searches by page label, if no match is found returns
+    the thumbnail for the Item if there is one.  404 if not found or
+    the Instance has no digital edition associated.'''
+    def get(self, request, *args, **kwargs):
+        self.instance = get_object_or_404(Instance, slug=self.kwargs['slug'])
+        # look up canvas for requested page number in this item
+        page = 'p. %s' % self.kwargs['page_num']
+        if self.instance.digital_edition:
+            canvas = self.instance.images().filter(label__exact=page).first()
+            # if page is not found, fallback to book cover
+            if not canvas:
+                canvas = self.instance.digital_edition.thumbnail
+
+            # if we have a canvas, redirect to thumbnail image view
+            if canvas and canvas.short_id:
+                canvas_url = reverse('books:canvas-image',
+                    kwargs={'slug': self.kwargs['slug'],
+                            'short_id': canvas.short_id, 'mode': 'thumbnail'})
+
+                response = HttpResponseRedirect(canvas_url)
+                response.status_code = 303  # see other
+                return response
+
+        # 404 if no canvas was found
+        raise Http404
+
+
 class CanvasImage(ProxyView):
     '''Local view for canvas images.  This proxies the
     configured IIIF image viewer in order to avoid exposing IIIF image
@@ -333,36 +382,20 @@ class CanvasImage(ProxyView):
     to restrict public viewable material to annotated pages,
     overview images, and insertions.'''
 
-    def get(self, request, *args, **kwargs):
-        self.instance = get_object_or_404(Instance, slug=self.kwargs['slug'])
-        # if mode is page number, lookup and redirect
-        if kwargs.get('mode', None) == 'by-page':
-            page = 'p. %s' % self.kwargs['page_num']
-            canvas = self.instance.images().filter(label=page).first()
-            # if page is not found, fallback to book cover
-            if self.instance.digital_edition and not canvas:
-                canvas = self.instance.digital_edition.thumbnail
-            if not canvas:
-                raise Http404
-
-            canvas_url = reverse('books:canvas-image',
-                kwargs={'slug': self.kwargs['slug'],
-                        'short_id': canvas.short_id, 'mode': 'thumbnail'})
-
-            response = HttpResponseRedirect(canvas_url)
-            response.status_code = 303  # see other
-            return response
-
-        return super(CanvasImage, self).get(request, *args, **kwargs)
-
     def get_proxy_url(self, *args, **kwargs):
+        instance = get_object_or_404(Instance, slug=self.kwargs['slug'])
         canvas_id = self.kwargs.get('short_id', None)
         if canvas_id:
-            canvas = self.instance.images() \
+            canvas = instance.images() \
                 .filter(short_id=self.kwargs['short_id']).first()
         else:
-            canvas = self.instance.digital_edition.thumbnail
+            canvas = instance.digital_edition.thumbnail
+            if not canvas:
+                raise Http404
 
         if kwargs['mode'] == 'thumbnail':
             return canvas.image.thumbnail()
 
+        if kwargs['mode'] == 'large':
+            return canvas.image.size(height=850, width=850,
+                exact=True)    # exact = preserve aspect
