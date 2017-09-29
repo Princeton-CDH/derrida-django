@@ -279,6 +279,51 @@ class TestIntervention(TestCase):
         note.text = 'foobar'
         assert note.is_verbal()
 
+    def test_annotation_type(self):
+        note = Intervention.objects.create()
+        # no tags, no text - nonverbal annotation
+        assert note.annotation_type == ['nonverbal annotation']
+
+        note.text = 'some content'
+        assert note.annotation_type == ['verbal annotation']
+
+        note.tags.set([
+            Tag.objects.get(name='underlining'),
+            Tag.objects.get(name='marginal mark'),
+            Tag.objects.get(name='blue ink'),
+            Tag.objects.get(name='transcription uncertain'),
+        ])
+        assert set(note.annotation_type) == \
+            set(['underlining', 'marginal mark', 'verbal annotation'])
+        note.text = ''
+        note.tags.set([
+            Tag.objects.get(name='line'),
+            Tag.objects.get(name='black ink'),
+            Tag.objects.get(name='text illegible'),
+        ])
+        assert set(note.annotation_type) == \
+            set(['line', 'nonverbal annotation'])
+
+    def test_inke(self):
+        note = Intervention.objects.create()
+        # no tags
+        assert note.ink == []
+
+        note.tags.set([
+            Tag.objects.get(name='underlining'),
+            Tag.objects.get(name='marginal mark'),
+            Tag.objects.get(name='blue ink'),
+            Tag.objects.get(name='transcription uncertain'),
+        ])
+        assert note.ink == ['blue ink']
+
+        note.tags.set([
+            Tag.objects.get(name='line'),
+            Tag.objects.create(name='pencil'),
+            Tag.objects.get(name='black ink')
+        ])
+        assert set(note.ink) == set(['black ink', 'pencil'])
+
 
 class TestInterventionViews(TestCase):
 

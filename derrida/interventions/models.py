@@ -137,10 +137,10 @@ class Intervention(BaseAnnotation):
     is_verbal.admin_order_field = 'text'
 
     def is_annotation(self):
-        return self.intervention_type == TYPES.ANNOTATION
+        return self.intervention_type == INTERVENTION_TYPES.ANNOTATION
 
     def is_insertion(self):
-        return self.intervention_type == TYPES.INSERTION
+        return self.intervention_type == INTERVENTION_TYPES.INSERTION
 
     @property
     def digital_edition(self):
@@ -153,6 +153,28 @@ class Intervention(BaseAnnotation):
         '''Annotated library work :class:`derrida.books.models.Instance`,
         via associated :attr:`digital_edition`.'''
         return self.canvas.manifest.instance
+
+    @property
+    def annotation_type(self):
+        '''List of annotation types. Generated from tags, excluding ink
+        and pencil tags, uncertain and illegible tags, and with the
+        addition of verbal or nonverbal  annotation.'''
+        # FIXME: should we restrict to known types to prevent new
+        # tags from being treated as annotation types?
+        tags = [tag.name for tag in self.tags.all() if not any(
+                 ['ink' in tag.name, 'pencil' in tag.name, 'uncertain' in tag.name,
+                  'illegible' in tag.name])]
+        if self.is_verbal():
+            tags.append('verbal annotation')
+        else:
+            tags.append('nonverbal annotation')
+        return tags
+
+    @property
+    def ink(self):
+        '''pen ink color or pencil, from tags'''
+        return [tag.name for tag in self.tags.all() if any(
+                 ['ink' in tag.name, 'pencil' in tag.name])]
 
     # NOTE: iiif_image_selection and admin_thumbnail borrowed
     # directly from cdh winthrop annotation code

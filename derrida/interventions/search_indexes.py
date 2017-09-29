@@ -19,7 +19,8 @@ class InterventionIndex(indexes.SearchIndex, indexes.Indexable):
     #: annotation or insertion (all annotation for now)
     intervention_type = indexes.CharField(model_attr='get_intervention_type_display')
     #: annotation type
-    annotation_type = indexes.MultiValueField(faceted=True, null=True)
+    annotation_type = indexes.MultiValueField(model_attr='annotation_type',
+        faceted=True, null=True)
     #: annotation text
     annotation_text = indexes.CharField(model_attr='text', null=True)
     #: annotation anchor text
@@ -30,7 +31,7 @@ class InterventionIndex(indexes.SearchIndex, indexes.Indexable):
     annotation_language = indexes.CharField(model_attr='text_language',
             faceted=True, null=True)
     #: color ink or pencil of annotation
-    ink = indexes.MultiValueField(faceted=True, null=True)
+    ink = indexes.MultiValueField(model_attr='ink', faceted=True, null=True)
     #: thumbnail of the annotated page
     thumbnail = indexes.CharField(model_attr='canvas__image__thumbnail',
         null=True)
@@ -66,26 +67,11 @@ class InterventionIndex(indexes.SearchIndex, indexes.Indexable):
     #: slug for generating url to work
     item_slug = indexes.CharField(model_attr='work_instance__slug')
 
+    # canvas details
+    canvas_id = indexes.CharField(model_attr='canvas__short_id')
+
     def get_model(self):
         return Intervention
-
-    def prepare_annotation_type(self, item):
-        # get annotation types from the tags
-        # TODO: may need to move into model class for shared display
-        tags = [tag.name for tag in item.tags.all() if not any(
-                 ['ink' in tag.name, 'pencil' in tag.name, 'uncertain' in tag.name,
-                   'illegible' in tag.name])]
-        if item.is_verbal():
-            tags.append('verbal annotation')
-        else:
-            tags.append('nonverbal annotation')
-        return tags
-
-    def prepare_ink(self, item):
-        # get pen and pencil types from the tags
-        # TODO: may need to move into model class for shared display
-        return [tag.name for tag in item.tags.all() if any(
-                 ['ink' in tag.name, 'pencil' in tag.name])]
 
     def prepare_annotation_author(self, item):
         if item.author:
