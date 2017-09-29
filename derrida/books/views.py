@@ -44,6 +44,20 @@ class InstanceDetailView(DetailView):
     model = Instance
     slug_field = 'slug'
 
+    def get_context_data(self, **kwargs):
+        context = super(InstanceDetailView, self).get_context_data(**kwargs)
+        authors = [author.authorized_name
+                   for author in self.object.work.authors.all()]
+        same_author = Instance.objects.filter(
+            work__authors__authorized_name__in=authors
+        )
+        # don't want the same instance as object, so filter it out
+        # unless list is very long, the comprehension should be less overhead
+        # than a more complex query above
+        context['related_instances'] = [instance for instance in same_author
+                                        if instance.pk != self.object.pk]
+        return context
+
     def get_queryset(self):
         instances = super(InstanceDetailView, self).get_queryset()
         return instances.filter(digital_edition__isnull=False)
