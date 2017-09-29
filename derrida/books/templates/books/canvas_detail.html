@@ -32,8 +32,15 @@
         <p class="item-term__value">{{ book.copyright_year }}{% if book.copy %} - {{ book.copy }}{% endif %}</p>
         {% endwith %}
 
-        {# todo: cited in list #}
-
+        {# locations where cited by Derrida #}
+        {% if instance.reference_set.all %}
+        Cited in <em>{{ instance.reference_set.all.0.derridawork }}</em>
+        <ul>
+        {% for reference in instance.reference_set.all %}
+            <li>p.{{ reference.derridawork_page }} {{ reference.derridawork_pageloc }}</li>
+        {% endfor %}
+        </ul>
+        {% endif %}
 
       {# pages in this volume - navigation list #}
 
@@ -70,6 +77,9 @@
 
       {# large size image #}
       <img class="img" src="{% url 'books:canvas-image' instance.slug canvas.short_id 'large' %}" />
+
+
+      {# TODO: deep zoom #}
 
       {# image selection zones  #}
        {# {% for intervention in canvas.intervention_set.all %} #}
