@@ -39,7 +39,6 @@
     var ${{name}}SelectionInput = $("#{{name}}-selection"),
         clearSelectionInput = function() {
           ${{name}}SelectionInput.val("");
-          ${{name}}SelectionInput.parent().removeClass("is-dirty");
         };
 
     ${{name}}Filter.find(".clear-link").on("click", function(e) {
@@ -75,9 +74,6 @@
           {{name}}SelectionVal = $.grep({{name}}SelectionVal, function(value) {
             return value != optionText;
           });
-        }
-        if ({{name}}SelectionVal.length) {
-          ${{name}}SelectionInput.parent().addClass("is-dirty");
         }
         ${{name}}SelectionInput.val({{name}}SelectionVal.join("; "));
       }
