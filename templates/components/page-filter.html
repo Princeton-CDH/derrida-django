@@ -1,26 +1,4 @@
-{% load widget_tweaks %}
-
-<script>
-  $(function() {
-    var $pageFilter = $(".page-filter"),
-        $container = $pageFilter.find('.container');
-
-    if (! $pageFilter.hasClass('is-visible')) {
-      $container.hide();
-    }
-
-    $(".toggle-button").on('click', function(e) {
-      e.preventDefault();
-      if ($pageFilter.hasClass('is-visible')) {
-        $pageFilter.removeClass('is-visible');
-        $container.slideUp(500);
-      } else {
-        $pageFilter.addClass('is-visible');
-        $container.slideDown(500);
-      }
-    });
-  });
-</script>
+{% load static widget_tweaks %}
 
 <section class="page-filter {% if show_filter %}is-visible{% endif %}">
 <form>
@@ -141,6 +119,9 @@
   </form>
   <footer class="page-filter__footer">
     <button class="toggle-button">
+      <object type="image/svg+xml" data="{% static "img/icons/Filter.svg" %}" class="svg-icon">
+        <img src="{% static "img/icons/Filter.svg" %}" />
+      </object>
       <i class="md-icon material-icons md-icon--hide">keyboard_arrow_down</i>
       <i class="md-icon material-icons md-icon--show">keyboard_arrow_up</i>
     </button>

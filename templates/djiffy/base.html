@@ -9,66 +9,7 @@
     <script src="{% static 'js/lib/sticky-sidebar.js' %}"></script>
     <script src="{% static 'js/lib/selectize.min.js' %}"></script>
     <script src="{% static 'js/lib/list.min.js' %}"></script>
-    <script>
-      $(function() {
-        Selectize.define('active_css_classes', function(options) {
-          var self = this;
-
-          this.onFocus = (function() {
-            var original = self.onFocus;
-              return function() {
-                var $select_field = self.$control.parents('.mdl-selectfield');
-                $select_field.addClass('is-active');
-                return original.apply(this, arguments);
-              }
-          })();
-
-          this.onBlur = (function() {
-            var original = self.onBlur;
-              return function() {
-                var $select_field = self.$control.parents('.mdl-selectfield');
-                $select_field.removeClass('is-active');
-                return original.apply(this, arguments);
-              }
-          })();
-
-          this.onChange = (function() {
-            var original = self.onBlur;
-              return function(value) {
-                var $select_field = self.$control.parents('.mdl-selectfield');
-                if (value.length) {
-                  $select_field.addClass('is-dirty');
-                } else {
-                  $select_field.removeClass('is-dirty');
-                }
-                return original.apply(this, arguments);
-              }
-          })();
-        });
-
-        $(".mdl-selectfield__select").selectize({
-          allowEmptyOption: true,
-          plugins: ['active_css_classes']
-        });
-
-        var $searchForm = $(".search-form-header");
-        $("[data-action=toggle-search-form]").on('click', function() {
-          $searchForm.toggleClass('is-hidden');
-        });
-
-        $(".item__image__link").on('mouseenter', function() {
-          $(this).parents('.collection__item').find('.item__heading .item__link').addClass('is-hovered');
-        }).on('mouseleave', function() {
-          $(this).parents('.collection__item').find('.item__heading .item__link').removeClass('is-hovered');
-        });
-
-        $(".mdl-layout__drawer__close_button").on("click", function(e) {
-          e.preventDefault();
-          $(".search-form-header").addClass("is-hidden");
-          $(".mdl-layout__drawer.is-visible, .mdl-layout__obfuscator.is-visible").removeClass("is-visible");
-        });
-      });
-    </script>
+    <script src="{% static 'js/site.js' %}"></script>
     {# Include analytics if INCLUDE_ANALYTICS is set to True #}
     {# {% include 'snippets/analytics.html' %} #}
 {% endblock %}
