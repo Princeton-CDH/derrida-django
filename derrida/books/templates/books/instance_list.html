@@ -1,6 +1,7 @@
 {% extends 'djiffy/base.html' %}
 {% load static %}
 
+{% block page-subtitle %}Derrida's Library ‖ {% endblock %}
 {% block nav-title %} Derrida's Library {% endblock %}
 
 {% block header_class %}mdl-layout__header--transparent{% endblock %}
@@ -12,8 +13,8 @@
     <div class="container page-header__container">
       <h1 class="page-header__heading">Derrida's Library</h1>
       <div class="page-header__callout">
-        <p class="lead">Only books that are cited in De la grammatologie and extant in Princeton University Library collection are displayed here.</p>
-        <p><a class="callout__link" href="/">A full list of citations is accessible through Citation List.</a></p>
+        <p class="lead">Browse Derrida’s personal copies of the books referenced in his published works. Only books extant in the Library of Jacques Derrida collection, held at the Princeton University Library’s Department of Rare Books and Special Collections, are displayed below.</p>
+        <p><a class="callout__link" href="{% url 'books:reference-list' %}/">A full list of references is accessible through Reference List.</a></p>
       </div>
     </div>
   </header>
@@ -30,6 +31,8 @@
       {% for instance in object_list %}
         {% url 'books:detail' instance.slug as instance_url %}
         {% include 'components/books-list-item.html' with href=instance_url book=instance %}
+      {% empty %}
+        <p>No trace of what you were searching for was found. Try a different keyword.</p>
       {% endfor %}
     </article>
     {% if is_paginated %}

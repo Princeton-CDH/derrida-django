@@ -1,6 +1,7 @@
 {% extends 'djiffy/base.html' %}
 {% load static %}
 
+{% block page-subtitle %}Interventions ‖ {% endblock %}
 {% block nav-title %} Interventions {% endblock %}
 
 {% block header_class %}mdl-layout__header--transparent{% endblock %}
@@ -12,7 +13,7 @@
     <div class="container page-header__container">
       <h1 class="page-header__heading">Interventions in Derrida's Library</h1>
       <div class="page-header__callout">
-        <p class="lead">Annotations and insertions in Derrida's books.</p>
+        <p class="lead">Explore the traces of Derrida’s reading.</p>
         {# <p><a class="callout__link" href="/">A full list of citations is accessible through Citation List.</a></p> #}
       </div>
     </div>
@@ -29,6 +30,8 @@
     <article class="collection">
        {% for intervention in object_list %}
             {% include 'components/intervention-list-item.html' %}
+       {% empty %}
+        <p>No trace of what you were searching for was found. Try a different keyword.</p>
         {% endfor %}
     </article>
     {% if is_paginated %}

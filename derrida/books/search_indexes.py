@@ -11,16 +11,15 @@ from derrida.books.models import Instance, Reference
 
 class InstanceIndex(indexes.SearchIndex, indexes.Indexable):
     text = indexes.CharField(document=True, use_template=True, stored=False)
-    display_title = indexes.CharField(model_attr='display_title')
+    display_title = indexes.CharField(model_attr='display_title', faceted=True)
     item_type = indexes.CharField(model_attr='item_type', faceted=True)
     copy = indexes.CharField(model_attr='copy', null=True)
     #: author names in lastname, first for sort/facet
     author = indexes.MultiValueField(model_attr='work__authors__authorized_name',
         faceted=True)
-    #: first author to allow sorting by author
-    first_author = indexes.CharField(model_attr='work__authors__authorized_name',
+    #: non-multifield for first author to allow sorting by author
+    sort_author = indexes.CharField(model_attr='work__authors__authorized_name',
         faceted=True)
-    author_letter = indexes.MultiValueField(faceted=True)
     #: author in firstname last for display
     author_firstname_last = indexes.MultiValueField(model_attr='work__authors__firstname_last')
     subject = indexes.MultiValueField(model_attr='work__subjects__name',
@@ -34,26 +33,21 @@ class InstanceIndex(indexes.SearchIndex, indexes.Indexable):
     work_year = indexes.IntegerField(model_attr='work__year', null=True)
     copyright_year = indexes.IntegerField(model_attr='copyright_year', null=True)
     print_year = indexes.IntegerField(model_attr='print_year', null=True)
+    year = indexes.IntegerField(null=True)
+    # FIXME: a book is cited if items it collects are cited
     cited_in = indexes.MultiValueField(model_attr='reference_set__derridawork__short_title',
         faceted=True, null=True)
     is_extant = indexes.FacetBooleanField(model_attr='is_extant')
-    is_annotated = indexes.FacetBooleanField(model_attr='is_extant')
+    is_annotated = indexes.FacetBooleanField(model_attr='is_annotated')
     digital_edition = indexes.FacetBooleanField(model_attr='digital_edition')
     slug = indexes.CharField(model_attr='slug')
-
-    # FIXME: probably shouldn't use this in production because it
-    # could expose the actual plum image url, which should be hidden
-    # to protect the content
-    # TODO: make a local view to proxy instead?
-    thumbnail = indexes.CharField(model_attr='digital_edition__thumbnail__image__thumbnail',
-        null=True)
 
     def get_model(self):
         return Instance
 
-    def prepare_author_letter(self, instance):
-        # first letter of author
-        return [author.authorized_name[0].upper() for author in instance.work.authors.all()]
+    def prepare_year(self, instance):
+        # sort/display year: print year if known; otherwise, copyright year.
+        return instance.print_year() or instance.copyright_year
 
 
 class ReferenceIndex(indexes.SearchIndex, indexes.Indexable):
@@ -68,6 +62,8 @@ class ReferenceIndex(indexes.SearchIndex, indexes.Indexable):
     derridawork_page = indexes.IntegerField(model_attr='derridawork_page')
     #: Page location in derrida work; :attr:`derrida.books.models.Reference.derridawork_pageloc`
     derridawork_pageloc = indexes.CharField(model_attr='derridawork_pageloc')
+    #: derrida work slug in derrida work; :attr:`derrida.books.models.DerridaWork.slug`
+    derridawork_slug = indexes.CharField(model_attr='derridawork__slug')
     #: Cited page in referenced work; :attr:`derrida.books.models.Reference.book_page`
     book_page = indexes.CharField(model_attr='book_page', null=True)
     #: anchor text
@@ -77,8 +73,9 @@ class ReferenceIndex(indexes.SearchIndex, indexes.Indexable):
     instance_title = indexes.CharField(model_attr='instance__display_title')
     #: Instance authors for faceted filtering; :method:`derrida.books.models.Work.firstname_last`
     instance_author = indexes.MultiValueField(model_attr='instance__work__authors__firstname_last')
-    #: author in firstname last for display
-    instance_author_letter = indexes.MultiValueField(faceted=True)
+    #: non-multifield for instance first author to allow sorting by author
+    instance_sort_author = indexes.CharField(model_attr='instance__work__authors__authorized_name',
+        faceted=True)
     #: subjects for associated instance; :attr:`derrida.books.models.Instance.subjects`
     instance_subject = indexes.MultiValueField(model_attr='instance__work__subjects__name',
         faceted=True, null=True)
@@ -97,12 +94,17 @@ class ReferenceIndex(indexes.SearchIndex, indexes.Indexable):
     instance_is_annotated = indexes.FacetBooleanField(model_attr='instance__is_annotated')
     #: instance slug, for generating urls and filtering by instance
     instance_slug = indexes.CharField(model_attr='instance__slug')
+    #: instance copy, for distinguishing multiple copies of the same edition
+    instance_copy = indexes.CharField(model_attr='instance__copy', null=True)
+    #: boolean indicating if instance has digital edition
+    instance_digital_edition = indexes.FacetBooleanField(model_attr='instance__digital_edition')
 
     def get_model(self):
         return Reference
 
-    def prepare_instance_author_letter(self, instance):
-        # first letter of author
-        # slightly odd notation of instance.instance is correct here
-        return [author.authorized_name[0].upper()
-                for author in instance.instance.work.authors.all()]
+    def prepare_instance_sort_author(self, reference):
+        first_author = reference.instance.work.authors.first()
+        if first_author:
+            return first_author.authorized_name
+
+

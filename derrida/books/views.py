@@ -1,13 +1,20 @@
+import json
+
 from dal import autocomplete
-from django.http import HttpResponseRedirect
+from django.conf import settings
+from django.http import HttpResponseRedirect, HttpResponse, Http404
+from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.views.generic.base import TemplateView
-from django.views.generic import DetailView, ListView
+from django.views.generic import DetailView, ListView, View
+from djiffy.models import Canvas
 from haystack.query import SearchQuerySet
 from haystack.inputs import Clean
+import requests
 
-from .forms import ReferenceSearchForm, InstanceSearchForm, SearchForm
-from .models import Publisher, Language, Instance, Reference, DerridaWorkSection
+from derrida.books.forms import ReferenceSearchForm, InstanceSearchForm, SearchForm
+from derrida.books.models import Publisher, Language, Instance, Reference, DerridaWorkSection
+from derrida.common.utils import absolutize_url
 from derrida.interventions.models import Intervention
 
 
@@ -36,7 +43,7 @@ class InstanceDetailView(DetailView):
 
     model = Instance
     slug_field = 'slug'
-
+        
     def get_queryset(self):
         instances = super(InstanceDetailView, self).get_queryset()
         return instances.filter(digital_edition__isnull=False)
@@ -69,11 +76,10 @@ class InstanceListView(ListView):
 
     def get_queryset(self):
         sqs = SearchQuerySet().models(self.model)
-        # restrict to extant books
-        sqs = sqs.filter(is_extant=True, item_type='Book') \
-            .exclude(item_type='Book Section')
-        # book also matches book section, so explicitly exclude partial items
-        # (exact match doesn't seem to help here)
+        # restrict to extant books that are cited
+        sqs = sqs.filter(is_extant=True, item_type_exact='Book',
+                         cited_in='*')
+        # Note: using item_type_exact to avoid matching book section
 
         # if search parameters are specified, use them to initialize the form;
         # otherwise, use form defaults
@@ -93,7 +99,7 @@ class InstanceListView(ListView):
 
         # filter solr query based on search options
         if search_opts.get('query', None):
-            sqs = sqs.filter(text=Clean(search_opts['query']))
+            sqs = sqs.filter(content=Clean(search_opts['query']))
         # if search_opts.get('is_extant', None):
             # sqs = sqs.filter(is_extant=search_opts['is_extant'])
         if search_opts.get('is_annotated', None):
@@ -103,7 +109,10 @@ class InstanceListView(ListView):
                 sqs = sqs.filter(**{'%s__in' % facet: search_opts[facet]})
         # sort should always be set
         if search_opts['order_by']:
-            sqs = sqs.order_by(search_opts['order_by'])
+            sort = search_opts['order_by']
+            # convert sort option to corresponding solr field
+            if sort in self.form.sort_fields:
+                sqs = sqs.order_by(self.form.sort_fields[sort])
 
         return sqs
 
@@ -177,7 +186,8 @@ class ReferenceHistogramView(ListView):
     def get_queryset(self):
         refs = super(ReferenceHistogramView, self).get_queryset()
         # sort based on specified mode
-        # TODO: filter on specific derrida work, for when we have more than one?
+        # NOTE: eventually this willl need to filter/segment
+        # on derrida work, when we have more than one.
         if self.kwargs.get('mode', None) == 'section':
             refs = refs.order_by_source_page()
         else:
@@ -206,9 +216,8 @@ class ReferenceDetailView(DetailView):
     def get_object(self, queryset=None):
         if queryset is None:
             queryset = self.get_queryset()
-        # FIXME: this is returning two results for some cases
-        # (must be an error in the data)
-        # return queryset.get(derridawork_page=self.kwargs['page'],
+        # NOTE: this is returning two results for some cases
+        # (seems to be an error in the data; just return the first match)
         return queryset.filter(
             derridawork_page=self.kwargs['page'],
             derridawork_pageloc=self.kwargs['pageloc'],
@@ -218,7 +227,7 @@ class ReferenceDetailView(DetailView):
 
 class SearchView(TemplateView):
     form_class = SearchForm
-    template_name = 'books/search.html'
+    template_name = 'books/multi_search.html'
     max_per_type = 3
 
     def get(self, *args, **kwargs):
@@ -266,3 +275,135 @@ class SearchView(TemplateView):
             'intervention_count': intervention_query.count()
             # outwork TODO
         }
+
+
+class CanvasDetail(DetailView):
+    model = Canvas
+    template_name = 'books/canvas_detail.html'
+
+    def get_object(self, queryset=None):
+        self.instance = get_object_or_404(Instance, slug=self.kwargs['slug'])
+        return self.instance.images() \
+            .filter(short_id=self.kwargs['short_id']).first()
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(CanvasDetail, self).get_context_data(*args, **kwargs)
+        context.update({
+            'instance': self.instance,
+        })
+        return context
+
+
+class ProxyView(View):
+    # ProxyView, modeled on Django's RedirectView
+    # adapted from the Readux codebase (readux.books.views)
+
+    def get(self, request, *args, **kwargs):
+        url = self.get_proxy_url(*args, **kwargs)
+        # use headers to allow browsers to cache downloaded copies
+        headers = {}
+        for header in ['HTTP_IF_MODIFIED_SINCE', 'HTTP_IF_UNMODIFIED_SINCE',
+                       'HTTP_IF_MATCH', 'HTTP_IF_NONE_MATCH']:
+            if header in request.META:
+                headers[header.replace('HTTP_', '')] = request.META.get(header)
+        remote_response = requests.get(url, headers=headers)
+        local_response = HttpResponse()
+        local_response.status_code = remote_response.status_code
+
+        # include response headers, except for server-specific items
+        for header, value in remote_response.headers.items():
+            if header not in ['Connection', 'Server', 'Keep-Alive', 'Link']:
+                             # 'Access-Control-Allow-Origin', 'Link']:
+                # NOTE: link header is valuable, but would
+                # need to be made relative to current url
+                local_response[header] = value
+
+        # special case, for deep zoom (hack)
+        if kwargs['mode'] == 'info':
+            data = remote_response.json()
+            # need to adjust the id to be relative to current url
+            # this is a hack, patching in a proxy iiif interface at this url
+            data['@id'] = absolutize_url(request.path.replace('/info/', '/iiif'),
+                request)
+
+            local_response.content = json.dumps(data)
+            # upate content-length for change in data
+            local_response['content-length'] = len(local_response.content)
+            # needed to allow external site (i.e. jekyll export)
+            # to use deepzoom
+            local_response['Access-Control-Allow-Origin'] = '*'
+        else:
+            # include response content if any
+            local_response.content = remote_response.content
+
+        return local_response
+
+    def head(self, request, *args, **kwargs):
+        url = self.get_proxy_url(*args, **kwargs)
+        remote_response = requests.head(url)
+        response = HttpResponse()
+        for header, value in remote_response.headers.iteritems():
+            if header not in ['Connection', 'Server', 'Keep-Alive',
+                             'Access-Control-Allow-Origin', 'Link']:
+                response[header] = value
+        return response
+
+
+class CanvasImageByPageNumber(View):
+    '''Get a canvas image from an :class:`~derrida.books.models.Instance`
+    by page number. Searches by page label, if no match is found returns
+    the thumbnail for the Item if there is one.  404 if not found or
+    the Instance has no digital edition associated.'''
+    def get(self, request, *args, **kwargs):
+        self.instance = get_object_or_404(Instance, slug=self.kwargs['slug'])
+        # look up canvas for requested page number in this item
+        page = 'p. %s' % self.kwargs['page_num']
+        if self.instance.digital_edition:
+            canvas = self.instance.images().filter(label__exact=page).first()
+            # if page is not found, fallback to book cover
+            if not canvas:
+                canvas = self.instance.digital_edition.thumbnail
+
+            # if we have a canvas, redirect to thumbnail image view
+            if canvas and canvas.short_id:
+                canvas_url = reverse('books:canvas-image',
+                    kwargs={'slug': self.kwargs['slug'],
+                            'short_id': canvas.short_id, 'mode': 'thumbnail'})
+
+                response = HttpResponseRedirect(canvas_url)
+                response.status_code = 303  # see other
+                return response
+
+        # 404 if no canvas was found
+        raise Http404
+
+
+class CanvasImage(ProxyView):
+    '''Local view for canvas images.  This proxies the
+    configured IIIF image viewer in order to avoid exposing IIIF image
+    urls for copyright content and to allow controlled access
+    to restrict public viewable material to annotated pages,
+    overview images, and insertions.'''
+
+    def get_proxy_url(self, *args, **kwargs):
+        instance = get_object_or_404(Instance, slug=self.kwargs['slug'])
+        canvas_id = self.kwargs.get('short_id', None)
+        if canvas_id:
+            canvas = instance.images() \
+                .filter(short_id=self.kwargs['short_id']).first()
+        else:
+            canvas = instance.digital_edition.thumbnail
+            if not canvas:
+                raise Http404
+
+        if kwargs['mode'] == 'thumbnail':
+            return canvas.image.thumbnail()
+
+        if kwargs['mode'] == 'large':
+            return canvas.image.size(height=850, width=850,
+                exact=True)    # exact = preserve aspect
+
+        if kwargs['mode'] == 'info':
+            return canvas.image.info()
+        elif kwargs['mode'] == 'iiif':
+            return canvas.image.info().replace('info.json', kwargs['url'].strip('/'))

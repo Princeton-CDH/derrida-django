@@ -2,6 +2,8 @@
 {% load static %}
 
 {% block nav-title %} Derrida's Library {% endblock %}
+{% block page-subtitle %}References by {% if mode == 'section' %}Section{% else %}Author{% endif %}
+ ‖ Visualization ‖ {% endblock %}
 
 {% block header_class %}mdl-layout__header--transparent{% endblock %}
 

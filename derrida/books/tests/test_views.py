@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.db.models import Min, Q
+from django.db.models import Min
 from django.test import TestCase, override_settings
 from django.urls import reverse
 from django.utils.html import escape
-from djiffy.models import Manifest
+from djiffy.models import Manifest, Canvas
 import json
 from haystack.models import SearchResult
 import pytest
@@ -14,11 +14,12 @@ from derrida.books.models import Instance, Reference, DerridaWorkSection
 from derrida.interventions.models import Intervention, INTERVENTION_TYPES
 
 
-#: reusable version of override_settings that sets test haystack connection
+#: override_settings and use test haystack connection
 USE_TEST_HAYSTACK = override_settings(
     HAYSTACK_CONNECTIONS=settings.HAYSTACK_TEST_CONNECTIONS)
 
 
+@USE_TEST_HAYSTACK
 class TestInstanceViews(TestCase):
     fixtures = ['test_instances.json']
 
@@ -45,12 +46,14 @@ class TestInstanceViews(TestCase):
         # it should be the copy of la_view we looked up
         assert response.context['instance'] == la_vie
 
-    @USE_TEST_HAYSTACK
     @pytest.mark.haystack
     def test_instance_list_view(self):
         list_view_url = reverse('books:list')
         # an anonymous user can see the view
         response = self.client.get(list_view_url)
+
+        extant_bks = Instance.objects.filter(is_extant=True,
+            journal__isnull=True, collected_in__isnull=True)
 
         assert response.status_code == 200
         # an object list is returned
@@ -62,6 +65,8 @@ class TestInstanceViews(TestCase):
             journal__isnull=True, collected_in__isnull=True)
         # 19 extant books in the fixture (excludes non-extant and book section)
         assert response.context['total'] == extant_bks.count()
+        # facets should be set
+        assert response.context['facets']
         self.assertContains(response, '19 Results',
             msg_prefix='total number of results displayed')
         assert isinstance(response.context['object_list'][0], SearchResult)
@@ -84,7 +89,90 @@ class TestInstanceViews(TestCase):
         # only 3 items on pg. 2
         assert len(response.context['object_list']) == 3
 
+        # test search/facet/order by
+        response = self.client.get(list_view_url, {'query': 'anthropologie'})
+        assert response.context['object_list'][0].display_title == \
+            "Anthropologie structurale"
+        # sort
+        response = self.client.get(list_view_url, {'order_by': 'title'})
+        assert response.context['object_list'][0].display_title == \
+            'A Study of Writing'
+        # annotated only
+        response = self.client.get(list_view_url, {'is_annotated': True})
+        assert len(response.context['object_list']) == \
+            extant_bks.filter(is_annotated=True).count()
+        # multiple facets should return both
+        response = self.client.get(list_view_url, {'pub_place': ['Paris', 'Pfullingen']})
+        # fixture has 12 published in Paris and 1 in Pfulligen
+        assert len(response.context['object_list']) == 14
 
+        # search for non-cited volume
+        response = self.client.get(list_view_url, {'query': 'gelb'})
+        # should not be found
+        assert len(response.context['object_list']) == 0
+
+    def test_canvas_by_pagenum(self):
+        # get an instance with no digital edition
+        item = Instance.objects.filter(digital_edition__isnull=True).first()
+        canvas_page_url = reverse('books:canvas-by-page',
+            kwargs={'slug': item.slug, 'page_num': '23'})
+        response = self.client.get(canvas_page_url)
+        # no digital edition - should 404
+        assert response.status_code == 404
+
+        # get an instance with no digital edition
+        item = Instance.objects.filter(digital_edition__isnull=False).first()
+        canvas_page_url = reverse('books:canvas-by-page',
+            kwargs={'slug': item.slug, 'page_num': '23'})
+        response = self.client.get(canvas_page_url)
+        # digital edition has no canvases - should still 404
+        assert response.status_code == 404
+
+        # create a canvas with matching label
+        canvas = Canvas.objects.create(manifest=item.digital_edition, order=1,
+            label='p. 23', short_id='c00123')
+        response = self.client.get(canvas_page_url)
+        assert response.status_code == 303
+        canvas_image_url = reverse('books:canvas-image',
+            kwargs={'slug': item.slug, 'short_id': canvas.short_id,
+                    'mode': 'thumbnail'})
+        assert response.url == canvas_image_url
+
+        # variant page numbers and page ranges should all work
+        # - page range
+        canvas_page_url = reverse('books:canvas-by-page',
+            kwargs={'slug': item.slug, 'page_num': '23-24'})
+        response = self.client.get(canvas_page_url)
+        assert response.url == canvas_image_url
+        # - some reference pages currently have an extra letter
+        canvas_page_url = reverse('books:canvas-by-page',
+            kwargs={'slug': item.slug, 'page_num': '23p'})
+        response = self.client.get(canvas_page_url)
+        assert response.url == canvas_image_url
+        # - other extra characters
+        canvas_page_url = reverse('books:canvas-by-page',
+            kwargs={'slug': item.slug, 'page_num': '23s'})
+        response = self.client.get(canvas_page_url)
+        assert response.url == canvas_image_url
+        # page range + character
+        canvas_page_url = reverse('books:canvas-by-page',
+            kwargs={'slug': item.slug, 'page_num': '23-24p'})
+        response = self.client.get(canvas_page_url)
+        assert response.url == canvas_image_url
+
+        # if no match for page, should fallback to item thumbnail
+        cover = Canvas.objects.create(manifest=item.digital_edition, order=2,
+            label='Front Cover', short_id='cover1', thumbnail=True)
+        canvas_page_url = reverse('books:canvas-by-page',
+            kwargs={'slug': item.slug, 'page_num': '1234'})
+        response = self.client.get(canvas_page_url)
+        cover_image_url = reverse('books:canvas-image',
+            kwargs={'slug': item.slug, 'short_id': cover.short_id,
+                    'mode': 'thumbnail'})
+        assert response.url == cover_image_url
+
+
+@USE_TEST_HAYSTACK
 class TestReferenceViews(TestCase):
     fixtures = ['test_references.json']
 
@@ -94,7 +182,6 @@ class TestReferenceViews(TestCase):
             instance.slug = instance.generate_safe_slug()
             instance.save()
 
-    @USE_TEST_HAYSTACK
     @pytest.mark.haystack
     def test_reference_list(self):
         reference_list_url = reverse('books:reference-list')

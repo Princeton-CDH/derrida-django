@@ -94,6 +94,14 @@ class TestPerson(TestCase):
         pers.authorized_name = 'Humperdinck'
         assert pers.firstname_last == pers.authorized_name
 
+    def test_lastname(self):
+        # extract lastname from authorized name
+        pers = Person(authorized_name='Granger, Gilles-Gaston')
+        assert pers.lastname == 'Granger'
+        # single name, should that occur
+        pers.authorized_name = 'Humperdinck'
+        assert pers.lastname == pers.authorized_name
+
 
 class TestResidence(TestCase):
 

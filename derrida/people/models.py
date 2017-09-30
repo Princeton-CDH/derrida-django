@@ -75,6 +75,11 @@ class Person(Notable, DateRange):
         names = self.authorized_name.split(', ', 1)
         return ' '.join(reversed(names))
 
+    @property
+    def lastname(self):
+        '''Last name, as extracted from authorized name'''
+        return self.authorized_name.split(', ', 1)[0]
+
 
 class Residence(Notable, DateRange):
     '''A residence where a person lived at some point in time'''

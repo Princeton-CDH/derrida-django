@@ -1,27 +1,34 @@
+{% comment %}
+This template is used to display references on multi-item search, reference
+list/search page, book references tab, and via ajax on reference histogram.
+Currently supports both display for both solr search result (all search/list
+views) and db model (ajax request via reference histogram).
+{% endcomment %}
 {% load static %}
 <section class="collection__item reference">
+  {# instance url for solr reference #}
+  {% url 'books:detail' reference.instance_slug as instance_url %}
   <figure class="item__image">
-    {% with digital_edition=reference.instance.digital_edition %}
-      {% if digital_edition %}
-      <a class="item__image-link" href="{{ reference.instance.get_absolute_url }}">
-        {% if digital_edition.thumbnail %}
-        <img class="img" src="{{ digital_edition.thumbnail.image.thumbnail }}" />
-        {% else %}
-        <span class="img img--placeholder"></span>
-        {% endif %}
+    {% if reference.instance_digital_edition  or reference.instance.digital_edition %}
+      {# thumbnail for reference - solr version #}
+      {% url 'books:canvas-by-page' slug=reference.instance_slug page_num=reference.book_page|slugify as solr_thumbnail_img %}
+      {# thumbnail for reference - database version #}
+      {% url 'books:canvas-by-page' slug=reference.instance.slug page_num=reference.book_page|slugify as thumbnail_img %}
+
+      {% url 'books:detail' slug=reference.instance_slug as solr_instance_url %}
+      <a class="item__image-link" href="{% firstof instance_url reference.instance.get_absolute_url %}">
+        <img class="img" src="{% firstof solr_thumbnail_img thumbnail_img %}" />
       </a>
-      {% else %}
-      <span class="img img--placeholder"></span>
-      {% endif %}
-    {% endwith %}
+    {% else %}
+        <span class="img img--placeholder"></span>
+    {% endif %}
   </figure>
 
   <div class="item__body">
-    <a class="text-badge text-badge--blue text-badge--link" href="#">{{ reference.reference_type }}</a>
     {% with instance=reference.instance %}
-      {% url 'books:detail' reference.instance_slug as instance_url %}
+    <a class="text-badge text-badge--blue text-badge--link" href="{% url 'books:reference-list' %}?reference_type={{ reference.reference_type }}">{{ reference.reference_type }}</a>
       <h3 class="item__heading">
-        <a class="item__link" href="{% firstof instance_url reference.instance.get_absolute_url %}">{% firstof reference.instance_title instance.display_title %}</a>
+        <a class="item__link" href="{% firstof instance_url instance.get_absolute_url %}">{% firstof reference.instance_title instance.display_title %}</a>
       </h3>
 
       <p class="item__author">
@@ -33,7 +40,7 @@
 
       {# solr #}
       {% if reference.instance_copyright_year %}
-        <p class="item__date">{{ reference.instance_copyright_year }}{% if instance.copy %} - {{ instance.copy }}{% endif %}</p>
+        <p class="item__date">{{ reference.instance_copyright_year }}{% if reference.instance_copy %} - {{ reference.instance_copy }}{% endif %}</p>
       {% endif %}
       {# db model #}
       {% if instance.copyright_year %}
