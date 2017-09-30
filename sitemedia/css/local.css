@@ -1655,6 +1655,16 @@ hr {
   border-top: 0.5em solid #fff;
   text-align: center; }
 
+.page-filter__status-icon {
+  height: 2em;
+  width: 100%;
+  background: #fff;
+  padding: 0 0 0.5em; }
+  .page-filter__status-icon .svg-icon {
+    height: 100%; }
+  .page-filter__status-icon path {
+    fill: #9e9e9e; }
+
 .toggle-button {
   background: #fff;
   padding: 0 2em;
@@ -1697,6 +1707,10 @@ hr {
     max-width: 180px; }
   .filter__selector .mdl-textfield {
     width: 100%; }
+  .filter__selector .mdl-textfield__label {
+    font-size: 12px;
+    top: 4px;
+    visibility: visible; }
 
 .filter {
   background-color: #fff;

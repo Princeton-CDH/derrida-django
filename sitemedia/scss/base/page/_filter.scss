@@ -24,6 +24,21 @@
   text-align: center;
 }
 
+.page-filter__status-icon {
+  height: 2em;
+  width: 100%;
+  background: $white;
+  padding: 0 0 0.5em;
+
+  .svg-icon {
+    height: 100%;
+  }
+
+  path {
+    fill: $medium-grey;
+  }
+}
+
 .toggle-button {
   background: $white;
   padding: 0 2em;
@@ -88,6 +103,12 @@
 
   .mdl-textfield {
     width: 100%;
+  }
+
+  .mdl-textfield__label {
+    font-size: 12px;
+    top: 4px;
+    visibility: visible;
   }
 }
 
