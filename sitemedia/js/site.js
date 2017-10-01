@@ -23,13 +23,13 @@ $(function() {
         $container.hide();
       }
 
-      $(".toggle-button").on('click', function(e) {
+      $(".toggle-button").on("click", function(e) {
         e.preventDefault();
-        if ($pageFilter.hasClass('is-visible')) {
-          $pageFilter.removeClass('is-visible');
+        if ($pageFilter.hasClass("is-visible")) {
+          $pageFilter.removeClass("is-visible");
           $container.slideUp(500);
         } else {
-          $pageFilter.addClass('is-visible');
+          $pageFilter.addClass("is-visible");
           $container.slideDown(500);
         }
 
@@ -45,14 +45,14 @@ $(function() {
   function initSelectize() {
     var $selectField = $(".mdl-selectfield__select");
     if ($selectField.length) {
-      Selectize.define('active_css_classes', function(options) {
+      Selectize.define("active_css_classes", function(options) {
         var self = this;
 
         this.onFocus = (function() {
           var original = self.onFocus;
             return function() {
-              var $select_field = self.$control.parents('.mdl-selectfield');
-              $select_field.addClass('is-active');
+              var $select_field = self.$control.parents(".mdl-selectfield");
+              $select_field.addClass("is-active");
               return original.apply(this, arguments);
             }
         })();
@@ -60,8 +60,8 @@ $(function() {
         this.onBlur = (function() {
           var original = self.onBlur;
             return function() {
-              var $select_field = self.$control.parents('.mdl-selectfield');
-              $select_field.removeClass('is-active');
+              var $select_field = self.$control.parents(".mdl-selectfield");
+              $select_field.removeClass("is-active");
               return original.apply(this, arguments);
             }
         })();
@@ -69,11 +69,11 @@ $(function() {
         this.onChange = (function() {
           var original = self.onBlur;
             return function(value) {
-              var $select_field = self.$control.parents('.mdl-selectfield');
+              var $select_field = self.$control.parents(".mdl-selectfield");
               if (value.length) {
-                $select_field.addClass('is-dirty');
+                $select_field.addClass("is-dirty");
               } else {
-                $select_field.removeClass('is-dirty');
+                $select_field.removeClass("is-dirty");
               }
               return original.apply(this, arguments);
             }
@@ -82,7 +82,7 @@ $(function() {
 
       $selectField.selectize({
         allowEmptyOption: true,
-        plugins: ['active_css_classes']
+        plugins: ["active_css_classes"]
       });
     }
   }
@@ -91,8 +91,8 @@ $(function() {
     initSelectize();
     var $searchForm = $(".search-form-header");
     if ($searchForm.length) {
-      $("[data-action=toggle-search-form]").on('click', function() {
-        $searchForm.toggleClass('is-hidden');
+      $("[data-action=toggle-search-form]").on("click", function() {
+        $searchForm.toggleClass("is-hidden");
       });
     }
   }
@@ -100,10 +100,10 @@ $(function() {
   function initCustomActions() {
     var $itemImageLinks = $(".item__image__link");
     if ($itemImageLinks.length) {
-      $itemImageLinks.on('mouseenter', function() {
-        $(this).parents('.collection__item').find('.item__heading .item__link').addClass('is-hovered');
-      }).on('mouseleave', function() {
-        $(this).parents('.collection__item').find('.item__heading .item__link').removeClass('is-hovered');
+      $itemImageLinks.on("mouseenter", function() {
+        $(this).parents(".collection__item").find(".item__heading .item__link").addClass("is-hovered");
+      }).on("mouseleave", function() {
+        $(this).parents(".collection__item").find(".item__heading .item__link").removeClass("is-hovered");
       });
     }
 
@@ -124,19 +124,19 @@ $(function() {
     }
     $bookHeader.stickySidebar({
       topSpacing: 20,
-      containerSelector: '#books-detail article',
+      containerSelector: "#books-detail article",
       minWidth: 649,
       resizeSensor: false
     });
 
-    var $body = $('body'),
+    var $body = $("body"),
         $navLinks = $(".item-navigation-link"),
         activeClass = "item-navigation-link--active";
 
-    $navLinks.on('click', function(e) {
+    $navLinks.on("click", function(e) {
       var $this = $(this),
-          hash = $this.attr('href'),
-          $target = $('[name=' + hash.slice(1) + ']');
+          hash = $this.attr("href"),
+          $target = $("[name=" + hash.slice(1) + "]");
 
       if ($target.length) {
         e.preventDefault();
@@ -163,21 +163,21 @@ $(function() {
     }
 
     $body.scroll(function() {
-        clearTimeout($.data(this, 'scrollTimer'));
-        $.data(this, 'scrollTimer', setTimeout(function() {
-            var activeTab = '',
+        clearTimeout($.data(this, "scrollTimer"));
+        $.data(this, "scrollTimer", setTimeout(function() {
+            var activeTab = "",
                 offset = 64;
             if (navLinkSelectors.length) {
               if ($body.scrollTop() < offset) {
                 var $this = $(navLinkSelectors[0]);
                 $(".item-navigation-link").removeClass(activeClass);
-                $(".item-navigation-link[href=#"+$this.attr('name')+"]").addClass(activeClass);
+                $(".item-navigation-link[href=#"+$this.attr("name")+"]").addClass(activeClass);
               } else {
-                $(navLinkSelectors.join(',')).each(function() {
+                $(navLinkSelectors.join(",")).each(function() {
                   var $this = $(this);
                   if ($this.position().top < $body.scrollTop() + offset ) {
                     $(".item-navigation-link").removeClass(activeClass);
-                    $(".item-navigation-link[href=#"+$this.attr('name')+"]").addClass(activeClass);
+                    $(".item-navigation-link[href=#"+$this.attr("name")+"]").addClass(activeClass);
                   }
                 });
               }
@@ -202,7 +202,7 @@ $(function() {
         type: "async",
         async: {
            error: function(that, xhr, data) {
-             that.$contentElement.children('.icon-refresh').addClass("error");
+             that.$contentElement.children(".icon-refresh").addClass("error");
            }
         }
       });
@@ -361,10 +361,10 @@ $(function() {
           $parent = $this.parent(),
           $checkbox = $this.children("input").addClass("hidden"),
           $label = $("<span/>").text($.trim($this.text()));
-      $this.text('');
+      $this.text("");
       $this.append($checkbox).append($label);
 
-      $parent.addClass('sort-link');
+      $parent.addClass("sort-link");
       if ($checkbox.prop("checked")) {
         $parent.addClass("sort-link--active");
       }
