@@ -1659,11 +1659,27 @@ hr {
   height: 2em;
   width: 100%;
   background: #fff;
-  padding: 0 0 0.5em; }
+  padding: 0 0 0.5em;
+  transition: height 150ms ease; }
   .page-filter__status-icon .svg-icon {
     height: 100%; }
   .page-filter__status-icon path {
     fill: #9e9e9e; }
+  .is-visible .page-filter__status-icon {
+    height: 0;
+    overflow: hidden; }
+  .is-active .page-filter__status-icon path {
+    fill: #3ca1ff; }
+  .is-active .page-filter__status-icon::after {
+    content: "";
+    background-color: #ff4335;
+    position: absolute;
+    height: 6px;
+    width: 6px;
+    border-radius: 50%;
+    margin-left: 4px; }
+  .is-active.is-visible .page-filter__status-icon::after {
+    display: none; }
 
 .toggle-button {
   background: #fff;

@@ -29,6 +29,7 @@
   width: 100%;
   background: $white;
   padding: 0 0 0.5em;
+  transition: height $base-duration $base-timing;
 
   .svg-icon {
     height: 100%;
@@ -36,6 +37,33 @@
 
   path {
     fill: $medium-grey;
+  }
+
+  .is-visible & {
+    height: 0;
+    overflow: hidden;
+  }
+
+  .is-active & {
+    path {
+      fill: $blue;
+    }
+
+    &::after {
+      content: "";
+      background-color: $red;
+      position: absolute;
+      height: 6px;
+      width: 6px;
+      border-radius: 50%;
+      margin-left: 4px;
+    }
+  }
+
+  .is-active.is-visible & {
+    &::after {
+      display: none;
+    }
   }
 }
 
@@ -78,7 +106,6 @@
   flex-wrap: wrap;
   align-items: stretch;
   padding-bottom: 1em;
-
 
   .mdl-button {
     align-self: center;
