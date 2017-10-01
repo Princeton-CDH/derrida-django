@@ -2,8 +2,24 @@ $(function() {
   function initPageFilter() {
     var $pageFilter = $(".page-filter");
     if ($pageFilter.length) {
-      var $container = $pageFilter.find('.container');
-      if (! $pageFilter.hasClass('is-visible')) {
+      var $container = $pageFilter.find(".container"),
+          checkForActiveFilters = function() {
+            var $filterInputs = $pageFilter.find(".mdl-textfield__input, .mdl-switch__input"),
+                activeFilters = $filterInputs.filter(function() {
+                  var $this = $(this);
+                  if ($this.is(".mdl-switch__input")) {
+                    return $this.prop("checked");
+                  } else {
+                    return $this.val();
+                  }
+                });
+            if (activeFilters.length) {
+              $pageFilter.addClass("is-active");
+            } else {
+              $pageFilter.removeClass("is-active");
+            }
+          };
+      if (! $pageFilter.hasClass("is-visible")) {
         $container.hide();
       }
 
@@ -16,11 +32,14 @@ $(function() {
           $pageFilter.addClass('is-visible');
           $container.slideDown(500);
         }
-      });
-    }
 
+        checkForActiveFilters();
+      });
+
+    checkForActiveFilters();
     initAuthorFilter();
     initOrderBy();
+    }
   }
 
   function initSelectize() {
