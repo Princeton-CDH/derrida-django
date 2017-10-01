@@ -1,6 +1,6 @@
 {% load static widget_tweaks %}
 
-<section class="page-filter {% if show_filter %}is-visible{% endif %}">
+<section class="page-filter {% if not hide_filter %}is-visible{% endif %}">
 <form>
   <div class="container">
     <header class="page-filter__header">
