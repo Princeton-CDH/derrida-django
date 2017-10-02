@@ -1135,6 +1135,10 @@ hr {
   box-shadow: none;
   background-color: #fff;
   color: #424242; }
+  @media only screen and (min-width: 1080px) {
+    .mdl-layout__header {
+      position: fixed;
+      z-index: 5; } }
   .mdl-layout__header.mdl-layout__header--transparent {
     background-color: transparent; }
   .mdl-layout__header,
@@ -1294,17 +1298,41 @@ hr {
 
 .search-form-header {
   z-index: 10;
-  padding: 0 2.94118%; }
+  padding: 0 2.94118%;
+  height: 4em;
+  width: 100%;
+  top: 4.3em;
+  position: absolute; }
+  @media only screen and (min-width: 1080px) {
+    .search-form-header {
+      position: fixed;
+      top: 0;
+      margin: 0 10%;
+      width: 80%; }
+      .search-form-header.is-fixed:not(.is-hidden)::before {
+        content: "";
+        background: #f5f5f5;
+        position: absolute;
+        width: 120%;
+        margin-left: -10%;
+        height: 100%;
+        z-index: -3; } }
+  .search-form-header.is-fixed {
+    position: fixed;
+    top: 0; }
+    .search-form-header.is-fixed:not(.is-hidden) {
+      background-color: #f5f5f5;
+      z-index: 4; }
+  .search-form-header ~ main {
+    transition: padding-top 400ms ease; }
+  .search-form-header:not(.is-hidden) ~ main {
+    padding-top: 4.3em; }
   @media only screen and (min-width: 650px) {
     .background-colored--dark .search-form-header {
       color: #eee; } }
-  @media only screen and (min-width: 1080px) {
-    .search-form-header {
-      position: relative;
-      width: 100%; } }
   .search-form-header .search-form-header__form {
-    height: 4rem;
-    transition: margin-bottom 700ms ease, height 700ms ease, opacity 700ms ease; }
+    height: 4.3em;
+    transition: margin-bottom 400ms ease, height 400ms ease, opacity 400ms ease; }
     @media only screen and (min-width: 1080px) {
       .search-form-header .search-form-header__form {
         margin-bottom: 5em; } }
@@ -1555,11 +1583,15 @@ hr {
 .page-header {
   background-position: center;
   background-size: contain;
-  background-repeat: no-repeat; }
+  background-repeat: no-repeat;
+  transition: margin-top 0.5s ease;
+  margin-top: 5rem; }
+  @media only screen and (min-width: 650px) {
+    .page-header {
+      margin: 5rem 6rem 0; } }
   @media only screen and (min-width: 1080px) {
     .page-header {
-      margin: -64px 6rem 0;
-      transition: margin-top 0.5s ease; } }
+      margin: 1rem 6rem 0; } }
   #citations-list .page-header {
     background-image: url("../img/banner/citation_small_2x.png"); }
     @media only screen and (min-width: 650px) {

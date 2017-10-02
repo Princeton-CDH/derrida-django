@@ -2,10 +2,15 @@
   background-position: center;
   background-size: contain;
   background-repeat: no-repeat;
+  transition: margin-top 0.5s ease;
+  margin-top: 5rem;
+
+  @include grid-media($large-medium-viewport-grid) {
+    margin: 5rem 6rem 0;
+  }
 
   @include grid-media($xlarge-viewport-grid) {
-    margin: -$header-row-height 6rem 0;
-    transition: margin-top 0.5s ease;
+    margin: 1rem 6rem 0;
   }
 
   #citations-list & {

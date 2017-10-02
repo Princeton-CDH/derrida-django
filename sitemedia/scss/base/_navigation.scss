@@ -5,6 +5,11 @@
   background-color: $header-background-color;
   color: $header-text-color;
 
+  @include grid-media($xlarge-viewport-grid) {
+    position: fixed;
+    z-index: 5;
+  }
+
   &.mdl-layout__header--transparent {
     background-color: transparent;
   }

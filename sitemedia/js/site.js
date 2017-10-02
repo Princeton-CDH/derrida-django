@@ -87,8 +87,25 @@ $(function() {
     }
   }
 
+  function initFixedScrollSearchHeader() {
+    var $searchFormHeader = $(".search-form-header");
+    if ($searchFormHeader.length) {
+      var headerHeight = $searchFormHeader.height();
+      $("body").on("scroll", function() {
+        var scrollTop = $(this).scrollTop(),
+            cutoff = $searchFormHeader.position().top + headerHeight;
+        if (scrollTop > cutoff) {
+          $searchFormHeader.addClass("is-fixed");
+        } else {
+          $searchFormHeader.removeClass("is-fixed");
+        }
+      });
+    }
+  }
+
   function initSearchForm() {
     initSelectize();
+    initFixedScrollSearchHeader();
     var $searchForm = $(".search-form-header");
     if ($searchForm.length) {
       $("[data-action=toggle-search-form]").on("click", function() {
