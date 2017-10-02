@@ -420,9 +420,7 @@ class Instance(Notable):
                    for author in self.work.authors.all()]
         return Instance.objects.filter(
             work__authors__authorized_name__in=authors
-        ).exclude(
-            pk=self.pk
-        )
+        ).exclude(pk=self.pk).exclude(digital_edition__isnull=True)
 
 
 class WorkSubject(Notable):

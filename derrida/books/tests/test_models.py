@@ -397,14 +397,25 @@ class TestInstance(TestCase):
 
         # get la_vie and clone it
         la_vie = Instance.objects.filter(work__primary_title__icontains='la vie').first()
+        la_vie.digital_edition = mfst = Manifest.objects.create(short_id='m1')
+        la_vie.save()
         pk = la_vie.pk
         la_vie.pk = None
+        la_vie.digital_edition = mfst = Manifest.objects.create(short_id='m2')
         la_vie.save()
         # refresh the object so it has its pk and related objects
         la_vie.refresh_from_db()
         # original la_vie should be the only related instance
         assert len(la_vie.related_instances) == 1
         assert la_vie.related_instances[0].pk == pk
+        # delete digital edition
+        la_vie_old = la_vie.related_instances[0]
+        la_vie_old.digital_edition = None
+        la_vie_old.save()
+        # now check to get an empty set
+        la_vie.refresh_from_db()
+        assert len(la_vie.related_instances) == 0
+
 
 class TestInstanceQuerySet(TestCase):
     fixtures = ['sample_work_data.json']
