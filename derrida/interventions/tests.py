@@ -424,6 +424,7 @@ class TestInterventionViews(TestCase):
         response = self.client.get(canvas_url)
         assert response.status_code == 200
         self.assertTemplateUsed(response, 'djiffy/canvas_detail.html')
+        self.assertTemplateNotUsed(response, 'books/canvas_detail.html')
         self.assertNotContains(response, 'annotator.min.js',
             msg_prefix='Annotator not enabled for user without annotation add permission')
 

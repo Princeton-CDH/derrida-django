@@ -279,7 +279,7 @@ class SearchView(TemplateView):
 
 class CanvasDetail(DetailView):
     model = Canvas
-    template_name = 'books/canvas_detail.html'
+    template_name = 'books/public_canvas_detail.html'
 
     def get_object(self, queryset=None):
         self.instance = get_object_or_404(Instance, slug=self.kwargs['slug'])
