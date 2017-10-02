@@ -335,15 +335,22 @@ $(function() {
       setSelectedOptionsValues(this);
     });
 
-    $("body").on("click.filter-author", function(e) {
+    var closeFilter = function($openInput) {
+      $authorFilter.slideUp();
+      $openInput.removeClass("is-open").removeClass("is-focused");
+    }
+
+    $("body").on("click.filter--author", function(e) {
       var $target = $(e.target),
+          filterSelector = ".filter--author",
           $openInput = $authorFilter.prev(".is-open"),
           isOpenText = $target.is(".is-open") || $target.parents(".is-open").length,
-          $filter = $target.is(".filter") ? $target : $target.parents(".filter").first();
+          $filter = $target.is(filterSelector) ? $target : $target.parents(filterSelector).first();
 
       if (! $filter.length && ! isOpenText && $openInput.length) {
-        $authorFilter.slideUp();
-        $openInput.removeClass("is-open").removeClass("is-focused");
+        closeFilter($openInput);
+      } else if ($openInput.length && ! $target.parent().next().is(filterSelector)) {
+        closeFilter($openInput);
       } else if ($openInput.length) {
         $openInput.addClass("is-focused");
       }

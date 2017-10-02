@@ -1713,7 +1713,8 @@ hr {
   align-self: baseline;
   padding: 0 1rem;
   flex-grow: 2;
-  flex-basis: 330px; }
+  flex-basis: 330px;
+  position: relative; }
   @media only screen and (min-width: 650px) {
     .filter__selector {
       max-width: 50%; } }
@@ -1732,7 +1733,10 @@ hr {
   background-color: #fff;
   border: 1px solid #3ca1ff;
   padding: 1rem 1rem 0.8rem;
-  max-width: 360px; }
+  max-width: 360px;
+  position: absolute;
+  top: 3.4em;
+  z-index: 3; }
   .filter .mdl-checkbox__box-outline {
     border: 1px solid rgba(34, 34, 34, 0.2); }
   .filter .clear-link {

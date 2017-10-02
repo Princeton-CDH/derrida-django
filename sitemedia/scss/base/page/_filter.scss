@@ -117,6 +117,7 @@
   padding: 0 1rem;
   flex-grow: 2;
   flex-basis: 330px;
+  position: relative;
 
   @include grid-media($large-medium-viewport-grid) {
     max-width: 50%;
@@ -139,12 +140,14 @@
   }
 }
 
-// New Search filter
 .filter {
   background-color: $white;
   border: 1px solid $primary-color;
   padding: 1rem 1rem 0.8rem;
   max-width: 360px;
+  position: absolute;
+  top: 3.4em;
+  z-index: 3;
 
   .mdl-checkbox__box-outline {
     border: 1px solid transparentize($black, 0.8);
