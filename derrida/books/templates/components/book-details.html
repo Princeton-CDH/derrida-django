@@ -73,12 +73,10 @@
   </div>
   {% endif %}
 
-
     {% if book.related_instances %}
     <div class="item-term">
       <h3 class="item-term__label">Related Books</h3>
       <div class="collection collection--condensed item-term_value">
-        {# a list in this case, not a query set #}
         {% for instance in book.related_instances %}
           {% include 'components/books-list-item.html' with book=instance %}
         {% endfor %}
