@@ -410,13 +410,19 @@ class CanvasImage(ProxyView):
         if kwargs['mode'] == 'large':
             # only allow large images for insertions, overview images,
             # and pages with documented interventions
-            if Instance.allow_canvas_detail(canvas):
-                return canvas.image.size(height=850, width=850,
-                    exact=True)    # exact = preserve aspect
-            else:
+            # - also checks if an image has been suppressed
+            if not instance.allow_canvas_large_image(canvas):
                 raise Http404
+
+            return canvas.image.size(height=850, width=850,
+                exact=True)    # exact = preserve aspect
 
         if kwargs['mode'] == 'info':
             return canvas.image.info()
         elif kwargs['mode'] == 'iiif':
+            # also restrict iiif tiles based on large image permission
+            if not instance.allow_canvas_large_image(canvas):
+                raise Http404
             return canvas.image.info().replace('info.json', kwargs['url'].strip('/'))
+
+

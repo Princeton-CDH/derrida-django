@@ -336,7 +336,14 @@ class InstanceAdminForm(forms.ModelForm):
             'pub_place': autocomplete.ModelSelect2Multiple(
                 url='places:autocomplete',
                 attrs={'data-placeholder': 'Start typing location to search...'}),
-           'digital_edition': ManifestSelectWidget
+            'digital_edition': ManifestSelectWidget,
+            'suppressed_images': autocomplete.ModelSelect2Multiple(
+                url='djiffy:canvas-autocomplete',
+                attrs={'data-placeholder': 'Search by page label...'},
+                # NOTE: restricted to canvases associated with current instance
+                forward=[forward.Field('digital_edition', 'manifest')],
+            )
+
         }
 
 
@@ -356,7 +363,9 @@ class InstanceAdmin(admin.ModelAdmin):
         'cited_in',
         ('is_annotated', 'has_insertions', 'has_dedication'),
         'uri', 'dimensions', ('start_page', 'end_page'),
-        'collected_in', 'digital_edition', 'notes')
+        'collected_in', 'digital_edition', 'notes',
+        'suppress_all_images', 'suppressed_images',
+    )
     search_fields = ('alternate_title', 'work__primary_title',
         'work__authors__authorized_name', 'instancecatalogue__call_number',
         'notes', 'publisher__name', 'uri')

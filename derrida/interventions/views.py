@@ -107,6 +107,10 @@ class CanvasAutocomplete(LoginPermissionRequired, djiffy_views.CanvasAutocomplet
         instance = self.forwarded.get('instance', None)
         if instance:
             query = query.filter(manifest__instance__pk=instance)
+        # filter on manifest id if present
+        manifest_id = self.forwarded.get('manifest', None)
+        if manifest_id:
+            query = query.filter(manifest__pk=manifest_id)
         return query
 
 
