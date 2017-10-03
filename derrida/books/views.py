@@ -2,9 +2,11 @@ import json
 
 from dal import autocomplete
 from django.contrib import messages
+from django.contrib.auth.decorators import permission_required
 from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
+from django.utils.decorators import method_decorator
 from django.views.generic import DetailView, ListView, View
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import FormView
@@ -297,20 +299,26 @@ class CanvasDetail(DetailView):
 
     def get_context_data(self, *args, **kwargs):
         context = super(CanvasDetail, self).get_context_data(*args, **kwargs)
-        context.update({
-            'instance': self.instance,
-        })
-        # TODO: only if user has perms
-        context['suppress_form'] = SuppressImageForm(initial={'canvas_id': self.object.short_id})
+        context['instance'] = self.instance
+        if self.request.user.has_perm('books.change_instance'):
+            context.update({
+                'suppress_form': SuppressImageForm(initial={'canvas_id': self.object.short_id}),
+                'canvas_suppressed': self.instance.suppress_all_images or \
+                    self.object in self.instance.suppressed_images.all()
+            })
         return context
 
 
 class CanvasSuppress(FormView):
     '''Form view to process an admin request to suppress a single
-    canvas image or all annotated pages from a volume.'''
+    canvas image or all annotated pages from a volume.  Requires
+    user to have change_instance permission.'''
     form_class = SuppressImageForm
 
-    # TODO: check user has required permissions
+    @method_decorator(permission_required('books.change_instance'))
+    def dispatch(self, *args, **kwargs):
+        return super(CanvasSuppress, self).dispatch(*args, **kwargs)
+
     def form_valid(self, form):
         # process valid POSTed form data
         formdata = form.cleaned_data

@@ -76,19 +76,30 @@
       {% endif %}
 
 
-  {# TODO: check perms #}
-  {% if suppress_form %}
   {# admin form - suppress current page image or all annotated page images for this volume #}
-  <div>
-    <form method="POST" action="{% url 'books:canvas-suppress' instance.slug %}">
-      {% csrf_token %}
-      Suppress {{ suppress_form.suppress }}
-      {{ suppress_form.canvas_id }}
-      <input type="submit"/>
-    </form>
-  </div>
+  {# display if suppress form is present and user has permission to change book instance #}
+  {% if suppress_form and perms.books.change_instance %}
+    {% if instance.suppress_all_images %}
+      <p>All annotated page images in this volume are suppressed.</p>
+    {% elif canvas_suppressed %}
+        <p>This page image is suppressed.</p>
+    {% else %}
+    <div>
+      <form method="POST" action="{% url 'books:canvas-suppress' instance.slug %}">
+        {% csrf_token %}
+        Suppress {{ suppress_form.suppress }}
+        {{ suppress_form.canvas_id }}
+        <input type="submit"/>
+      </form>
+    </div>
+    {% endif %}
   {% endif %}
 
+{% comment %}
+NOTE: if canvas_suppressed is true, access to page image has been restricted
+by an admin due to a copyright holder take-down request.
+Display a placeholder for the image, and show all other content.
+{% endcomment %}
 
       {# large size image #}
       <img class="img" src="{% url 'books:canvas-image' instance.slug canvas.short_id 'large' %}" />
