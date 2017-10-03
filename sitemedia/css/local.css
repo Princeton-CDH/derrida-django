@@ -1308,21 +1308,24 @@ hr {
       position: fixed;
       top: 0;
       margin: 0 10%;
-      width: 80%; }
-      .search-form-header.is-fixed:not(.is-hidden)::before {
-        content: "";
-        background: #f5f5f5;
-        position: absolute;
-        width: 120%;
-        margin-left: -10%;
-        height: 100%;
-        z-index: -3; } }
+      width: 80%; } }
   .search-form-header.is-fixed {
     position: fixed;
-    top: 0; }
-    .search-form-header.is-fixed:not(.is-hidden) {
-      background-color: #f5f5f5;
-      z-index: 4; }
+    top: 0;
+    z-index: 4; }
+    .search-form-header.is-fixed::before {
+      content: "";
+      background: #f5f5f5;
+      position: absolute;
+      width: 120%;
+      top: 0;
+      margin-left: -10%;
+      height: 4em;
+      z-index: -3;
+      transition: background-color 400ms ease, top 400ms ease; }
+    .search-form-header.is-fixed.is-hidden::before {
+      top: -4em;
+      background-color: transparent; }
   .search-form-header ~ main {
     transition: padding-top 400ms ease; }
   .search-form-header:not(.is-hidden) ~ main {

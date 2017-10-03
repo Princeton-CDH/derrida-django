@@ -14,25 +14,28 @@
     top: 0;
     margin: 0 10%;
     width: 80%;
-
-    &.is-fixed:not(.is-hidden)::before {
-      content: "";
-      background: $base-background-color;
-      position: absolute;
-      width: 120%;
-      margin-left: -10%;
-      height: 100%;
-      z-index: -3;
-    }
   }
 
   &.is-fixed {
     position: fixed;
     top: 0;
+    z-index: 4;
 
-    &:not(.is-hidden) {
-      background-color: $base-background-color;
-      z-index: 4;
+    &::before {
+      content: "";
+      background: $base-background-color;
+      position: absolute;
+      width: 120%;
+      top: 0;
+      margin-left: -10%;
+      height: 4em;
+      z-index: -3;
+      transition: background-color $search-duration $base-timing, top $search-duration $base-timing;
+    }
+
+    &.is-hidden::before {
+      top: -4em;
+      background-color: transparent;
     }
   }
 
