@@ -1584,14 +1584,10 @@ hr {
   background-position: center;
   background-size: contain;
   background-repeat: no-repeat;
-  transition: margin-top 0.5s ease;
-  margin-top: 5rem; }
+  transition: margin-top 0.5s ease; }
   @media only screen and (min-width: 650px) {
     .page-header {
-      margin: 5rem 6rem 0; } }
-  @media only screen and (min-width: 1080px) {
-    .page-header {
-      margin: 1rem 6rem 0; } }
+      margin: 0 6rem; } }
   #citations-list .page-header {
     background-image: url("../img/banner/citation_small_2x.png"); }
     @media only screen and (min-width: 650px) {
@@ -1648,6 +1644,11 @@ hr {
   float: left;
   margin-left: 2.94118%; }
   @media only screen and (min-width: 650px) {
+    .page-header__callout {
+      width: calc(58.33333% - 4.65686%);
+      float: left;
+      margin-left: 2.94118%; } }
+  @media only screen and (min-width: 1080px) {
     .page-header__callout {
       width: calc(50% - 4.41176%);
       float: left;

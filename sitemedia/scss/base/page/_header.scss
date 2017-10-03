@@ -3,14 +3,9 @@
   background-size: contain;
   background-repeat: no-repeat;
   transition: margin-top 0.5s ease;
-  margin-top: 5rem;
 
   @include grid-media($large-medium-viewport-grid) {
-    margin: 5rem 6rem 0;
-  }
-
-  @include grid-media($xlarge-viewport-grid) {
-    margin: 1rem 6rem 0;
+    margin: 0 6rem;
   }
 
   #citations-list & {
@@ -82,6 +77,10 @@
   @include grid-column(3);
 
   @include grid-media($large-medium-viewport-grid) {
+    @include grid-column(7);
+  }
+
+  @include grid-media($xlarge-viewport-grid) {
     @include grid-column(6);
   }
 
