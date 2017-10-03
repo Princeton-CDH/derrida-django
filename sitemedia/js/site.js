@@ -80,9 +80,14 @@ $(function() {
         })();
       });
 
-      $selectField.selectize({
+      var $selectizedFeilds = $selectField.selectize({
         allowEmptyOption: true,
         plugins: ["active_css_classes"]
+      });
+
+      window.selectizedFeilds = [];
+      $selectizedFeilds.each(function() {
+        window.selectizedFeilds.push($(this)[0].selectize);
       });
     }
   }
