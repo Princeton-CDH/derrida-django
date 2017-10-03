@@ -1,5 +1,32 @@
 {% load static widget_tweaks %}
+{% if form.query %}
+<script>
+  $(function() {
+    var $searchFormHeader = $(".search-form-header");
+    if ($searchFormHeader.length && $searchFormHeader.val().length) {
+      $(".search-form-header").removeClass("is-hidden");
+    }
 
+    if (window.selectizedFeilds) {
+      var searchFormSelectize = $.grep(window.selectizedFeilds, function(selectize){
+        return "id_content_type-selectized" === window.selectizedFeilds[0].$control_input[0].id;
+      });
+
+      if (searchFormSelectize.length) {
+        searchFormSelectize = searchFormSelectize[0];
+        var path = window.location.pathname;
+        if (path.indexOf("library") > 0) {
+          searchFormSelectize.setValue("book");
+        } else if (path.indexOf("references") > 0) {
+          searchFormSelectize.setValue("reference");
+        } else if (path.indexOf("interventions") > 0) {
+          searchFormSelectize.setValue("intervention");
+        }
+      }
+    }
+  });
+</script>
+{% endif %}
 <section class="page-filter {% if not hide_filter %}is-visible{% endif %}">
 <form>
   <div class="container">
@@ -46,15 +73,6 @@
             {% render_field form.instance_is_annotated class="mdl-switch__input" id="id_instance_is_annotated" %}
           </span>
         </label>
-      </div>
-      {% endif %}
-
-      {% if form.query %}
-      <div class="filter__selector">
-        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-          {% render_field form.query class="mdl-textfield__input" id="id_query" %}
-          <label class="mdl-textfield__label" for="query">Text Search</label>
-        </div>
       </div>
       {% endif %}
 
