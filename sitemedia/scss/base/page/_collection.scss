@@ -175,6 +175,19 @@
   line-height: 1.4;
 }
 
+.item__secondary-link {
+  color: inherit;
+  text-decoration: none;
+  line-height: 1.4;
+  transition: color $base-duration $base-timing;
+
+  &:hover,
+  &:active,
+  &.is-hovered {
+    color: $primary-color;
+  }
+}
+
 .item__heading,
 .item__author {
   margin-bottom: 0;

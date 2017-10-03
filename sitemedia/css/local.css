@@ -2068,6 +2068,14 @@ hr {
     color: #424242;
     border-color: #3ca1ff; }
 
+.item__secondary-link {
+  color: inherit;
+  text-decoration: none;
+  line-height: 1.4;
+  transition: color 150ms ease; }
+  .item__secondary-link:hover, .item__secondary-link:active, .item__secondary-link.is-hovered {
+    color: #3ca1ff; }
+
 .item__heading,
 .item__author {
   margin-bottom: 0; }
