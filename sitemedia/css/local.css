@@ -2809,4 +2809,13 @@ main {
 .hidden-admin-info {
   display: none; }
 
+/* minimal styles django messages; currently shown to admin users only */
+.messages {
+  width: 80%;
+  margin: auto; }
+  .messages p {
+    padding: 10px; }
+  .messages .success {
+    background-color: rgba(141, 226, 141, 0.38); }
+
 /*# sourceMappingURL=local.css.map */
