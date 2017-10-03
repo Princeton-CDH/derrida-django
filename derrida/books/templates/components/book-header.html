@@ -1,3 +1,11 @@
+{% comment %}
+The book-header template is used to display the heading for the books detail
+view. The book-header is used on each tab view for the details view.
+The header displays the books cover image, title, author(s),
+copyright year, start pages, and edition information.
+The template has one parameter `book`, which acts as the primary
+object for accessing properties to render.
+{% endcomment %}
 {% load static %}
 {% if book.digital_edition.thumbnail %}
 <img class="item-header__image" src="{{ book.digital_edition.thumbnail.image.thumbnail }}" />

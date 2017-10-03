@@ -1,3 +1,16 @@
+{% comment %}
+The books-list-item template is used to display a book as part of a list.
+This template is used on multi-item search, library
+list/search page, the tab section of the library details page.
+The template allows for the following parameters:
+* `book` - the instance of the book (properties of the instance are
+  referenced as "book.properties" within the template)
+* `href` - the link to the details page for the instance. Will render a span
+  instead of a link if not defined
+* `shorten` -  this will hide the badge, excerpt, and citation sections
+  of the template
+* ``
+{% endcomment %}
 {% load static %}
 <section class="collection__item book {% if shorten %}book--short{% endif %}">
   <figure class="item__image">

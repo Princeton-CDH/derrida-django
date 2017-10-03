@@ -1,3 +1,7 @@
+{% comment %}
+The books-details template is used to display a single instance.
+This template is only used on the details view for a book instance.
+{% endcomment %}
 {% load static %}
 <header class="item-header" id="book-header">
   {% include "components/book-header.html" with book=instance %}
