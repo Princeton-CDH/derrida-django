@@ -120,7 +120,7 @@ class TestInstanceViews(TestCase):
         # no digital edition - should 404
         assert response.status_code == 404
 
-        # get an instance with no digital edition
+        # get an instance with a digital edition
         item = Instance.objects.filter(digital_edition__isnull=False).first()
         canvas_page_url = reverse('books:canvas-by-page',
             kwargs={'slug': item.slug, 'page_num': '23'})
@@ -170,6 +170,69 @@ class TestInstanceViews(TestCase):
             kwargs={'slug': item.slug, 'short_id': cover.short_id,
                     'mode': 'thumbnail'})
         assert response.url == cover_image_url
+
+    def test_canvas_detail_view(self):
+        # get an instance with a digital edition
+        item = Instance.objects.filter(digital_edition__isnull=False).first()
+        # add logo and license to manifest
+        item.digital_edition.extra_data['logo'] = 'http://so.me/logo.img'
+        item.digital_edition.extra_data['license'] = 'http://rightsstatements.org/page/InC/1.0/'
+        item.digital_edition.save()
+
+        # create some test canvases
+        cover = Canvas.objects.create(manifest=item.digital_edition, order=2,
+            label='Front Cover', short_id='cover1')
+        cover2 = Canvas.objects.create(manifest=item.digital_edition, order=3,
+            label='Inside Front Cover', short_id='cover2')
+        p23 = Canvas.objects.create(manifest=item.digital_edition, order=4,
+            label='p. 23', short_id='p23')
+        ins = Canvas.objects.create(manifest=item.digital_edition, order=5,
+            label='pp. 20-21 Insertion A recto', short_id='ins1')
+
+        cover_detail_url = reverse('books:canvas-detail',
+            kwargs={'slug': item.slug, 'short_id': cover.short_id})
+        response = self.client.get(cover_detail_url)
+        self.assertContains(response, cover.label)
+        self.assertContains(response, item.display_title())
+        # includes larger page image url
+        self.assertContains(response, reverse('books:canvas-image',
+            kwargs={'slug': item.slug, 'short_id': cover.short_id,
+                'mode': 'large'}))
+        # includes image info url for deep zoom
+        self.assertContains(response, reverse('books:canvas-image',
+            kwargs={'slug': item.slug, 'short_id': cover.short_id,
+                'mode': 'info'}))
+        # includes nav to other viewable pages
+        for page in [cover2, ins]:
+            self.assertContains(response, page.label)
+            self.assertContains(response, reverse('books:canvas-detail',
+                kwargs={'slug': item.slug, 'short_id': page.short_id}))
+        # unannotated page not listed in nav
+        p23_detail_url = reverse('books:canvas-detail',
+            kwargs={'slug': item.slug, 'short_id': p23.short_id})
+        self.assertNotContains(response, p23.label)
+        self.assertNotContains(response, p23_detail_url)
+        # includes brief list of locations cited by Derrida
+        for ref in item.reference_set.all():
+            self.assertContains(response,
+                'p.%s %s' % (ref.derridawork_page, ref.derridawork_pageloc))
+        # iiif logo and license should be present somewhere
+        self.assertContains(response, item.digital_edition.logo)
+        self.assertContains(response, item.digital_edition.license)
+
+        # trying to get normal page with no annotations should fail
+        response = self.client.get(p23_detail_url)
+        assert response.status_code == 404
+
+        # add an intervention to p23 - should now succeed
+        Intervention.objects.create(canvas=p23)
+        response = self.client.get(p23_detail_url)
+        assert response.status_code == 200
+
+        # annotated page should be listed in nav on other pages
+        response = self.client.get(cover_detail_url)
+        self.assertContains(response, p23.label)
+        self.assertContains(response, p23_detail_url)
 
 
 @USE_TEST_HAYSTACK

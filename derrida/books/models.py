@@ -392,16 +392,18 @@ class Instance(Notable):
             return self.digital_edition.canvases.all()
         return Canvas.objects.none()
 
+    #: terms in an image label that indicate a canvas should be
+    #: considered an overview image (e.g., cover & outside views)
+    overview_labels = ['cover', 'spine', 'back', 'edge', 'view']
+
     def overview_images(self):
         '''Overview images for this book - cover, spine, etc.
         Filtered based on canvas label naming conventions.'''
-        return self.images().filter(
-                models.Q(label__icontains='cover') |
-                models.Q(label__icontains='spine') |
-                models.Q(label__icontains='back') |
-                models.Q(label__icontains='edge') |
-                models.Q(label__icontains='view')
-            ).exclude(label__icontains='insertion')
+        label_query = models.Q()
+        for overview_label in self.overview_labels:
+            label_query |= models.Q(label__icontains=overview_label)
+        return self.images().filter(label_query) \
+                   .exclude(label__icontains='insertion')
 
     def annotated_pages(self):
         '''Annotated pages for this book. Filtered based on the presence

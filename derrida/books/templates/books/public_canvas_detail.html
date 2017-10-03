@@ -1,7 +1,7 @@
 {% extends 'djiffy/base.html' %}
 {% load static %}
 
-{% block page-subtitle %}{{ instance.work.primary_title }}{% if instance.work.authors.count == 1 %}, {{ instance.work.authors.first.lastname }}{% endif %} {% if instance.print_year or instance.copyright_year %}({% firstof instance.print_year instance.copyright_year %}{% if instance.copy %} - {{ instance.copy }}{% endif %}){% endif %} ‖ {% endblock %}
+{% block page-subtitle %}{{ instance.work.primary_title }}{% if instance.work.authors.count == 1 %}, {{ instance.work.authors.first.lastname }}{% endif %} {% if instance.print_year or instance.copyright_year %}({% firstof instance.print_year instance.copyright_year %}{% if instance.copy %} - {{ instance.copy }}{% endif %}){% endif %} ‖ {{ canvas.label }} ‖ {% endblock %}
 {% block nav-title %} Derrida's Library {% endblock %}
 
 {% block header_class %}mdl-layout__header--transparent{% endblock %}
@@ -48,9 +48,9 @@
       {% if instance.overview_images %}
       <h3>Overview Images</h3>
       <ul>
-      {% for canvas in instance.overview_images %}
-          <li><a href="{% url 'books:canvas-detail' instance.slug canvas.short_id %}">
-              {{ canvas.label }}</a></li>
+      {% for ov_canvas in instance.overview_images %}
+          <li><a href="{% url 'books:canvas-detail' instance.slug ov_canvas.short_id %}">
+              {{ ov_canvas.label }}</a></li>
       {% endfor %}
       </ul>
       {% endif %}
@@ -58,9 +58,9 @@
       {% if instance.annotated_pages %}
       <h3>Annotated pages</h3>
       <ul>
-     {% for canvas in instance.annotated_pages %}
-          <li><a href="{% url 'books:canvas-detail' instance.slug canvas.short_id %}">
-              {{ canvas.label }}</a></li>
+     {% for anno_canvas in instance.annotated_pages %}
+          <li><a href="{% url 'books:canvas-detail' instance.slug anno_canvas.short_id %}">
+              {{ anno_canvas.label }}</a></li>
       {% endfor %}
       </ul>
       {% endif %}
@@ -68,18 +68,15 @@
        {% if instance.insertion_images %}
        <h3>Insertions</h3>
        <ul>
-       {% for canvas in instance.insertion_images %}
-          <li><a href="{% url 'books:canvas-detail' instance.slug canvas.short_id %}">
-              {{ canvas.label }}</a></li>
+       {% for ins_canvas in instance.insertion_images %}
+          <li><a href="{% url 'books:canvas-detail' instance.slug ins_canvas.short_id %}">
+              {{ ins_canvas.label }}</a></li>
       {% endfor %}
       </ul>
       {% endif %}
 
       {# large size image #}
       <img class="img" src="{% url 'books:canvas-image' instance.slug canvas.short_id 'large' %}" />
-
-
-      {# TODO: deep zoom #}
 
       {# image selection zones  #}
        {# {% for intervention in canvas.intervention_set.all %} #}
@@ -93,11 +90,12 @@
        {% endfor %}
     </article>
 
+ {# deep zoom #}
 <div id="deep-zoom" style="width: 800px; height: 600px;"></div>
 <script src="{% static 'js//openseadragon/openseadragon.min.js' %}"></script>
 <script type="text/javascript" charset="utf-8">
    $(document).ready(function () {
-      // seadragon configuration  for deep zoom
+      // basic seadragon configuration for deep zoom
         var viewer = OpenSeadragon({
           id: "deep-zoom",
           prefixUrl: "{% static 'js/openseadragon/images/' %}",
@@ -107,6 +105,19 @@
 </script>
 
     </div>
+
+{# logo for IIIF provider of digitized item #}
+<img src="{{ instance.digital_edition.logo }}" />
+
+{# for now, only supports rightsstatments.org licenses (should work for PUL content) #}
+<p>
+    {% if instance.digital_edition.license %}
+    <a href="{{ instance.digital_edition.license }}">
+    <img src="{% static 'img/rightsstatements_org/' %}{{ instance.digital_edition.rights_statement_id }}.svg"/>
+    </a>
+    {% endif %}
+
+</p>
   </article>
 {% endblock %}
 

@@ -43,7 +43,7 @@ class InstanceDetailView(DetailView):
 
     model = Instance
     slug_field = 'slug'
-        
+
     def get_queryset(self):
         instances = super(InstanceDetailView, self).get_queryset()
         return instances.filter(digital_edition__isnull=False)
@@ -283,8 +283,16 @@ class CanvasDetail(DetailView):
 
     def get_object(self, queryset=None):
         self.instance = get_object_or_404(Instance, slug=self.kwargs['slug'])
-        return self.instance.images() \
+        image = self.instance.images() \
             .filter(short_id=self.kwargs['short_id']).first()
+        # only show canvas detail page for insertions, overview images,
+        # and pages with documented interventions
+        if 'insertion' not in image.label.lower() and \
+          not any(label in image.label.lower() for label in Instance.overview_labels) \
+          and not image.intervention_set.exists():
+            raise Http404
+
+        return image
 
     def get_context_data(self, *args, **kwargs):
         context = super(CanvasDetail, self).get_context_data(*args, **kwargs)
