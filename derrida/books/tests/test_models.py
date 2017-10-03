@@ -413,6 +413,42 @@ class TestInstance(TestCase):
         Intervention.objects.create(canvas=page)
         assert Instance.allow_canvas_detail(page)
 
+    def test_allow_canvas_large_image(self):
+        la_vie = Instance.objects.get(work__short_title__contains="La vie")
+        la_vie.digital_edition = mfst = Manifest.objects.create(short_id='m1')
+        # cover
+        cover = Canvas.objects.create(manifest=mfst, label='Front Cover',
+            short_id='cov1', order=1)
+        # normal page
+        page = Canvas.objects.create(manifest=mfst, label='p. 33',
+            short_id='page33', order=2)
+        # insertion
+        insertion = Canvas.objects.create(manifest=mfst,
+            label='pp. 33-34 Insertion A recto', short_id='insa', order=3)
+
+        # insertion and overview always allowed
+        assert la_vie.allow_canvas_large_image(cover)
+        assert la_vie.allow_canvas_large_image(insertion)
+        # unannotated page not allowed
+        assert not la_vie.allow_canvas_large_image(page)
+
+        # annotated page allowed if not suppressed
+        Intervention.objects.create(canvas=page)
+        assert la_vie.allow_canvas_large_image(page)
+
+        # suppress all
+        la_vie.suppress_all_images = True
+        assert not la_vie.allow_canvas_large_image(page)
+
+        # suppress a different page
+        la_vie.suppress_all_images = False
+        la_vie.suppressed_images.add(cover)
+        assert la_vie.allow_canvas_large_image(page)
+
+        # suppress this specific page
+        la_vie.suppressed_images.add(page)
+        assert not la_vie.allow_canvas_large_image(page)
+
     def test_related_instances(self):
 
         # get la_vie and clone it
