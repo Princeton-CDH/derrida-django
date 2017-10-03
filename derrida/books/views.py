@@ -321,6 +321,13 @@ class CanvasSuppress(FormView):
     def dispatch(self, *args, **kwargs):
         return super(CanvasSuppress, self).dispatch(*args, **kwargs)
 
+    def get(self, *args, **kwargs):
+        # no get display; redirect to book detail
+        response = HttpResponseRedirect(reverse('books:detail',
+            kwargs={'slug': self.kwargs['slug']}))
+        response.status_code = 303  # see other
+        return response
+
     def form_valid(self, form):
         # process valid POSTed form data
         formdata = form.cleaned_data

@@ -284,6 +284,56 @@ class TestInstanceViews(TestCase):
         self.assertNotContains(response,
             'All annotated page images in this volume are suppressed.')
 
+    def test_canvas_suppress_view(self):
+        # get an instance with a digital edition
+        item = Instance.objects.filter(digital_edition__isnull=False).first()
+        # create test canvas
+        p23 = Canvas.objects.create(manifest=item.digital_edition, order=4,
+            label='p. 23', short_id='p23')
+
+        suppress_url = reverse('books:suppress-canvas', kwargs={'slug': item.slug})
+        # insufficent perms
+        # get redirects
+        response = self.client.get(suppress_url)
+        # by default, django redirects user to login if permission check fails
+        assert response.status_code == 302
+        assert 'accounts/login' in response.url
+
+        # login as admin with change_instance permission
+        pword = 'testing123'
+        content_admin = get_user_model().objects.create_user('testeditor',
+            'test@example.com', pword)
+        content_admin.user_permissions.add(
+            Permission.objects.get(codename='change_instance',
+                content_type=ContentType.objects.get(app_label='books',
+                                                     model='instance'))
+        )
+        self.client.login(username=content_admin.username, password=pword)
+
+        # get redirects to book detail
+        response = self.client.get(suppress_url)
+        assert response.status_code == 303
+        assert response.url == reverse('books:detail', kwargs={'slug': item.slug})
+
+        # post should process the request
+        response = self.client.post(suppress_url,
+            {'suppress': 'current', 'canvas_id': p23.short_id})
+        assert response.status_code == 303
+        assert response.url == reverse('books:canvas-detail',
+            kwargs={'slug': item.slug, 'short_id': p23.short_id})
+
+        # canvas is now suppressed
+        assert p23 in item.suppressed_images.all()
+        # TODO: check that messages are set?
+
+        # post should process the request
+        response = self.client.post(suppress_url,
+            {'suppress': 'all', 'canvas_id': p23.short_id})
+
+        # get fresh copy of item from db
+        item = Instance.objects.get(pk=item.pk)
+        assert item.suppress_all_images
+
 
 @USE_TEST_HAYSTACK
 class TestReferenceViews(TestCase):
