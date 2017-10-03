@@ -299,12 +299,14 @@ class CanvasDetail(DetailView):
 
     def get_context_data(self, *args, **kwargs):
         context = super(CanvasDetail, self).get_context_data(*args, **kwargs)
-        context['instance'] = self.instance
+        context.update({
+            'instance': self.instance,
+            'canvas_suppressed': self.instance.suppress_all_images or \
+                    self.object in self.instance.suppressed_images.all()
+        })
         if self.request.user.has_perm('books.change_instance'):
             context.update({
                 'suppress_form': SuppressImageForm(initial={'canvas_id': self.object.short_id}),
-                'canvas_suppressed': self.instance.suppress_all_images or \
-                    self.object in self.instance.suppressed_images.all()
             })
         return context
 

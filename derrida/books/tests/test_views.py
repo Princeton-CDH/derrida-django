@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Permission
+from django.contrib.contenttypes.models import ContentType
 from django.db.models import Min
 from django.http import Http404
 from django.test import TestCase, override_settings
@@ -235,6 +237,52 @@ class TestInstanceViews(TestCase):
         response = self.client.get(cover_detail_url)
         self.assertContains(response, p23.label)
         self.assertContains(response, p23_detail_url)
+
+        # should not include suppress canvas form (non-admin)
+        suppress_url = reverse('books:suppress-canvas', kwargs={'slug': item.slug})
+        self.assertNotContains(response, suppress_url)
+
+        # login as admin with change_instance permission
+        pword = 'testing123'
+        content_admin = get_user_model().objects.create_user('testeditor',
+            'test@example.com', pword)
+        content_admin.user_permissions.add(
+            Permission.objects.get(codename='change_instance',
+                content_type=ContentType.objects.get(app_label='books',
+                                                     model='instance'))
+        )
+        self.client.login(username=content_admin.username, password=pword)
+        response = self.client.get(cover_detail_url)
+        # form should be displayed
+        self.assertContains(response, suppress_url)
+        # current canvas id set as hidden input
+        self.assertContains(response,
+            '<input type="hidden" name="canvas_id" value="%s" id="id_canvas_id"/>' % \
+              cover.short_id, html=True)
+
+        # if item is suppressed, form is not displayed
+        item.suppressed_images.add(cover)
+        response = self.client.get(cover_detail_url)
+        assert response.context['canvas_suppressed']
+        self.assertNotContains(response, suppress_url)
+        self.assertContains(response, 'This page image is suppressed')
+
+        item.suppressed_images.remove(cover)
+        item.suppress_all_images = True
+        item.save()
+        response = self.client.get(cover_detail_url)
+        assert response.context['canvas_suppressed']
+        self.assertNotContains(response, suppress_url)
+        self.assertContains(response,
+            'All annotated page images in this volume are suppressed.')
+
+        # anonymous user does not see warning, but suppress flag
+        # is set in context to aid with display
+        self.client.logout()
+        response = self.client.get(cover_detail_url)
+        assert response.context['canvas_suppressed']
+        self.assertNotContains(response,
+            'All annotated page images in this volume are suppressed.')
 
 
 @USE_TEST_HAYSTACK

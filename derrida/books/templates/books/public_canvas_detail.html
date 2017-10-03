@@ -85,7 +85,7 @@
         <p>This page image is suppressed.</p>
     {% else %}
     <div>
-      <form method="POST" action="{% url 'books:canvas-suppress' instance.slug %}">
+      <form method="POST" action="{% url 'books:suppress-canvas' instance.slug %}">
         {% csrf_token %}
         Suppress {{ suppress_form.suppress }}
         {{ suppress_form.canvas_id }}
