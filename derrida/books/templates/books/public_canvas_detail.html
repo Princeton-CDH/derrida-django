@@ -75,6 +75,21 @@
       </ul>
       {% endif %}
 
+
+  {# TODO: check perms #}
+  {% if suppress_form %}
+  {# admin form - suppress current page image or all annotated page images for this volume #}
+  <div>
+    <form method="POST" action="{% url 'books:canvas-suppress' instance.slug %}">
+      {% csrf_token %}
+      Suppress {{ suppress_form.suppress }}
+      {{ suppress_form.canvas_id }}
+      <input type="submit"/>
+    </form>
+  </div>
+  {% endif %}
+
+
       {# large size image #}
       <img class="img" src="{% url 'books:canvas-image' instance.slug canvas.short_id 'large' %}" />
 

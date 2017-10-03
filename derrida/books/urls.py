@@ -38,6 +38,7 @@ urlpatterns = [
                 name='detail-gallery'),
             url(r'^gallery/(?P<short_id>[a-z0-9]+)/$',
                 views.CanvasDetail.as_view(), name='canvas-detail'),
+            url(r'^suppress-images/$', views.CanvasSuppress.as_view(), name='canvas-suppress'),
             # canvas image views
             url(r'^gallery/images/(?P<page_num>[0-9]{1,4})-?[0-9]*[a-z]?/$',
                 views.CanvasImageByPageNumber.as_view(), {'mode': 'by-page'}, name='canvas-by-page'),
