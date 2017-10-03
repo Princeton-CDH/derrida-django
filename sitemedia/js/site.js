@@ -366,7 +366,7 @@ $(function() {
 
       if (! $filter.length && ! isOpenText && $openInput.length) {
         closeFilter($openInput);
-      } else if ($openInput.length && ! $target.parent().next().is(filterSelector)) {
+      } else if ($openInput.length && ! $target.parent().next().is(filterSelector) && ! $target.parents(filterSelector).length) {
         closeFilter($openInput);
       } else if ($openInput.length) {
         $openInput.addClass("is-focused");
