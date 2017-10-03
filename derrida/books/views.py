@@ -285,6 +285,9 @@ class CanvasDetail(DetailView):
         self.instance = get_object_or_404(Instance, slug=self.kwargs['slug'])
         image = self.instance.images() \
             .filter(short_id=self.kwargs['short_id']).first()
+        if not image:
+            raise Http404
+
         # only show canvas detail page for insertions, overview images,
         # and pages with documented interventions
         if 'insertion' not in image.label.lower() and \
@@ -401,13 +404,21 @@ class CanvasImage(ProxyView):
                 .filter(short_id=self.kwargs['short_id']).first()
         else:
             canvas = instance.digital_edition.thumbnail
-            if not canvas:
-                raise Http404
+
+        if not canvas:
+            raise Http404
 
         if kwargs['mode'] == 'thumbnail':
             return canvas.image.thumbnail()
 
         if kwargs['mode'] == 'large':
+            # only allow large images for insertions, overview images,
+            # and pages with documented interventions
+            if 'insertion' not in canvas.label.lower() and \
+              not any(label in canvas.label.lower() for label in Instance.overview_labels) \
+              and not canvas.intervention_set.exists():
+                raise Http404
+
             return canvas.image.size(height=850, width=850,
                 exact=True)    # exact = preserve aspect
 

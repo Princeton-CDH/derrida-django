@@ -2,6 +2,7 @@
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db.models import Min
+from django.http import Http404
 from django.test import TestCase, override_settings
 from django.urls import reverse
 from django.utils.html import escape
@@ -10,6 +11,7 @@ import json
 from haystack.models import SearchResult
 import pytest
 
+from derrida.books import views
 from derrida.books.models import Instance, Reference, DerridaWorkSection
 from derrida.interventions.models import Intervention, INTERVENTION_TYPES
 
@@ -465,3 +467,72 @@ class TestBookViews(TestCase):
             self.assertContains(response,
                 reverse('admin:interventions_intervention_change', args=[intervention.id]),
                 msg_prefix='should link to intervention edit page')
+
+
+class TestCanvasImageView(TestCase):
+    fixtures = ['sample_work_data.json']
+
+    def test_get_proxy_url(self):
+        # setup an instance with some test canvases
+        item = Instance.objects.all().first()
+        manif = Manifest.objects.create()
+        item.digital_edition = manif
+        item.save()
+
+        cover = Canvas.objects.create(manifest=item.digital_edition, order=2,
+            label='Front Cover', short_id='cover1',
+            iiif_image_id='http://ima.ge/c1')
+        cover2 = Canvas.objects.create(manifest=item.digital_edition, order=3,
+            label='Inside Front Cover', short_id='cover2',
+            iiif_image_id='http://ima.ge/c2')
+        p23 = Canvas.objects.create(manifest=item.digital_edition, order=4,
+            label='p. 23', short_id='p23', iiif_image_id='http://ima.ge/p1')
+        p24 = Canvas.objects.create(manifest=item.digital_edition, order=5,
+            label='p. 24', short_id='p24', iiif_image_id='http://ima.ge/p2')
+        ins = Canvas.objects.create(manifest=item.digital_edition, order=6,
+            label='pp. 20-21 Insertion A recto', short_id='ins1',
+            iiif_image_id='http://ima.ge/i1')
+        # add an intervention to p23 - should now succeed
+        Intervention.objects.create(canvas=p23)
+
+        canvasimgview = views.CanvasImage()
+
+        canvasimgview.kwargs = {'slug': item.slug, 'short_id': cover.short_id}
+        imgurl = canvasimgview.get_proxy_url(mode='thumbnail')
+        assert str(imgurl) == str(cover.image.thumbnail())
+        imgurl = canvasimgview.get_proxy_url(mode='large')
+        assert str(imgurl) == str(cover.image.size(height=850, width=850,
+            exact=True))
+        imgurl = canvasimgview.get_proxy_url(mode='info')
+        assert str(imgurl) == str(cover.image.info())
+
+        # sample iiif image tile used for deep zooom
+        iiif_url = '0,0,2048,2048/1024,/0/default.jpg'
+        imgurl = canvasimgview.get_proxy_url(mode='iiif', url=iiif_url)
+        assert str(imgurl) == str(cover.image \
+                .region(x=0, y=0, width=2048, height=2048).size(width=1024))
+
+        # large image restricted to certain images only
+        # - overview image
+        canvasimgview.kwargs['short_id'] = cover2.short_id
+        imgurl = canvasimgview.get_proxy_url(mode='large')
+        assert str(imgurl) == str(cover2.image.size(height=850, width=850,
+            exact=True))
+        # - insertion image
+        canvasimgview.kwargs['short_id'] = ins.short_id
+        imgurl = canvasimgview.get_proxy_url(mode='large')
+        assert str(imgurl) == str(ins.image.size(height=850, width=850,
+            exact=True))
+        # page with interventions
+        canvasimgview.kwargs['short_id'] = p23.short_id
+        imgurl = canvasimgview.get_proxy_url(mode='large')
+        assert str(imgurl) == str(p23.image.size(height=850, width=850,
+            exact=True))
+        # page without interventions should 40
+        with pytest.raises(Http404):
+            canvasimgview.kwargs['short_id'] = p24.short_id
+            canvasimgview.get_proxy_url(mode='large')
+
+
+    # TODO: test proxyview logic in preserving headers, rewriting
+    # iiif id to local url, etc
