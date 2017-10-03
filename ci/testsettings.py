@@ -7,6 +7,9 @@
 
 DEBUG = False
 
+# disable compression for tests that check javascript contents
+COMPRESS_ENABLED = False
+
 # include database settings to use Mariadb ver on production (5.5)
 DATABASES = {
     'default': {

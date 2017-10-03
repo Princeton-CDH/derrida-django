@@ -376,7 +376,7 @@ class TestInstance(TestCase):
         la_vie.digital_edition = mfst = Manifest.objects.create(short_id='m1')
         assert la_vie.insertion_images().count() == 0
         # cover
-        cover = Canvas.objects.create(manifest=mfst, label='Front Coverg',
+        cover = Canvas.objects.create(manifest=mfst, label='Front Cover',
             short_id='cov1', order=1)
         # normal page
         page = Canvas.objects.create(manifest=mfst, label='p. 33',
@@ -393,18 +393,49 @@ class TestInstance(TestCase):
         assert insertion in insertions
         assert insertion2 in insertions
 
+    def test_allow_canvas_detail(self):
+        la_vie = Instance.objects.get(work__short_title__contains="La vie")
+        la_vie.digital_edition = mfst = Manifest.objects.create(short_id='m1')
+        # cover
+        cover = Canvas.objects.create(manifest=mfst, label='Front Cover',
+            short_id='cov1', order=1)
+        # normal page
+        page = Canvas.objects.create(manifest=mfst, label='p. 33',
+            short_id='page33', order=2)
+        # insertion
+        insertion = Canvas.objects.create(manifest=mfst,
+            label='pp. 33-34 Insertion A recto', short_id='insa', order=3)
+
+        assert Instance.allow_canvas_detail(cover)
+        assert not Instance.allow_canvas_detail(page)
+        assert Instance.allow_canvas_detail(insertion)
+
+        Intervention.objects.create(canvas=page)
+        assert Instance.allow_canvas_detail(page)
+
     def test_related_instances(self):
 
         # get la_vie and clone it
         la_vie = Instance.objects.filter(work__primary_title__icontains='la vie').first()
+        la_vie.digital_edition = mfst = Manifest.objects.create(short_id='m1')
+        la_vie.save()
         pk = la_vie.pk
         la_vie.pk = None
+        la_vie.digital_edition = mfst = Manifest.objects.create(short_id='m2')
         la_vie.save()
         # refresh the object so it has its pk and related objects
         la_vie.refresh_from_db()
         # original la_vie should be the only related instance
         assert len(la_vie.related_instances) == 1
         assert la_vie.related_instances[0].pk == pk
+        # delete digital edition
+        la_vie_old = la_vie.related_instances[0]
+        la_vie_old.digital_edition = None
+        la_vie_old.save()
+        # now check to get an empty set
+        la_vie.refresh_from_db()
+        assert len(la_vie.related_instances) == 0
+
 
 class TestInstanceQuerySet(TestCase):
     fixtures = ['sample_work_data.json']

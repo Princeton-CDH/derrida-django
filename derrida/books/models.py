@@ -392,16 +392,18 @@ class Instance(Notable):
             return self.digital_edition.canvases.all()
         return Canvas.objects.none()
 
+    #: terms in an image label that indicate a canvas should be
+    #: considered an overview image (e.g., cover & outside views)
+    overview_labels = ['cover', 'spine', 'back', 'edge', 'view']
+
     def overview_images(self):
         '''Overview images for this book - cover, spine, etc.
         Filtered based on canvas label naming conventions.'''
-        return self.images().filter(
-                models.Q(label__icontains='cover') |
-                models.Q(label__icontains='spine') |
-                models.Q(label__icontains='back') |
-                models.Q(label__icontains='edge') |
-                models.Q(label__icontains='view')
-            ).exclude(label__icontains='insertion')
+        label_query = models.Q()
+        for overview_label in self.overview_labels:
+            label_query |= models.Q(label__icontains=overview_label)
+        return self.images().filter(label_query) \
+                   .exclude(label__icontains='insertion')
 
     def annotated_pages(self):
         '''Annotated pages for this book. Filtered based on the presence
@@ -414,18 +416,24 @@ class Instance(Notable):
         Filtered based on canvas label naming conventions.'''
         return self.images().filter(label__icontains='insertion')
 
+    @classmethod
+    def allow_canvas_detail(cls, canvas):
+        '''Check if canvas detail view is allowed.  Allows insertion images,
+        overview images, and pages with documented interventions.'''
+        return any([
+            'insertion' in canvas.label.lower(),
+            any(label in canvas.label.lower()
+                for label in cls.overview_labels),
+            canvas.intervention_set.exists()
+        ])
+
     @property
     def related_instances(self):
         authors = [author.authorized_name
                    for author in self.work.authors.all()]
-        same_author = Instance.objects.filter(
+        return Instance.objects.filter(
             work__authors__authorized_name__in=authors
-        )
-        # don't want the same instance as object, so filter it out
-        # unless list is very long, the comprehension should be less overhead
-        # than a more complex query above
-        return [instance for instance in same_author
-                if instance.pk != self.pk]
+        ).exclude(pk=self.pk).exclude(digital_edition__isnull=True)
 
 
 class WorkSubject(Notable):

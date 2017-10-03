@@ -43,7 +43,7 @@ class InstanceDetailView(DetailView):
 
     model = Instance
     slug_field = 'slug'
-        
+
     def get_queryset(self):
         instances = super(InstanceDetailView, self).get_queryset()
         return instances.filter(digital_edition__isnull=False)
@@ -279,12 +279,19 @@ class SearchView(TemplateView):
 
 class CanvasDetail(DetailView):
     model = Canvas
-    template_name = 'books/canvas_detail.html'
+    template_name = 'books/public_canvas_detail.html'
 
     def get_object(self, queryset=None):
         self.instance = get_object_or_404(Instance, slug=self.kwargs['slug'])
-        return self.instance.images() \
+        canvas = self.instance.images() \
             .filter(short_id=self.kwargs['short_id']).first()
+
+        # only show canvas detail page for insertions, overview images,
+        # and pages with documented interventions
+        if canvas and Instance.allow_canvas_detail(canvas):
+            return canvas
+        else:
+            raise Http404
 
     def get_context_data(self, *args, **kwargs):
         context = super(CanvasDetail, self).get_context_data(*args, **kwargs)
@@ -393,15 +400,21 @@ class CanvasImage(ProxyView):
                 .filter(short_id=self.kwargs['short_id']).first()
         else:
             canvas = instance.digital_edition.thumbnail
-            if not canvas:
-                raise Http404
+
+        if not canvas:
+            raise Http404
 
         if kwargs['mode'] == 'thumbnail':
             return canvas.image.thumbnail()
 
         if kwargs['mode'] == 'large':
-            return canvas.image.size(height=850, width=850,
-                exact=True)    # exact = preserve aspect
+            # only allow large images for insertions, overview images,
+            # and pages with documented interventions
+            if Instance.allow_canvas_detail(canvas):
+                return canvas.image.size(height=850, width=850,
+                    exact=True)    # exact = preserve aspect
+            else:
+                raise Http404
 
         if kwargs['mode'] == 'info':
             return canvas.image.info()
