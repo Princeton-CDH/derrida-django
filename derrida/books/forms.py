@@ -102,3 +102,13 @@ class ReferenceSearchForm(forms.Form):
                 self.fields[facet].choices = [
                     (val, mark_safe('%s <span>%d</span>' % (val, count)))
                     for val, count in counts]
+
+
+class SuppressImageForm(forms.Form):
+    '''Simple form for admin request to suppress a single
+    canvas image or all annotated pages from a volume.'''
+    suppress = forms.ChoiceField(choices=[
+            ('current', 'this page'),
+            ('all', 'all annotated pages in this volume'),
+        ], initial='current', widget=forms.RadioSelect)
+    canvas_id = forms.CharField(widget=forms.HiddenInput)

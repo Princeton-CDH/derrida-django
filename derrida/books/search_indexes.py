@@ -33,7 +33,8 @@ class InstanceIndex(indexes.SearchIndex, indexes.Indexable):
     work_year = indexes.IntegerField(model_attr='work__year', null=True)
     copyright_year = indexes.IntegerField(model_attr='copyright_year', null=True)
     print_year = indexes.IntegerField(model_attr='print_year', null=True)
-    year = indexes.IntegerField(null=True)
+    #: sort/display year: print year if known; otherwise, copyright year.
+    year = indexes.IntegerField(model_attr='year', null=True)
     # FIXME: a book is cited if items it collects are cited
     cited_in = indexes.MultiValueField(model_attr='reference_set__derridawork__short_title',
         faceted=True, null=True)
@@ -44,10 +45,6 @@ class InstanceIndex(indexes.SearchIndex, indexes.Indexable):
 
     def get_model(self):
         return Instance
-
-    def prepare_year(self, instance):
-        # sort/display year: print year if known; otherwise, copyright year.
-        return instance.print_year() or instance.copyright_year
 
 
 class ReferenceIndex(indexes.SearchIndex, indexes.Indexable):

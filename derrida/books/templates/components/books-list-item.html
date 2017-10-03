@@ -34,15 +34,15 @@ The template allows for the following parameters:
       {% endwith %}
     </h3>
     <p class="item__author">
+      {% url 'books:list' as library_url %}
+      {# only display first two authors; display et, al if theree are more #}
+      {# solr result #}
       {% if book.author_firstname_last %}
-      {{ book.author_firstname_last|join:"; " }}
+        <a href="{{ library_url }}?author={{ book.author.0 }}">{{ book.author_firstname_last.0}}</a>{% if book.author_firstname_last|length > 1 %}, <a href="{{ library_url }}?author={{ book.author.1 }}">{{ book.author_firstname_last.1}}</a>{% endif %}{% if book.author_firstname_last|length > 2 %}, et al.{% endif %}
       {% endif %}
-      {% for author in book.work.authors.all %}
-        {% if not forloop.last %}
-          {{ author.authorized_name }};&nbsp;
-        {% else %}
-          {{ author.authorized_name }}
-        {% endif %}
+      {# database result #}
+      {% for author in book.work.authors.all|slice:":2" %}
+          <a href="{{ library_url }}?author={{ author.authorized_name }}">{{ author.firstname_last }}</a>{% if not forloop.last %}, {% endif %}{% if forloop.last and book.work.authors.count > 2 %}, et al.{% endif %}
       {% endfor %}
     </p>
     {% if book.year %}

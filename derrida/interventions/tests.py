@@ -509,6 +509,15 @@ class TestExtendedCanvasAutocomplete(TestCase):
         assert 'results' in data
         assert data['results'][0]['text'] == str(self.pages[0])
 
+        # test forwarding manifest id
+        response = self.client.get(
+            canvas_autocomplete_url,
+            {'q': 'p1', 'forward': '{"manifest": "%s"}' % self.manif1.pk}
+        )
+        data = json.loads(response.content.decode('utf-8'))
+        assert 'results' in data
+        assert data['results'][0]['text'] == str(self.pages[0])
+
 
 class TestInterventionAutocomplete(TestCase):
 
@@ -604,6 +613,7 @@ class TestInterventionAutocomplete(TestCase):
         # only note 3 should be returned
         assert len(data['results']) == 1
         assert data['results'][0]['text'] == ('test3 (P2)')
+
 
 
 class TestGetDefaultIntervener(TestCase):

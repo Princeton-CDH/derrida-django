@@ -1,18 +1,22 @@
 import json
 
 from dal import autocomplete
-from django.conf import settings
+from django.contrib import messages
+from django.contrib.auth.decorators import permission_required
 from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
-from django.views.generic.base import TemplateView
+from django.utils.decorators import method_decorator
 from django.views.generic import DetailView, ListView, View
+from django.views.generic.base import TemplateView
+from django.views.generic.edit import FormView
 from djiffy.models import Canvas
 from haystack.query import SearchQuerySet
 from haystack.inputs import Clean
 import requests
 
-from derrida.books.forms import ReferenceSearchForm, InstanceSearchForm, SearchForm
+from derrida.books.forms import ReferenceSearchForm, InstanceSearchForm, \
+    SearchForm, SuppressImageForm
 from derrida.books.models import Publisher, Language, Instance, Reference, DerridaWorkSection
 from derrida.common.utils import absolutize_url
 from derrida.interventions.models import Intervention
@@ -297,8 +301,55 @@ class CanvasDetail(DetailView):
         context = super(CanvasDetail, self).get_context_data(*args, **kwargs)
         context.update({
             'instance': self.instance,
+            'canvas_suppressed': self.instance.suppress_all_images or \
+                    self.object in self.instance.suppressed_images.all()
         })
+        if self.request.user.has_perm('books.change_instance'):
+            context.update({
+                'suppress_form': SuppressImageForm(initial={'canvas_id': self.object.short_id}),
+            })
         return context
+
+
+class CanvasSuppress(FormView):
+    '''Form view to process an admin request to suppress a single
+    canvas image or all annotated pages from a volume.  Requires
+    user to have change_instance permission.'''
+    form_class = SuppressImageForm
+
+    @method_decorator(permission_required('books.change_instance'))
+    def dispatch(self, *args, **kwargs):
+        return super(CanvasSuppress, self).dispatch(*args, **kwargs)
+
+    def get(self, *args, **kwargs):
+        # no get display; redirect to book detail
+        response = HttpResponseRedirect(reverse('books:detail',
+            kwargs={'slug': self.kwargs['slug']}))
+        response.status_code = 303  # see other
+        return response
+
+    def form_valid(self, form):
+        # process valid POSTed form data
+        formdata = form.cleaned_data
+        instance = get_object_or_404(Instance, slug=self.kwargs['slug'])
+
+        # suppress current page or all pages
+        if formdata['suppress'] == 'current':
+            canvas = Canvas.objects.get(short_id=formdata['canvas_id'])
+            instance.suppressed_images.add(canvas)
+            msg = 'Canvas successfully suppressed.'
+        else:
+            instance.suppress_all_images = True
+            msg = 'Successfully suppressed all annotated pages for this instance.'
+        instance.save()
+        messages.success(self.request, msg)
+
+        # Redirect to canvas detail view
+        response = HttpResponseRedirect(reverse('books:canvas-detail',
+            kwargs={'slug': self.kwargs['slug'],
+                    'short_id': formdata['canvas_id']}))
+        response.status_code = 303  # see other
+        return response
 
 
 class ProxyView(View):
@@ -410,13 +461,20 @@ class CanvasImage(ProxyView):
         if kwargs['mode'] == 'large':
             # only allow large images for insertions, overview images,
             # and pages with documented interventions
-            if Instance.allow_canvas_detail(canvas):
-                return canvas.image.size(height=850, width=850,
-                    exact=True)    # exact = preserve aspect
-            else:
+            # - also checks if an image has been suppressed
+            if not instance.allow_canvas_large_image(canvas):
                 raise Http404
+
+            return canvas.image.size(height=850, width=850,
+                exact=True)    # exact = preserve aspect
 
         if kwargs['mode'] == 'info':
             return canvas.image.info()
         elif kwargs['mode'] == 'iiif':
+            # also restrict iiif tiles based on large image permission
+            if not instance.allow_canvas_large_image(canvas):
+                raise Http404
             return canvas.image.info().replace('info.json', kwargs['url'].strip('/'))
+
+
+

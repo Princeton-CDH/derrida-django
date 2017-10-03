@@ -15,11 +15,9 @@ object for accessing properties to render.
 <h1 class="item-title">{{ book.work.primary_title }}</h1>
 <p class="item-author">
   {% for author in book.work.authors.all %}
-    {% if not forloop.last %}
-      {{ author.authorized_name }};
-    {% else %}
-      {{ author.authorized_name }}
-    {% endif %}
+    {% for author in book.work.authors.all %}
+        {{ author.firstname_last }}{% if not forloop.last %}; {% endif %}
+    {% endfor %}
   {% endfor %}
 </p>
 <p class="item-term__value">{{ book.copyright_year }}{% if book.copy %} - {{ book.copy }}{% endif %}</p>

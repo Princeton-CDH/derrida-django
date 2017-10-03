@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Permission
+from django.contrib.contenttypes.models import ContentType
 from django.db.models import Min
 from django.http import Http404
 from django.test import TestCase, override_settings
@@ -235,6 +237,102 @@ class TestInstanceViews(TestCase):
         response = self.client.get(cover_detail_url)
         self.assertContains(response, p23.label)
         self.assertContains(response, p23_detail_url)
+
+        # should not include suppress canvas form (non-admin)
+        suppress_url = reverse('books:suppress-canvas', kwargs={'slug': item.slug})
+        self.assertNotContains(response, suppress_url)
+
+        # login as admin with change_instance permission
+        pword = 'testing123'
+        content_admin = get_user_model().objects.create_user('testeditor',
+            'test@example.com', pword)
+        content_admin.user_permissions.add(
+            Permission.objects.get(codename='change_instance',
+                content_type=ContentType.objects.get(app_label='books',
+                                                     model='instance'))
+        )
+        self.client.login(username=content_admin.username, password=pword)
+        response = self.client.get(cover_detail_url)
+        # form should be displayed
+        self.assertContains(response, suppress_url)
+        # current canvas id set as hidden input
+        self.assertContains(response,
+            '<input type="hidden" name="canvas_id" value="%s" id="id_canvas_id"/>' % \
+              cover.short_id, html=True)
+
+        # if item is suppressed, form is not displayed
+        item.suppressed_images.add(cover)
+        response = self.client.get(cover_detail_url)
+        assert response.context['canvas_suppressed']
+        self.assertNotContains(response, suppress_url)
+        self.assertContains(response, 'This page image is suppressed')
+
+        item.suppressed_images.remove(cover)
+        item.suppress_all_images = True
+        item.save()
+        response = self.client.get(cover_detail_url)
+        assert response.context['canvas_suppressed']
+        self.assertNotContains(response, suppress_url)
+        self.assertContains(response,
+            'All annotated page images in this volume are suppressed.')
+
+        # anonymous user does not see warning, but suppress flag
+        # is set in context to aid with display
+        self.client.logout()
+        response = self.client.get(cover_detail_url)
+        assert response.context['canvas_suppressed']
+        self.assertNotContains(response,
+            'All annotated page images in this volume are suppressed.')
+
+    def test_canvas_suppress_view(self):
+        # get an instance with a digital edition
+        item = Instance.objects.filter(digital_edition__isnull=False).first()
+        # create test canvas
+        p23 = Canvas.objects.create(manifest=item.digital_edition, order=4,
+            label='p. 23', short_id='p23')
+
+        suppress_url = reverse('books:suppress-canvas', kwargs={'slug': item.slug})
+        # insufficent perms
+        # get redirects
+        response = self.client.get(suppress_url)
+        # by default, django redirects user to login if permission check fails
+        assert response.status_code == 302
+        assert 'accounts/login' in response.url
+
+        # login as admin with change_instance permission
+        pword = 'testing123'
+        content_admin = get_user_model().objects.create_user('testeditor',
+            'test@example.com', pword)
+        content_admin.user_permissions.add(
+            Permission.objects.get(codename='change_instance',
+                content_type=ContentType.objects.get(app_label='books',
+                                                     model='instance'))
+        )
+        self.client.login(username=content_admin.username, password=pword)
+
+        # get redirects to book detail
+        response = self.client.get(suppress_url)
+        assert response.status_code == 303
+        assert response.url == reverse('books:detail', kwargs={'slug': item.slug})
+
+        # post should process the request
+        response = self.client.post(suppress_url,
+            {'suppress': 'current', 'canvas_id': p23.short_id})
+        assert response.status_code == 303
+        assert response.url == reverse('books:canvas-detail',
+            kwargs={'slug': item.slug, 'short_id': p23.short_id})
+
+        # canvas is now suppressed
+        assert p23 in item.suppressed_images.all()
+        # TODO: check that messages are set?
+
+        # post should process the request
+        response = self.client.post(suppress_url,
+            {'suppress': 'all', 'canvas_id': p23.short_id})
+
+        # get fresh copy of item from db
+        item = Instance.objects.get(pk=item.pk)
+        assert item.suppress_all_images
 
 
 @USE_TEST_HAYSTACK

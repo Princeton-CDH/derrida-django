@@ -254,6 +254,18 @@ class Instance(Notable):
         on_delete=models.SET_NULL,
         help_text='Digitized edition of this book, if available')
 
+    #: flag to suppress content page images, to comply with copyright
+    #: owner take-down request
+    suppress_all_images = models.BooleanField(default=False,
+        help_text='''Suppress large image display for all annotated pages
+        in this volume, to comply with copyright take-down requests.
+        (Overview images, insertions, and thumbnails will still display.)''')
+    #: specific page images to be suppressed, to comply with copyright
+    #: owner take-down request
+    suppressed_images = models.ManyToManyField(Canvas, blank=True,
+        help_text='''Suppress large image for specific annotated images to comply
+        with copyright take-down requests.''')
+
     # proof-of-concept generic relation to footnotes
     #: generic relation to :class:~`derrida.footnotes.models.Footnote`
     footnotes = GenericRelation(Footnote)
@@ -385,6 +397,12 @@ class Instance(Notable):
         if self.print_date and self.print_date_year_known:
             return self.print_date.year
 
+    @property
+    def year(self):
+        '''year for indexing and display; :attr:`print_date` if known,
+        otherwise :attr:`copyright_year`'''
+        return self.print_year() or self.copyright_year
+
     def images(self):
         '''Queryset containing all :class:`djiffy.models.Canvas` objects
         associated with the digital edition for this item.'''
@@ -427,12 +445,36 @@ class Instance(Notable):
             canvas.intervention_set.exists()
         ])
 
+    def allow_canvas_large_image(self, canvas):
+        '''Check if canvas large image view is allowed.  Always allows
+        insertion images and overview images; other pages with documented
+        interventions are allowed as long as they are not suppressed,
+        either via :attr:`suppress_all_images` or specific
+        :attr:`suppressed_images`.'''
+        # insertion & overview always allowed
+        if any(['insertion' in canvas.label.lower(),
+                any(label in canvas.label.lower()
+                    for label in self.overview_labels)]):
+            # allow
+            return True
+        # if all other images are suppressed, deny without checking further
+        if self.suppress_all_images:
+            return False
+        # if image has interventions, check if it is suppressed
+        if canvas.intervention_set.exists():
+            # deny if suppressed
+            if canvas in self.suppressed_images.all():
+                return False
+            else:
+                # otherwise, allow
+                return True
+
     @property
     def related_instances(self):
-        authors = [author.authorized_name
-                   for author in self.work.authors.all()]
+        # authors = [author.authorized_name
+                   # for author in self.work.authors.all()]
         return Instance.objects.filter(
-            work__authors__authorized_name__in=authors
+            work__authors__in=self.work.authors.all()
         ).exclude(pk=self.pk).exclude(digital_edition__isnull=True)
 
 
