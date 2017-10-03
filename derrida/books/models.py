@@ -416,6 +416,17 @@ class Instance(Notable):
         Filtered based on canvas label naming conventions.'''
         return self.images().filter(label__icontains='insertion')
 
+    @classmethod
+    def allow_canvas_detail(cls, canvas):
+        '''Check if canvas detail view is allowed.  Allows insertion images,
+        overview images, and pages with documented interventions.'''
+        return any([
+            'insertion' in canvas.label.lower(),
+            any(label in canvas.label.lower()
+                for label in cls.overview_labels),
+            canvas.intervention_set.exists()
+        ])
+
     @property
     def related_instances(self):
         authors = [author.authorized_name

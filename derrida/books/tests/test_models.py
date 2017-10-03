@@ -376,7 +376,7 @@ class TestInstance(TestCase):
         la_vie.digital_edition = mfst = Manifest.objects.create(short_id='m1')
         assert la_vie.insertion_images().count() == 0
         # cover
-        cover = Canvas.objects.create(manifest=mfst, label='Front Coverg',
+        cover = Canvas.objects.create(manifest=mfst, label='Front Cover',
             short_id='cov1', order=1)
         # normal page
         page = Canvas.objects.create(manifest=mfst, label='p. 33',
@@ -392,6 +392,26 @@ class TestInstance(TestCase):
         assert cover not in insertions
         assert insertion in insertions
         assert insertion2 in insertions
+
+    def test_allow_canvas_detail(self):
+        la_vie = Instance.objects.get(work__short_title__contains="La vie")
+        la_vie.digital_edition = mfst = Manifest.objects.create(short_id='m1')
+        # cover
+        cover = Canvas.objects.create(manifest=mfst, label='Front Cover',
+            short_id='cov1', order=1)
+        # normal page
+        page = Canvas.objects.create(manifest=mfst, label='p. 33',
+            short_id='page33', order=2)
+        # insertion
+        insertion = Canvas.objects.create(manifest=mfst,
+            label='pp. 33-34 Insertion A recto', short_id='insa', order=3)
+
+        assert Instance.allow_canvas_detail(cover)
+        assert not Instance.allow_canvas_detail(page)
+        assert Instance.allow_canvas_detail(insertion)
+
+        Intervention.objects.create(canvas=page)
+        assert Instance.allow_canvas_detail(page)
 
     def test_related_instances(self):
 

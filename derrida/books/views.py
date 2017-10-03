@@ -283,19 +283,15 @@ class CanvasDetail(DetailView):
 
     def get_object(self, queryset=None):
         self.instance = get_object_or_404(Instance, slug=self.kwargs['slug'])
-        image = self.instance.images() \
+        canvas = self.instance.images() \
             .filter(short_id=self.kwargs['short_id']).first()
-        if not image:
-            raise Http404
 
         # only show canvas detail page for insertions, overview images,
         # and pages with documented interventions
-        if 'insertion' not in image.label.lower() and \
-          not any(label in image.label.lower() for label in Instance.overview_labels) \
-          and not image.intervention_set.exists():
+        if canvas and Instance.allow_canvas_detail(canvas):
+            return canvas
+        else:
             raise Http404
-
-        return image
 
     def get_context_data(self, *args, **kwargs):
         context = super(CanvasDetail, self).get_context_data(*args, **kwargs)
@@ -414,13 +410,11 @@ class CanvasImage(ProxyView):
         if kwargs['mode'] == 'large':
             # only allow large images for insertions, overview images,
             # and pages with documented interventions
-            if 'insertion' not in canvas.label.lower() and \
-              not any(label in canvas.label.lower() for label in Instance.overview_labels) \
-              and not canvas.intervention_set.exists():
+            if Instance.allow_canvas_detail(canvas):
+                return canvas.image.size(height=850, width=850,
+                    exact=True)    # exact = preserve aspect
+            else:
                 raise Http404
-
-            return canvas.image.size(height=850, width=850,
-                exact=True)    # exact = preserve aspect
 
         if kwargs['mode'] == 'info':
             return canvas.image.info()
