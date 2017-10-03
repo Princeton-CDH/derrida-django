@@ -292,11 +292,16 @@ $(function() {
       e.preventDefault();
       var $this = $(this),
           letter = $this.text();
-      $this.addClass("is-active").siblings(".is-active").removeClass("is-active")
-      authorList.filter(function(item) {
-        var name = item.values().name.toLowerCase();
-        return name.substr(0, 1) == letter.toLowerCase();
-      });
+      if ($this.hasClass("is-active")) {
+        $this.removeClass("is-active");
+        authorList.filter();
+      } else {
+        $this.addClass("is-active").siblings(".is-active").removeClass("is-active")
+        authorList.filter(function(item) {
+          var name = item.values().name.toLowerCase();
+          return name.substr(0, 1) == letter.toLowerCase();
+        });
+      }
     });
 
     var $authorSelectionInput = $("#author-selection"),
