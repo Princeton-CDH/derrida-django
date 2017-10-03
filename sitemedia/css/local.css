@@ -1608,6 +1608,9 @@ hr {
       #books-list .page-header {
         background-image: url("../img/banner/lib_large_2x.png"); } }
 
+#manifest-list .page-header__container {
+  min-height: 10rem; }
+
 .page-header--link {
   text-align: center;
   background: none;
@@ -1947,6 +1950,24 @@ hr {
 .collection--condensed .item__citation {
   display: none;
   visibility: hidden; }
+
+@media only screen and (min-width: 650px) {
+  .collection--wide {
+    max-width: 66%;
+    margin: auto; } }
+.collection--wide .collection__item {
+  width: 100%; }
+  @media only screen and (min-width: 650px) {
+    .collection--wide .collection__item .item__body {
+      width: calc(75% - 5.14706%);
+      float: left;
+      margin-left: 2.94118%;
+      margin-left: 0; }
+    .collection--wide .collection__item .item__image {
+      width: calc(25% - 3.67647%);
+      float: left;
+      margin-left: 2.94118%;
+      float: right; } }
 
 .collection--no-images {
   padding-top: 1rem;
