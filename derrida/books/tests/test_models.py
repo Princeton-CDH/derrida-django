@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from datetime import datetime
+
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 from django.urls import reverse, resolve
@@ -6,7 +8,6 @@ from djiffy.models import Manifest, Canvas
 import pytest
 import json
 
-from derrida.people.models import Person
 from derrida.places.models import Place
 # Common models between projects and associated new types
 from derrida.books.models import Publisher, OwningInstitution, \
@@ -212,7 +213,7 @@ class TestInstance(TestCase):
         assert '%s (%s)' % (la_vie.display_title(), la_vie.copyright_year) \
             == str(la_vie)
         # no date
-        la_vie.year = None
+        la_vie.copyright_year = None
         assert '%s (n.d.)' % (la_vie.display_title(), )
 
     def test_generate_base_slug(self):
@@ -302,6 +303,18 @@ class TestInstance(TestCase):
             label='House - Gift Books, Works By and About Derrida, and Related Items - Derrida, Jacques. De la grammatologie.'
         )
         assert la_vie.location == 'House'
+
+    def test_year(self):
+        la_vie = Instance.objects.get(work__short_title__contains="La vie")
+        # print year not known - use copyright year
+        assert la_vie.year == la_vie.copyright_year
+        # use print year if known
+        la_vie.print_date = datetime(year=1965, month=1, day=1)
+        assert la_vie.year == la_vie.print_date.year
+        # nothing known
+        la_vie.print_date_year_known = False
+        la_vie.copyright_year = None
+        assert la_vie.year is None
 
     def test_images(self):
         la_vie = Instance.objects.get(work__short_title__contains="La vie")

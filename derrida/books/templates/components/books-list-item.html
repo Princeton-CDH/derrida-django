@@ -25,11 +25,7 @@
       {{ book.author_firstname_last|join:"; " }}
       {% endif %}
       {% for author in book.work.authors.all %}
-        {% if not forloop.last %}
-          {{ author.authorized_name }};&nbsp;
-        {% else %}
-          {{ author.authorized_name }}
-        {% endif %}
+          {{ author.firstname_last }}{% if not forloop.last %}; {% endif %}
       {% endfor %}
     </p>
     {% if book.year %}

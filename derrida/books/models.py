@@ -397,6 +397,12 @@ class Instance(Notable):
         if self.print_date and self.print_date_year_known:
             return self.print_date.year
 
+    @property
+    def year(self):
+        '''year for indexing and display; :attr:`print_date` if known,
+        otherwise :attr:`copyright_year`'''
+        return self.print_year() or self.copyright_year
+
     def images(self):
         '''Queryset containing all :class:`djiffy.models.Canvas` objects
         associated with the digital edition for this item.'''
@@ -463,13 +469,12 @@ class Instance(Notable):
                 # otherwise, allow
                 return True
 
-
     @property
     def related_instances(self):
-        authors = [author.authorized_name
-                   for author in self.work.authors.all()]
+        # authors = [author.authorized_name
+                   # for author in self.work.authors.all()]
         return Instance.objects.filter(
-            work__authors__authorized_name__in=authors
+            work__authors__in=self.work.authors.all()
         ).exclude(pk=self.pk).exclude(digital_edition__isnull=True)
 
 

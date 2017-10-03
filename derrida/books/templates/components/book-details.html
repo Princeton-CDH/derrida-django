@@ -9,11 +9,7 @@
     <h3 class="item-term__label">Place{{ book.pub_place.count|pluralize }} of Publication</h3>
     <p class="item-term__value">
       {% for place in book.pub_place.all %}
-        {% if not forloop.last %}
-          {{ place }};&nbsp;
-        {% else %}
-          {{ place }}
-        {% endif %}
+        {{ place }}{% if not forloop.last %}; {% endif %}
       {% endfor %}
     </p>
   </div>
@@ -62,27 +58,12 @@
     <p class="item-term__value">{{ section.display_title }}</p>
     <p class="item-term__value item-term__value--aside">
       {% for author in book.work.authors.all %}
-        {% if not forloop.last %}
-          {{ author.authorized_name }};
-        {% else %}
-          {{ author.authorized_name }}
-        {% endif %}
+          {{ author.firstname_last }}{% if not forloop.last %}; {% endif %}
       {% endfor %}
     </p>
     {% endfor %}
   </div>
   {% endif %}
-
-    {% if book.related_instances %}
-    <div class="item-term">
-      <h3 class="item-term__label">Related Books</h3>
-      <div class="collection collection--condensed item-term__value">
-        {% for instance in book.related_instances %}
-          {% include 'components/books-list-item.html' with book=instance %}
-        {% endfor %}
-      </div>
-    </div>
-    {% endif %}
 
   {% if book.work.instance_set.all|length > 1 %}
   <div class="item-term">
@@ -96,4 +77,18 @@
     </div>
   </div>
   {% endif %}
+
+    {% if book.related_instances %}
+    <div class="item-term">
+      <h3 class="item-term__label">Related Books</h3>
+      <div class="collection collection--condensed item-term__value">
+        {% for instance in book.related_instances %}
+          {% url 'books:detail' instance.slug as instance_url %}
+          {% include 'components/books-list-item.html' with book=instance href=instance_url %}
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+
+
 </section>
