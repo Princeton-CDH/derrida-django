@@ -32,10 +32,14 @@ views) and db model (ajax request via reference histogram).
       </h3>
 
       <p class="item__author">
+        {% if reference.instance_author_firstname_last %}  {# errors in tests if value is None #}
         {{ reference.instance_author_firstname_last|join:'; ' }}
+        {% endif %}
+        {% if instance.work %}
         {% for author in instance.work.authors.all %}
           {{ author.firstname_last }}{% if not forloop.last %}; {% endif %}
         {% endfor %}
+        {% endif %}
       </p>
 
       {# solr #}

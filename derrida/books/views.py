@@ -163,7 +163,7 @@ class ReferenceListView(ListView):
 
         # filter solr query based on search options
         if search_opts.get('query', None):
-            sqs = sqs.filter(text=search_opts['query'])
+            sqs = sqs.filter(text=Clean(search_opts['query']))
 
         if search_opts.get('is_extant', None):
             sqs = sqs.filter(instance_is_extant=search_opts['is_extant'])
