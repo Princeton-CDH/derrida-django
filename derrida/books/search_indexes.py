@@ -67,9 +67,13 @@ class ReferenceIndex(indexes.SearchIndex, indexes.Indexable):
     anchor_text = indexes.CharField(model_attr='anchor_text', null=True)
     # - related instance and work info
     #: Title of instance to which citation points; :method:`derrida.books.models.Instance.display_title`
-    instance_title = indexes.CharField(model_attr='instance__display_title')
-    #: Instance authors for faceted filtering; :method:`derrida.books.models.Work.firstname_last`
-    instance_author = indexes.MultiValueField(model_attr='instance__work__authors__firstname_last')
+    instance_title = indexes.CharField(model_attr='instance__display_title',
+        faceted=True)
+    #: Instance authors for faceted filtering
+    instance_author = indexes.MultiValueField(model_attr='instance__work__authors__authorized_name',
+        faceted=True)
+    #: Instance authors for display
+    instance_author_firstname_last = indexes.MultiValueField(model_attr='instance__work__authors__firstname_last')
     #: non-multifield for instance first author to allow sorting by author
     instance_sort_author = indexes.CharField(model_attr='instance__work__authors__authorized_name',
         faceted=True)
@@ -80,7 +84,10 @@ class ReferenceIndex(indexes.SearchIndex, indexes.Indexable):
     instance_language = indexes.MultiValueField(model_attr='instance__languages__name',
         faceted=True, null=True)
     #: languages for the original work; :attr:`derrida.book.models.Work.languages`
-    original_language = indexes.MultiValueField(model_attr='instance__work__languages__name')
+    original_language = indexes.MultiValueField(model_attr='instance__work__languages__name',
+        faceted=True)
+    instance_pub_place = indexes.MultiValueField(model_attr='instance__pub_place__name',
+        faceted=True, null=True)
     #: copyright year of associated instance; :attr:`derrida.books.models.Instance.copyright_year`
     instance_copyright_year = indexes.DecimalField(model_attr='instance__copyright_year', null=True)
     #: print year of associated instance; :attr:`derrida.books.models.Instance.print_year`

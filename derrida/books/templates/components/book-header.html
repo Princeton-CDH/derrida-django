@@ -7,9 +7,7 @@
 <h1 class="item-title">{{ book.work.primary_title }}</h1>
 <p class="item-author">
   {% for author in book.work.authors.all %}
-    {% for author in book.work.authors.all %}
-        {{ author.firstname_last }}{% if not forloop.last %}; {% endif %}
-    {% endfor %}
+      {{ author.firstname_last }}{% if not forloop.last %}; {% endif %}
   {% endfor %}
 </p>
 <p class="item-term__value">{{ book.copyright_year }}{% if book.copy %} - {{ book.copy }}{% endif %}</p>
