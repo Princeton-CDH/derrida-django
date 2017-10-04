@@ -117,6 +117,8 @@ class ReferenceSearchForm(forms.Form):
         required=False)
     is_annotated = forms.BooleanField(label='Contains annotation',
         required=False)
+    corresponding_intervention = forms.BooleanField(label='Contains corresponding annotation',
+        required=False)
     author = FacetChoiceField(label='Author')
     subject = FacetChoiceField(label='Subject')
     language = FacetChoiceField(label='Language of Publication')

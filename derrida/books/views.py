@@ -169,6 +169,8 @@ class ReferenceListView(ListView):
             sqs = sqs.filter(instance_is_extant=search_opts['is_extant'])
         if search_opts.get('is_annotated', None):
             sqs = sqs.filter(instance_is_annotated=search_opts['is_annotated'])
+        if search_opts.get('corresponding_intervention', None):
+            sqs = sqs.filter(corresponding_intervention=search_opts['corresponding_intervention'])
 
         # look over form fields that map to facets
         for facet in self.form.facet_inputs:

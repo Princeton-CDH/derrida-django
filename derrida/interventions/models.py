@@ -152,7 +152,8 @@ class Intervention(BaseAnnotation):
     def work_instance(self):
         '''Annotated library work :class:`derrida.books.models.Instance`,
         via associated :attr:`digital_edition`.'''
-        return self.canvas.manifest.instance
+        if self.canvas:
+            return self.canvas.manifest.instance
 
     @property
     def annotation_type(self):

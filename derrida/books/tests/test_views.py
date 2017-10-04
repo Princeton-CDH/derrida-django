@@ -424,6 +424,10 @@ class TestReferenceViews(TestCase):
         first_ref = response.context['object_list'][0]
         assert ref.instance.display_title() == first_ref.instance_title
 
+        # filter by corresponding annotation
+        response = self.client.get(reference_list_url, {'corresponding_intervention': 'on'})
+        assert len(response.context['object_list']) == 1
+
     def test_reference_detail(self):
         ref = Reference.objects.exclude(book_page='').first()
         response = self.client.get(ref.get_absolute_url())

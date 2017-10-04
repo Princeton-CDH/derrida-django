@@ -911,6 +911,26 @@
   }
 },
 {
+  "model": "interventions.intervention",
+  "pk": "00ad6d22-64f6-4649-9a95-a6f8270cceb8",
+  "fields": {
+    "created": "2017-09-25T15:22:23Z",
+    "updated": "2017-09-25T15:22:24Z",
+    "text": "",
+    "quote": "kritisieren",
+    "uri": "https://plum.princeton.edu/concern/scanned_resources/pdz012x47s/manifest/canvas/pfn109459p",
+    "user": null,
+    "extra_data": "{}",
+    "intervention_type": "A",
+    "canvas": null,
+    "text_language": null,
+    "text_translation": "",
+    "quote_language": 2,
+    "author": 1,
+    "tags": []
+  }
+},
+{
   "model": "books.reference",
   "pk": 1,
   "fields": {
@@ -922,7 +942,7 @@
     "reference_type": 1,
     "anchor_text": "",
     "canvases": [],
-    "interventions": []
+    "interventions": ["00ad6d22-64f6-4649-9a95-a6f8270cceb8"]
   }
 },
 {

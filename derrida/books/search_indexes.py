@@ -65,6 +65,10 @@ class ReferenceIndex(indexes.SearchIndex, indexes.Indexable):
     book_page = indexes.CharField(model_attr='book_page', null=True)
     #: anchor text
     anchor_text = indexes.CharField(model_attr='anchor_text', null=True)
+    #: ids for corresponding intervention
+    interventions = indexes.MultiValueField(model_attr='interventions__id')
+    #: has corresponding intervention
+    corresponding_intervention = indexes.FacetBooleanField()
     # - related instance and work info
     #: Title of instance to which citation points; :method:`derrida.books.models.Instance.display_title`
     instance_title = indexes.CharField(model_attr='instance__display_title',
@@ -111,4 +115,6 @@ class ReferenceIndex(indexes.SearchIndex, indexes.Indexable):
         if first_author:
             return first_author.authorized_name
 
+    def prepare_corresponding_intervention(self, reference):
+        return reference.interventions.count()
 

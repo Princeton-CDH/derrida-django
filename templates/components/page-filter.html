@@ -51,21 +51,12 @@
       </div>
       {% endif %}
 
-      {% if form.instance_is_extant %}
-        <div class="filter__selector">
-          <label class="mdl-switch__label mdl-switch__label--right" for="id_instance_is_extant">{{ form.instance_is_extant.label }}
-            <span class="mdl-switch mdl-switch--right mdl-js-switch">
-              {% render_field form.instance_is_extant class="mdl-switch__input" id="id_instance_is_extant" %}
-            </span>
-          </label>
-        </div>
-      {% endif %}
-
-      {% if form.instance_is_annotated %}
+      {# FIXME: reusing id because otherwise javascript doesn't fire, but not sure where set #}
+      {% if form.corresponding_intervention %}
       <div class="filter__selector">
-        <label class="mdl-switch__label mdl-switch__label--right" for="id_instance_is_annotated">{{ form.instance_is_annotated.label }}
+        <label class="mdl-switch__label mdl-switch__label--right" for="id_instance_is_extant" {#corresponding_intervention#}>{{ form.corresponding_intervention.label }}
           <span class="mdl-switch mdl-switch--right mdl-js-switch">
-            {% render_field form.instance_is_annotated class="mdl-switch__input" id="id_instance_is_annotated" %}
+            {% render_field form.corresponding_intervention class="mdl-switch__input" id="id_instance_is_extant"  %} {# corresponding_intervention#}
           </span>
         </label>
       </div>
