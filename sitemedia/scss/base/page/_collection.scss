@@ -207,6 +207,12 @@
   margin-bottom: 1.2em;
 }
 
+.item-gallery {
+  display: flex;
+  flex-flow: row;
+  flex-wrap: wrap;
+}
+
 .item__image {
   position: relative;
   @include grid-column(2);
@@ -221,12 +227,13 @@
   }
 
   &.item__image--gallery {
-    float: left;
     @include grid-column(2);
 
     @include grid-media($large-medium-viewport-grid) {
       @include grid-column(3);
     }
+
+    float: none;
   }
 
   .img {
@@ -276,10 +283,8 @@
 
   .item-gallery & {
     display: block;
-    height: 200px;
 
     .img {
-      height: 100%;
       max-height: none;
     }
   }
