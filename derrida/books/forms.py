@@ -32,8 +32,9 @@ class FacetChoiceField(forms.MultipleChoiceField):
 class InstanceSearchForm(forms.Form):
     defaults = {
         'order_by': 'author',
-        # TODO
-        # 'cited_in': 'de la grammatologie'
+        # NOTE: restricting here hides a couple of volumes;
+        # is this a data error or something else?
+        # 'cited_in': ['De la grammatologie']
     }
 
     query = forms.CharField(label='Search', required=False)
@@ -78,28 +79,62 @@ class InstanceSearchForm(forms.Form):
 
 
 class ReferenceSearchForm(forms.Form):
-
+    defaults = {
+        'order_by': 'dw_page',
+        'derridawork': ['De la grammatologie']
+    }
     query = forms.CharField(label='Search', required=False)
 
-    facet_fields = ['derridawork', 'reference_type']
+    order_by = forms.ChoiceField(choices=[
+            ('dw_page', 'Page order in Derrida work'),
+            ('cited_author', 'Author of cited work'),
+            ('cited_title', 'Title of cited work'),
+        ], required=False, initial=defaults['order_by'],
+        widget=forms.RadioSelect)
 
-    instance_is_extant = forms.BooleanField(label="Extant in Derrida's Library",
+    #: order options and corresponding solr field
+    sort_fields = {
+        'dw_page': 'derridawork_page',
+        'cited_author': 'instance_sort_author',
+        'cited_title': 'instance_title_exact',
+    }
+
+    facet_fields = ['derridawork', 'reference_type', 'instance_author',
+        'instance_subject', 'instance_language', 'original_language',
+        'instance_pub_place']
+        #'pub_language', 'orig_language']. # range facets TODO
+
+    solr_facet_fields = {
+        'instance_author': 'author',
+        'instance_subject': 'subject',
+        'instance_language': 'language',
+        'instance_pub_place': 'pub_place',
+    }
+    facet_inputs = ['derridawork', 'reference_type', 'author', 'subject',
+        'language', 'original_language', 'pub_place']
+
+    is_extant = forms.BooleanField(label="Extant in Derrida's Library",
         required=False)
-    instance_is_annotated = forms.BooleanField(label='Contains annotation',
+    is_annotated = forms.BooleanField(label='Contains annotation',
         required=False)
-    derridawork = FacetChoiceField(label='Cited by Derrida in', required=False)
-    reference_type = FacetChoiceField(label='Citation Type', required=False)
-    instance_author = FacetChoiceField(label='Publication Author')
-    instance_subject = FacetChoiceField(label='Publication Subject')
-    instance_language = FacetChoiceField(label='Language of Publication')
+    corresponding_intervention = forms.BooleanField(label='Contains corresponding annotation',
+        required=False)
+    author = FacetChoiceField(label='Author')
+    subject = FacetChoiceField(label='Subject')
+    language = FacetChoiceField(label='Language of Publication')
     original_language = FacetChoiceField(label='Original Language')
+    pub_place = FacetChoiceField(label='Place of Publication')
+    # TODO: original pub year, edition year, print year
+    reference_type = FacetChoiceField(label='Reference Type', required=False)
+    derridawork = FacetChoiceField(label='Cited by Derrida in', required=False)
 
     def set_choices_from_facets(self, facets):
         # configure field choices based on facets returned from Solr
         # TODO: Generalize this for a sublcass of forms.Form?
         for facet, counts in facets.items():
-            if facet in self.fields:
-                self.fields[facet].choices = [
+            formfield = self.solr_facet_fields.get(facet, facet)
+            if formfield in self.fields:
+                self.fields[formfield].choices = [
                     (val, mark_safe('%s <span>%d</span>' % (val, count)))
                     for val, count in counts]
 

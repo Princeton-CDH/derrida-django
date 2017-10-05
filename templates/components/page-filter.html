@@ -56,21 +56,12 @@
       </div>
       {% endif %}
 
-      {% if form.instance_is_extant %}
-        <div class="filter__selector">
-          <label class="mdl-switch__label mdl-switch__label--right" for="id_instance_is_extant">{{ form.instance_is_extant.label }}
-            <span class="mdl-switch mdl-switch--right mdl-js-switch">
-              {% render_field form.instance_is_extant class="mdl-switch__input" id="id_instance_is_extant" %}
-            </span>
-          </label>
-        </div>
-      {% endif %}
-
-      {% if form.instance_is_annotated %}
+      {# FIXME: reusing id because otherwise javascript doesn't fire, but not sure where set #}
+      {% if form.corresponding_intervention %}
       <div class="filter__selector">
-        <label class="mdl-switch__label mdl-switch__label--right" for="id_instance_is_annotated">{{ form.instance_is_annotated.label }}
+        <label class="mdl-switch__label mdl-switch__label--right" for="id_instance_is_extant" {#corresponding_intervention#}>{{ form.corresponding_intervention.label }}
           <span class="mdl-switch mdl-switch--right mdl-js-switch">
-            {% render_field form.instance_is_annotated class="mdl-switch__input" id="id_instance_is_annotated" %}
+            {% render_field form.corresponding_intervention class="mdl-switch__input" id="id_instance_is_extant"  %} {# corresponding_intervention#}
           </span>
         </label>
       </div>
@@ -84,49 +75,56 @@
 
       {% if form.subject %}
       <div class="filter__selector">
-        {% include 'components/form/checkbox-selection.html' with name='subject' label='Subject' items=form.subject %}
+        {% include 'components/form/checkbox-selection.html' with name='subject' label=form.subject.label items=form.subject %}
       </div>
       {% endif %}
 
       {% if form.derridawork %}
       <div class="filter__selector filter__selector--condensed">
-        {% include 'components/form/checkbox-selection.html' with name='derridawork' label='Derrida Work' items=form.derridawork %}
+        {% include 'components/form/checkbox-selection.html' with name='derridawork' label=form.derridawork.label items=form.derridawork %}
       </div>
       {% endif %}
 
       {% if form.language %}
       <div class="filter__selector filter__selector--condensed">
-        {% include 'components/form/checkbox-selection.html' with name='language' label='Original Language' items=form.language %}
+        {% include 'components/form/checkbox-selection.html' with name='language' label=form.language.label items=form.language %}
       </div>
       {% endif %}
 
       {% if form.work_language %}
       <div class="filter__selector filter__selector--condensed">
-        {% include 'components/form/checkbox-selection.html' with name='work_language' label='Language of Publication' items=form.work_language %}
+        {% include 'components/form/checkbox-selection.html' with name='work_language' label=form.work_language.label items=form.work_language %}
       </div>
       {% endif %}
 
+      {% if form.original_language %}
+      <div class="filter__selector filter__selector--condensed">
+        {% include 'components/form/checkbox-selection.html' with name='original_language' label=form.original_language.label items=form.original_language %}
+      </div>
+      {% endif %}
+
+
       {% if form.pub_place %}
       <div class="filter__selector filter__selector--condensed">
-        {% include 'components/form/checkbox-selection.html' with name='pub_place' label='Publication Place' items=form.pub_place %}
+        {% include 'components/form/checkbox-selection.html' with name='pub_place' label=form.pub_place.label items=form.pub_place %}
       </div>
       {% endif %}
 
       {% if form.item_type %}
       <div class="filter__selector filter__selector--condensed">
-        {% include 'components/form/checkbox-selection.html' with name='publication_type' label='Publication Type' items=form.item_type %}
+        {% include 'components/form/checkbox-selection.html' with name='publication_type' label=form.item_type.label items=form.item_type %}
       </div>
       {% endif %}
 
       {% if form.reference_type %}
       <div class="filter__selector filter__selector--condensed">
-        {% include 'components/form/checkbox-selection.html' with name='reference_type' label='Reference Type' items=form.reference_type %}
+        {% include 'components/form/checkbox-selection.html' with name='reference_type' label=form.reference_type.label items=form.reference_type %}
       </div>
       {% endif %}
 
       {% if form.cited_in %}
       <div class="filter__selector filter__selector--condensed">
-        {% include 'components/form/checkbox-selection.html' with name='cited_in' label='Cited In' items=form.cited_in %}
+        {% include 'components/form/checkbox-selection.html' with name='cited_in' label=form.cited_in.label items=form.cited_in %}
       </div>
       {% endif %}
 

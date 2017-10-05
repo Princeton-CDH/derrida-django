@@ -55,13 +55,13 @@ This template is only used on the details view for a book instance.
   </div>
   {% endif %}
 
-  {% if book.collected_in %}
+  {% if book.collected_set.all %}
   <div class="item-term">
     <h3 class="item-term__label">Book Sections</h3>
-    {% for section in book.collected_in %}
-    <p class="item-term__value">{{ section.display_title }}</p>
+    {% for section in book.collected_set.all %}
+    <p class="item-term__value"><i>{{ section.display_title }}</i></p>
     <p class="item-term__value item-term__value--aside">
-      {% for author in book.work.authors.all %}
+      {% for author in section.work.authors.all %}
           {{ author.firstname_last }}{% if not forloop.last %}; {% endif %}
       {% endfor %}
     </p>

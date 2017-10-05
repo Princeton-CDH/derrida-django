@@ -367,12 +367,15 @@ class TestReferenceViews(TestCase):
         # spot check template (tested more thoroughly in reference detail below)
         self.assertContains(response, 'p. %s' % ref.book_page,
             msg_prefix='reference detail should include book page number')
-        # FIXME: disabled until we figure out if we can use a solr join
-        # self.assertContains(response, escape(ref.instance.display_title()),
-            # msg_prefix='reference detail should include book title')
+        self.assertContains(response, escape(ref.instance.display_title()),
+            msg_prefix='reference detail should include book title')
+        # default sort is derrida work page
+        ref = Reference.objects.order_by('derridawork_page').first()
+        first_ref = response.context['object_list'][0]
+        assert (ref.derridawork_page, ref.derridawork_pageloc) == \
+            (first_ref.derridawork_page, first_ref.derridawork_pageloc)
 
         # pagination: link to page two
-        # FIXME: should this include current page url?
         # will eventually need to include sort/filter options
         self.assertContains(response, '?page=2',
             msg_prefix='should include link to next page of results')
@@ -384,7 +387,46 @@ class TestReferenceViews(TestCase):
         # not enough results to paginate
         self.assertTemplateNotUsed(response, 'components/page-pagination.html')
 
-        # todo: test no results displayed
+        # keyword search
+        response = self.client.get(reference_list_url, {'query': 'lettres'})
+        # anchor text for matching reference should display
+        assert response.status_code == 200
+        assert len(response.context['object_list']) == 1
+        self.assertContains(response,
+            escape("des lettres, de l'alphabet, de la syllabation"),
+            msg_prefix='should include anchor text for matching reference')
+
+        # test no results displayed
+        response = self.client.get(reference_list_url, {'query': 'foobar'})
+        assert len(response.context['object_list']) == 0
+        self.assertContains(response,
+            'No trace of what you were searching for was found')
+
+        # filter by is extant
+        response = self.client.get(reference_list_url, {'is_extant': 'on'})
+        assert len(response.context['object_list']) == \
+            Reference.objects.filter(instance__is_extant=True).count()
+
+        # filter by is annotated
+        response = self.client.get(reference_list_url, {'is_annotated': 'on'})
+        assert len(response.context['object_list']) == \
+            Reference.objects.filter(instance__is_annotated=True).count()
+
+        # facet filter on multiple authors
+        authors = ['Granger, Gilles-Gaston', 'Nietzsche, Friedrich']
+        response = self.client.get(reference_list_url, {'author': authors})
+        assert len(response.context['object_list']) == \
+            Reference.objects.filter(instance__work__authors__authorized_name__in=authors).count()
+
+        # sort by cited item title
+        response = self.client.get(reference_list_url, {'order_by': 'cited_title'})
+        ref = Reference.objects.order_by('instance__work__short_title').first()
+        first_ref = response.context['object_list'][0]
+        assert ref.instance.display_title() == first_ref.instance_title
+
+        # filter by corresponding annotation
+        response = self.client.get(reference_list_url, {'corresponding_intervention': 'on'})
+        assert len(response.context['object_list']) == 1
 
     def test_reference_detail(self):
         ref = Reference.objects.exclude(book_page='').first()
