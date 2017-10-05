@@ -12,7 +12,7 @@ object for accessing properties to render.
 {% else %}
 <span class="item-header__image img--placeholder"></span>
 {% endif %}
-<h1 class="item-title">{{ book.work.primary_title }}</h1>
+<h1 class="item-title">{{ book.display_title }}</h1>
 <p class="item-author">
   {% for author in book.work.authors.all %}
       {{ author.firstname_last }}{% if not forloop.last %}; {% endif %}
