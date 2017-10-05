@@ -7,9 +7,9 @@
       $(".search-form-header").removeClass("is-hidden");
     }
 
-    if (window.selectizedFeilds) {
-      var searchFormSelectize = $.grep(window.selectizedFeilds, function(selectize){
-        return "id_content_type-selectized" === window.selectizedFeilds[0].$control_input[0].id;
+    if (window.selectizedFields) {
+      var searchFormSelectize = $.grep(window.selectizedFields, function(selectize){
+        return "id_content_type-selectized" === window.selectizedFields[0].$control_input[0].id;
       });
 
       if (searchFormSelectize.length) {
