@@ -16,6 +16,10 @@
     width: 80%;
   }
 
+  &.is-hidden {
+    pointer-events: none;
+  }
+
   &.is-fixed {
     position: fixed;
     top: 0;
