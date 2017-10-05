@@ -3,7 +3,7 @@
 <script>
   $(function() {
     var $searchFormHeader = $(".search-form-header");
-    if ($searchFormHeader.length && $searchFormHeader.val().length) {
+    if ($searchFormHeader.length && $searchFormHeader.find(".mdl-textfield__input").val().length) {
       $(".search-form-header").removeClass("is-hidden");
     }
 
