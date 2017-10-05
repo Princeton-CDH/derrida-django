@@ -14,7 +14,9 @@ The template allows for the following parameters:
 {% load static %}
 <section class="collection__item book {% if shorten %}book--short{% endif %}">
   {% if book.is_annotated %}
-    <span class="item__indicator item__indicator--annotated"><span class="scribble-icon"></span></span>
+    <span class="item__indicator">
+      <img class="icon--annotation" src="{% static 'img/bookmark_annotation.svg' %}" />
+    </span>
   {% endif %}
   <figure class="item__image">
     {% with book.digital_edition|yesno:"a,span" as tag %}

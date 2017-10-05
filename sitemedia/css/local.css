@@ -2034,38 +2034,9 @@ hr {
     display: none; }
   .collection__item.book--short .text-badge,
   .collection__item.book--short .item__excerpt,
-  .collection__item.book--short .item__citation {
+  .collection__item.book--short .item__citation,
+  .collection__item.book--short .item__indicator {
     display: none; }
-
-.item__indicator.item__indicator--annotated {
-  position: absolute;
-  right: 14px;
-  z-index: 3;
-  background-color: #fff;
-  width: 30px;
-  height: 20px;
-  border: 3px solid #3ca1ff; }
-  .item__indicator.item__indicator--annotated::before, .item__indicator.item__indicator--annotated::after {
-    content: "";
-    position: absolute;
-    border: 14px solid #fff;
-    display: block;
-    bottom: -28px; }
-  .item__indicator.item__indicator--annotated::before {
-    border-color: #3ca1ff;
-    border-bottom-color: transparent;
-    z-index: -2;
-    border-width: 15px;
-    left: -3px;
-    top: 17px;
-    border-top-width: 17px; }
-  .item__indicator.item__indicator--annotated::after {
-    border-color: #fff;
-    border-bottom-color: transparent;
-    z-index: -1;
-    border-width: 12px;
-    right: 0;
-    top: 0; }
 
 .item__body {
   width: calc(50% - 4.41176%);
@@ -2167,7 +2138,8 @@ hr {
       align-self: flex-end;
       margin: 0; }
     .collection--condensed .item__image .img {
-      max-height: none; }
+      max-height: none;
+      max-width: 96%; }
   .collection--condensed .item__image {
     width: 100%;
     height: auto;
@@ -2231,6 +2203,16 @@ hr {
 
 .item__excerpt {
   opacity: 0.6; }
+
+.item__indicator {
+  position: absolute;
+  right: 1.5em;
+  top: -3px;
+  width: 30px;
+  z-index: 10;
+  display: none; }
+  #books-list .item__indicator {
+    display: block; }
 
 .item-header {
   color: #424242;
