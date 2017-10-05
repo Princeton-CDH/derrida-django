@@ -13,6 +13,9 @@ The template allows for the following parameters:
 {% endcomment %}
 {% load static %}
 <section class="collection__item book {% if shorten %}book--short{% endif %}">
+  {% if book.is_annotated %}
+    <span class="item__indicator item__indicator--annotated"><span class="scribble-icon"></span></span>
+  {% endif %}
   <figure class="item__image">
     {% with book.digital_edition|yesno:"a,span" as tag %}
     <{{tag}} class="img item__image__link"{% if tag == "a" %} href="{{ href }}"{% endif %}>
@@ -26,7 +29,6 @@ The template allows for the following parameters:
   </figure>
 
   <div class="item__body">
-    {# NOTE: annotation indicator should be based on book.is_annotated #}
     <a class="text-badge text-badge--blue text-badge--link" href="#">{{ book.item_type }}</a>
     <h3 class="item__heading">
       {% with book.digital_edition|yesno:"a,span" as tag %}
