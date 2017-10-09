@@ -3,6 +3,7 @@ import json
 from dal import autocomplete
 from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
+from django.db.models import Max, Min
 from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
@@ -12,7 +13,7 @@ from django.views.generic.base import TemplateView
 from django.views.generic.edit import FormView
 from djiffy.models import Canvas
 from haystack.query import SearchQuerySet
-from haystack.inputs import Clean
+from haystack.inputs import Clean, Raw
 import requests
 
 from derrida.books.forms import ReferenceSearchForm, InstanceSearchForm, \
@@ -86,6 +87,7 @@ class InstanceListView(ListView):
 
     def get_queryset(self):
         sqs = SearchQuerySet().models(self.model)
+        print('query = %s' % sqs.query)
         # restrict to extant books that are cited
         sqs = sqs.filter(is_extant=True, item_type_exact='Book',
                          cited_in='*')
@@ -100,6 +102,27 @@ class InstanceListView(ListView):
         for facet_field in self.form.facet_fields:
             # sort by alpha instead of solr default of count
             sqs = sqs.facet(facet_field, sort='index')
+
+        # request range facets
+        # TODO: only get max/min from db when not specified in query opts
+        # (can/should we cache these?)
+        # get max/min from database
+        ranges = Instance.objects.filter(is_extant=True, reference__isnull=False) \
+            .aggregate(work_year_max=Max('work__year'), work_year_min=Min('work__year'),
+                copyright_year_max=Max('copyright_year'), copyright_year_min=Min('copyright_year'),
+                print_year_max=Max('print_date'), print_year_min=Min('print_date'))
+        for range_facet in self.form.range_facets:
+            range_opts = {
+                'start': ranges['%s_min' % range_facet],
+                'end': ranges['%s_max' % range_facet],
+                'gap': 100  # ???
+            }
+            if range_facet == 'print_year':
+                # special case: print year is a datetime but we only want year
+                range_opts['start'] = range_opts['start'].year if range_opts['start'] else None
+                range_opts['end'] = range_opts['end'].year if range_opts['end'] else None
+            # TODO: caalculate gap based on the desired number of slices
+            sqs = sqs.facet(range_facet, range=True, **range_opts)
 
         # form shouldn't normally be invalid since no fields are
         # required, but cleaned data isn't available until we validate
@@ -123,23 +146,33 @@ class InstanceListView(ListView):
                 # filter the query: facet matches any of the terms
                 sqs = sqs.filter(**{'%s__in' % solr_facet: search_opts[facet]})
 
+        for range_facet in self.form.range_facets:
+            if range_facet in search_opts and search_opts[range_facet]:
+                start, end = search_opts[range_facet].split('-')
+                # could have both start and end or just one
+                # NOTE: haystack includes a range field lookup, but
+                # it converts numbers to strings, so this is easier
+                range_filter = '[%s TO %s]' % (start or '*', end or '*')
+                sqs = sqs.filter(**{range_facet: Raw(range_filter)})
+
         # sort should always be set
         if search_opts['order_by']:
             # convert sort option to corresponding solr field
             solr_sort = self.form.solr_field(search_opts['order_by'])
             sqs = sqs.order_by(solr_sort)
 
+        # store for retrieving facets in get context data
+        self.queryset = sqs
         return sqs
 
     def get_context_data(self, **kwargs):
         context = super(InstanceListView, self).get_context_data(**kwargs)
-        sqs = self.get_queryset()
-        facets = sqs.facet_counts()
+        facets = self.queryset.facet_counts()
         # update multi-choice fields based on facets in the data
         self.form.set_choices_from_facets(facets.get('fields'))
         context.update({
-            'facets': facets,
-            'total': sqs.count(),
+            'facets': facets,   # now includes ranges as facets.ranges
+            'total': self.queryset.count(),
             'form': self.form
         })
         return context
