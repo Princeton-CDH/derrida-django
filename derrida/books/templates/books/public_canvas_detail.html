@@ -37,7 +37,7 @@
         Cited in <em>{{ instance.reference_set.all.0.derridawork }}</em>
         <ul>
         {% for reference in instance.reference_set.all %}
-            <li>p.{{ reference.derridawork_page }} {{ reference.derridawork_pageloc }}</li>
+            <li>p.{{ reference.derridawork_page }}</li>
         {% endfor %}
         </ul>
         {% endif %}
