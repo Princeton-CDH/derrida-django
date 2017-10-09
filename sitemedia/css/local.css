@@ -1254,7 +1254,16 @@ hr {
       .coordinate-navigation .mdl-navigation__link:nth-child(1), .coordinate-navigation .mdl-navigation__link:nth-child(3) {
         top: 10%; }
       .coordinate-navigation .mdl-navigation__link:nth-child(2), .coordinate-navigation .mdl-navigation__link:nth-child(4) {
-        top: calc(100vh - 17rem); } }
+        top: calc(100vh - 17rem); }
+
+  .mdl-layout__header.mdl-layout__header--transparent {
+    pointer-events: none; }
+
+  .mdl-layout-logo {
+    pointer-events: auto; }
+
+  .header__search-button {
+    pointer-events: auto; } }
 .mdl-layout__drawer {
   width: 100%;
   padding-top: 4em;

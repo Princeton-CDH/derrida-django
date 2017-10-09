@@ -190,6 +190,18 @@
       }
     }
   }
+
+  .mdl-layout__header.mdl-layout__header--transparent {
+    pointer-events: none;
+  }
+
+  .mdl-layout-logo {
+    pointer-events: auto;
+  }
+
+  .header__search-button {
+    pointer-events: auto;
+  }
 }
 
 // Mobile navigation
