@@ -2,16 +2,16 @@
 {% load static %}
 
 {% block head_extras %}
-    {% include 'snippets/local_styles.html' %}
-    <link rel="stylesheet" type="text/css" href="{% static "css/test-banner.css" %}" />
-    <script src="{% static 'js/material.min.js' %}"></script>
-    <script src="{% static 'js//lib/webui-popover.min.js' %}"></script>
-    <script src="{% static 'js/lib/sticky-sidebar.js' %}"></script>
-    <script src="{% static 'js/lib/selectize.min.js' %}"></script>
-    <script src="{% static 'js/lib/list.min.js' %}"></script>
-    <script src="{% static 'js/site.js' %}"></script>
-    {# Include analytics if INCLUDE_ANALYTICS is set to True #}
-    {# {% include 'snippets/analytics.html' %} #}
+  {% include 'snippets/local_styles.html' %}
+  <link rel="stylesheet" type="text/css" href="{% static "css/test-banner.css" %}" />
+  <script src="{% static 'js/material.min.js' %}"></script>
+  <script src="{% static 'js//lib/webui-popover.min.js' %}"></script>
+  <script src="{% static 'js/lib/sticky-sidebar.js' %}"></script>
+  <script src="{% static 'js/lib/selectize.min.js' %}"></script>
+  <script src="{% static 'js/lib/list.min.js' %}"></script>
+  <script src="{% static 'js/site.js' %}"></script>
+  {# Include analytics if INCLUDE_ANALYTICS is set to True #}
+  {# {% include 'snippets/analytics.html' %} #}
 {% endblock %}
 
 {% block page-title %}{% block page-subtitle %}{% endblock %}Derrida's Margins{% endblock %}
