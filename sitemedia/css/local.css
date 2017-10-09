@@ -1761,8 +1761,8 @@ hr {
       max-width: 50%; } }
   .filter__selector.filter__selector--condensed {
     flex-grow: 1;
-    flex-basis: 180px;
-    max-width: 180px; }
+    flex-basis: 15rem;
+    max-width: 15rem; }
   .filter__selector .mdl-textfield {
     width: 100%; }
   .filter__selector .mdl-textfield__label {

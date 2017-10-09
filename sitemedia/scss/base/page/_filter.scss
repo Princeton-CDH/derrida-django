@@ -124,9 +124,10 @@
   }
 
   &.filter__selector--condensed {
+    $selector-width: 15rem;
     flex-grow: 1;
-    flex-basis: 180px;
-    max-width: 180px;
+    flex-basis: $selector-width;
+    max-width: $selector-width;
   }
 
   .mdl-textfield {
