@@ -2139,7 +2139,8 @@ hr {
       margin: 0; }
     .collection--condensed .item__image .img {
       max-height: none;
-      max-width: 96%; }
+      max-width: 96%;
+      width: 100%; }
   .collection--condensed .item__image {
     width: 100%;
     height: auto;
@@ -2206,8 +2207,8 @@ hr {
 
 .item__indicator {
   position: absolute;
-  right: 1.5em;
-  top: -3px;
+  right: 8%;
+  top: -10px;
   width: 30px;
   z-index: 10;
   display: none; }
