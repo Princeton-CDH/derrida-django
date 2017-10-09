@@ -62,7 +62,7 @@ class ReferenceIndex(indexes.SearchIndex, indexes.Indexable):
     #: derrida work slug in derrida work; :attr:`derrida.books.models.DerridaWork.slug`
     derridawork_slug = indexes.CharField(model_attr='derridawork__slug')
     #: Cited page in referenced work; :attr:`derrida.books.models.Reference.book_page`
-    book_page = indexes.CharField(model_attr='book_page', null=True)
+    book_page = indexes.CharField(model_attr='book_page', null=True, faceted=True)
     #: anchor text
     anchor_text = indexes.CharField(model_attr='anchor_text', null=True)
     #: ids for corresponding intervention
