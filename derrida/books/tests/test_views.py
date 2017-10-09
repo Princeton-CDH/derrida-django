@@ -393,8 +393,10 @@ class TestReferenceViews(TestCase):
         assert response.status_code == 200
         assert len(response.context['object_list']) == 1
         self.assertContains(response,
-            escape("des lettres, de l'alphabet, de la syllabation"),
+            escape("alphabet, de la syllabation"),
             msg_prefix='should include anchor text for matching reference')
+        self.assertContains(response, '<em>Grammatologie</em>',
+            msg_prefix='markdown formatting in anchor text should be rendered as html')
 
         # test no results displayed
         response = self.client.get(reference_list_url, {'query': 'foobar'})

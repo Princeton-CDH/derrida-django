@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'viapy',
     'haystack',
     'widget_tweaks',
+    'markdownify',
     # local apps
     'derrida.apps.DerridaConfig',
     'derrida.books',
