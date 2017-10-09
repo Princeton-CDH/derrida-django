@@ -4,7 +4,7 @@ list/search page, book references tab, and via ajax on reference histogram.
 Currently supports both display for both solr search result (all search/list
 views) and db model (ajax request via reference histogram).
 {% endcomment %}
-{% load static %}
+{% load static markdownify %}
 <section class="collection__item reference">
   {# instance url for solr reference #}
   {% url 'books:detail' reference.instance_slug as instance_url %}
@@ -55,7 +55,7 @@ views) and db model (ajax request via reference histogram).
         <p class="item__location">p{% if '-' in reference.book_page %}p{% endif %}. {{ reference.book_page }}</p>
       {% endif %}
 
-      <p class="item__excerpt">{{ reference.anchor_text|default:'' }}</p>
+      <p class="item__excerpt">{{ reference.anchor_text|default:''|markdownify }}</p>
 
       <p class="item__citation">
         Cited in <em>{{ reference.derridawork }}</em> p.{{ reference.derridawork_page }}

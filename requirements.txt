@@ -21,3 +21,4 @@ git+https://github.com/Princeton-CDH/viapy.git@develop#egg=viapy
 git+https://github.com/django-haystack/django-haystack.git@master#egg=django-haystack
 pysolr
 django-widget-tweaks
+django-markdownify
