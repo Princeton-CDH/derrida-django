@@ -459,9 +459,11 @@ class TestReferenceViews(TestCase):
         # - derrida work citation
         self.assertContains(response, ref.derridawork,
             msg_prefix='should include Derrida work title')
-        self.assertContains(response,
+        self.assertNotContains(response,
             'p.%s %s' % (ref.derridawork_page, ref.derridawork_pageloc),
-            msg_prefix='should include Derrida work location')
+            msg_prefix='should not include Derrida work page with page location')
+        self.assertContains(response, 'p.%s' % ref.derridawork_page,
+            msg_prefix='should include Derrida work page')
 
         # display for page range
         ref.book_page = '100-101'
