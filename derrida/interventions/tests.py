@@ -1,12 +1,15 @@
+# -*- coding: utf-8 -*-
 import json
 from unittest.mock import Mock, patch
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.urls import reverse
 from djiffy.models import Canvas, Manifest
+from haystack.models import SearchResult
+import pytest
 
 from derrida.books.models import Instance, Language
 from derrida.people.models import Person
@@ -454,6 +457,64 @@ class TestInterventionViews(TestCase):
         self.assertContains(response,
             reverse('books:language-autocomplete'),
             msg_prefix='annotator init includes language autocomplete url')
+
+
+#: override_settings and use test haystack connection
+@override_settings(HAYSTACK_CONNECTIONS=settings.HAYSTACK_TEST_CONNECTIONS)
+class TestInterventionSolrViews(TestCase):
+    fixtures = ['test_interventions.json']
+
+    @pytest.mark.haystack
+    def test_intervention_list(self):
+        intervention_list_url = reverse('interventions:list')
+        response = self.client.get(intervention_list_url)
+        assert response.status_code == 200
+        assert 'object_list' in response.context
+        assert isinstance(response.context['object_list'][0], SearchResult)
+        assert len(response.context['object_list']) == \
+            Intervention.objects.count()
+        self.assertContains(response, '%d Results' % Intervention.objects.count(),
+            msg_prefix='total number of results displayed')
+
+        # default order - author of annotated work
+        first_result = response.context['object_list'][0]
+        alpha_author = Intervention.objects \
+            .order_by('canvas__manifest__instance__work__authors__authorized_name',
+                'canvas__label') \
+            .first()
+        assert first_result.pk == str(alpha_author.pk)
+        # check details included in template
+        # annotation type
+        for annotype in first_result.annotation_type:
+            self.assertContains(response, annotype)
+        # canvas image & link
+        self.assertContains(response,
+            reverse('books:canvas-detail', args=[first_result.item_slug, first_result.canvas_id]),
+            msg_prefix='annotation should link to canvas detail')
+        self.assertContains(response,
+            reverse('books:canvas-image', args=[first_result.item_slug, first_result.canvas_id, 'thumbnail']),
+            msg_prefix='annotation should display local thumbnail image')
+        self.assertContains(response,
+            reverse('books:detail', args=[first_result.item_slug]),
+            msg_prefix='should link to annotated book')
+        self.assertContains(response, first_result.item_title,
+            msg_prefix='should display annotated book title')
+        # first result item has no print year
+        self.assertContains(response, first_result.annotated_page,
+            msg_prefix='should display label of annotated page')
+
+        # keyword search
+        response = self.client.get(intervention_list_url, {'query': 'kritisieren'})
+        assert response.status_code == 200
+        assert len(response.context['object_list']) == 1
+
+        # filter by annotated work author
+        response = self.client.get(intervention_list_url, {'hand': ['Jacques Derrida']})
+        assert len(response.context['object_list']) == 1
+
+        # filter by ink
+        response = self.client.get(intervention_list_url, {'ink': ['blue ink']})
+        assert len(response.context['object_list']) == 1
 
 
 class TestExtendedCanvasAutocomplete(TestCase):

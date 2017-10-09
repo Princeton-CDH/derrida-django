@@ -68,6 +68,9 @@ class InstanceSearchForm(forms.Form):
     # item_type = FacetChoiceField(label='Publication Type')
     cited_in = FacetChoiceField()
 
+    # input fields that wrap a solr facet
+    facet_inputs = ['author', 'subject', 'language', 'work_language',
+        'pub_place', 'cited_in']
 
     def set_choices_from_facets(self, facets):
         # configure field choices based on facets returned from Solr
@@ -76,6 +79,18 @@ class InstanceSearchForm(forms.Form):
                 self.fields[facet].choices = [
                     (val, mark_safe('%s <span>%d</span>' % (val, count)))
                     for val, count in counts]
+
+    def solr_field(self, field):
+        '''Return corresponding solr field for search facet or order
+        input for this form.'''
+        # sort fields
+        if field in self.sort_fields:
+            return self.sort_fields[field]
+
+        # facets
+        # (currently all input names match facets)
+        if field in self.facet_fields:
+            return field
 
 
 class ReferenceSearchForm(forms.Form):
@@ -98,18 +113,20 @@ class ReferenceSearchForm(forms.Form):
         'cited_author': 'instance_sort_author',
         'cited_title': 'instance_title_exact',
     }
-
+    # fields to request facets from solr
     facet_fields = ['derridawork', 'reference_type', 'instance_author',
         'instance_subject', 'instance_language', 'original_language',
         'instance_pub_place']
         #'pub_language', 'orig_language']. # range facets TODO
 
+    # map solr facet field to corresponding form input
     solr_facet_fields = {
         'instance_author': 'author',
         'instance_subject': 'subject',
         'instance_language': 'language',
         'instance_pub_place': 'pub_place',
     }
+    # input fields that wrap a solr facet
     facet_inputs = ['derridawork', 'reference_type', 'author', 'subject',
         'language', 'original_language', 'pub_place']
 
@@ -137,6 +154,25 @@ class ReferenceSearchForm(forms.Form):
                 self.fields[formfield].choices = [
                     (val, mark_safe('%s <span>%d</span>' % (val, count)))
                     for val, count in counts]
+
+    def solr_field(self, field):
+        '''Return corresponding solr field for search facet or order
+        input for this form.'''
+        # sort fields
+        if field in self.sort_fields:
+            return self.sort_fields[field]
+
+        # facets
+        if field in self.facet_fields:
+            return field
+
+        if field in self.solr_facet_fields.values():
+            # currently all are instance_field, but generate
+            # based on the dictionary in case that changes
+            for key, value in self.solr_facet_fields.items():
+                if value == field:
+                    return key
+
 
 
 class SuppressImageForm(forms.Form):

@@ -90,9 +90,11 @@ class InstanceListView(ListView):
         self.form = self.form_class(self.request.GET or
                                     self.form_class.defaults)
 
+        # request facet counts from solr
         for facet_field in self.form.facet_fields:
             # sort by alpha instead of solr default of count
             sqs = sqs.facet(facet_field, sort='index')
+
         # form shouldn't normally be invalid since no fields are
         # required, but cleaned data isn't available until we validate
         if self.form.is_valid():
@@ -104,19 +106,22 @@ class InstanceListView(ListView):
         # filter solr query based on search options
         if search_opts.get('query', None):
             sqs = sqs.filter(content=Clean(search_opts['query']))
-        # if search_opts.get('is_extant', None):
-            # sqs = sqs.filter(is_extant=search_opts['is_extant'])
+        # no is extant filter for library; already restricted to extant items
         if search_opts.get('is_annotated', None):
             sqs = sqs.filter(is_annotated=search_opts['is_annotated'])
-        for facet in self.form.facet_fields:
+
+        for facet in self.form.facet_inputs:
+            # check if a value is set for this facet
             if facet in search_opts and search_opts[facet]:
-                sqs = sqs.filter(**{'%s__in' % facet: search_opts[facet]})
+                solr_facet = self.form.solr_field(facet)
+                # filter the query: facet matches any of the terms
+                sqs = sqs.filter(**{'%s__in' % solr_facet: search_opts[facet]})
+
         # sort should always be set
         if search_opts['order_by']:
-            sort = search_opts['order_by']
             # convert sort option to corresponding solr field
-            if sort in self.form.sort_fields:
-                sqs = sqs.order_by(self.form.sort_fields[sort])
+            solr_sort = self.form.solr_field(search_opts['order_by'])
+            sqs = sqs.order_by(solr_sort)
 
         return sqs
 
@@ -174,22 +179,17 @@ class ReferenceListView(ListView):
 
         # look over form fields that map to facets
         for facet in self.form.facet_inputs:
+            # check if a value is set for this facet
             if facet in search_opts and search_opts[facet]:
-                # convert form input to solr facet
-                # TODO: move this to a form method
-                if facet in self.form.facet_fields:
-                    solr_facet = facet
-                else:
-                    solr_facet = 'instance_%s' % facet
-                # filter the query, facet matches any of the terms
+                solr_facet = self.form.solr_field(facet)
+                # filter the query: facet matches any of the terms
                 sqs = sqs.filter(**{'%s__in' % solr_facet: search_opts[facet]})
 
         # sort should always be set
         if search_opts['order_by']:
-            sort = search_opts['order_by']
             # convert sort option to corresponding solr field
-            if sort in self.form.sort_fields:
-                sqs = sqs.order_by(self.form.sort_fields[sort])
+            solr_sort = self.form.solr_field(search_opts['order_by'])
+            sqs = sqs.order_by(solr_sort)
 
         return sqs
 

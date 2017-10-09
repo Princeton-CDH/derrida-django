@@ -188,13 +188,20 @@ class InterventionListView(ListView):
         if search_opts.get('query', None):
             sqs = sqs.filter(text=search_opts['query'])
 
-        for facet in self.form.facet_fields:
+        for facet in self.form.facet_inputs:
+            # check if a value is set for this facet
             if facet in search_opts and search_opts[facet]:
-                sqs = sqs.filter(**{'%s__in' % facet: search_opts[facet]})
+                solr_facet = self.form.solr_field(facet)
+                # filter the query: facet matches any of the terms
+                sqs = sqs.filter(**{'%s__in' % solr_facet: search_opts[facet]})
 
         # sort should always be set
         if search_opts['order_by']:
-            sqs = sqs.order_by(search_opts['order_by'])
+            # convert sort option to corresponding solr field
+            solr_sort = self.form.solr_field(search_opts['order_by'])
+            # since primary sort is by book author or title,
+            # always include secondary sort by annotated page
+            sqs = sqs.order_by(solr_sort, 'annotated_page')
 
         return sqs
 
@@ -202,7 +209,6 @@ class InterventionListView(ListView):
         context = super(InterventionListView, self).get_context_data(**kwargs)
         sqs = self.get_queryset()
         facets = sqs.facet_counts()
-        # print(self.form)
         # update multi-choice fields based on facets in the data
         self.form.set_choices_from_facets(facets.get('fields'))
         context.update({
