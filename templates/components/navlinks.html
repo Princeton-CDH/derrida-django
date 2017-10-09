@@ -3,7 +3,7 @@
   <span class="navigation-title">Derrida's Library</span>
 </a>
 
-{% url 'books:reference-histogram' as vis_url %}
+{% url 'books:reference-histogram' 'section' as vis_url %}
 <a class="mdl-navigation__link {% if vis_url in request.path %}mdl-navigation__link--active{% endif %}" href="{{ vis_url }}">
   <span class="navigation-title">Visualization</span>
 </a>
