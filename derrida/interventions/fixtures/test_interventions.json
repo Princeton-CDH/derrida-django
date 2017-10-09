@@ -1,0 +1,298 @@
+[
+{
+    "model": "djiffy.manifest",
+    "pk": 20,
+    "fields": {
+        "label": "Studio - Wall 1 - Anthropologie structurale",
+        "short_id": "pz029rb96r",
+        "uri": "https://repo.me/pz029rb96r/manifest",
+        "metadata": "{\"Creator\":[\"Derrida, Jacques\"],\"Published/Created\":[\"Derrida, Jacques\"],\"Container\":[\"Box B-000150, Folder 10\"],\"Extent\":[\"1 folder\"],\"Collection\":[\"The Library of Jacques Derrida, Studio Series\"]}",
+        "created": "2017-08-01",
+        "last_modified": "2017-10-05",
+        "extra_data": "{\"https://repo.me/pz029rb96r.jsonld\":{\"title\":\"Studio - Wall 1 - Anthropologie structurale\",\"@id\":\"https://repo.me/pz029rb96r\",\"@context\":\"https://bibdata.princeton.edu/context.json\",\"edm_rights\":{\"@id\":\"http://rightsstatements.org/vocab/InC/1.0/\",\"pref_label\":\"In Copyright\",\"@type\":\"dcterms:RightsStatement\"},\"memberOf\":[{\"@id\":\"https://plum.princeton.edu/collections/pb5646r538\",\"title\":\"The Library of Jacques Derrida, Studio Series\",\"@type\":\"pcdm:Collection\"}]},\"https://findingaids.princeton.edu/collections/RBD1/c9166.xml?scope=record\":{},\"logo\":\"https://plum.princeton.edu/assets/pul_logo_icon-7b5f9384dfa5ca04f4851c6ee9e44e2d6953e55f893472a3e205e1591d3b2ca6.png\",\"license\":\"http://rightsstatements.org/vocab/InC/1.0/\"}"
+    }
+},
+{
+    "model": "djiffy.manifest",
+    "pk": 12,
+    "fields": {
+        "label": "Studio - Wall 4 - Martin Heidegger. Sein und Zeit",
+        "short_id": "pdz012x47s",
+        "uri": "https://repo.me/pdz012x47s/manifest",
+        "metadata": "{\"Creator\":[\"Derrida, Jacques\"],\"Published/Created\":[\"Derrida, Jacques\"],\"Container\":[\"Box B-000208, Folder 2\"],\"Extent\":[\"1 folder\"],\"Collection\":[\"The Library of Jacques Derrida, Studio Series\"]}",
+        "created": "2017-08-01",
+        "last_modified": "2017-10-05",
+        "extra_data": "{\"https://repo.me/pdz012x47s.jsonld\":{\"title\":\"Studio - Wall 4 - Martin Heidegger. Sein und Zeit\",\"@id\":\"https://repo.me/pdz012x47s\",\"@context\":\"https://bibdata.princeton.edu/context.json\",\"edm_rights\":{\"@id\":\"http://rightsstatements.org/vocab/InC/1.0/\",\"pref_label\":\"In Copyright\",\"@type\":\"dcterms:RightsStatement\"},\"memberOf\":[{\"@id\":\"https://plum.princeton.edu/collections/pb5646r538\",\"title\":\"The Library of Jacques Derrida, Studio Series\",\"@type\":\"pcdm:Collection\"}]},\"https://findingaids.princeton.edu/collections/RBD1/c13201.xml?scope=record\":{},\"logo\":\"https://plum.princeton.edu/assets/pul_logo_icon-7b5f9384dfa5ca04f4851c6ee9e44e2d6953e55f893472a3e205e1591d3b2ca6.png\",\"license\":\"http://rightsstatements.org/vocab/InC/1.0/\"}"
+    }
+},
+{
+    "model": "djiffy.canvas",
+    "pk": 7889,
+    "fields": {
+        "label": "p. 288",
+        "short_id": "p8c97nz099",
+        "uri": "https://repo.me/pz029rb96r/manifest/canvas/p8c97nz099",
+        "iiif_image_id": "https://libimages1.princeton.edu/loris/plum_prod/p8%2Fc9%2F7n%2Fz0%2F99-intermediate_file.jp2",
+        "manifest": 20,
+        "thumbnail": false,
+        "order": 319
+    }
+},
+{
+    "model": "djiffy.canvas",
+    "pk": 7875,
+    "fields": {
+        "label": "p. 278",
+        "short_id": "p4j03g635v",
+        "uri": "https://repo.me/pz029rb96r/manifest/canvas/p4j03g635v",
+        "iiif_image_id": "https://libimages1.princeton.edu/loris/plum_prod/p4%2Fj0%2F3g%2F63%2F5v-intermediate_file.jp2",
+        "manifest": 20,
+        "thumbnail": false,
+        "order": 305
+    }
+},
+{
+    "model": "djiffy.canvas",
+    "pk": 4954,
+    "fields": {
+        "label": "[450]",
+        "short_id": "pfn109459p",
+        "uri": "https://repo.me/pdz012x47s/manifest/canvas/pfn109459p",
+        "iiif_image_id": "https://libimages1.princeton.edu/loris/plum_prod/pf%2Fn1%2F09%2F45%2F9p-intermediate_file.jp2",
+        "manifest": 12,
+        "thumbnail": false,
+        "order": 449
+    }
+},
+{
+    "model": "people.person",
+    "pk": 170,
+    "fields": {
+        "notes": "",
+        "start_year": null,
+        "end_year": null,
+        "authorized_name": "Derrida, Marguerite",
+        "viaf_id": "https://viaf.org/viaf/163091629/",
+        "sort_name": "",
+        "family_group": ""
+    }
+},
+{
+    "model": "people.person",
+    "pk": 1,
+    "fields": {
+        "notes": "",
+        "start_year": null,
+        "end_year": null,
+        "authorized_name": "Derrida, Jacques",
+        "viaf_id": "https://viaf.org/viaf/88958529/",
+        "sort_name": "",
+        "family_group": ""
+    }
+},
+{
+    "model": "auth.user",
+    "pk": 3,
+    "fields": {
+        "password": "",
+        "last_login": "2017-09-20T19:44:44Z",
+        "is_superuser": true,
+        "username": "admin",
+        "first_name": "Ann",
+        "last_name": "Admin",
+        "email": "admin@example.com",
+        "is_staff": true,
+        "is_active": true,
+        "date_joined": "2017-04-23T01:44:23Z",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+  "model": "interventions.intervention",
+  "pk": "00ad6d22-64f6-4649-9a95-a6f8270cceb8",
+  "fields": {
+    "created": "2017-09-25T15:22:23Z",
+    "updated": "2017-09-25T15:22:24Z",
+    "text": "",
+    "quote": "kritisieren",
+    "uri": "https://repo.me/pdz012x47s/manifest/canvas/pfn109459p",
+    "user": 3,
+    "extra_data": "{\"ranges\":[],\"author\":\"Derrida, Jacques\",\"image_selection\":{\"h\":\"4.40%\",\"y\":\"52.50%\",\"uri\":\"https://repo.me/loris/img.jpg\",\"x\":\"61.99%\",\"w\":\"14.85%\"}}",
+    "intervention_type": "A",
+    "canvas": 4954,
+    "text_language": null,
+    "text_translation": "",
+    "quote_language": 2,
+    "author": 1,
+    "tags": [
+      12,
+      2
+    ]
+  }
+},
+{
+  "model": "interventions.intervention",
+  "pk": "17967894-7c66-451a-8801-9c010b9bc431",
+  "fields": {
+    "created": "2017-09-25T14:50:29Z",
+    "updated": "2017-09-25T14:50:29Z",
+    "text": "",
+    "quote": "",
+    "uri": "https://repo.me/pz029rb96r/manifest/canvas/p8c97nz099",
+    "user": 3,
+    "extra_data": "{\"ranges\":[],\"author\":\"Derrida, Marguerite\",\"image_selection\":{\"h\":\"29.50%\",\"y\":\"28.10%\",\"x\":\"21.71%\",\"w\":\"4.44%\"}}",
+    "intervention_type": "A",
+    "canvas": 7889,
+    "text_language": null,
+    "text_translation": "",
+    "quote_language": null,
+    "author": 170,
+    "tags": [
+      5,
+      14
+    ]
+  }
+},
+{
+  "model": "interventions.intervention",
+  "pk": "7a8f5d01-b23d-444f-a53a-5b5589fa5700",
+  "fields": {
+    "created": "2017-09-25T14:47:08Z",
+    "updated": "2017-09-25T14:47:22Z",
+    "text": "",
+    "quote": "le visage n'est pas r\u00e9ellement vu de face ; il est constitu\u00e9 de deux profils accol\u00e9s",
+    "uri": "https://repo.me/pz029rb96r/manifest/canvas/p4j03g635v",
+    "user": 3,
+    "extra_data": "{\"ranges\":[],\"author\":\"\",\"image_selection\":{\"h\":\"3.80%\",\"y\":\"42.20%\",\"x\":\"25.82%\",\"w\":\"67.47%\"}}",
+    "intervention_type": "A",
+    "canvas": 7875,
+    "text_language": null,
+    "text_translation": "",
+    "quote_language": 1,
+    "author": null,
+    "tags": [
+      14,
+      1
+    ]
+  }
+},
+{
+    "model": "books.publisher",
+    "pk": 36,
+    "fields": {
+        "name": "Max Niemeyer Verlag",
+        "notes": ""
+    }
+},
+{
+    "model": "books.work",
+    "pk": 141,
+    "fields": {
+        "notes": "",
+        "primary_title": "Sein und Zeit",
+        "short_title": "Sein und Zeit",
+        "year": 1927,
+        "uri": "",
+        "authors": [
+            14
+        ]
+    }
+},
+{
+    "model": "books.publisher",
+    "pk": 10,
+    "fields": {
+        "name": "Plon",
+        "notes": ""
+    }
+},
+{
+    "model": "books.work",
+    "pk": 97,
+    "fields": {
+        "notes": "",
+        "primary_title": "Anthropologie structurale",
+        "short_title": "Anthropologie structurale",
+        "year": 1958,
+        "uri": "",
+        "authors": [
+            87
+        ]
+    }
+},
+{
+    "model": "books.instance",
+    "pk": 141,
+    "fields": {
+        "notes": "",
+        "work": 141,
+        "alternate_title": "",
+        "publisher": 36,
+        "zotero_id": "",
+        "slug": "heidegger-sein-und-zeit-1963",
+        "is_extant": true,
+        "is_annotated": true,
+        "is_translation": false,
+        "dimensions": "",
+        "copyright_year": 1963,
+        "journal": null,
+        "print_date": null,
+        "print_date_day_known": true,
+        "print_date_month_known": true,
+        "print_date_year_known": true,
+        "uri": "http://findingaids.princeton.edu/collections/RBD1/c13201",
+        "has_dedication": false,
+        "has_insertions": false,
+        "start_page": null,
+        "end_page": null,
+        "copy": "",
+        "collected_in": null,
+        "digital_edition": 12,
+        "suppress_all_images": false,
+        "pub_place": [
+            5
+        ],
+        "cited_in": [],
+        "suppressed_images": []
+    }
+},
+{
+    "model": "books.instance",
+    "pk": 97,
+    "fields": {
+        "notes": "",
+        "work": 97,
+        "alternate_title": "",
+        "publisher": 10,
+        "zotero_id": "",
+        "slug": "levi-strauss-anthropologie-structurale-1958",
+        "is_extant": true,
+        "is_annotated": true,
+        "is_translation": false,
+        "dimensions": "",
+        "copyright_year": 1958,
+        "journal": null,
+        "print_date": null,
+        "print_date_day_known": true,
+        "print_date_month_known": true,
+        "print_date_year_known": true,
+        "uri": "http://findingaids.princeton.edu/collections/RBD1/c9166",
+        "has_dedication": false,
+        "has_insertions": false,
+        "start_page": null,
+        "end_page": null,
+        "copy": "",
+        "collected_in": null,
+        "digital_edition": 20,
+        "suppress_all_images": false,
+        "pub_place": [
+            3
+        ],
+        "cited_in": [],
+        "suppressed_images": []
+    }
+}
+]
+
+
