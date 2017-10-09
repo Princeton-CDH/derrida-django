@@ -2826,6 +2826,25 @@ main {
   border-color: #fff transparent transparent;
   z-index: 1; }
 
+#canvas-detail {
+  position: relative; }
+
+.annotation-list {
+  background-color: #f5f5f5; }
+
+.text-center {
+  text-align: center;
+  margin-left: 2.94118%;
+  margin-right: 2.94118%;
+  position: relative; }
+
+.margin-container {
+  opacity: 1;
+  transition-property: right, left, opacity; }
+  .margin-container-hide .margin-container {
+    right: 33%;
+    opacity: 0; }
+
 #sw-version {
   color: #efefef;
   padding: 10px 0;
