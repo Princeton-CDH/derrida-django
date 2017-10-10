@@ -55,7 +55,7 @@ class InstanceSearchForm(forms.Form):
 
     #: order options and corresponding solr field
     sort_fields = {
-        'author': 'sort_author',
+        'author': 'sort_author_exact',
         'title': 'display_title_exact',
         'oldest': 'year',
         'newest': '-year'

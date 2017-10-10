@@ -19,7 +19,7 @@ class InterventionSearchForm(forms.Form):
 
     #: order options and corresponding solr field
     sort_fields = {
-        'author': 'item_sort_author',
+        'author': 'item_sort_author_exact',
         'title': 'item_title',
     }
 
