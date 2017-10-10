@@ -110,7 +110,7 @@ class ReferenceSearchForm(forms.Form):
     #: order options and corresponding solr field
     sort_fields = {
         'dw_page': 'derridawork_page',
-        'cited_author': 'instance_sort_author',
+        'cited_author': 'instance_sort_author_exact',
         'cited_title': 'instance_title_exact',
     }
     # fields to request facets from solr
