@@ -130,7 +130,7 @@ class InstanceListView(ListView):
         # get max/min from database to specify range start & end values
         # TODO: should probably cache max/min values so we don't have
         # to calculate them every time
-        ranges = Instance.objects.filter(is_extant=True, reference__isnull=False) \
+        ranges = Instance.objects.filter(is_extant=True, cited_in__isnull=False) \
             .aggregate(work_year_max=Max('work__year'), work_year_min=Min('work__year'),
                 copyright_year_max=Max('copyright_year'), copyright_year_min=Min('copyright_year'),
                 print_year_max=Max('print_date'), print_year_min=Min('print_date'))
