@@ -163,6 +163,8 @@ class InterventionListView(ListView):
     form_class = InterventionSearchForm
     paginate_by = 16
     template_name = 'interventions/intervention_list.html'
+    form = None
+    queryset = None
 
     def get_queryset(self):
         sqs = SearchQuerySet().models(self.model)
@@ -203,17 +205,18 @@ class InterventionListView(ListView):
             # always include secondary sort by annotated page
             sqs = sqs.order_by(solr_sort, 'annotated_page')
 
+        # save for access in context data
+        self.queryset = sqs
         return sqs
 
     def get_context_data(self, **kwargs):
         context = super(InterventionListView, self).get_context_data(**kwargs)
-        sqs = self.get_queryset()
-        facets = sqs.facet_counts()
+        facets = self.queryset.facet_counts()
         # update multi-choice fields based on facets in the data
         self.form.set_choices_from_facets(facets.get('fields'))
         context.update({
             'facets': facets,
-            'total': sqs.count(),
+            'total': self.queryset.count(),
             'form': self.form
         })
         return context

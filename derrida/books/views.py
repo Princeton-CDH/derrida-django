@@ -83,6 +83,8 @@ class InstanceListView(ListView):
     form_class = InstanceSearchForm
     paginate_by = 16
     template_name = 'books/instance_list.html'
+    form = None
+    queryset = None
 
     def get_queryset(self):
         sqs = SearchQuerySet().models(self.model)
@@ -129,17 +131,18 @@ class InstanceListView(ListView):
             solr_sort = self.form.solr_field(search_opts['order_by'])
             sqs = sqs.order_by(solr_sort)
 
+        # save for access in context data
+        self.queryset = sqs
         return sqs
 
     def get_context_data(self, **kwargs):
         context = super(InstanceListView, self).get_context_data(**kwargs)
-        sqs = self.get_queryset()
-        facets = sqs.facet_counts()
+        facets = self.queryset.facet_counts()
         # update multi-choice fields based on facets in the data
         self.form.set_choices_from_facets(facets.get('fields'))
         context.update({
             'facets': facets,
-            'total': sqs.count(),
+            'total': self.queryset.count(),
             'form': self.form
         })
         return context
@@ -152,6 +155,8 @@ class ReferenceListView(ListView):
     form_class = ReferenceSearchForm
     paginate_by = 16
     template_name = 'books/reference_list.html'
+    form = None
+    queryset = None
 
     def get_queryset(self):
         sqs = SearchQuerySet().models(self.model)
@@ -197,17 +202,18 @@ class ReferenceListView(ListView):
             solr_sort = self.form.solr_field(search_opts['order_by'])
             sqs = sqs.order_by(solr_sort)
 
+        # store for accessing counts & facets in context data
+        self.queryset = sqs
         return sqs
 
     def get_context_data(self, **kwargs):
         context = super(ReferenceListView, self).get_context_data(**kwargs)
-        sqs = self.get_queryset()
-        facets = sqs.facet_counts()
+        facets = self.queryset.facet_counts()
         # update multi-choice fields based on facets in the data
         self.form.set_choices_from_facets(facets.get('fields'))
         context.update({
             'facets': facets,
-            'total': sqs.count(),
+            'total': self.queryset.count(),
             'form': self.form,
         })
         return context
