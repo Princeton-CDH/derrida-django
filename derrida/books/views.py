@@ -265,7 +265,7 @@ class SearchView(TemplateView):
     max_per_type = 3
 
     def get(self, *args, **kwargs):
-        self.form = self.form_class(self.request.GET)
+        self.form = self.form_class(self.request.GET or self.form_class.defaults)
         # if search on a single type is requested, forward to the
         # appropriate view
         if self.form.is_valid():

@@ -3,13 +3,17 @@ from django.utils.safestring import mark_safe
 
 
 class SearchForm(forms.Form):
+    defaults = {
+        'content_type': 'all',
+    }
     query = forms.CharField(label='Search Terms...', required=False)
+
     content_type = forms.ChoiceField(choices=[
         ('all', 'All'),
         ('book', 'Books'),
         ('reference', 'References'),
         ('intervention', 'Interventions'),
-    ], required=False, initial='all')
+    ], required=False, initial=defaults['content_type'])
 
 
 class FacetChoiceField(forms.MultipleChoiceField):

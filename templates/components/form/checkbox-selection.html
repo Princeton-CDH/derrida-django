@@ -39,7 +39,6 @@
     var ${{name}}SelectionInput = $("#{{name}}-selection"),
         clearSelectionInput = function() {
           ${{name}}SelectionInput.val("");
-          ${{name}}SelectionInput.parent().removeClass("is-dirty");
         };
 
     ${{name}}Filter.find(".clear-link").on("click", function(e) {
@@ -76,9 +75,6 @@
             return value != optionText;
           });
         }
-        if ({{name}}SelectionVal.length) {
-          ${{name}}SelectionInput.parent().addClass("is-dirty");
-        }
         ${{name}}SelectionInput.val({{name}}SelectionVal.join("; "));
       }
 
@@ -90,15 +86,22 @@
         setSelectedOptionsValues(this);
       });
 
-      $("body").on("click.filter-{{name}}", function(e) {
+      var closeFilter = function($openInput) {
+        ${{name}}Filter.slideUp();
+        $openInput.removeClass("is-open").removeClass("is-focused");
+      };
+
+      $("body").on("click.filter--{{name}}", function(e) {
         var $target = $(e.target),
+            filterSelector = ".filter--{{name}}",
             $openInput = ${{name}}Filter.prev(".is-open"),
             isOpenText = $target.is(".is-open") || $target.parents(".is-open").length,
-            $filter = $target.is(".filter") ? $target : $target.parents(".filter").first();
+            $filter = $target.is(filterSelector) ? $target : $target.parents(filterSelector).first();
 
         if (! $filter.length && ! isOpenText && $openInput.length) {
-          ${{name}}Filter.slideUp();
-          $openInput.removeClass("is-open").removeClass("is-focused");
+          closeFilter($openInput);
+        } else if ($openInput.length && ! $target.parent().next().is(filterSelector) && ! $target.parents(filterSelector).length) {
+          closeFilter($openInput);
         } else if ($openInput.length) {
           $openInput.addClass("is-focused");
         }

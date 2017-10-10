@@ -4,6 +4,7 @@
   flex-wrap: wrap;
 
   .collection__item {
+    position: relative;
     @include grid-column(4);
 
     @include grid-media($large-medium-viewport-grid) {
@@ -14,7 +15,11 @@
 
 .collection--condensed {
   .collection__item {
-    @include grid-column(2);
+    @include grid-column(4);
+
+    @media screen and (min-width: 550px) {
+      @include grid-column(2);
+    }
 
     @include grid-media($large-medium-viewport-grid) {
       @include grid-column(3);
@@ -30,12 +35,39 @@
   }
 }
 
+.collection--wide {
+  @include grid-media($large-medium-viewport-grid) {
+    max-width: 66%;
+    margin: auto;
+  }
+
+  .collection__item {
+    width: 100%;
+
+    @include grid-media($large-medium-viewport-grid) {
+      .item__body {
+        @include grid-column(9);
+        margin-left: 0;
+      }
+
+      .item__image {
+        @include grid-column(3);
+        float: right;
+      }
+    }
+  }
+}
+
 .collection--no-images {
   padding-top: 1rem;
   padding-bottom: 2rem;
 
   .collection__item {
-    @include grid-column(2);
+    @include grid-column(4);
+
+    @media screen and (min-width: 550px) {
+      @include grid-column(2);
+    }
 
     @include grid-media($large-medium-viewport-grid) {
       @include grid-column(4);
@@ -50,7 +82,8 @@
 
 .collection__title {
   color: $base-font-color;
-  font-size: 1.5em;
+  font-size: ems(18px, 14);
+  @include secondary-font-style("bold");
 
   a {
     text-decoration: none;
@@ -66,7 +99,7 @@
 
     span {
       color: $base-font-color;
-      font-family: $base-font-family;
+      @include secondary-font-style();
       font-size: 1rem;
       text-decoration: none;
       transition: color $base-duration $base-timing;
@@ -105,7 +138,8 @@
   &.book--short {
     .text-badge,
     .item__excerpt,
-    .item__citation {
+    .item__citation,
+    .item__indicator {
       display: none;
     }
   }
@@ -143,6 +177,19 @@
   line-height: 1.4;
 }
 
+.item__secondary-link {
+  color: inherit;
+  text-decoration: none;
+  line-height: 1.4;
+  transition: color $base-duration $base-timing;
+
+  &:hover,
+  &:active,
+  &.is-hovered {
+    color: $primary-color;
+  }
+}
+
 .item__heading,
 .item__author {
   margin-bottom: 0;
@@ -162,6 +209,12 @@
   margin-bottom: 1.2em;
 }
 
+.item-gallery {
+  display: flex;
+  flex-flow: row;
+  flex-wrap: wrap;
+}
+
 .item__image {
   position: relative;
   @include grid-column(2);
@@ -176,12 +229,13 @@
   }
 
   &.item__image--gallery {
-    float: left;
     @include grid-column(2);
 
     @include grid-media($large-medium-viewport-grid) {
       @include grid-column(3);
     }
+
+    float: none;
   }
 
   .img {
@@ -201,6 +255,8 @@
 
     .collection--condensed & {
       max-height: none;
+      max-width: 96%;
+      width: 100%;
     }
   }
 
@@ -231,10 +287,8 @@
 
   .item-gallery & {
     display: block;
-    height: 200px;
 
     .img {
-      height: 100%;
       max-height: none;
     }
   }
@@ -252,7 +306,7 @@
     background-image: url("../img/icons/Magnify.svg");
     background-position: center;
     background-repeat: no-repeat;
-    background-size: 40%;
+    background-size: 20%;
     position: absolute;
     top: 0;
     left: 0;
@@ -273,7 +327,7 @@
     }
 
     &::after {
-      opacity: 1;
+      opacity: 0.8;
       transition-duration: 0.5s;
     }
   }
@@ -293,4 +347,17 @@
 
 .item__excerpt {
   opacity: 0.6;
+}
+
+.item__indicator {
+  position: absolute;
+  right: 8%;
+  top: -10px;
+  width: 30px;
+  z-index: 10;
+  display: none;
+
+  #books-list & {
+    display: block;
+  }
 }

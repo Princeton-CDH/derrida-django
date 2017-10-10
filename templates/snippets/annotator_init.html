@@ -2,8 +2,10 @@
   {# include jquery-ui for autocomplete #}
   <script type="text/javascript" src="{% static 'js/jquery-ui.min.js' %}"></script>
   <link rel="stylesheet" type="text/css" href="{% static 'js/jquery-ui.min.css' %}"/>
+
   {# local copy of annotator; currently v2.0.0-alpha.2 #}
-  <script type="text/javascript" src="{% static 'ext/annotator/annotator.min.js' %}"></script>
+  <!-- <script type="text/javascript" src="{% static 'ext/annotator/annotator.min.js' %}"></script> -->
+  <script type="text/javascript" src="{% static 'js/annotator/annotator.js' %}"></script>
 
   <link rel="stylesheet" type="text/css" href="//emory-lits-labs.github.io/annotator-marginalia/build/0.4.0/annotator.marginalia.min.css" />
   <script type="text/javascript" src="//emory-lits-labs.github.io/annotator-marginalia/build/0.4.0/annotator.marginalia.min.js"></script>
@@ -14,7 +16,8 @@
 
   {# // <script type="text/javascript" src="{% static 'js/annotator/tag-lookup.js' %}"></script> #}
   <link rel="stylesheet" type="text/css" href="//emory-lits-labs.github.io/annotator-imgselect/src/jquery.imgareaselect-0.9.10/css/imgareaselect-default.css" />
-  <script type="text/javascript" src="//emory-lits-labs.github.io/annotator-imgselect/build/0.2.2/annotator.imgselect.min.js"></script>
+  <script type="text/javascript" src="{% static 'js/annotator/imgAreaSelect.js' %}"></script>
+  <script type="text/javascript" src="{% static 'js/annotator/imgselect.js' %}"></script>
   <script type="text/javascript" src="{% static 'js/annotator/interventions-plugin.js' %}"></script>
 
   <link rel="stylesheet" type="text/css" href="{% static 'ext/annotator/annotator.min.css' %}"/>
@@ -68,8 +71,7 @@ $.ajaxSetup({
 });
 
 
-   $(document).ready(function () {
-
+   $(function () {
     // Use canvas URI to associate new annotations and load
     // existing ones.
     var content_uri = "{{ canvas.uri }}";
