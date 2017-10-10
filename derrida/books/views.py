@@ -84,10 +84,11 @@ class InstanceListView(ListView):
     form_class = InstanceSearchForm
     paginate_by = 16
     template_name = 'books/instance_list.html'
+    form = None
+    queryset = None
 
     def get_queryset(self):
         sqs = SearchQuerySet().models(self.model)
-        print('query = %s' % sqs.query)
         # restrict to extant books that are cited
         sqs = sqs.filter(is_extant=True, item_type_exact='Book',
                          cited_in='*')
@@ -102,27 +103,6 @@ class InstanceListView(ListView):
         for facet_field in self.form.facet_fields:
             # sort by alpha instead of solr default of count
             sqs = sqs.facet(facet_field, sort='index')
-
-        # request range facets
-        # TODO: only get max/min from db when not specified in query opts
-        # (can/should we cache these?)
-        # get max/min from database
-        ranges = Instance.objects.filter(is_extant=True, reference__isnull=False) \
-            .aggregate(work_year_max=Max('work__year'), work_year_min=Min('work__year'),
-                copyright_year_max=Max('copyright_year'), copyright_year_min=Min('copyright_year'),
-                print_year_max=Max('print_date'), print_year_min=Min('print_date'))
-        for range_facet in self.form.range_facets:
-            range_opts = {
-                'start': ranges['%s_min' % range_facet],
-                'end': ranges['%s_max' % range_facet],
-                'gap': 100  # ???
-            }
-            if range_facet == 'print_year':
-                # special case: print year is a datetime but we only want year
-                range_opts['start'] = range_opts['start'].year if range_opts['start'] else None
-                range_opts['end'] = range_opts['end'].year if range_opts['end'] else None
-            # TODO: caalculate gap based on the desired number of slices
-            sqs = sqs.facet(range_facet, range=True, **range_opts)
 
         # form shouldn't normally be invalid since no fields are
         # required, but cleaned data isn't available until we validate
@@ -146,7 +126,19 @@ class InstanceListView(ListView):
                 # filter the query: facet matches any of the terms
                 sqs = sqs.filter(**{'%s__in' % solr_facet: search_opts[facet]})
 
+        # request range facets
+        # get max/min from database to specify range start & end values
+        # TODO: should probably cache max/min values so we don't have
+        # to calculate them every time
+        ranges = Instance.objects.filter(is_extant=True, reference__isnull=False) \
+            .aggregate(work_year_max=Max('work__year'), work_year_min=Min('work__year'),
+                copyright_year_max=Max('copyright_year'), copyright_year_min=Min('copyright_year'),
+                print_year_max=Max('print_date'), print_year_min=Min('print_date'))
+        # request range facets values and optionally filter ranges
+        # on configured range facet fields
         for range_facet in self.form.range_facets:
+            start = end = None
+            # range filter requested in search options
             if range_facet in search_opts and search_opts[range_facet]:
                 start, end = search_opts[range_facet].split('-')
                 # could have both start and end or just one
@@ -154,6 +146,23 @@ class InstanceListView(ListView):
                 # it converts numbers to strings, so this is easier
                 range_filter = '[%s TO %s]' % (start or '*', end or '*')
                 sqs = sqs.filter(**{range_facet: Raw(range_filter)})
+
+            # current range filter becomes start/end if specified
+            range_opts = {
+                'start': int(start) if start else ranges['%s_min' % range_facet],
+                'end': int(end) if end else ranges['%s_max' % range_facet],
+            }
+            if range_facet == 'print_year':
+                # special case: print year is a datetime but we only want year
+                if not start:
+                    range_opts['start'] = range_opts['start'].year if range_opts['start'] else None
+                if not end:
+                    range_opts['end'] = range_opts['end'].year if range_opts['end'] else None
+            # calculate gap based start and end & desired number of slices
+            # ideally, generate 15 slices; minimum gap size of 1
+            range_opts['gap'] = max(1, int((range_opts['end'] - range_opts['start']) / 15.0))
+            # request the range facet with the specified options
+            sqs = sqs.facet(range_facet, range=True, **range_opts)
 
         # sort should always be set
         if search_opts['order_by']:
