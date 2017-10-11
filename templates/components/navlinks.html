@@ -3,14 +3,14 @@
   <span class="navigation-title">Derrida's Library</span>
 </a>
 
-{% url 'books:reference-histogram' 'section' as vis_url %}
-<a class="mdl-navigation__link {% if vis_url in request.path %}mdl-navigation__link--active{% endif %}" href="{{ vis_url }}">
-  <span class="navigation-title">Visualization</span>
-</a>
-
 {% url 'books:reference-list' as cit_url %}
 <a class="mdl-navigation__link {% if cit_url in request.path and not vis_url in request.path %}mdl-navigation__link--active{% endif %}" href="{{ cit_url }}">
   <span class="navigation-title">Reference List</span>
+</a>
+
+{% url 'books:reference-histogram' 'section' as vis_url %}
+<a class="mdl-navigation__link {% if vis_url in request.path %}mdl-navigation__link--active{% endif %}" href="{{ vis_url }}">
+  <span class="navigation-title">Visualization</span>
 </a>
 
 {% url 'djiffy:list' as out_url %}
