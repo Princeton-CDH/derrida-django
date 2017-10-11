@@ -2,8 +2,7 @@ $(function() {
   function initPageFilter() {
     var $pageFilter = $(".page-filter");
     if ($pageFilter.length) {
-      var $container = $pageFilter.find(".container"),
-          checkForActiveFilters = function() {
+      var checkForActiveFilters = function() {
             var $filterInputs = $pageFilter.find(".mdl-textfield__input, .mdl-switch__input"),
                 activeFilters = $filterInputs.filter(function() {
                   var $this = $(this);
@@ -19,18 +18,13 @@ $(function() {
               $pageFilter.removeClass("is-active");
             }
           };
-      if (! $pageFilter.hasClass("is-visible")) {
-        $container.hide();
-      }
 
       $(".toggle-button").on("click", function(e) {
         e.preventDefault();
         if ($pageFilter.hasClass("is-visible")) {
           $pageFilter.removeClass("is-visible");
-          $container.slideUp(500);
         } else {
           $pageFilter.addClass("is-visible");
-          $container.slideDown(500);
         }
 
         checkForActiveFilters();

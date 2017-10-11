@@ -62,7 +62,7 @@
       border-bottom: solid 3px $primary-color;
       @include transform(scaleX(0));
       @include transform-origin(0% 50%);
-      transition: transform 250ms ease-in-out;
+      @include transition(transform 250ms ease-in-out);
     }
   }
 
@@ -231,7 +231,7 @@
   @include prefixer(transform, translateX(-100%), webkit moz ms o spec);
 
   .mdl-navigation {
-    transition: padding-top 0.5s $base-timing;
+    @include transition(padding-top 0.5s $base-timing);
   }
 
   .search-form-header + &.is-visible {

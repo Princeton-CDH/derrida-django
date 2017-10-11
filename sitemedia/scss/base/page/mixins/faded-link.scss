@@ -3,7 +3,7 @@
   font-weight: inherit;
   text-decoration: none;
   border-bottom: 3px solid lighten($color, 60%);
-  transition: border-color $base-duration $base-timing;
+  @include transition(border-color $base-duration $base-timing);
 
   &:hover,
   &:active,

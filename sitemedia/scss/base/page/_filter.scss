@@ -18,6 +18,18 @@
   }
 }
 
+.page-filter__form {
+  transform: scaleY(0);
+  max-height: 0;
+  @include transition(transform $base-duration $base-timing, max-height $base-duration $base-timing);
+  @include transform-origin(50% 0);
+
+  .is-visible & {
+    transform: scaleY(1);
+    max-height: 45em;
+  }
+}
+
 .page-filter__footer {
   background-color: $base-background-color;
   border-top: 0.5em solid $white;
@@ -26,13 +38,18 @@
 
 .page-filter__status-icon {
   height: 2em;
+  max-height: 2em;
   width: 100%;
   background: $white;
   padding: 0 0 0.5em;
-  transition: height $base-duration $base-timing;
+  position: relative;
+  z-index: 3;
+  transform: scaleY(1);
+  @include transition(transform $base-duration $base-timing, max-height $base-duration $base-timing);
+  @include transform-origin(50% 0);
 
   .svg-icon {
-    height: 100%;
+    height: 1.3em;
   }
 
   path {
@@ -40,8 +57,13 @@
   }
 
   .is-visible & {
-    height: 0;
+    transform: scaleY(0);
+    max-height: 0;
     overflow: hidden;
+
+    .svg-icon {
+      height: 0;
+    }
   }
 
   .is-active & {
@@ -74,6 +96,21 @@
   border-top-left-radius: 0;
   border-top-right-radius: 0;
   color: $blue;
+  position: relative;
+  top: -2em;
+  z-index: 1;
+
+  .page-filter:not(.is-visible) .page-filter__footer & {
+    @include transition(top $base-duration $base-timing);
+  }
+
+  .page-filter:not(.is-visible) .page-filter__footer:hover & {
+      top: 0;
+  }
+
+  .is-visible & {
+    top: -7px;
+  }
 
   &:focus {
     outline: 0;
@@ -174,7 +211,7 @@
   text-align: center;
   text-decoration: none;
   color: $base-font-color;
-  transition: color $base-duration $base-timing;
+  @include transition(color $base-duration $base-timing);
   outline: none;
 
   &:hover,
@@ -291,7 +328,7 @@
   background-color: lighten($medium-grey, 20%);
   cursor: pointer;
   width: 100%;
-  transition: background-color $base-duration $base-timing;
+  @include transition(background-color $base-duration $base-timing);
 
   &:hover,
   &:active {

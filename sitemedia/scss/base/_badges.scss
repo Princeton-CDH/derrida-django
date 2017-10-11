@@ -4,7 +4,7 @@
 }
 
 @mixin badge-hover-style($color, $text-color: $white) {
-  transition: background-color 0.2s ease, color 0.2s ease;
+  @include transition(background-color 0.2s ease, color 0.2s ease);
 
   &:hover,
   &:active {

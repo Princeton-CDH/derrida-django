@@ -34,7 +34,7 @@
       margin-left: -10%;
       height: 4em;
       z-index: -3;
-      transition: background-color $search-duration $base-timing, top $search-duration $base-timing;
+      @include transition(background-color $search-duration $base-timing, top $search-duration $base-timing);
     }
 
     &.is-hidden::before {
@@ -44,7 +44,7 @@
   }
 
   & ~ main {
-    transition: padding-top $search-duration $base-timing;
+    @include transition(padding-top $search-duration $base-timing);
   }
 
   &:not(.is-hidden) ~ main {
@@ -59,9 +59,9 @@
 
   .search-form-header__form {
     height: $search-height;
-    transition: margin-bottom $search-duration $base-timing,
+    @include transition(margin-bottom $search-duration $base-timing,
       height $search-duration $base-timing,
-      opacity $search-duration $base-timing;
+      opacity $search-duration $base-timing);
 
     @include grid-media($xlarge-viewport-grid) {
       margin-bottom: 5em;

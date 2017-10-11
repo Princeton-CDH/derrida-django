@@ -2,7 +2,7 @@
   background-position: center;
   background-size: contain;
   background-repeat: no-repeat;
-  transition: margin-top 0.5s ease;
+  @include transition(margin-top 0.5s ease);
 
   @include grid-media($large-medium-viewport-grid) {
     margin: 0 6rem;

@@ -21,7 +21,7 @@
     margin-bottom: 10rem;
     margin-right: $gutter-size;
     margin-top: 5rem;
-    transition: margin-top 0.5s ease;
+    @include transition(margin-top 0.5s ease);
 
     @include grid-media($xlarge-viewport-grid) {
       margin-top: 8rem;
