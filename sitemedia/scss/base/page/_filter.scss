@@ -19,6 +19,8 @@
 }
 
 .page-filter__form {
+  position: relative;
+  z-index: 4;
   transform: scaleY(0);
   max-height: 0;
   @include transition(transform $base-duration $base-timing, max-height $base-duration $base-timing);
