@@ -31,28 +31,6 @@
     </header>
   </section>
 
-  <script>
-    $(function() {
-      $(".visualization-chapter-marker").webuiPopover({
-        trigger: "hover",
-        animation: "fade",
-        placement: "auto-top",
-        arrow: true,
-        delay: {
-          show: 300,
-          hide: 1000
-        },
-        style: "visualization",
-        type: "async",
-        async: {
-           error: function(that, xhr, data) {
-             that.$contentElement.children('.icon-refresh').addClass("error");
-           }
-        }
-      });
-    });
-  </script>
-
 {% if mode == 'section' %}
 
   <article class="visualizations">

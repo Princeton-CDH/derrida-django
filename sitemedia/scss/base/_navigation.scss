@@ -5,6 +5,11 @@
   background-color: $header-background-color;
   color: $header-text-color;
 
+  @include grid-media($xlarge-viewport-grid) {
+    position: fixed;
+    z-index: 5;
+  }
+
   &.mdl-layout__header--transparent {
     background-color: transparent;
   }
@@ -184,6 +189,18 @@
         top: calc(100vh - 17rem);
       }
     }
+  }
+
+  .mdl-layout__header.mdl-layout__header--transparent {
+    pointer-events: none;
+  }
+
+  .mdl-layout-logo {
+    pointer-events: auto;
+  }
+
+  .header__search-button {
+    pointer-events: auto;
   }
 }
 

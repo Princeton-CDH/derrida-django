@@ -1,0 +1,26 @@
+{% extends 'djiffy/base.html' %}
+{% load static humanize %}
+
+{% block nav-title %} Outwork {% endblock %}
+
+{% block header_class %}mdl-layout__header--transparent{% endblock %}
+
+{% block page-context-id %}manifest-list{% endblock %}
+
+{% block content %}
+  <header class="page-header">
+    <div class="container page-header__container">
+      <h1 class="page-header__heading">Outwork</h1>
+    </div>
+  </header>
+
+  <div class="container djifbooks">
+    <article class="collection collection--wide">
+      {% for manifest in manifests %}
+        {% include 'djiffy/snippets/manifest_card.html' with href=manifest.get_absolute_url book=manifest %}
+      {% empty %}
+        <p>No trace of what you were searching for was found. Try a different keyword.</p>
+      {% endfor %}
+    </article>
+  </div>
+{% endblock %}

@@ -4,13 +4,17 @@ from django.utils.safestring import mark_safe
 
 
 class SearchForm(forms.Form):
+    defaults = {
+        'content_type': 'all',
+    }
     query = forms.CharField(label='Search Terms...', required=False)
+
     content_type = forms.ChoiceField(choices=[
         ('all', 'All'),
         ('book', 'Books'),
         ('reference', 'References'),
         ('intervention', 'Interventions'),
-    ], required=False, initial='all')
+    ], required=False, initial=defaults['content_type'])
 
 
 class FacetChoiceField(forms.MultipleChoiceField):
@@ -162,7 +166,7 @@ class ReferenceSearchForm(forms.Form):
     #: order options and corresponding solr field
     sort_fields = {
         'dw_page': 'derridawork_page',
-        'cited_author': 'instance_sort_author',
+        'cited_author': 'instance_sort_author_exact',
         'cited_title': 'instance_title_exact',
     }
     # fields to request facets from solr

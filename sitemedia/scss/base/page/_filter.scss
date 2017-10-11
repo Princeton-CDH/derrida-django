@@ -24,6 +24,49 @@
   text-align: center;
 }
 
+.page-filter__status-icon {
+  height: 2em;
+  width: 100%;
+  background: $white;
+  padding: 0 0 0.5em;
+  transition: height $base-duration $base-timing;
+
+  .svg-icon {
+    height: 100%;
+  }
+
+  path {
+    fill: $medium-grey;
+  }
+
+  .is-visible & {
+    height: 0;
+    overflow: hidden;
+  }
+
+  .is-active & {
+    path {
+      fill: $blue;
+    }
+
+    &::after {
+      content: "";
+      background-color: $red;
+      position: absolute;
+      height: 6px;
+      width: 6px;
+      border-radius: 50%;
+      margin-left: 4px;
+    }
+  }
+
+  .is-active.is-visible & {
+    &::after {
+      display: none;
+    }
+  }
+}
+
 .toggle-button {
   background: $white;
   padding: 0 2em;
@@ -64,38 +107,48 @@
   align-items: stretch;
   padding-bottom: 1em;
 
-
   .mdl-button {
     align-self: center;
   }
 }
 
 .filter__selector {
+  align-self: baseline;
   padding: 0 1rem;
   flex-grow: 2;
   flex-basis: 330px;
+  position: relative;
 
   @include grid-media($large-medium-viewport-grid) {
     max-width: 50%;
   }
 
   &.filter__selector--condensed {
+    $selector-width: 15rem;
     flex-grow: 1;
-    flex-basis: 180px;
-    max-width: 180px;
+    flex-basis: $selector-width;
+    max-width: $selector-width;
   }
 
   .mdl-textfield {
     width: 100%;
   }
+
+  .mdl-textfield__label {
+    font-size: 12px;
+    top: 4px;
+    visibility: visible;
+  }
 }
 
-// New Search filter
 .filter {
   background-color: $white;
   border: 1px solid $primary-color;
   padding: 1rem 1rem 0.8rem;
   max-width: 360px;
+  position: absolute;
+  top: 3.4em;
+  z-index: 3;
 
   .mdl-checkbox__box-outline {
     border: 1px solid transparentize($black, 0.8);

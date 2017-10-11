@@ -1,5 +1,5 @@
 {% extends 'djiffy/base.html' %}
-{% load static %}
+{% load static humanize%}
 
 {% block page-subtitle %}Search ‖ {% endblock %}
 {% block nav-title %} Derrida's Library {% endblock %}
@@ -21,41 +21,48 @@
   <article class="collection collection--no-images">
     <header class="collection__header">
       <h2 class="collection__title">
-        <a href="{% url 'books:list' %}?query={{ query }}">Library Books {% if instance_count %}<span class="arrow_icon">→</span><span>View {{ instance_count }} Result{{ instance_count|pluralize }}</span>{% endif %}</a>
+        <a href="{% url 'books:list' %}?query={{ query }}">Library Books {% if instance_count %}<span class="arrow_icon">→</span><span>View {{ instance_count|intcomma }} Result{{ instance_count|pluralize }}</span>{% endif %}</a>
       </h2>
     </header>
     {% for book in instance_list %}
-      {% include 'components/books-list-item.html' %}
+      {% url 'books:detail' book.slug as instance_url %}
+      {% include 'components/books-list-item.html' with href=instance_url shorten=True %}
       {% empty %}
-      <p>No trace of what you were searching for was found. Try a different keyword.</p>
+      <section class="search__no-results">
+        <p>No trace of what you were searching for was found. Try a different keyword.</p>
+      </section>
     {% endfor %}
   </article>
 
   <article class="collection collection--no-images">
     <header class="collection__header">
       <h2 class="collection__title">
-        <a href="{% url 'books:reference-list' %}">References {% if reference_count %}<span class="arrow_icon">→</span><span>View {{ reference_count }} Result{{ reference_count|pluralize }}</span>{% endif %}</a>
+        <a href="{% url 'books:reference-list' %}">References {% if reference_count %}<span class="arrow_icon">→</span><span>View {{ reference_count|intcomma }} Result{{ reference_count|pluralize }}</span>{% endif %}</a>
       </h2>
     </header>
 
     {% for reference in reference_list %}
       {% include 'components/citation-list-item.html' with reference=reference %}
       {% empty %}
-      <p>No trace of what you were searching for was found. Try a different keyword.</p>
+      <section class="search__no-results">
+        <p>No trace of what you were searching for was found. Try a different keyword.</p>
+      </section>
     {% endfor %}
   </article>
 
   <article class="collection collection--no-images">
     <header class="collection__header">
       <h2 class="collection__title">
-      <a href="{% url 'interventions:list' %}?query={{ query }}">Annotations <span class="arrow_icon">→</span>
-        <span>View {{ intervention_count }} Result{{ intervention_count|pluralize }}</span></a>
+      <a href="{% url 'interventions:list' %}?query={{ query }}">Annotations {% if intervention_count %}<span class="arrow_icon">→</span>
+        <span>View {{ intervention_count|intcomma }} Result{{ intervention_count|pluralize }}</span>{% endif %}</a>
     </h2>
     </header>
     {% for intervention in intervention_list %}
         {% include 'components/intervention-list-item.html' %}
     {% empty %}
-      <p>No trace of what you were searching for was found. Try a different keyword.</p>
+      <section class="search__no-results">
+        <p>No trace of what you were searching for was found. Try a different keyword.</p>
+      </section>
     {% endfor %}
   </article>
 

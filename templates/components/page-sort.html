@@ -1,31 +1,4 @@
 {% load humanize widget_tweaks %}
-<script>
-  $(function() {
-    $(".order_by #id_order_by label").each(function() {
-      var $this = $(this),
-          $parent = $this.parent(),
-          $checkbox = $this.children("input").addClass("hidden"),
-          $label = $("<span/>").text($.trim($this.text()));
-      $this.text('');
-      $this.append($checkbox).append($label);
-
-      $parent.addClass('sort-link');
-      if ($checkbox.prop("checked")) {
-        $parent.addClass("sort-link--active");
-      }
-    });
-
-    $("form.order_by .sort-link").on("click", function(e) {
-      e.preventDefault();
-      $(this).find("input").prop("checked", "checked");
-      $("form.order_by").submit();
-    });
-
-    $("form.order_by input[type='radio']").on("change", function() {
-      $("form.order_by").submit();
-    });
-  });
-</script>
 <section class="page-sort">
   <div class="container">
     <header class="page-sort__header">

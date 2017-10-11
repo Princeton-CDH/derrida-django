@@ -1,6 +1,55 @@
 .search-form-header {
+  $search-duration: 400ms;
+  $search-height: 4.3em;
+
   z-index: 10;
   padding: 0 $gutter-size;
+  height: 4em;
+  width: 100%;
+  top: 4.3em;
+  position: absolute;
+
+  @include grid-media($xlarge-viewport-grid) {
+    position: fixed;
+    top: 0;
+    margin: 0 10%;
+    width: 80%;
+  }
+
+  &.is-hidden {
+    pointer-events: none;
+  }
+
+  &.is-fixed {
+    position: fixed;
+    top: 0;
+    z-index: 4;
+
+    &::before {
+      content: "";
+      background: $base-background-color;
+      position: absolute;
+      width: 120%;
+      top: 0;
+      margin-left: -10%;
+      height: 4em;
+      z-index: -3;
+      transition: background-color $search-duration $base-timing, top $search-duration $base-timing;
+    }
+
+    &.is-hidden::before {
+      top: -4em;
+      background-color: transparent;
+    }
+  }
+
+  & ~ main {
+    transition: padding-top $search-duration $base-timing;
+  }
+
+  &:not(.is-hidden) ~ main {
+    padding-top: $search-height;
+  }
 
   @include grid-media($large-medium-viewport-grid) {
     .background-colored--dark & {
@@ -8,14 +57,8 @@
     }
   }
 
-  @include grid-media($xlarge-viewport-grid) {
-    position: relative;
-    width: 100%;
-  }
-
   .search-form-header__form {
-    $search-duration: 700ms;
-    height: 4rem;
+    height: $search-height;
     transition: margin-bottom $search-duration $base-timing,
       height $search-duration $base-timing,
       opacity $search-duration $base-timing;
@@ -45,12 +88,16 @@
 
 .search-form-header__form {
   display: flex;
-  max-width: 800px;
   margin: auto;
 
   .mdl-textfield {
     align-self: center;
     width: 100%;
+  }
+
+  .mdl-textfield--floating-label.is-focused .mdl-textfield__label,
+  .mdl-textfield--floating-label.is-dirty .mdl-textfield__label {
+    opacity: 0;
   }
 
   .mdl-selectfield {
@@ -151,5 +198,13 @@
     min-height: 0;
     padding: 1em 0;
     background: $base-background-color;
+  }
+}
+
+.search__no-results {
+  @include grid-column(4);
+
+  @include grid-media($large-medium-viewport-grid) {
+    @include grid-column(12);
   }
 }

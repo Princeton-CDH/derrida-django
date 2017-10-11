@@ -2,10 +2,10 @@
   background-position: center;
   background-size: contain;
   background-repeat: no-repeat;
+  transition: margin-top 0.5s ease;
 
-  @include grid-media($xlarge-viewport-grid) {
-    margin: -$header-row-height 6rem 0;
-    transition: margin-top 0.5s ease;
+  @include grid-media($large-medium-viewport-grid) {
+    margin: 0 6rem;
   }
 
   #citations-list & {
@@ -31,6 +31,10 @@
       background-image: url("../img/banner/lib_large_2x.png");
     }
   }
+}
+
+#manifest-list .page-header__container {
+  min-height: 10rem;
 }
 
 .page-header--link {
@@ -61,7 +65,7 @@
 }
 
 .page-header__heading {
-  font-size: ems(20px);
+  font-size: ems(20px, 14);
   margin-top: 1rem;
   color: $blue;
   @include secondary-font-style("bold");
@@ -77,6 +81,10 @@
   @include grid-column(3);
 
   @include grid-media($large-medium-viewport-grid) {
+    @include grid-column(7);
+  }
+
+  @include grid-media($xlarge-viewport-grid) {
     @include grid-column(6);
   }
 

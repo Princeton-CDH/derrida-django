@@ -432,7 +432,9 @@ class Instance(Notable):
     def insertion_images(self):
         '''Insertion images for this book.
         Filtered based on canvas label naming conventions.'''
-        return self.images().filter(label__icontains='insertion')
+        # NOTE: using Insertion because of possible case-sensitive
+        # search on mysql even when icontains is used
+        return self.images().filter(label__icontains='Insertion')
 
     @classmethod
     def allow_canvas_detail(cls, canvas):
