@@ -45,15 +45,34 @@
 .mdl-navigation__link {
   @include secondary-font-style();
   opacity: 0.8;
+  line-height: 1;
 
   .navigation-title {
-    border-bottom: 0 solid transparent;
-    transition: border $base-duration $base-timing;
-    padding: 0 10px;
+    margin: 0 10px;
+    padding: 0;
+    position: relative;
+
+    &::after {
+      content: "";
+      display: block;
+      position: absolute;
+      bottom: -3px;
+      left: 0;
+      width: 100%;
+      border-bottom: solid 3px $primary-color;
+      @include transform(scaleX(0));
+      @include transform-origin(0% 50%);
+      transition: transform 250ms ease-in-out;
+    }
   }
 
   &:hover,
-  &:active,
+  &:active {
+    .navigation-title::after {
+      @include transform(scaleX(1));
+    }
+  }
+
   &.mdl-navigation__link--active {
     .navigation-title {
       border-bottom: 3px solid $primary-color;
@@ -87,6 +106,7 @@
 .mdl-layout__header-row .mdl-navigation__link {
   color: $header-text-color;
   font-size: 1.15em;
+  line-height: 0;
 }
 
 .mdl-layout__header-row--aligned-left {
@@ -157,7 +177,7 @@
       -webkit-font-smoothing: antialiased;
       opacity: 1;
       padding: 0;
-      font-size: 1.6em;
+      font-size: 20px;
       position: fixed;
       width: 12rem;
       white-space: nowrap;
