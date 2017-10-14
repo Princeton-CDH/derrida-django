@@ -46,11 +46,13 @@
   @include secondary-font-style();
   opacity: 0.8;
   line-height: 1;
+  outline: none;
 
   .navigation-title {
     margin: 0 10px;
     padding: 0;
     position: relative;
+    line-height: 1.4;
 
     &::after {
       content: "";
@@ -107,6 +109,9 @@
   color: $header-text-color;
   font-size: 1.15em;
   line-height: 0;
+  height: 2em;
+  display: flex;
+  align-items: center;
 }
 
 .mdl-layout__header-row--aligned-left {
