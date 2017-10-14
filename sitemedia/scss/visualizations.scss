@@ -19,9 +19,12 @@
   font-size: 0.9em;
   margin: 0;
   color: $medium-grey;
+
+  .visualization-section + .visualization-section & {
+    padding-top: 1.5em;
+  }
 }
 
-.visualization-part-header,
 .visualization-section {
   padding-bottom: 1.5em;
 }
