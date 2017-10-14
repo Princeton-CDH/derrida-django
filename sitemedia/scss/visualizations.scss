@@ -102,12 +102,12 @@
   overflow: hidden;
   border-radius: 50%;
   color: transparent;
-  background: $primary-color;
-  opacity: 0.8;
+  background-color: transparentize($primary-color, 0.2);
 
   &:hover,
   &.active {
     color: transparent;
+    background-color: $primary-color;
     opacity: 1;
   }
 }
