@@ -99,7 +99,7 @@
 
     span {
       color: $base-font-color;
-      @include secondary-font-style();
+      @include primary-font-style();
       font-size: 1rem;
       text-decoration: none;
       @include transition(color $base-duration $base-timing);
