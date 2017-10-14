@@ -325,7 +325,7 @@ $(function() {
       })
       .on("blur", function(e) {
         e.preventDefault();
-        var isOpen = $(this).parent().addClass("is-open");
+        var isOpen = $(this).parent().hasClass("is-open");
         if (! isOpen) {
           $authorFilter.slideUp();
         }
@@ -356,9 +356,15 @@ $(function() {
       setSelectedOptionsValues(this);
     });
 
+    var initialValue = $authorSelectionInput.val();
     var closeFilter = function($openInput) {
       $authorFilter.slideUp();
       $openInput.removeClass("is-open").removeClass("is-focused");
+
+      if ($authorSelectionInput.val() !== initialValue) {
+        $(".mdl-layout").addClass("is-submitting");
+        $(".page-filter__form").submit();
+      }
     }
 
     $("body").on("click.filter--author", function(e) {

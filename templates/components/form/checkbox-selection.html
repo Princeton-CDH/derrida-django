@@ -86,9 +86,15 @@
         setSelectedOptionsValues(this);
       });
 
+      var initialValue = ${{name}}SelectionInput.val();
       var closeFilter = function($openInput) {
         ${{name}}Filter.slideUp();
         $openInput.removeClass("is-open").removeClass("is-focused");
+
+        if (${{name}}SelectionInput.val() !== initialValue) {
+          $(".mdl-layout").addClass("is-submitting");
+          $(".page-filter__form").submit();
+        }
       };
 
       $("body").on("click.filter--{{name}}", function(e) {
