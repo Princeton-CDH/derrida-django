@@ -21,6 +21,10 @@ main {
   z-index: 3;
 }
 
+.mdl-layout.is-submitting {
+  cursor: wait;
+}
+
 // Home Page style
 @import "homepage";
 
