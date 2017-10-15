@@ -141,7 +141,13 @@
     }
 
     .item__link {
-      border: 0;
+      border-color: transparent;
+
+      &:hover,
+      &:active,
+      &.is-active {
+        border-color: $primary-color;
+      }
     }
 
     &.item-term__value--aside {
