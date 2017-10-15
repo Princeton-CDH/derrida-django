@@ -351,6 +351,45 @@
   z-index: 10;
   display: none;
 
+  &::before {
+    content: "contains annotations";
+    position: absolute;
+    opacity: 0;
+    background-color: darken($light-grey, 5%);
+    top: -5em;
+    left: -80%;
+    font-size: 0.8em;
+    text-align: center;
+    padding: 10px;
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    opacity: 0;
+    z-index: -1;
+    right: calc(50% - 10px);
+    top: -8px;
+    border-style: solid;
+    border-width: 10px 10px 0;
+    border-color: darken($light-grey, 5%) transparent transparent;
+  }
+
+  &::after,
+  &::before {
+    margin-top: 0;
+    @include transition(opacity $base-duration $base-timing,
+      margin-top $base-duration $base-timing);
+  }
+
+  &:hover {
+    &::after,
+    &::before {
+      margin-top: -5px;
+      opacity: 1;
+    }
+  }
+
   #books-list & {
     display: block;
   }
