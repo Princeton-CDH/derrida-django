@@ -145,7 +145,7 @@
 
       &:hover,
       &:active,
-      &.is-active {
+      &.is-hovered {
         border-color: $primary-color;
       }
     }
