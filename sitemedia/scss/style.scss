@@ -22,7 +22,11 @@ main {
 }
 
 .mdl-layout.is-submitting {
-  cursor: wait;
+  &,
+  & .mdl-switch__thumb,
+  & .mdl-textfield__input {
+    cursor: wait;
+  }
 }
 
 // Home Page style

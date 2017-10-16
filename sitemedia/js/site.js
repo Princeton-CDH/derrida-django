@@ -1,4 +1,10 @@
 $(function() {
+
+  function submitFilterForm() {
+    $(".mdl-layout").addClass("is-submitting");
+    $(".page-filter__form").submit();
+  }
+
   function initPageFilter() {
     var $pageFilter = $(".page-filter");
     if ($pageFilter.length) {
@@ -28,6 +34,11 @@ $(function() {
         }
 
         checkForActiveFilters();
+      });
+
+      var $filterForm = $(".page-filter__form");
+      $filterForm.on("change", "input[type='checkbox']", function() {
+        submitFilterForm();
       });
 
     checkForActiveFilters();
@@ -362,8 +373,7 @@ $(function() {
       $openInput.removeClass("is-open").removeClass("is-focused");
 
       if ($authorSelectionInput.val() !== initialValue) {
-        $(".mdl-layout").addClass("is-submitting");
-        $(".page-filter__form").submit();
+        submitFilterForm();
       }
     }
 
@@ -415,9 +425,25 @@ $(function() {
     });
   }
 
+  function initAnnotatorDropdown() {
+    var $marginContainer = $(".margin-container");
+
+    if ($marginContainer.length) {
+      $marginContainer.on("click", ".dropdown-toggle", function() {
+        var $menu = $(this).parent().find(".dropdown-menu");
+        if ($menu.css("display") === "none") {
+          $menu.css({ display: "block" });
+        } else {
+          $menu.css({ display: "none" });
+        }
+      });
+    }
+  }
+
   initSearchForm();
   initPageFilter();
   initBookHeader();
   initVisualization();
   initCustomActions();
+  initAnnotatorDropdown();
 });
