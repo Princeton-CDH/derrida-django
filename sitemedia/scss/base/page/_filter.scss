@@ -275,6 +275,15 @@
     padding-right: 1.5rem;
     font-size: 0.85em;
 
+    &:hover {
+      color: $primary-color;
+    }
+
+    &:active .mdl-checkbox__box-outline,
+    &:hover .mdl-checkbox__box-outline {
+      border-color: $primary-color;
+    }
+
     .filter__selector--condensed & {
       width: 100%;
       padding-right: 0;
