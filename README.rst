@@ -28,19 +28,6 @@ This repo uses `git-flow <https://github.com/nvie/gitflow>`_ conventions; master
 contains the most recent release, and work in progress will be on the develop branch.
 Pull requests shoudl be made against develop.
 
-Current development status
---------------------------
-
-.. image:: https://badge.waffle.io/Princeton-CDH/winthrop-django.svg?label=development+in+progress&title=In+Progress
-   :target: http://waffle.io/Princeton-CDH/derrida-django
-   :alt: In Progress
-.. image:: https://badge.waffle.io/Princeton-CDH/winthrop-django.svg?label=development+complete&title=Development+Complete
-   :target: http://waffle.io/Princeton-CDH/derrida-django
-   :alt: Development Complete
-.. image:: https://badge.waffle.io/Princeton-CDH/winthrop-django.svg?label=awaiting+testing&title=Awaiting+Testing
-   :target: http://waffle.io/Princeton-CDH/derrida-django
-   :alt: Awaiting Testing
-
 
 Development instructions
 ------------------------
