@@ -15,7 +15,7 @@
 }
 
 .visualization-part-header {
-  font-family: $base-font-family;
+  @include primary-font-style("italic");
   font-size: 0.9em;
   margin: 0;
   color: $medium-grey;
@@ -27,9 +27,6 @@
 
 .visualization-section {
   padding-bottom: 1.5em;
-}
-
-.visualization-section {
   display: flex;
   align-items: flex-start;
 }

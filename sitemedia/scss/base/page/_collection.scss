@@ -100,7 +100,7 @@
     span {
       color: $base-font-color;
       @include primary-font-style();
-      font-size: 1rem;
+      font-size: 0.666em;
       text-decoration: none;
       @include transition(color $base-duration $base-timing);
 
