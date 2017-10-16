@@ -207,6 +207,10 @@
   display: flex;
   flex-flow: row;
   flex-wrap: wrap;
+
+  &.canvas .item__image-link .img {
+    width: 100%;
+  }
 }
 
 .item__image {

@@ -22,8 +22,8 @@
     {% endif %}
   </header>
 
-  <section class="pages">
-    <div class="collection collection--condensed item-term__value">
+  <section class="item-section">
+    <div class="item-gallery canvas">
       {% for canvas in manifest.canvases.all %}
         {% include "djiffy/snippets/canvas_card.html" %}
       {% endfor %}
