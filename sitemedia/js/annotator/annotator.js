@@ -5204,6 +5204,9 @@
             return origName
           }
           function showHide(elements, show) {
+            if (elements.hasClass('annotator-checkbox')) {
+              return elements;
+            }
             var display,
               elem,
               hidden,
