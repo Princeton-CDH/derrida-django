@@ -19,6 +19,7 @@ $secondary-font-family--bold: "SabonLTPro-Bold", "Georgia", serif;
   }
   font-weight: normal;
   font-style: normal;
+  letter-spacing: normal;
 }
 
 @mixin secondary-font-style($variant: "") {
@@ -31,6 +32,7 @@ $secondary-font-family--bold: "SabonLTPro-Bold", "Georgia", serif;
   }
   font-weight: normal;
   font-style: normal;
+  letter-spacing: normal;
 }
 
 // Base Font Size
