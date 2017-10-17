@@ -1,19 +1,10 @@
-{% url 'books:list' as lib_url %}
-<a class="mdl-navigation__link {% if lib_url in request.path %}mdl-navigation__link--active{% endif %}" href="{{ lib_url }}">
-  <span class="navigation-title">Derrida's Library</span>
-</a>
+{% load pages_tags i18n %}
+{# primary site navigation #}
+{% for page in page_branch %}
+    {% if page.in_menu %}
+    <a class="mdl-navigation__link {% if page.is_current_or_ascendant %}mdl-navigation__link--active{% endif %}" href="{{ page.get_absolute_url }}">
+      <span class="navigation-title">{{ page.title }}</span>
+    </a>
+    {% endif %}
+{% endfor %}
 
-{% url 'books:reference-histogram' 'section' as vis_url %}
-<a class="mdl-navigation__link {% if vis_url in request.path %}mdl-navigation__link--active{% endif %}" href="{{ vis_url }}">
-  <span class="navigation-title">Visualization</span>
-</a>
-
-{% url 'books:reference-list' as cit_url %}
-<a class="mdl-navigation__link {% if cit_url in request.path and not vis_url in request.path %}mdl-navigation__link--active{% endif %}" href="{{ cit_url }}">
-  <span class="navigation-title">Reference List</span>
-</a>
-
-{% url 'outwork:list' as out_url %}
-<a class="mdl-navigation__link {% if out_url in request.path %}mdl-navigation__link--active{% endif %}" href="{{ out_url }}">
-  <span class="navigation-title">Outwork</span>
-</a>

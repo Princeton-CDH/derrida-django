@@ -250,6 +250,14 @@ PROJECT_ROOT = BASE_DIR = os.path.dirname(PROJECT_APP_PATH)
 # project specific.
 CACHE_MIDDLEWARE_KEY_PREFIX = PROJECT_APP
 
+# configure local nav templates so that page.in_menu works properly
+PAGE_MENU_TEMPLATES = (
+    (1, "Top navigation bar", "components/navlinks.html"),
+    (2, "Left-hand tree", "pages/menus/tree.html"),  # mezzanine default, unused
+    (3, "Footer", "components/footer.html"),
+)
+
+
 
 ##################
 # LOCAL SETTINGS #

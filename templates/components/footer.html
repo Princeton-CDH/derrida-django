@@ -1,20 +1,23 @@
-{% load static %}
+{% load static pages_tags i18n %}
 
 <footer class="mdl-mega-footer">
+
   <div class="grid-container">
     <div class="mdl-mega-footer__middle-section">
 
       <div class="mdl-mega-footer-section">
-        <a class="mdl-mega-footer__heading" href="{% url 'home' %}">Home</a>
-        <a class="mdl-mega-footer__heading" href="{% url 'home' %}">How to Cite</a>
-        <a class="mdl-mega-footer__heading" href="{% url 'home' %}">Contact</a>
-      </div>
-
-      <div class="mdl-mega-footer-section">
-        <a class="mdl-mega-footer__heading" href="{% url 'books:list' %}">Derrida's Library</a>
-        <a class="mdl-mega-footer__heading" href="{% url 'books:reference-histogram' %}">Visualization</a>
-        <a class="mdl-mega-footer__heading" href="{% url 'books:reference-list' %}">Reference List</a>
-        <a class="mdl-mega-footer__heading" href="{% url 'djiffy:list' %}">Outwork</a>
+         {% for page in page_branch %}
+            {% if page.in_menu %}
+              {# break for second section on first occurence of primary menu item #}
+              {% if '1' in page.in_menus %}{% ifchanged %}
+                </div>
+                 <div class="mdl-mega-footer-section">
+              {% endifchanged %}{% endif %}
+              {% with page.get_absolute_url as url %}
+              <a class="mdl-mega-footer__heading" href="{{ url }}">{% if url == '/' %}Home{% else %}{{ page.title }}{% endif %}</a>
+              {% endwith %}
+            {% endif %}
+          {% endfor %}
       </div>
 
       <div class="mdl-mega-footer-section mdl-mega-footer__branding-section">
