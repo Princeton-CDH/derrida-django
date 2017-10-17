@@ -1,4 +1,4 @@
-{% extends 'djiffy/base.html' %}
+{% extends 'local/base.html' %}
 {% load static %}
 
 {% block page-subtitle %}{{ instance.work.primary_title }}{% if instance.work.authors.count == 1 %}, {{ instance.work.authors.first.lastname }}{% endif %} {% if instance.print_year or instance.copyright_year %}({% firstof instance.print_year instance.copyright_year %}{% if instance.copy %} - {{ instance.copy }}{% endif %}){% endif %} ‖ {{ canvas.label }} ‖ {% endblock %}

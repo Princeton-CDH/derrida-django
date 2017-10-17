@@ -6,7 +6,7 @@ by default; use page_rdf_type to override with a webpage subclass.
 <!DOCTYPE html>
 <html lang="en" xmlns:schema="http://schema.org/" xmlns:og="http://ogp.me/ns#">
   <head>
-    <title>{% block page-title %}{% block page-subtitle %}{% endblock %}{% endblock %}</title>
+    <title>{% block page-title %}{% block page-subtitle %}{% endblock %}Derrida's Margins{% endblock %}</title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="apple-touch-icon" sizes="180x180" href="{% static 'apple-touch-icon.png' %}" />
@@ -23,6 +23,17 @@ by default; use page_rdf_type to override with a webpage subclass.
 
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery.min.js"></script>
+
+    {% include 'snippets/local_styles.html' %}
+    <link rel="stylesheet" type="text/css" href="{% static "css/test-banner.css" %}" />
+    <script src="{% static 'js/material.min.js' %}"></script>
+    <script src="{% static 'js//lib/webui-popover.min.js' %}"></script>
+    <script src="{% static 'js/lib/sticky-sidebar.js' %}"></script>
+    <script src="{% static 'js/lib/selectize.min.js' %}"></script>
+    <script src="{% static 'js/lib/list.min.js' %}"></script>
+    <script src="{% static 'js/site.js' %}"></script>
+    {# Include analytics if INCLUDE_ANALYTICS is set to True #}
+    {# {% include 'snippets/analytics.html' %} #}
 
     {% block javascript %}{% endblock %} {# add any additional javascript here #}
     {% block head_extras %}{% endblock %}  {# any header metadata, etc #}
@@ -42,7 +53,7 @@ by default; use page_rdf_type to override with a webpage subclass.
               <a class="mdl-navigation__link admin-link" href="{% block admin-url %}{% url 'admin:index' %}{% endblock %}"><span>Admin</span></a>
             {% endif %}
           {% endblock %}
-          {% block navbar-extra %}{% endblock %}
+          {% block navbar-extra %}{% include 'snippets/test_banner.html' %}{% endblock %}
         </nav>
         <!-- Search Form -->
         <div class="header__search-button" data-action="toggle-search-form">
