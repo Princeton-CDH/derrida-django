@@ -40,10 +40,10 @@ initial_homepage_content = '''    <section>
 
 #: primary nav (also in footer)
 NAV_PAGES = OrderedDict([
-    ('library', {'title': 'Derrida\'s Library',
-        'description': 'Browse Derrida’s personal copies of the books referenced in his published works. Only books extant in the Library of Jacques Derrida collection, held at the Princeton University Library’s Department of Rare Books and Special Collections, are displayed below.'}),
-    ('references', {'title': 'Reference List',
-        'description': 'Explore the quotations and references in Derrida’s works.'}),
+     ('library', {'title': 'Derrida\'s Library',
+         'description': 'Browse Derrida’s personal copies of the books referenced in his published works. Only books extant in the Library of Jacques Derrida collection, held at the Princeton University Library’s Department of Rare Books and Special Collections, are displayed below.'}),
+     ('references', {'title': 'Reference List',
+         'description': 'Explore the quotations and references in Derrida’s works.'}),
     ('references/histogram/de-la-grammatologie', {'title': 'Visualization'}),
     ('outwork', {'title': 'Outwork'})
 ])
@@ -53,7 +53,6 @@ FOOTER_PAGES = OrderedDict([
     ('/', {'title': 'Derrida\'s Margins',
         'description': 'An online research tool for Derrida’s annotations that provides a behind-the-scenes look at his reading practices and the philosophy of deconstruction',
         'content': initial_homepage_content}),
-    ('/', {'title': 'Home'}),
     ('cite', {'title': 'How to Cite'}),
     ('contact', {'title': 'Contact'}),
 ])
