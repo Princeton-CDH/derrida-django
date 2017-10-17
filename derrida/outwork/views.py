@@ -19,5 +19,6 @@ class OutworkListView(ListView):
 
         return sqs
         # return Outwork.objects.published(for_user=self.request.user)
+        return Outwork.objects.published(for_user=self.request.user)
 
 

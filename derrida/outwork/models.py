@@ -27,3 +27,4 @@ class Outwork(Page, RichText):
 
     def is_published(self):
         return self.status == CONTENT_STATUS_PUBLISHED
+

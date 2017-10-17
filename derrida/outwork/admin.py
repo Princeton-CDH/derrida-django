@@ -1,8 +1,11 @@
 from copy import deepcopy
 
+<<<<<<< HEAD
 from dal import autocomplete
 from django.contrib import admin
 from mezzanine.pages.models import RichTextPage
+from django.contrib import admin
+from django.utils import timezone
 from mezzanine.pages.admin import PageAdmin, PageAdminForm
 
 from derrida.outwork.models import Outwork
@@ -42,7 +45,6 @@ class OutworkAdminForm(PageAdminForm):
             )
         }
 
-
     def __init__(self, *args, **kwargs):
         super(OutworkAdminForm, self).__init__(*args, **kwargs)
         # expand help text
@@ -70,5 +72,4 @@ class LocalPageAdmin(PageAdmin):
 admin.site.register(Outwork, OutworkAdmin)
 admin.site.unregister(RichTextPage)
 admin.site.register(RichTextPage, LocalPageAdmin)
-
-# admin.site.register(RichTextPage, PageAdmin)
+admin.site.register(Outwork, OutworkAdmin)
