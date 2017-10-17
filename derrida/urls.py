@@ -3,11 +3,13 @@ The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/1.10/topics/http/urls/
 """
 from annotator_store import views as annotator_views
-from django.conf import settings
+# from django.conf import settings
 from django.conf.urls import url, include
 from django.contrib import admin
 from django.views.generic import TemplateView
 from django.views.generic.base import RedirectView
+import mezzanine.urls
+import mezzanine.pages.views
 
 from derrida.books.views import SearchView
 
@@ -37,6 +39,7 @@ urlpatterns = [
     url(r'^places/', include('derrida.places.urls', namespace='places')),
     url(r'^interventions/', include('derrida.interventions.urls', namespace='interventions')),
     url(r'^viaf/', include('viapy.urls', namespace='viaf')),
+    url(r'^outwork/', include('derrida.outwork.urls', namespace='outwork')),
 
     # local version of djiffy urls
     url(r'^admin/iiif-books/', include('derrida.interventions.iiif_urls', namespace='djiffy')),
@@ -57,7 +60,7 @@ urlpatterns = [
     url(r'^inputs', TemplateView.as_view(template_name='public/search-inputs.html'), name="show-inputs"),
 
     # content pages managed by mezzanine
-    url("^", include("mezzanine.urls"))
+    url("^", include(mezzanine.urls))
 ]
 
 

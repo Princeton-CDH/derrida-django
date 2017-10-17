@@ -1,0 +1,20 @@
+{% extends "pages/page.html" %}
+{# template for outwork content #}
+{% load mezzanine_tags %}
+
+{# suppress description from displaying in header as lead #}
+{% block lead %}{% endblock %}
+
+{% block main %}{{ block.super }}
+{% if page.outwork.author %}
+<div>{{ page.outwork.author }}</div>
+{% endif %}
+
+{% if page.outwork.orig_pubdate %}
+<div>{{ page.outwork.orig_pubdate }}</div>
+{% endif %}
+
+<div>{{ page.description }}</div>
+
+{{ page.outwork.content|richtext_filters|safe }}
+{% endblock %}

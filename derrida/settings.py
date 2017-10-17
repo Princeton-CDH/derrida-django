@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     'derrida.footnotes',
     'derrida.common',
     'derrida.interventions',
+    'derrida.outwork',
 ]
 
 MIDDLEWARE = [

@@ -13,7 +13,7 @@
   <span class="navigation-title">Reference List</span>
 </a>
 
-{% url 'djiffy:list' as out_url %}
+{% url 'outwork:list' as out_url %}
 <a class="mdl-navigation__link {% if out_url in request.path %}mdl-navigation__link--active{% endif %}" href="{{ out_url }}">
   <span class="navigation-title">Outwork</span>
 </a>

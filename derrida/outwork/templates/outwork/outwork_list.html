@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block page-subtitle %}Outwork ‖ {% endblock %}
+
+{% block content %}
+<header class="page-header">
+  <div class="container page-header__container">
+    <h1 class="page-header__heading">Outwork</h1>
+  </div>
+</header>
+
+<div class="container">
+  <article class="collection">
+    {% for outwork in object_list %}
+      {% include 'outwork/components/outwork-list-item.html' with outwork=outwork %}
+    {% empty %}
+        <p>No trace of what you were searching for was found. Try a different keyword.</p>
+    {% endfor %}
+  </article>
+    {% if is_paginated %}
+      {% include "components/page-pagination.html" with page_obj=page_obj %}
+    {% endif %}
+
+</div>
+{% endblock %}
