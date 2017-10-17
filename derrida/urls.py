@@ -18,6 +18,10 @@ urlpatterns = [
     url(r'^favicon\.ico$', RedirectView.as_view(url='/static/favicon.ico',
         permanent=True)),
 
+    # TODO
+    # url("^$", mezzanine.pages.views.page, {"slug": "/"}, name="home"),
+
+
     url(r'^$', TemplateView.as_view(template_name='public/index.html'), name="home"),
     # placeholders for new design
     url(r'^citations/$', RedirectView.as_view(pattern_name='admin:index'), name='citations-list'),
@@ -25,7 +29,7 @@ urlpatterns = [
     # grappelli URLS for admin related lookups & autocompletes
     url(r'^grappelli/', include('grappelli.urls')),
 
-    url(r'^admin/', admin.site.urls),
+    url(r'^admin/', include(admin.site.urls)),
     url(r'^accounts/', include('pucas.cas_urls')),
     url(r'^', include('derrida.books.urls', namespace='books')),
     url(r'^search/$', SearchView.as_view(), name='search'),
@@ -52,12 +56,21 @@ urlpatterns = [
 
     url(r'^inputs', TemplateView.as_view(template_name='public/search-inputs.html'), name="show-inputs"),
 
+    # content pages managed by mezzanine
+    url("^", include("mezzanine.urls"))
 ]
 
-# NOTE: for some reason this isn't getting added automatically
-if settings.DEBUG:
-    try:
-        import debug_toolbar
-        urlpatterns += url(r'^__debug__/', include(debug_toolbar.urls)),
-    except ImportError:
-        pass
+
+# # NOTE: for some reason this isn't getting added automatically
+# if settings.DEBUG:
+#     try:
+#         import debug_toolbar
+#         urlpatterns += url(r'^__debug__/', include(debug_toolbar.urls)),
+#     except ImportError:
+#         pass
+
+
+# Adds ``STATIC_URL`` to the context of error pages, so that error
+# pages can use JS, CSS and images.
+handler404 = "mezzanine.core.views.page_not_found"
+handler500 = "mezzanine.core.views.server_error"
