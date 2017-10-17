@@ -53,6 +53,7 @@ FOOTER_PAGES = OrderedDict([
     ('/', {'title': 'Derrida\'s Margins',
         'description': 'An online research tool for Derrida’s annotations that provides a behind-the-scenes look at his reading practices and the philosophy of deconstruction',
         'content': initial_homepage_content}),
+    ('/', {'title': 'Home'}),
     ('cite', {'title': 'How to Cite'}),
     ('contact', {'title': 'Contact'}),
 ])
@@ -90,6 +91,7 @@ def create_pages(apps, schema_editor):
     for slug, info in OTHER_PAGES.items():
         create_page(slug, AttrDict(info), index)
         index += 1
+
 
 def remove_pages(apps, schema_editor):
     RichTextPage = apps.get_model('pages', 'RichTextPage')
