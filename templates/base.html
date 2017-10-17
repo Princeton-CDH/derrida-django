@@ -15,7 +15,6 @@ by default; use page_rdf_type to override with a webpage subclass.
     <link rel="manifest" href="{% static 'manifest.json' %}" />
     <link rel="mask-icon" href="{% static 'safari-pinned-tab.svg' %}" color="#175498" />
     <meta name="theme-color" content="#175498" />
-    {{ page.keywords.all }}
     <meta name="keywords" content="{% block meta_keywords %}{% metablock %}
 {% keywords_for page as keywords %}
 {% for keyword in keywords %}
@@ -93,7 +92,7 @@ by default; use page_rdf_type to override with a webpage subclass.
       </div>
 
       <nav class="mdl-navigation">
-        {% include 'components/navlinks.html' %}
+      {% page_menu 'components/navlinks.html' %}
       </nav>
     </div>
 
