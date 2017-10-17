@@ -58,18 +58,6 @@ by default; use page_rdf_type to override with a webpage subclass.
 
     {# Mobile Navigation #}
     <div class="mdl-layout__drawer">
-      <a href="#" class="mdl-layout__drawer__close_button">
-        <object type="image/svg+xml" data="{% static "img/icons/Delete.svg" %}" class="svg-icon">
-          <img src="{% static "img/icons/Delete.svg" %}" />
-        </object>
-      </a>
-
-      <div class="mdl-layout__drawer__search-button" data-action="toggle-search-form">
-        <div class="mdl-button mdl-js-button mdl-button--icon">
-          <img width="50%" src="{% static "img/icons/Search.svg" %}" />
-        </div>
-      </div>
-
       <nav class="mdl-navigation">
         {% include 'components/navlinks.html' %}
       </nav>

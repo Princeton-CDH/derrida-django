@@ -4,6 +4,7 @@
   box-shadow: none;
   background-color: $header-background-color;
   color: $header-text-color;
+  z-index: 5;
 
   @include grid-media($xlarge-viewport-grid) {
     position: fixed;
@@ -11,7 +12,7 @@
   }
 
   &.mdl-layout__header--transparent {
-    background-color: transparent;
+    background-color: $base-background-color;
   }
 
   &,
@@ -112,6 +113,7 @@
   height: 2em;
   display: flex;
   align-items: center;
+  z-index: 6;
 }
 
 .mdl-layout__header-row--aligned-left {
@@ -230,10 +232,29 @@
 }
 
 // Mobile navigation
+.mdl-layout__obfuscator.is-visible {
+  display: none;
+}
+
 .mdl-layout__drawer {
   width: 100%;
-  padding-top: 4em;
-  @include prefixer(transform, translateX(-100%), webkit moz ms o spec);
+  padding-top: 1em;
+  height: auto;
+  padding-bottom: 2em;
+  z-index: 4;
+  @include prefixer(transform, translateY(-100%), webkit moz ms o spec);
+
+  &.is-visible {
+    @include prefixer(transform, translateY(4.4em), webkit moz ms o spec);
+
+    & ~ main {
+      padding-top: 11em;
+    }
+
+    .search-form-header:not(.is-hidden) + & ~ main {
+      padding-top: 15.4em;
+    }
+  }
 
   .mdl-navigation {
     @include transition(padding-top 0.5s $base-timing);
@@ -241,7 +262,7 @@
 
   .search-form-header + &.is-visible {
     .mdl-navigation {
-      padding-top: 6em;
+      padding-top: 4em;
     }
   }
 
