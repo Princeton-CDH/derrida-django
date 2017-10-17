@@ -1,7 +1,7 @@
 from copy import deepcopy
 
+from dal import autocomplete
 from django.contrib import admin
-from django.utils import timezone
 from mezzanine.pages.admin import PageAdmin, PageAdminForm
 
 from derrida.outwork.models import Outwork
@@ -31,6 +31,13 @@ class OutworkAdminForm(PageAdminForm):
         'keywords': '''Optional list of comma-separated keywords for inclusion
             in page metadata''',
     }
+    class Meta:
+        widgets = {
+            'author': autocomplete.ModelSelect2(
+                url='people:person-autocomplete',
+                attrs={'data-placeholder': 'Start typing a name to search...'}
+            )
+        }
 
     def __init__(self, *args, **kwargs):
         super(OutworkAdminForm, self).__init__(*args, **kwargs)
