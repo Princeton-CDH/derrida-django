@@ -1,8 +1,8 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block page-subtitle %}Interventions ‖ {% endblock %}
-{% block nav-title %} Interventions {% endblock %}
+{% block page-subtitle %}{{ page.meta_title }} ‖ {% endblock %}
+{% block nav-title %} {{ page.title }} {% endblock %}
 
 {% block header_class %}mdl-layout__header--transparent{% endblock %}
 
@@ -11,9 +11,9 @@
 {% block content %}
   <header class="page-header">
     <div class="container page-header__container">
-      <h1 class="page-header__heading">Interventions in Derrida's Library</h1>
+      <h1 class="page-header__heading">{{ page.title }}</h1>
       <div class="page-header__callout">
-        <p class="lead">Explore the traces of Derrida’s reading.</p>
+        <p class="lead">{{ page.description }}</p>
         {# <p><a class="callout__link" href="/">A full list of citations is accessible through Citation List.</a></p> #}
       </div>
     </div>

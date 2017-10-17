@@ -11,19 +11,55 @@ from django.utils import timezone
 from mezzanine.core.models import CONTENT_STATUS_PUBLISHED
 
 
+initial_homepage_content = '''    <section>
+      <p>“Derrida’s Margins” aims to create a website and online research tool for annotations from the Library of Jacques Derrida, housed at Princeton University Library. Jacques Derrida is one of the major figures of twentieth-century thought, and his library – which bears the traces of decades of close reading--represents a major intellectual archive. This phase focuses on annotations related to Derrida’s landmark 1967 work De la grammatologie (Of Grammatology). It was in Of Grammatology that Derrida first articulated a new style of critical reading, which would become the foundation of the philosophy of “deconstruction.”</p>
+      <p>Our online research tool will enable scholars to study the development of this philosophy in an unprecedented way by providing comprehensive digital access to the material annotations, marginalia, bookmarks, and other notes from Derrida’s library that correspond to each quotation and citation in Of Grammatology. We begin by identifying all quotations and references in Of Grammatology; we then locate these references in Derrida’s copies the works, transcribing all marginal annotations and other markings, and limiting ourselves to the parts of those works that are explicitly referenced. Digital images and transcriptions of these annotated pages will form the basis of the website, allowing users to go “behind the scenes” of Derrida’s reading practices. This corpus will also serve as a pilot data set for future work, allowing us to establish protocols, workflow, and a relational database model.</p>
+    </section>
+
+    <aside>
+      <dl class="credits">
+        <dt class="credits__role">Project Director</dt>
+        <dd class="credits__name">Katie Chenoweth</dd>
+
+        <dt class="credits__role">Project Manager</dt>
+        <dd class="credits__name">Alex Raiffe</dd>
+
+        <dt class="credits__role">Consultant</dt>
+        <dd class="credits__name">Jean Bauer</dd>
+
+        <dt class="credits__role">Graduate Research Assistant</dt>
+        <dd class="credits__name">Chloé Vettier</dd>
+        <dd class="credits__name">Chad Cordova</dd>
+
+        <dt class="credits__role">Advisor</dt>
+        <dd class="credits__name">Avital Ronell</dd>
+        <dd class="credits__name">Eduardo Cadava</dd>
+      </dl>
+    </aside>
+  </article>'''
+
 #: primary nav (also in footer)
 NAV_PAGES = OrderedDict([
-    ('library', {'title': 'Derrida\'s Library'}),
-    ('references', {'title': 'Reference List'}),
+    ('library', {'title': 'Derrida\'s Library',
+        'description': 'Browse Derrida’s personal copies of the books referenced in his published works. Only books extant in the Library of Jacques Derrida collection, held at the Princeton University Library’s Department of Rare Books and Special Collections, are displayed below.'}),
+    ('references', {'title': 'Reference List',
+        'description': 'Explore the quotations and references in Derrida’s works.'}),
     ('references/histogram/de-la-grammatologie', {'title': 'Visualization'}),
     ('outwork', {'title': 'Outwork'})
 ])
 
 #: footer nav
 FOOTER_PAGES = OrderedDict([
-    ('/', {'title': 'Home'}),
+    ('/', {'title': 'Derrida\'s Margins',
+        'description': 'An online research tool for Derrida’s annotations that provides a behind-the-scenes look at his reading practices and the philosophy of deconstruction',
+        'content': initial_homepage_content}),
     ('cite', {'title': 'How to Cite'}),
     ('contact', {'title': 'Contact'}),
+])
+
+OTHER_PAGES = OrderedDict([
+    ('interventions', {'title': 'Interventions',
+        'description': 'Explore the traces of Derrida’s reading.'})
 ])
 
 
@@ -32,33 +68,35 @@ def create_pages(apps, schema_editor):
     site_id = settings.SITE_ID
     now = timezone.now()
 
-    index = 1
-    for slug, info in FOOTER_PAGES.items():
-        info = AttrDict(info)
-        # todo: bulk create?
+    def create_page(slug, info, index, menus=''):
         RichTextPage.objects.create(slug=slug, title=info.title,
             titles=info.title, created=now, updated=now,
-            status=CONTENT_STATUS_PUBLISHED, content='',
-            site_id=site_id, publish_date=now, in_menus="3",
+            description=info.get('description', ''),
+            gen_description=not info.get('description', ''),
+            status=CONTENT_STATUS_PUBLISHED,
+            content=info.get('content', '[placeholder]'),
+            site_id=site_id, publish_date=now, in_menus=menus,
             content_model="richtextpage", _order=index)
+
+    index = 1
+    for slug, info in FOOTER_PAGES.items():
+        create_page(slug, AttrDict(info), index, menus="3")
         index += 1
 
     for slug, info in NAV_PAGES.items():
-        info = AttrDict(info)
-        # todo: bulk create?
-        RichTextPage.objects.create(slug=slug, title=info.title,
-            titles=info.title, created=now, updated=now,
-            status=CONTENT_STATUS_PUBLISHED, content='',
-            site_id=site_id, publish_date=now, in_menus="1,3",
-            content_model="richtextpage", _order=index)
+        create_page(slug, AttrDict(info), index, menus="1,3")
         index += 1
 
+    for slug, info in OTHER_PAGES.items():
+        create_page(slug, AttrDict(info), index)
+        index += 1
 
 def remove_pages(apps, schema_editor):
     RichTextPage = apps.get_model('pages', 'RichTextPage')
 
-    RichTextPage.objects.filter(slug__in=FOOTER_PAGES.keys()).delete()
-    RichTextPage.objects.filter(slug__in=NAV_PAGES.keys()).delete()
+    slugs = list(FOOTER_PAGES.keys()) + list(NAV_PAGES.keys()) \
+        + list(OTHER_PAGES.keys())
+    RichTextPage.objects.filter(slug__in=slugs).delete()
 
 
 class Migration(migrations.Migration):

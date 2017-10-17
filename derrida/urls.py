@@ -20,11 +20,9 @@ urlpatterns = [
     url(r'^favicon\.ico$', RedirectView.as_view(url='/static/favicon.ico',
         permanent=True)),
 
-    # TODO
-    # url("^$", mezzanine.pages.views.page, {"slug": "/"}, name="home"),
+    # home page managed via mezzanine, but needs a named url
+    url(r'^$', mezzanine.pages.views.page, {"slug": "/"}, name="home"),
 
-
-    url(r'^$', TemplateView.as_view(template_name='public/index.html'), name="home"),
     # placeholders for new design
     url(r'^citations/$', RedirectView.as_view(pattern_name='admin:index'), name='citations-list'),
 

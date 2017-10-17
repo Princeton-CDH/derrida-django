@@ -1,8 +1,8 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block page-subtitle %}Derrida's Library ‖ {% endblock %}
-{% block nav-title %} Derrida's Library {% endblock %}
+{% block page-subtitle %}{{ page.meta_title }} ‖ {% endblock %}
+{% block nav-title %} {{ page.title }} {% endblock %}
 
 {% block header_class %}mdl-layout__header--transparent{% endblock %}
 
@@ -11,9 +11,9 @@
 {% block content %}
   <header class="page-header">
     <div class="container page-header__container">
-      <h1 class="page-header__heading">Derrida's Library</h1>
+      <h1 class="page-header__heading">{{ page.title }}</h1>
       <div class="page-header__callout">
-        <p class="lead">Browse Derrida’s personal copies of the books referenced in his published works. Only books extant in the Library of Jacques Derrida collection, held at the Princeton University Library’s Department of Rare Books and Special Collections, are displayed below.</p>
+        <p class="lead">{{ page.description }}</p>
         <p><a class="callout__link" href="{% url 'books:reference-list' %}/">A full list of references is accessible through Reference List.</a></p>
       </div>
     </div>

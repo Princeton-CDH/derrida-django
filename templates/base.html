@@ -1,5 +1,4 @@
-{% load static pages_tags %}
-
+{% load static pages_tags mezzanine_tags keyword_tags %}
 {% comment %}
 NOTE: This site uses RDFa and schema.org vocabulary.  Every page will be declared as schema:Webpage
 by default; use page_rdf_type to override with a webpage subclass.
@@ -7,7 +6,7 @@ by default; use page_rdf_type to override with a webpage subclass.
 <!DOCTYPE html>
 <html lang="en" xmlns:schema="http://schema.org/" xmlns:og="http://ogp.me/ns#">
   <head>
-    <title>{% block page-title %}{% block page-subtitle %}{% endblock %}Derrida's Margins{% endblock %}</title>
+    <title>{% block page-title %}{% block page-subtitle %}{{ page.meta_title }}{% endblock %}Derrida's Margins{% endblock %}</title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="apple-touch-icon" sizes="180x180" href="{% static 'apple-touch-icon.png' %}" />
@@ -16,8 +15,17 @@ by default; use page_rdf_type to override with a webpage subclass.
     <link rel="manifest" href="{% static 'manifest.json' %}" />
     <link rel="mask-icon" href="{% static 'safari-pinned-tab.svg' %}" color="#175498" />
     <meta name="theme-color" content="#175498" />
-    <meta name="keywords" content="{% block meta_keywords %}{% endblock %}">
-    <meta name="description" content="{% block meta_description %}{% endblock %}">
+    {{ page.keywords.all }}
+    <meta name="keywords" content="{% block meta_keywords %}{% metablock %}
+{% keywords_for page as keywords %}
+{% for keyword in keywords %}
+    {% if not forloop.first %}, {% endif %}
+    {{ keyword }}
+{% endfor %}
+{% endmetablock %}{% endblock %}">
+    <meta name="description" content="{% block meta_description %}{% metablock %}
+{{ page.description }}
+{% endmetablock %}{% endblock %}">
 
     {% block metadata %}{% endblock %}
 

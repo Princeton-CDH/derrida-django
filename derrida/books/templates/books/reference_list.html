@@ -1,8 +1,8 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block page-subtitle %}Reference List ‖ {% endblock %}
-{% block nav-title %} Derrida's Library {% endblock %}
+{% block page-subtitle %}{{ page.meta_title }} ‖ {% endblock %}
+{% block nav-title %} {{ page.title }} {% endblock %}
 
 {% block header_class %}mdl-layout__header--transparent{% endblock %}
 
@@ -11,9 +11,9 @@
 {% block content %}
 <header class="page-header">
   <div class="container page-header__container">
-    <h1 class="page-header__heading">Reference List</h1>
+    <h1 class="page-header__heading">{{ page.title }}</h1>
     <div class="page-header__callout">
-      <p class="lead">Explore the quotations and references in Derrida’s works.</p>
+      <p class="lead">{{ page.description }}</p>
       <p><a class="callout__link" href="/">Export Complete List to Zotero.</a></p>
     </div>
   </div>
