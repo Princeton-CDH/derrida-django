@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'haystack',
     'widget_tweaks',
     'markdownify',
+    'fullurl',
     # local apps
     'derrida.apps.DerridaConfig',
     'derrida.books',

@@ -2,6 +2,16 @@
 {# template for outwork content #}
 {% load mezzanine_tags %}
 
+{% block metadata %}
+{{ block.super }}
+{% if page.outwork.author %}
+    <meta name="DC.Creator" content="{{ page.outwork.author }}" />
+{% endif %}
+{% if page.outwork.orig_pubdate %}
+    <meta name="DC.Date" content="{{ page.outwork.orig_pubdate|date:"c" }}" />
+{% endif %}
+{% endblock %}
+
 {# suppress description from displaying in header as lead #}
 {% block lead %}{% endblock %}
 
