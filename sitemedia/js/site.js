@@ -120,6 +120,9 @@ $(function() {
     if ($searchForm.length) {
       $("[data-action=toggle-search-form]").on("click", function() {
         $searchForm.toggleClass("is-hidden");
+        if (! $searchForm.hasClass("is-hidden")) {
+          $("#id_query").focus();
+        }
       });
     }
   }
