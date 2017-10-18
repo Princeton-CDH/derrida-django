@@ -15,10 +15,10 @@ class OutworkListView(ListView):
         sqs = SearchQuerySet().models(self.model).filter(published=True)
         if self.request.GET.get('query', None):
             sqs = sqs.filter(content=Clean(self.request.GET['query']))
+
         # default sort ?
 
         return sqs
         # return Outwork.objects.published(for_user=self.request.user)
-        return Outwork.objects.published(for_user=self.request.user)
 
 
