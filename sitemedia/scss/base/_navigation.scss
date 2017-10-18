@@ -231,6 +231,28 @@
   }
 }
 
+.header__search-button,
+.search-form-header {
+  .mdl-button .svg {
+    height: 100%;
+    margin: 8px 0;
+    zoom: 0.8;
+
+    path,
+    polygon {
+      fill: transparentize($base-font-color, 0.4);
+    }
+
+    &:hover,
+    &:active {
+      path,
+      polygon {
+        fill: $primary-color;
+      }
+    }
+  }
+}
+
 // Mobile navigation
 .mdl-layout__obfuscator.is-visible {
   display: none;

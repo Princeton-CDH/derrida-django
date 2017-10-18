@@ -95,9 +95,8 @@
     width: 100%;
   }
 
-  .mdl-textfield--floating-label.is-focused .mdl-textfield__label,
-  .mdl-textfield--floating-label.is-dirty .mdl-textfield__label {
-    opacity: 0;
+  .mdl-textfield__label {
+    font-size: 14px;
   }
 
   .mdl-selectfield {
@@ -107,10 +106,15 @@
     padding-top: 10px;
     margin-right: 2rem;
 
+    &.is-active {
+      padding-top: 22px;
+    }
+
     .selectize-input,
     .selectize-input.has-options,
     .selectize-input.has-items {
-      padding-bottom: 0.4rem;
+      padding-bottom: 0.6rem;
+      margin-top: -0.4rem;
       color: $base-font-color;
       border-bottom-color: $primary-color;
 
@@ -125,9 +129,13 @@
     }
   }
 
+  .selectize-input > * {
+    font-size: 12px;
+  }
+
   .selectize-control.single .selectize-input.input-active {
     background: transparent;
-    padding-bottom: 0.6rem;
+    margin-top: -0.6rem;
   }
 
   .selectize-control.single .selectize-input::after {
@@ -149,7 +157,6 @@
 
   .selectize-dropdown {
     border: 1px solid $primary-color;
-    margin-top: -4px;
     border-radius: 0;
 
     .option {
@@ -164,15 +171,13 @@
   width: 100%;
 }
 
-.mdl-textfield--floating-label.is-upgraded {
+.mdl-textfield.is-upgraded {
   .mdl-textfield__label {
     color: $base-font-color;
     opacity: 0.4;
   }
 
   &.is-focused .mdl-textfield__label {
-    opacity: 0.8;
-
     &::after {
       background-color: $primary-color;
     }
