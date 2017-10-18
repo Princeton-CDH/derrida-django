@@ -20,6 +20,7 @@ from derrida.books.forms import ReferenceSearchForm, InstanceSearchForm, \
 from derrida.books.models import Publisher, Language, Instance, Reference, DerridaWorkSection
 from derrida.common.utils import absolutize_url
 from derrida.interventions.models import Intervention
+from derrida.outwork.models import Outwork
 
 
 class PublisherAutocomplete(autocomplete.Select2QuerySetView):
@@ -283,6 +284,8 @@ class SearchView(TemplateView):
                     url = reverse('books:reference-list')
                 elif search_opts['content_type'] == 'intervention':
                     url = reverse('interventions:list')
+                elif search_opts['content_type'] == 'outwork':
+                    url = reverse('outwork:list')
 
                 url = '%s?query=%s' % (url, search_opts['query'])
                 response = HttpResponseRedirect(url)
@@ -304,6 +307,7 @@ class SearchView(TemplateView):
         instance_query = sqs.models(Instance).all()
         reference_query = sqs.models(Reference).all()
         intervention_query = sqs.models(Intervention).all()
+        outwork_query = sqs.models(Outwork).all()
 
         return {
             'query': search_opts['query'],
@@ -312,8 +316,9 @@ class SearchView(TemplateView):
             'reference_list': reference_query[:self.max_per_type],
             'reference_count': reference_query.count(),
             'intervention_list': intervention_query[:self.max_per_type],
-            'intervention_count': intervention_query.count()
-            # outwork TODO
+            'intervention_count': intervention_query.count(),
+            'outwork_list': outwork_query[:self.max_per_type],
+            'outwork_count': outwork_query.count()
         }
 
 

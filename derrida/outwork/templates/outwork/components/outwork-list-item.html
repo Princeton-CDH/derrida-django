@@ -17,7 +17,7 @@
   </figure>
     {% endcomment %}
   <div class="item__body">
-    <h3 class="item__heading"><a class="item__link" href="{{ outwork.get_absolute_url }}">{{ outwork.title }}</a></h3>
+    <h3 class="item__heading"><a class="item__link" href="{% firstof outwork.get_absolute_url '/'|add:outwork.slug %}">{{ outwork.title }}</a></h3>
     {% if outwork.author %}
     <p class="item__author">{{ outwork.author }}</p>
     {% endif %}

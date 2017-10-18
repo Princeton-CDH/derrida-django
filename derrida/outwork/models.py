@@ -1,5 +1,5 @@
 from django.db import models
-from mezzanine.core.models import RichText
+from mezzanine.core.models import RichText, CONTENT_STATUS_PUBLISHED
 from mezzanine.core.managers import DisplayableManager
 from mezzanine.pages.models import Page
 
@@ -24,3 +24,6 @@ class Outwork(Page, RichText):
         else:
             year = self.created.year
         return '/'.join(['outwork', str(year), slug])
+
+    def is_published(self):
+        return self.status == CONTENT_STATUS_PUBLISHED

@@ -13,6 +13,7 @@ class SearchForm(forms.Form):
         ('book', 'Books'),
         ('reference', 'References'),
         ('intervention', 'Interventions'),
+        ('outwork', 'Outwork'),
     ], required=False, initial=defaults['content_type'])
 
 
