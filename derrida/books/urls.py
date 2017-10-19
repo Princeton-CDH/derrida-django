@@ -31,8 +31,8 @@ urlpatterns = [
         url(r'^$', views.InstanceListView.as_view(), name='list'),
         url(r'^(?P<slug>[-\w]+)/', include([
             url(r'^$', views.InstanceDetailView.as_view(), name='detail'),
-            url(r'^citations/$',
-                views.InstanceReferenceDetailView.as_view(), name='detail-citations'),
+            url(r'^references/$',
+                views.InstanceReferenceDetailView.as_view(), name='detail-references'),
             url(r'^gallery/$',
                 views.InstanceDetailView.as_view(template_name='books/detail/gallery.html'),
                 name='detail-gallery'),

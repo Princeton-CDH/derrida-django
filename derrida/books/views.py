@@ -55,7 +55,7 @@ class InstanceDetailView(DetailView):
 
 class InstanceReferenceDetailView(InstanceDetailView):
 
-    template_name = 'books/detail/citations.html'
+    template_name = 'books/detail/references.html'
 
     def get_context_data(self, *args, **kwargs):
         context = super(InstanceReferenceDetailView, self)\
