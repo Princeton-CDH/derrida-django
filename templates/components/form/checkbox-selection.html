@@ -1,3 +1,14 @@
+{% comment %}
+The checkbox-selection component is used for the page filter facets used
+on the books and reference list pages. This transforms form elments into
+the .filter element for the various checkboxes and generates js for interactions.
+This component uses the following parameters to render:
+* name - the unique name for the filter element and accompanying script
+* label - the text to be displayed as the label for the filter
+* item - the form element being transformed (i.e. form.subject)
+* disabled (optional) - option to disabled a checkbox. If not provided,
+  the value on the form item will be used.
+{% endcomment %}
 {% load static %}
 <script>
   $(function() {
