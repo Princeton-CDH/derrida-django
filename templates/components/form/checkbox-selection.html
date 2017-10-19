@@ -14,16 +14,21 @@
 
       var labelText = $this.text().trim(),
           $input = $this.find("input"),
-          $label = $("<label/>")
+          inputAttr = {
+            id: $input.attr("id"),
+            name: $input.attr("name"),
+            value: $input.attr("value"),
+            checked: $input.attr("checked"),
+            type: "checkbox"
+          };
+      if ({{disabled|yesno:"true,false"}} || $input.attr("disabled")) {
+        inputAttr.disabled = "disabled";
+      }
+
+      var $label = $("<label/>")
             .addClass("mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect")
             .append(
-              $("<input/>").attr({
-                id: $input.attr("id"),
-                name: $input.attr("name"),
-                value: $input.attr("value"),
-                checked: $input.attr("checked"),
-                type: "checkbox"
-              }).addClass("mdl-checkbox__input"))
+              $("<input/>").attr(inputAttr).addClass("mdl-checkbox__input"))
             .append($("<span/>").addClass("name").text(labelText))
             .append($("<span/>").addClass("filter__count").text(count));
 

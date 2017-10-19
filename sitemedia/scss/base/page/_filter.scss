@@ -301,6 +301,16 @@
   .filter__count {
     opacity: 0.5;
   }
+
+  .mdl-checkbox.is-disabled,
+   .mdl-checkbox.is-disabled:hover {
+    color: $base-font-color;
+    opacity: 0.5;
+
+    .mdl-checkbox__box-outline {
+      border-color: transparentize($base-font-color, 0.5);
+    }
+  }
 }
 
 .filter--years {
