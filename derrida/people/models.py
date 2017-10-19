@@ -1,5 +1,3 @@
-import re
-
 from django.db import models
 from viapy.api import ViafEntity
 
