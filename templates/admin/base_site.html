@@ -1,7 +1,9 @@
 {% extends "admin/base.html" %}
-{% load i18n grp_tags static compress %}
+{# {% load i18n grp_tags static compress %} #}
+{% load i18n static compress %}
 
-{% block title %}{{ title }} | {% get_site_title %}{% endblock %}
+{# {% block title %}{{ title }} | {% get_site_title %}{% endblock %} #}
+{% block title %}{{ title }} | Derrida's Margins Admin{% endblock %}
 
 {% block branding %}
     {# Use the div#grp-branding for branding elements, e.g. a logo #}

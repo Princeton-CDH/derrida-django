@@ -25,7 +25,8 @@ INSTALLED_APPS = [
     'dal',
     'dal_select2',
     # dal and dal_select2 must be added before grappelli
-    'grappelli',
+    # 'grappelli',
+    'grappelli_safe',
     'compressor',
     'django.contrib.admin',
     'django.contrib.auth',
