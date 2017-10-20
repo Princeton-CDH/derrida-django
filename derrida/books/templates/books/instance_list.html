@@ -23,14 +23,6 @@
   {% include "components/page-sort.html" with number=count orderBy=orderBy %}
 
   <div class="container">
-  {# TEST version of the form for testing & implementing range facet functionality; integration with design still TODO #}
-<form>
-  {{ form }}
-  <input type="submit"/>
-  </form>
-
-{# NOTE: range facet counts available under facets.ranges #}
-
     <article class="collection collection--condensed">
       {% for instance in object_list %}
         {% url 'books:detail' instance.slug as instance_url %}
