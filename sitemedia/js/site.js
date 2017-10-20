@@ -445,19 +445,62 @@ $(function() {
     }
   }
 
+  function intersectArrays(array1, array2) {
+    var difference = [];
+
+    jQuery.grep(array2, function(el) {
+        if (jQuery.inArray(el, array1) == -1) {
+          difference.push(el);
+        }
+    });
+
+    return difference
+  }
+
   function initGlobalFunctions() {
     window.initYearSelector = function(options) {
       var selector = options.selector,
           fieldName = options.fieldName;
 
-      var $yearFilter = $(selector);
+      var $yearFilter = $(selector),
+          $filterInput = $("#" + fieldName + "-year-selection"),
+          $yearRangeInputs = $yearFilter.find(".filter__search-field");
+
+      $yearFilter.hide();
+
       $yearFilter.find(".clear-link").on("click", function(e) {
         e.preventDefault();
-        var $inputs = $(this).parents(".filter").find(".filter__search-field");
-        $inputs.each(function() {
+        $yearRangeInputs.each(function() {
            $(this).val("");
         });
       });
+
+      function getValues() {
+        return $yearRangeInputs.map(function() { return this.value });
+      }
+
+      var initialValues = getValues();
+      var closeFilter = function($openInput) {
+        $yearFilter.slideUp();
+        $openInput.removeClass("is-open").removeClass("is-focused");
+
+        if (intersectArrays(getValues(), initialValues).length > 0) {
+          $(".mdl-layout").addClass("is-submitting");
+          $(".page-filter__form").submit();
+        }
+      };
+
+      $filterInput.on("focus", function() {
+          $(this).parent().addClass("is-open");
+          $yearFilter.slideDown();
+        })
+        .on("blur", function(e) {
+          e.preventDefault();
+          var isOpen = $(this).parent().addClass("is-open");
+          if (! isOpen) {
+            $yearFilter.slideUp();
+          }
+        });
 
       var namedClickEvent = "click.filter--" + fieldName;
       $("body").on(namedClickEvent, function(e) {
@@ -475,6 +518,132 @@ $(function() {
           $openInput.addClass("is-focused");
         }
       });
+    };
+
+    window.initCheckboxSelector = function(options) {
+      var filterInputSelector = options.filterInputSelector,
+          filterCheckListSelector = options.filterCheckListSelector,
+          filterSelector = options.filterSelector,
+          filterClickEvent = options.filterClickEvent,
+          isDisabled = options.isDisabled;
+
+      //transform list items
+      var $oldLabels = $(filterCheckListSelector + " label"),
+          $newLabels = $("<div/>");
+
+      $oldLabels.remove();
+      $oldLabels.each(function() {
+        var $this = $(this),
+            $countLabel = $this.children("span"),
+            count = $countLabel.text();
+        $countLabel.remove();
+
+        var labelText = $this.text().trim(),
+            $input = $this.find("input"),
+            inputAttr = {
+              id: $input.attr("id"),
+              name: $input.attr("name"),
+              value: $input.attr("value"),
+              checked: $input.attr("checked"),
+              type: "checkbox"
+            };
+        if (isDisabled || $input.attr("disabled")) {
+          inputAttr.disabled = "disabled";
+        }
+
+        var $label = $("<label/>")
+              .addClass("mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect")
+              .append(
+                $("<input/>").attr(inputAttr).addClass("mdl-checkbox__input"))
+              .append($("<span/>").addClass("name").text(labelText))
+              .append($("<span/>").addClass("filter__count").text(count));
+
+          $newLabels.append($label);
+      });
+
+      var $checkboxFilter = $(filterSelector);
+      $checkboxFilter.hide();
+
+      $(filterCheckListSelector).append($newLabels.html());
+
+      var $checkboxFilterSelectionInput = $(filterInputSelector),
+          clearSelectionInput = function() {
+            $checkboxFilterSelectionInput.val("");
+          };
+
+      $checkboxFilter.find(".clear-link").on("click", function(e) {
+        e.preventDefault();
+        var $checkboxes = $(this).parents(".filter").find(".mdl-checkbox__input");
+        $checkboxes.each(function() {
+          var $checkbox = $(this);
+          $checkbox.removeProp("checked");
+          $checkbox.parent().removeClass("is-checked");
+        });
+        clearSelectionInput();
+      });
+
+      $checkboxFilterSelectionInput.on("focus", function() {
+          $(this).parent().addClass("is-open");
+          $checkboxFilter.slideDown();
+        })
+        .on("blur", function(e) {
+          e.preventDefault();
+          var isOpen = $(this).parent().addClass("is-open");
+          if (! isOpen) {
+            $checkboxFilter.slideUp();
+          }
+        });
+
+        var setSelectedOptionsValues = function(context) {
+          var $elem = $(context),
+              optionText = $elem.val(),
+              checkboxFilterSelectionVal = $checkboxFilterSelectionInput.val() ? $checkboxFilterSelectionInput.val().split("; ") : [];
+          if ($elem.prop("checked")) {
+            checkboxFilterSelectionVal.push(optionText)
+          } else {
+            checkboxFilterSelectionVal = $.grep(checkboxFilterSelectionVal, function(value) {
+              return value != optionText;
+            });
+          }
+          $checkboxFilterSelectionInput.val(checkboxFilterSelectionVal.join("; "));
+        }
+
+        $(filterCheckListSelector + " input:checked").each(function() {
+          setSelectedOptionsValues(this);
+        });
+
+        $(filterCheckListSelector + " input").on("change", function() {
+          setSelectedOptionsValues(this);
+        });
+
+        var initialValue = $checkboxFilterSelectionInput.val();
+        var closeFilter = function($openInput) {
+          $checkboxFilter.slideUp();
+          $openInput.removeClass("is-open").removeClass("is-focused");
+
+          if ($checkboxFilterSelectionInput.val() !== initialValue) {
+            $(".mdl-layout").addClass("is-submitting");
+            $(".page-filter__form").submit();
+          }
+        };
+
+        $(filterSelector + ".is-not-ready").removeClass("is-not-ready");
+
+        var clickEvent = "click.filter--" + filterClickEvent;
+        $("body").on(clickEvent, function(e) {
+          var $target = $(e.target),
+              $openInput = $checkboxFilter.prev(".is-open"),
+              isOpenText = $target.is(".is-open") || $target.parents(".is-open").length,
+              $filter = $target.is(filterSelector) ? $target : $target.parents(filterSelector).first();
+
+          if (! $filter.length && ! isOpenText && $openInput.length) {
+            closeFilter($openInput);
+          } else if ($openInput.length && ! $target.parent().next().is(filterSelector) && ! $target.parents(filterSelector).length) {
+            closeFilter($openInput);
+          } else if ($openInput.length) {
+            $openInput.addClass("is-focused");
+          }
+        });
     }
   }
 

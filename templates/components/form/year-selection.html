@@ -11,14 +11,14 @@
 </script>
 
 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-  <input class="mdl-textfield__input" type="text" name="year-selection" id="year-selection" />
+  <input class="mdl-textfield__input" type="text" id="{{name}}-year-selection" />
   <label class="mdl-textfield__label" for="year-selection">{{label}}</label>
 </div>
 <div class="filter filter--years filter--{{name}}">
   <header class="filter__search">
-    <input class="filter__search-field" id="filter__year-from" name="filter__year-from" placeholder="Start" />
+    <input class="filter__search-field" id="filter__year-from" name="{{label}}_0" placeholder="Start" />
     <label class="filter__search-label">to</label>
-    <input class="filter__search-field" id="filter__year-to" name="filter__year-to" placeholder="End" />
+    <input class="filter__search-field" id="filter__year-to" name="{{label}}_1" placeholder="End" />
   </header>
 
   <section class="filter__histogram">
