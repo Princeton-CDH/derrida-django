@@ -1,4 +1,5 @@
 {% load static %}
+{% load widget_tweaks %}
 <script>
   $(function() {
     if (window.initYearSelector) {
@@ -16,9 +17,7 @@
 </div>
 <div class="filter filter--years filter--{{name}}">
   <header class="filter__search">
-    <input class="filter__search-field" id="filter__year-from" name="{{label}}_0" placeholder="Start" />
-    <label class="filter__search-label">to</label>
-    <input class="filter__search-field" id="filter__year-to" name="{{label}}_1" placeholder="End" />
+    {% render_field items class="filter__search-field" placeholder="Start" %}
   </header>
 
   <section class="filter__histogram">

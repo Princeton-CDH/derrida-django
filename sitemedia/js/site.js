@@ -464,9 +464,22 @@ $(function() {
 
       var $yearFilter = $(selector),
           $filterInput = $("#" + fieldName + "-year-selection"),
-          $yearRangeInputs = $yearFilter.find(".filter__search-field");
+          $yearRangeInputs = $yearFilter.find(".filter__search-field"),
+          getValues = function() {
+            return $yearRangeInputs.map(function() { return this.value });
+          },
+          setValueForFilterInput = function(values) {
+            values = values || getValues();
+            var displayValue = (values[0] || values[1]) ?
+              values[0] + " - " + values[1] : "";
+            $filterInput.val(displayValue);
+          };
 
       $yearFilter.hide();
+      setValueForFilterInput();
+
+      var $lastInput = $yearFilter.find(".filter__search input").last()
+      $lastInput.attr({placeholder: "Last"}).before($("<label/>").addClass("filter__search-label").text("to"));
 
       $yearFilter.find(".clear-link").on("click", function(e) {
         e.preventDefault();
@@ -475,16 +488,14 @@ $(function() {
         });
       });
 
-      function getValues() {
-        return $yearRangeInputs.map(function() { return this.value });
-      }
-
       var initialValues = getValues();
       var closeFilter = function($openInput) {
+        var currentValues = getValues();
         $yearFilter.slideUp();
         $openInput.removeClass("is-open").removeClass("is-focused");
 
-        if (intersectArrays(getValues(), initialValues).length > 0) {
+        if (intersectArrays(initialValues, currentValues).length > 0) {
+          setValueForFilterInput(currentValues);
           $(".mdl-layout").addClass("is-submitting");
           $(".page-filter__form").submit();
         }
