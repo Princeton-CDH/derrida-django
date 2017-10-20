@@ -2,6 +2,7 @@ from copy import deepcopy
 
 from dal import autocomplete
 from django.contrib import admin
+from mezzanine.pages.models import RichTextPage
 from mezzanine.pages.admin import PageAdmin, PageAdminForm
 
 from derrida.outwork.models import Outwork
@@ -19,6 +20,8 @@ outwork_fieldsets[0][1]['fields'].extend(['author', 'orig_pubdate',
 outwork_fieldsets[0][1]['fields'].remove('login_required')
 outwork_fieldsets[1][1]['fields'].remove(('description', 'gen_description'))
 outwork_fieldsets[1][1]['fields'].remove(('in_sitemap'))
+# remove css collapse-closed for now (avoid javascript error)
+del outwork_fieldsets[1][1]['classes']
 
 
 class OutworkAdminForm(PageAdminForm):
@@ -39,6 +42,7 @@ class OutworkAdminForm(PageAdminForm):
             )
         }
 
+
     def __init__(self, *args, **kwargs):
         super(OutworkAdminForm, self).__init__(*args, **kwargs)
         # expand help text
@@ -53,4 +57,18 @@ class OutworkAdmin(PageAdmin):
     fieldsets = outwork_fieldsets
 
 
+page_fieldsets = deepcopy(PageAdmin.fieldsets)
+# make sure content is included
+page_fieldsets[0][1]['fields'].append('content')
+# remove css collapse-closed for now (avoid javascript error)
+page_fieldsets[1][1]['classes'] = []
+
+class LocalPageAdmin(PageAdmin):
+    fieldsets = page_fieldsets
+
+
 admin.site.register(Outwork, OutworkAdmin)
+admin.site.unregister(RichTextPage)
+admin.site.register(RichTextPage, LocalPageAdmin)
+
+# admin.site.register(RichTextPage, PageAdmin)
