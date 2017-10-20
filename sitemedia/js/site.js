@@ -380,6 +380,8 @@ $(function() {
       }
     }
 
+    $(".filter--author.is-not-ready").removeClass("is-not-ready");
+
     $("body").on("click.filter--author", function(e) {
       var $target = $(e.target),
           filterSelector = ".filter--author",
