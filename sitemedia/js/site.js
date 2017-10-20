@@ -445,10 +445,44 @@ $(function() {
     }
   }
 
+  function initGlobalFunctions() {
+    window.initYearSelector = function(options) {
+      var selector = options.selector,
+          fieldName = options.fieldName;
+
+      var $yearFilter = $(selector);
+      $yearFilter.find(".clear-link").on("click", function(e) {
+        e.preventDefault();
+        var $inputs = $(this).parents(".filter").find(".filter__search-field");
+        $inputs.each(function() {
+           $(this).val("");
+        });
+      });
+
+      var namedClickEvent = "click.filter--" + fieldName;
+      $("body").on(namedClickEvent, function(e) {
+        var $target = $(e.target),
+            filterSelector = selector,
+            $openInput = $yearFilter.prev(".is-open"),
+            isOpenText = $target.is(".is-open") || $target.parents(".is-open").length,
+            $filter = $target.is(filterSelector) ? $target : $target.parents(filterSelector).first();
+
+        if (! $filter.length && ! isOpenText && $openInput.length) {
+          closeFilter($openInput);
+        } else if ($openInput.length && ! $target.parent().next().is(filterSelector) && ! $target.parents(filterSelector).length) {
+          closeFilter($openInput);
+        } else if ($openInput.length) {
+          $openInput.addClass("is-focused");
+        }
+      });
+    }
+  }
+
   initSearchForm();
   initPageFilter();
   initBookHeader();
   initVisualization();
   initCustomActions();
   initAnnotatorDropdown();
+  initGlobalFunctions();
 });

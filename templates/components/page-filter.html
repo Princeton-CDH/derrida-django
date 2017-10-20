@@ -35,7 +35,6 @@
     </header>
 
     <section class="filter__section">
-
       {% if form.is_extant %}
       <div class="filter__selector"> {# is_extant #}
         <label class="mdl-switch__label mdl-switch__label--right" for="is-extant">{{ form.is_extant.label }}
@@ -103,7 +102,6 @@
       </div>
       {% endif %}
 
-
       {% if form.pub_place %}
       <div class="filter__selector filter__selector--condensed">
         {% include 'components/form/checkbox-selection.html' with name='pub_place' label=form.pub_place.label items=form.pub_place %}
@@ -127,7 +125,32 @@
         {% include 'components/form/checkbox-selection.html' with name='cited_in' label=form.cited_in.label items=form.cited_in %}
       </div>
       {% endif %}
+
+      {% if form.work_year %}
+      <div class="filter__selector filter__selector--condensed">
+        {% include 'components/form/year-selection.html' with name='work_year' label=form.work_year.label items=form.work_year ranges=facets.ranges.work_year %}
+      </div>
+      {% endif %}
+
+      {% if form.copyright_year %}
+      <div class="filter__selector filter__selector--condensed">
+        {% include 'components/form/year-selection.html' with name='copyright_year' label=form.copyright_year.label items=form.copyright_year ranges=facets.ranges.copyright_year %}
+      </div>
+      {% endif %}
+
+      {% if form.print_year %}
+      <div class="filter__selector filter__selector--condensed">
+        {% include 'components/form/year-selection.html' with name='print_year' label=form.print_year.label items=form.print_year ranges=facets.ranges.print_year %}
+      </div>
+      {% endif %}
     </section>
+
+    {# We need to update the components after being rendered in each of the checkbox-selection #}
+    <script>
+      $(function() {
+        componentHandler.upgradeDom();
+      });
+    </script>
   </div>
   <div class="hidden">{{form.order_by}}</div>
   </form>

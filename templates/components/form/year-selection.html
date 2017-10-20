@@ -1,23 +1,20 @@
 {% load static %}
 <script>
   $(function() {
-    $(".clear-link").on("click", function(e) {
-      e.preventDefault();
-      var $checkboxes = $(this).parents(".filter").find('.mdl-checkbox__input');
-      $checkboxes.each(function() {
-        var $checkbox = $(this);
-        $checkbox.removeProp('checked');
-        $checkbox.parent().removeClass('is-checked');
+    if (window.initYearSelector) {
+      window.initYearSelector({
+        selector: ".filter.filter--{{name}}",
+        fieldName: "{{name}}"
       });
-    });
+    }
   });
 </script>
 
 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-  <input class="mdl-textfield__input" type="text" name="year-selection" id="year-selection">
-  <label class="mdl-textfield__label" for="year-selection">Edition Year</label>
+  <input class="mdl-textfield__input" type="text" name="year-selection" id="year-selection" />
+  <label class="mdl-textfield__label" for="year-selection">{{label}}</label>
 </div>
-<div class="filter filter--years">
+<div class="filter filter--years filter--{{name}}">
   <header class="filter__search">
     <input class="filter__search-field" id="filter__year-from" name="filter__year-from" placeholder="Start" />
     <label class="filter__search-label">to</label>
@@ -26,17 +23,14 @@
 
   <section class="filter__histogram">
     <div class="frequency_chart frequency_chart--bar">
-      {% with "0120473143000" as years %}
-      {% for year in years %}
-        <div class="frequency_chart__bar frequency_chart__bar--{{year}}"></div>
+      {% for count in ranges.counts %}
+        <div class="frequency_chart__bar frequency_chart__bar--{% widthratio count.1 ranges.max 10 %}" data-year="{{count.0}}" data-count="{{count.1}}"></div>
       {% endfor %}
-      {% endwith %}
     </div>
     <div class="frequency_chart-axis">
-      <span class="chart-label chart-label--start">1800</span>
-      <span class="chart-label chart-label--end">2017</span>
+      <span class="chart-label chart-label--start">{{ranges.start}}</span>
+      <span class="chart-label chart-label--end">{{ranges.end}}</span>
     </div>
-
   </section>
 
   <footer class="filter__footer">

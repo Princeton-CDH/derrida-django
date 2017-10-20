@@ -46,11 +46,10 @@ This component uses the following parameters to render:
         $newLabels.append($label);
     });
 
-    $(".filter__check-list--{{name}}").append($newLabels.html());
-
-
     var ${{name}}Filter = $(".filter.filter--{{name}}");
     ${{name}}Filter.hide();
+
+    $(".filter__check-list--{{name}}").append($newLabels.html());
 
     var ${{name}}SelectionInput = $("#{{name}}-selection"),
         clearSelectionInput = function() {
@@ -113,6 +112,8 @@ This component uses the following parameters to render:
         }
       };
 
+      $(".filter--{{name}}.is-not-ready").removeClass("is-not-ready");
+
       $("body").on("click.filter--{{name}}", function(e) {
         var $target = $(e.target),
             filterSelector = ".filter--{{name}}",
@@ -135,7 +136,7 @@ This component uses the following parameters to render:
   <input class="mdl-textfield__input" type="text" id="{{name}}-selection">
   <label class="mdl-textfield__label" for="{{name}}-selection">{{ label }}</label>
 </div>
-<div class="filter filter--{{name}}" id="{{name}}">
+<div class="filter filter--{{name}} is-not-ready" id="{{name}}">
   <section class="filter__check-list filter__check-list--{{name}}">
     {% for item in items %}
       {{item}}
