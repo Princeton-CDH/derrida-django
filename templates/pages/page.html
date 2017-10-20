@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% load mezzanine_tags keyword_tags %}
+{# adapted from default mezzanine pages/page.html template #}
+
+{# testing  #}
+{# {% block body_class %}background-colored--light-navy background-colored--dark{% endblock %} #}
+
+{# {% block page-context-id %}homepage{% endblock %} #}
+
+{# {% block coordinate-nav-classes %}coordinate-navigation--background-light-navy{% endblock %} #}
+
+{% block page-subtitle %}{{ page.meta_title }} ‖ {% endblock %}
+
+{% block meta_keywords %}{% metablock %}
+{% keywords_for page as keywords %}
+{% for keyword in keywords %}
+    {% if not forloop.first %}, {% endif %}
+    {{ keyword }}
+{% endfor %}
+{% endmetablock %}{% endblock %}
+
+{% block meta_description %}{% metablock %}
+{{ page.description }}
+{% endmetablock %}{% endblock %}
+
+{% block metadata %}
+    <link rel="schema.DC" href="http://purl.org/DC/elements/1.0/" />
+    <meta name="DC.Title" content="{{ page.meta_title }}" />
+    <meta name="DC.Type" content="Text" />
+    <meta name="DC.Format" content="text/html" />
+    <meta name="DC.Description" content="{{ page.description }}" />
+    <meta name="DC.Date" content="{{ page.publish_date|date:"c" }}" />
+{% endblock %}
+
+
+{% block content %}
+<div class="container">
+  <article>
+    <header>
+        <h1>{% block title %}{{ page.title }}{% endblock %}
+        </h1>
+      <div class="lead">{% block lead %}{{ page.description }}{% endblock %}</div
+    </header>
+
+    {% block main %}{% endblock %}
+
+</article>
+{% endblock %}
+
