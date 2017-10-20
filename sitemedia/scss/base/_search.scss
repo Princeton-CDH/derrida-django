@@ -90,10 +90,36 @@
   display: flex;
   margin: auto;
 
+  .mdl-button--search {
+    border-bottom: 1px solid $primary-color;
+    border-radius: 0;
+    margin-bottom: 4px;
+    min-width: 0;
+    width: 30px;
+    padding-right: 10px;
+    margin-left: 6px;
+
+    .img {
+      width: 100%;
+    }
+  }
+
   .mdl-textfield {
     align-self: center;
     width: 100%;
   }
+
+  .mdl-textfield__label--search {
+    $label-offset: 25px;
+    width: calc(100% + $label-offset);
+    left: -$label-offset;
+    padding-left: $label-offset;
+
+    &::after {
+      left: 0;
+      transform-origin: 0 0;
+    }
+}
 
   .mdl-textfield__label {
     font-size: 14px;

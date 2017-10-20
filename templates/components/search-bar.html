@@ -2,12 +2,12 @@
 
 <section class="container">
   <form class="search-form-header__form" action="{% url 'search' %}">
-    <label class="mdl-button mdl-js-button mdl-button--icon mdl-textfield__label--disabled" for="{{ search_form.query.id }}">
-      <img width="50%" src="{% static "img/icons/Search.svg" %}" />
+    <label class="mdl-button mdl-button--search mdl-js-button mdl-button--icon mdl-textfield__label--disabled" for="{{ search_form.query.id }}">
+      <img class="img" src="{% static "img/icons/Search.svg" %}" />
     </label>
     <div class="mdl-textfield mdl-js-textfield">
       {% render_field search_form.query class+='mdl-textfield__input' %}
-      <label class="mdl-textfield__label" for="{{ search_form.query.id }}">{{ search_form.query.label }}</label>
+      <label class="mdl-textfield__label mdl-textfield__label--search" for="{{ search_form.query.id }}">{{ search_form.query.label }}</label>
     </div>
     <div class="mdl-selectfield mdl-js-selectfield">
      {% render_field search_form.content_type class+="mdl-selectfield__select" %}
