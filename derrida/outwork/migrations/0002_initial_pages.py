@@ -66,7 +66,8 @@ OTHER_PAGES = OrderedDict([
 
 def create_pages(apps, schema_editor):
     RichTextPage = apps.get_model('pages', 'RichTextPage')
-    site_id = settings.SITE_ID
+    Site = apps.get_model('sites', 'Site')
+    site = Site.objects.get_or_create(pk=settings.SITE_ID)[0]
     now = timezone.now()
 
     def create_page(slug, info, index, menus=''):
@@ -76,7 +77,7 @@ def create_pages(apps, schema_editor):
             gen_description=not info.get('description', ''),
             status=CONTENT_STATUS_PUBLISHED,
             content=info.get('content', '[placeholder]'),
-            site_id=site_id, publish_date=now, in_menus=menus,
+            site=site, publish_date=now, in_menus=menus,
             content_model="richtextpage", _order=index)
 
     index = 1
@@ -104,6 +105,7 @@ def remove_pages(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
+        ('sites', '0002_alter_domain_unique'),
         ('outwork', '0001_initial'),
     ]
 
