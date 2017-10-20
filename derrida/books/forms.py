@@ -7,7 +7,7 @@ class SearchForm(forms.Form):
     defaults = {
         'content_type': 'all',
     }
-    query = forms.CharField(label='Search Terms...', required=False)
+    query = forms.CharField(label='Search', required=False)
 
     content_type = forms.ChoiceField(choices=[
         ('all', 'All'),
