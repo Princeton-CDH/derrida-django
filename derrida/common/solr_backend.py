@@ -61,6 +61,9 @@ class RangeSolrSearchQuery(SolrSearchQuery):
             # copy facet range data into existing facet data
             facets['ranges'] = results['facet_ranges'][0]
             for data in facets['ranges'].values():
+                # find the max value for the facet_ranges
+                data['max'] = max(data['counts'][1::2])
+
                 # solr returns a list of value, count, value, count
                 # use zip to convert into a list of two-tuples
                 # (thanks to https://stackoverflow.com/questions/14902686/turn-flat-list-into-two-tuples)
@@ -93,4 +96,3 @@ class RangeSolrEngine(SolrEngine):
     # extend default solr engine to make range backend and query defaults
     backend = SolrRangeSearchBackend
     query = RangeSolrSearchQuery
-
