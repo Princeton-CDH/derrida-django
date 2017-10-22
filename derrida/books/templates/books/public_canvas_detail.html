@@ -6,7 +6,23 @@
 
 {% block header_class %}mdl-layout__header--transparent{% endblock %}
 
-{% block page-context-id %}books-detail{% endblock %}
+{% block body_class %}disable-coordinate-navigation{% endblock %}
+
+{% block page-context-id %}book-image-gallery{% endblock %}
+
+{% block page-js %}
+<script src="{% static 'js//openseadragon/openseadragon.min.js' %}"></script>
+<script type="text/javascript" charset="utf-8">
+  document.addEventListener('DOMContentLoaded', function (){
+    // basic seadragon configuration for deep zoom
+      var viewer = OpenSeadragon({
+        id: "deep-zoom",
+        prefixUrl: "{% static 'js/openseadragon/images/' %}",
+        tileSources: "{% url 'books:canvas-image' instance.slug canvas.short_id 'info' %}",
+    });
+  });
+</script>
+{% endblock %}
 
 {% block content %}
   <header class="page-header page-header--link">
@@ -14,135 +30,127 @@
       <h1 class="page-header__heading"><a class="page-header__link" href="{% url 'books:detail-gallery' instance.slug %}"><span class="arrow_icon">⟵</span> Book Image Gallery</a></h1>
     </div>
   </header>
-  <article class="item">
-    <div class="container">
-
-        {# brief title information (copied from book-header) #}
-        {% with book=instance %}
-        <h1 class="item-title">{{ book.work.primary_title }}</h1>
-        <p class="item-author">
-          {% for author in book.work.authors.all %}
-            {% if not forloop.last %}
-              {{ author.authorized_name }};
-            {% else %}
-              {{ author.authorized_name }}
-            {% endif %}
-          {% endfor %}
-        </p>
-        <p class="item-term__value">{{ book.copyright_year }}{% if book.copy %} - {{ book.copy }}{% endif %}</p>
-        {% endwith %}
-
-        {# locations where cited by Derrida #}
-        {% if instance.reference_set.all %}
-        Cited in <em>{{ instance.reference_set.all.0.derridawork }}</em>
-        <ul>
-        {% for reference in instance.reference_set.all %}
-            <li>p.{{ reference.derridawork_page }}</li>
+  <article class="gallery-image-view">
+    <header class="gallery-image-view__header">
+      {# brief title information (copied from book-header) #}
+      {% with book=instance %}
+      <h1 class="item-title">{{ book.work.primary_title }}</h1>
+      <p class="item-author">
+        {% for author in book.work.authors.all %}
+          {% if not forloop.last %}
+            {{ author.authorized_name }};
+          {% else %}
+            {{ author.authorized_name }}
+          {% endif %}
         {% endfor %}
-        </ul>
-        {% endif %}
+      </p>
+      <p class="item-term__value">{{ book.copyright_year }}{% if book.copy %} - {{ book.copy }}{% endif %}</p>
+      {% endwith %}
+
+      {# locations where cited by Derrida #}
+      {% if instance.reference_set.all %}
+        <h3 class="gallery-image-view__list-title">Cited in <span class="book-chapter-title">{{ instance.reference_set.all.0.derridawork }}</span></h3>
+        {% for reference in instance.reference_set.all %}
+          <span class="gallery-image-view__list-item">p.{{ reference.derridawork_page }}</span>
+        {% endfor %}
+        <hr class="gallery-image-view__list-end" />
+      {% endif %}
 
       {# pages in this volume - navigation list #}
 
       {# overview images #}
       {% if instance.overview_images %}
-      <h3>Overview Images</h3>
-      <ul>
-      {% for ov_canvas in instance.overview_images %}
-          <li><a href="{% url 'books:canvas-detail' instance.slug ov_canvas.short_id %}">
-              {{ ov_canvas.label }}</a></li>
-      {% endfor %}
-      </ul>
+        <h3 class="gallery-image-view__list-title--bold">Overview Images</h3>
+        {% for ov_canvas in instance.overview_images %}
+          <a class="gallery-image-view__list-item" href="{% url 'books:canvas-detail' instance.slug ov_canvas.short_id %}">
+            {{ ov_canvas.label }}
+          </a>
+        {% endfor %}
+        <hr class="gallery-image-view__list-end" />
       {% endif %}
 
       {% if instance.annotated_pages %}
-      <h3>Annotated pages</h3>
-      <ul>
-     {% for anno_canvas in instance.annotated_pages %}
-          <li><a href="{% url 'books:canvas-detail' instance.slug anno_canvas.short_id %}">
-              {{ anno_canvas.label }}</a></li>
-      {% endfor %}
-      </ul>
+        <h3 class="gallery-image-view__list-title--bold">Annotated pages</h3>
+        {% for anno_canvas in instance.annotated_pages %}
+          <a class="gallery-image-view__list-item" href="{% url 'books:canvas-detail' instance.slug anno_canvas.short_id %}">
+            {{ anno_canvas.label }}
+          </a>
+        {% endfor %}
+        <hr class="gallery-image-view__list-end" />
       {% endif %}
 
        {% if instance.insertion_images %}
-       <h3>Insertions</h3>
-       <ul>
-       {% for ins_canvas in instance.insertion_images %}
-          <li><a href="{% url 'books:canvas-detail' instance.slug ins_canvas.short_id %}">
-              {{ ins_canvas.label }}</a></li>
-      {% endfor %}
-      </ul>
+         <h3 class="gallery-image-view__list-title--bold">Insertions</h3>
+         {% for ins_canvas in instance.insertion_images %}
+          <a class="gallery-image-view__list-item" href="{% url 'books:canvas-detail' instance.slug ins_canvas.short_id %}">
+            {{ ins_canvas.label }}
+          </a>
+        {% endfor %}
+        <hr class="gallery-image-view__list-end" />
       {% endif %}
 
+      {% if suppress_form and perms.books.change_instance %}
+      <section class="gallery-image-view__form">
+        {# admin form - suppress current page image or all annotated page images for this volume #}
+        {# display if suppress form is present and user has permission to change book instance #}
+        {% if instance.suppress_all_images %}
+          <p>All annotated page images in this volume are suppressed.</p>
+        {% elif canvas_suppressed %}
+          <p>This page image is suppressed.</p>
+        {% else %}
+          <form method="POST" action="{% url 'books:suppress-canvas' instance.slug %}">
+            {% csrf_token %}
+            Suppress {{ suppress_form.suppress }}
+            {{ suppress_form.canvas_id }}
+            <input type="submit"/>
+          </form>
+        {% endif %}
+      </section>
+      {% endif %}
+    </header>
 
-  {# admin form - suppress current page image or all annotated page images for this volume #}
-  {# display if suppress form is present and user has permission to change book instance #}
-  {% if suppress_form and perms.books.change_instance %}
-    {% if instance.suppress_all_images %}
-      <p>All annotated page images in this volume are suppressed.</p>
-    {% elif canvas_suppressed %}
-        <p>This page image is suppressed.</p>
-    {% else %}
-    <div>
-      <form method="POST" action="{% url 'books:suppress-canvas' instance.slug %}">
-        {% csrf_token %}
-        Suppress {{ suppress_form.suppress }}
-        {{ suppress_form.canvas_id }}
-        <input type="submit"/>
-      </form>
-    </div>
-    {% endif %}
-  {% endif %}
+    <article class="gallery-image-view__container">
+      {% comment %}
+      NOTE: if canvas_suppressed is true, access to page image has been restricted
+      by an admin due to a copyright holder take-down request.
+      Display a placeholder for the image, and show all other content.
+      {% endcomment %}
 
-{% comment %}
-NOTE: if canvas_suppressed is true, access to page image has been restricted
-by an admin due to a copyright holder take-down request.
-Display a placeholder for the image, and show all other content.
-{% endcomment %}
+      <section class="deep-zoom-component">
+        {# large size image #}
+        <img class="img" src="{% url 'books:canvas-image' instance.slug canvas.short_id 'large' %}" />
 
-      {# large size image #}
-      <img class="img" src="{% url 'books:canvas-image' instance.slug canvas.short_id 'large' %}" />
+        <div class="zoom-selections">
+          {# image selection zones #}
+          {% for intervention in canvas.intervention_set.all %}
+          {# provides x,y offset and width,height in percentages #}
+          {{ intervention.extra_data.image_selection }}
+          {% endfor %}
+        </div>
 
-      {# image selection zones  #}
-       {# {% for intervention in canvas.intervention_set.all %} #}
-       {# provides x,y offset and width,height in percentages #}
-       {# {{ intervention.extra_data.image_selection }} #}
-       {# {% endfor %} #}
+        {# deep zoom #}
+        <div id="deep-zoom"></div>
+      </section>
 
-        <article class="collection">
-       {% for intervention in canvas.intervention_set.all %}
-            {% include 'components/intervention-card.html' %}
-       {% endfor %}
+      <section class="annotation-cards">
+        {% for intervention in canvas.intervention_set.all %}
+          {% include 'components/intervention-card.html' %}
+        {% endfor %}
+      </section>
+
+      <footer class="gallery-image-view__footer">
+        {# logo for IIIF provider of digitized item #}
+        <img src="{{ instance.digital_edition.logo }}" />
+
+        {# for now, only supports rightsstatments.org licenses (should work for PUL content) #}
+        <p>
+          {% if instance.digital_edition.license %}
+          <a href="{{ instance.digital_edition.license }}">
+          <img src="{% static 'img/rightsstatements_org/' %}{{ instance.digital_edition.rights_statement_id }}.svg"/>
+          </a>
+          {% endif %}
+        </p>
+      </footer>
     </article>
-
- {# deep zoom #}
-<div id="deep-zoom" style="width: 800px; height: 600px;"></div>
-<script src="{% static 'js//openseadragon/openseadragon.min.js' %}"></script>
-<script type="text/javascript" charset="utf-8">
-   $(document).ready(function () {
-      // basic seadragon configuration for deep zoom
-        var viewer = OpenSeadragon({
-          id: "deep-zoom",
-          prefixUrl: "{% static 'js/openseadragon/images/' %}",
-          tileSources: "{% url 'books:canvas-image' instance.slug canvas.short_id 'info' %}",
-      });
-    });
-</script>
-
-    </div>
-
-{# logo for IIIF provider of digitized item #}
-<img src="{{ instance.digital_edition.logo }}" />
-
-{# for now, only supports rightsstatments.org licenses (should work for PUL content) #}
-<p>
-    {% if instance.digital_edition.license %}
-    <a href="{{ instance.digital_edition.license }}">
-    <img src="{% static 'img/rightsstatements_org/' %}{{ instance.digital_edition.rights_statement_id }}.svg"/>
-    </a>
-    {% endif %}
-
-</p>
   </article>
 {% endblock %}

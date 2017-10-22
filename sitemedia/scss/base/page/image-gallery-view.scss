@@ -1,0 +1,104 @@
+#book-image-gallery {
+  .page-header--link {
+    background-color: $white;
+
+    @include grid-media($large-medium-viewport-grid) {
+      padding: 0.5rem 6rem;
+      margin: 0;
+
+      .page-header__heading {
+        margin: 0;
+      }
+    }
+  }
+}
+
+.gallery-image-view {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+
+  @include grid-media($large-medium-viewport-grid) {
+    flex-direction: row;
+  }
+
+  .item-title {
+    font-size: ems(19px, 14);
+  }
+
+  .item-author {
+    font-size: ems(18px, 14);
+  }
+
+  .item-term__value {
+    font-size: ems(12px, 14);
+  }
+
+  .book-chapter-title {
+    @include primary-font-style("italic");
+  }
+}
+
+.gallery-image-view__list-title,
+.gallery-image-view__list-title--bold {
+  font-size: ems(12px, 14);
+}
+
+.gallery-image-view__list-title {
+  @include primary-font-style();
+}
+
+.gallery-image-view__list-title--bold {
+  @include primary-font-style("bold");
+}
+
+.gallery-image-view__list-item {
+  font-size: ems(12px, 14);
+  width: 100%;
+  display: inline-block;
+}
+
+
+
+.gallery-image-view__header,
+.gallery-image-view__container {
+  width: 100%;
+}
+
+.gallery-image-view__header {
+  background: $white;
+  padding: 0 ems(20px);
+
+  @include grid-media($large-medium-viewport-grid) {
+    width: 300px;
+    min-width: 300px;
+  }
+}
+
+.gallery-image-view__container {
+  position: relative;
+  padding: 2em $gutter-size;
+
+  .deep-zoom-component {
+    $deep-zoom-height: 600px;
+    $deep-zoom-width: 600px;
+
+    position: relative;
+    width: $deep-zoom-width;
+    margin-left: $gutter-size;
+    overflow: scroll;
+
+    .img {
+      max-height: $deep-zoom-height;
+      max-width: $deep-zoom-width;
+    }
+
+    #deep-zoom {
+      position: absolute;
+      height: $deep-zoom-height;
+      width: $deep-zoom-width;
+      top: 0;
+      left: 0;
+    }
+  }
+}
