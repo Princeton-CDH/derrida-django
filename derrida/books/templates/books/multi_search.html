@@ -21,7 +21,7 @@
   <article class="collection collection--no-images">
     <header class="collection__header">
       <h2 class="collection__title">
-        <a href="{% url 'books:list' %}?query={{ query }}">Library Books {% if instance_count %}<span class="arrow_icon">→</span><span>View {{ instance_count|intcomma }} Result{{ instance_count|pluralize }}</span>{% endif %}</a>
+        <a href="{% url 'books:list' %}?query={{ query }}">Library Books {% if instance_count %}<span class="arrow_icon">⟶</span><span>View {{ instance_count|intcomma }} Result{{ instance_count|pluralize }}</span>{% endif %}</a>
       </h2>
     </header>
     {% for book in instance_list %}
@@ -37,7 +37,7 @@
   <article class="collection collection--no-images">
     <header class="collection__header">
       <h2 class="collection__title">
-        <a href="{% url 'books:reference-list' %}?query={{ query }}">References {% if reference_count %}<span class="arrow_icon">→</span><span>View {{ reference_count|intcomma }} Result{{ reference_count|pluralize }}</span>{% endif %}</a>
+        <a href="{% url 'books:reference-list' %}?query={{ query }}">References {% if reference_count %}<span class="arrow_icon">⟶</span><span>View {{ reference_count|intcomma }} Result{{ reference_count|pluralize }}</span>{% endif %}</a>
       </h2>
     </header>
 
@@ -53,7 +53,7 @@
   <article class="collection collection--no-images">
     <header class="collection__header">
       <h2 class="collection__title">
-      <a href="{% url 'interventions:list' %}?query={{ query }}">Annotations {% if intervention_count %}<span class="arrow_icon">→</span>
+      <a href="{% url 'interventions:list' %}?query={{ query }}">Annotations {% if intervention_count %}<span class="arrow_icon">⟶</span>
         <span>View {{ intervention_count|intcomma }} Result{{ intervention_count|pluralize }}</span>{% endif %}</a>
     </h2>
     </header>
@@ -69,7 +69,7 @@
   <article class="collection collection--no-images">
     <header class="collection__header">
       <h2 class="collection__title">
-        <a href="#">Outworks <span>→</span><span>View All</span></a>
+        <a href="#">Outworks <span>⟶</span><span>View All</span></a>
       </h2>
     </header>
 
