@@ -8,7 +8,10 @@
 
   @include grid-media($xlarge-viewport-grid) {
     position: fixed;
-    z-index: 5;
+
+    .disable-coordinate-navigation & {
+      position: relative;
+    }
   }
 
   &.mdl-layout__header--transparent {
@@ -59,7 +62,7 @@
       content: "";
       display: block;
       position: absolute;
-      bottom: -3px;
+      bottom: -0.2111em;;
       left: 0;
       width: 100%;
       border-bottom: solid 3px $primary-color;
@@ -102,6 +105,10 @@
 
   & > .mdl-navigation {
     display: none;
+
+    .disable-coordinate-navigation & {
+      display: flex;
+    }
   }
 }
 
@@ -160,6 +167,10 @@
 
     .mdl-navigation__link {
       display: none;
+
+      .disable-coordinate-navigation & {
+        display: flex;
+      }
     }
 
     .background-colored--dark & {
@@ -172,6 +183,10 @@
   .coordinate-navigation {
     display: block;
     z-index: 10;
+
+    .disable-coordinate-navigation & {
+      display: none;
+    }
 
     .background-colored--dark & {
       .mdl-navigation__link {
@@ -220,6 +235,10 @@
 
   .mdl-layout__header.mdl-layout__header--transparent {
     pointer-events: none;
+
+    .disable-coordinate-navigation & {
+      pointer-events: auto;
+    }
   }
 
   .mdl-layout-logo {

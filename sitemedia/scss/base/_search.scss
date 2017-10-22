@@ -10,10 +10,12 @@
   position: absolute;
 
   @include grid-media($xlarge-viewport-grid) {
-    position: fixed;
-    top: 0;
-    margin: 0 10%;
-    width: 80%;
+    .mdl-layout:not(.disable-coordinate-navigation) & {
+      position: fixed;
+      top: 0;
+      margin: 0 10%;
+      width: 80%;
+    }
   }
 
   &.is-hidden {
@@ -129,7 +131,7 @@
     align-self: center;
     width: 150px;
     padding-bottom: 0;
-    padding-top: 10px;
+    padding-top: 0.75em;
     margin-right: 2rem;
 
     &.is-active {
