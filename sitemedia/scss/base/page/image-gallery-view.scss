@@ -58,7 +58,16 @@
   display: inline-block;
 }
 
+a.gallery-image-view__list-item {
+  color: $base-font-color;
+  text-decoration: none;
+  transition: color $base-duration $base-timing;
 
+  &:hover,
+  &:active {
+    color: $primary-color;
+  }
+}
 
 .gallery-image-view__header,
 .gallery-image-view__container {
