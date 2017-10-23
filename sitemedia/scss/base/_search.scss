@@ -25,15 +25,15 @@
   &.is-fixed {
     position: fixed;
     top: 0;
-    z-index: 4;
+    z-index: 5;
 
     &::before {
       content: "";
       background: $base-background-color;
       position: absolute;
-      width: 120%;
+      width: 200%;
       top: 0;
-      margin-left: -10%;
+      left: -50%;
       height: 4em;
       z-index: -3;
       @include transition(background-color $search-duration $base-timing, top $search-duration $base-timing);

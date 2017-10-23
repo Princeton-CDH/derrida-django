@@ -4,7 +4,7 @@
   box-shadow: none;
   background-color: $header-background-color;
   color: $header-text-color;
-  z-index: 5;
+  z-index: 10;
 
   @include grid-media($xlarge-viewport-grid) {
     position: fixed;
@@ -15,7 +15,7 @@
   }
 
   &.mdl-layout__header--transparent {
-    background-color: $base-background-color;
+    background-color: transparent;
   }
 
   &,
