@@ -8,10 +8,10 @@
   }
 
   .item-header__image {
-    width: 100%;
     max-width: 200px;
     float: left;
     margin: 0 1em 1em 0;
+    width: 100%;
 
     @include grid-media($large-medium-viewport-grid) {
       margin: 0;
@@ -23,6 +23,10 @@
       height: 250px;
       display: inherit;
     }
+  }
+
+  &.is-affixed .item-header__image {
+    width: auto;
   }
 }
 
