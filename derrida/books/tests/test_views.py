@@ -14,6 +14,7 @@ from haystack.models import SearchResult
 import pytest
 
 from derrida.books import views
+from derrida.books.forms import RangeWidget, RangeField
 from derrida.books.models import Instance, Reference, DerridaWorkSection
 from derrida.interventions.models import Intervention, INTERVENTION_TYPES
 
@@ -114,6 +115,16 @@ class TestInstanceViews(TestCase):
         response = self.client.get(list_view_url, {'query': 'gelb'})
         # should not be found
         assert len(response.context['object_list']) == 0
+
+        # range filter
+        response = self.client.get(list_view_url, {'work_year_0': 1950})
+        assert len(response.context['object_list']) == \
+            extant_bks.filter(work__year__gte=1950).count()
+        response = self.client.get(list_view_url, {'work_year_0': 1927,
+            'work_year_1':1950})
+        assert len(response.context['object_list']) == \
+            extant_bks.filter(work__year__lte=1950,
+                              work__year__gte=1927).count()
 
     def test_canvas_by_pagenum(self):
         # get an instance with no digital edition
@@ -680,3 +691,19 @@ class TestCanvasImageView(TestCase):
 
     # TODO: test proxyview logic in preserving headers, rewriting
     # iiif id to local url, etc
+
+def test_range_widget():
+    # range widget decompress logic
+    assert RangeWidget().decompress('') == [None, None]
+    # not sure how it actually handles missing inputs...
+    # assert RangeWidget().decompress('100-') == [100, None]
+    # assert RangeWidget().decompress('-250') == [None, 250]
+    assert RangeWidget().decompress('100-250') == [100, 250]
+
+
+def test_range_field():
+    # range widget decompress logic
+    assert RangeField().compress([]) == ''
+    assert RangeField().compress([100, None]) == '100-'
+    assert RangeField().compress([None, 250]) == '-250'
+    assert RangeField().compress([100, 250]) == '100-250'
