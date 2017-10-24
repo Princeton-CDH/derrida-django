@@ -91,6 +91,7 @@
 
       {% if suppress_form and perms.books.change_instance %}
       <section class="gallery-image-view__form">
+        <h3 class="gallery-image-view__list-title--bold">Admin Actions</h3>
         {# admin form - suppress current page image or all annotated page images for this volume #}
         {# display if suppress form is present and user has permission to change book instance #}
         {% if instance.suppress_all_images %}
@@ -98,7 +99,7 @@
         {% elif canvas_suppressed %}
           <p>This page image is suppressed.</p>
         {% else %}
-          <form method="POST" action="{% url 'books:suppress-canvas' instance.slug %}">
+          <form class="suppress-form" method="POST" action="{% url 'books:suppress-canvas' instance.slug %}">
             {% csrf_token %}
             Suppress {{ suppress_form.suppress }}
             {{ suppress_form.canvas_id }}

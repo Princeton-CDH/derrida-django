@@ -60,6 +60,7 @@
 
 a.gallery-image-view__list-item {
   color: $base-font-color;
+  padding-left: 1.5em;
   text-decoration: none;
   transition: color $base-duration $base-timing;
 
@@ -67,6 +68,11 @@ a.gallery-image-view__list-item {
   &:active {
     color: $primary-color;
   }
+}
+
+.gallery-image-view__list-end {
+  border-color: $medium-grey;
+  opacity: 0.8;
 }
 
 .gallery-image-view__header,
@@ -109,5 +115,26 @@ a.gallery-image-view__list-item {
       top: 0;
       left: 0;
     }
+  }
+}
+
+.suppress-form {
+  #id_suppress {
+    list-style: none;
+    margin: 0;
+    padding: 0 0 1em;
+    font-size: 0.85em;
+
+    input {
+      margin-right: 0.5em;
+    }
+
+    li {
+      padding-left: 2em;
+    }
+  }
+
+  input[type="submit"] {
+    font-size: 0.9em;
   }
 }
