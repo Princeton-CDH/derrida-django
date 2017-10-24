@@ -1,6 +1,5 @@
 from copy import deepcopy
 
-<<<<<<< HEAD
 from dal import autocomplete
 from django.contrib import admin
 from mezzanine.pages.models import RichTextPage
@@ -72,4 +71,3 @@ class LocalPageAdmin(PageAdmin):
 admin.site.register(Outwork, OutworkAdmin)
 admin.site.unregister(RichTextPage)
 admin.site.register(RichTextPage, LocalPageAdmin)
-admin.site.register(Outwork, OutworkAdmin)
