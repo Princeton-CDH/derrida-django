@@ -173,7 +173,7 @@
 
       <div class="annotation-selections"></div>
 
-      <section class="collection annotation-cards">
+      <section class="collection annotation-cards annotation-list">
         {% for intervention in canvas.intervention_set.all %}
           {% include 'components/intervention-card.html' %}
         {% endfor %}
