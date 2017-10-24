@@ -20,8 +20,8 @@ outwork_fieldsets[0][1]['fields'].extend(['author', 'orig_pubdate',
 outwork_fieldsets[0][1]['fields'].remove('login_required')
 outwork_fieldsets[1][1]['fields'].remove(('description', 'gen_description'))
 outwork_fieldsets[1][1]['fields'].remove(('in_sitemap'))
-# remove css collapse-closed for now (avoid javascript error)
-del outwork_fieldsets[1][1]['classes']
+# use grappelli collapse logic, default open
+outwork_fieldsets[1][1]['classes'] = ('grp-collapse grp-open',)
 
 
 class OutworkAdminForm(PageAdminForm):
@@ -60,8 +60,8 @@ class OutworkAdmin(PageAdmin):
 page_fieldsets = deepcopy(PageAdmin.fieldsets)
 # make sure content is included
 page_fieldsets[0][1]['fields'].append('content')
-# remove css collapse-closed for now (avoid javascript error)
-page_fieldsets[1][1]['classes'] = []
+# use grappelli collapse logic, default open
+page_fieldsets[1][1]['classes'] = ('grp-collapse grp-open',)
 
 class LocalPageAdmin(PageAdmin):
     fieldsets = page_fieldsets
