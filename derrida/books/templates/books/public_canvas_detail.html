@@ -52,14 +52,12 @@
     {% endfor %}
 
     $.each(zones, function(index, zone) {
-      console.log(zone);
       var css = {
           height: calcRelativePosition(zone.h, imgH),
           width: calcRelativePosition(zone.w, imgW),
           top: calcRelativePosition(zone.y, imgH),
           left: calcRelativePosition(zone.x, imgW)
         }
-        console.log(css);
       var $zone = $("<div/>").addClass("zone").css(css);
       $(".annotation-selections").css({
         height: $deepZoom.height(),
