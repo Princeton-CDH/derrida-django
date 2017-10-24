@@ -103,8 +103,10 @@ a.gallery-image-view__list-item {
     width: $deep-zoom-width;
     margin-left: $gutter-size;
     overflow: scroll;
+    text-align: center;
 
     .img {
+      margin-left: 2em;
       max-height: $deep-zoom-height;
       max-width: $deep-zoom-width;
     }
@@ -142,7 +144,7 @@ a.gallery-image-view__list-item {
   .zone {
     position: absolute;
     display: block;
-    background: $red;
+    background: transparentize($red, 0.5);
   }
 }
 
