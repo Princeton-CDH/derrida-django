@@ -24,7 +24,7 @@
 </script>
 
 <script>
-  $(function(){
+  document.addEventListener('DOMContentLoaded', function () {
     function htmlDecode(input) {
       var doc = new DOMParser().parseFromString(input, "text/html");
       return doc.documentElement.textContent;
@@ -64,7 +64,7 @@
         width: $deepZoom.width(),
         margin: $deepZoom.css("margin")
       }).append($zone);
-    })
+    });
   });
 </script>
 {% endblock %}
