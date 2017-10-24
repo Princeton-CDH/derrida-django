@@ -445,16 +445,8 @@ $(function() {
     }
   }
 
-  function intersectArrays(array1, array2) {
-    var difference = [];
-
-    jQuery.grep(array2, function(el) {
-        if (jQuery.inArray(el, array1) == -1) {
-          difference.push(el);
-        }
-    });
-
-    return difference
+  function arraysAreEqual(array1, array2) {
+    return $(array1).not(array2).length === 0 && $(array2).not(array1).length === 0
   }
 
   function initGlobalFunctions() {
@@ -494,7 +486,7 @@ $(function() {
         $yearFilter.slideUp();
         $openInput.removeClass("is-open").removeClass("is-focused");
 
-        if (intersectArrays(initialValues, currentValues).length > 0) {
+        if (! arraysAreEqual(initialValues, currentValues)) {
           setValueForFilterInput(currentValues);
           $(".mdl-layout").addClass("is-submitting");
           $(".page-filter__form").submit();
