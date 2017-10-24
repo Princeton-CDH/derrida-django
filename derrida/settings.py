@@ -79,7 +79,7 @@ MIDDLEWARE = [
     'mezzanine.core.request.CurrentRequestMiddleware',
     'mezzanine.core.middleware.RedirectFallbackMiddleware',
     'mezzanine.core.middleware.AdminLoginInterfaceSelectorMiddleware',
-    'mezzanine.core.middleware.SitePermissionMiddleware',
+    # 'mezzanine.core.middleware.SitePermissionMiddleware',
     'mezzanine.pages.middleware.PageMiddleware',
     'mezzanine.core.middleware.FetchFromCacheMiddleware',
 ]
