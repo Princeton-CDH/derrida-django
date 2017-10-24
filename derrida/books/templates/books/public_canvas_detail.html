@@ -22,6 +22,53 @@
     });
   });
 </script>
+
+<script>
+  $(function(){
+    function htmlDecode(input) {
+      var doc = new DOMParser().parseFromString(input, "text/html");
+      return doc.documentElement.textContent;
+    }
+
+    function parseJSONFromHtml(input) {
+      return JSON.parse(htmlDecode(input).replace(/\'/g, '\"'))
+    }
+
+    function calcRelativePosition(percentVal, rel) {
+      return (parseFloat(percentVal)/100) * rel + "px"
+    }
+
+
+    var $deepZoom = $(".deep-zoom-component"),
+        $img = $(".deep-zoom-component .img"),
+        imgH = parseFloat($img.height()),
+        imgW = parseFloat($img.width()),
+        zones = [];
+    {# image selection zones #}
+    {% for intervention in canvas.intervention_set.all %}
+    {# provides x,y offset and width,height in percentages #}
+      var data = "{{ intervention.extra_data.image_selection }}";
+      zones.push(parseJSONFromHtml(data));
+    {% endfor %}
+
+    $.each(zones, function(index, zone) {
+      console.log(zone);
+      var css = {
+          height: calcRelativePosition(zone.h, imgH),
+          width: calcRelativePosition(zone.w, imgW),
+          top: calcRelativePosition(zone.y, imgH),
+          left: calcRelativePosition(zone.x, imgW)
+        }
+        console.log(css);
+      var $zone = $("<div/>").addClass("zone").css(css);
+      $(".annotation-selections").css({
+        height: $deepZoom.height(),
+        width: $deepZoom.width(),
+        margin: $deepZoom.css("margin")
+      }).append($zone);
+    })
+  });
+</script>
 {% endblock %}
 
 {% block content %}
@@ -121,19 +168,13 @@
         {# large size image #}
         <img class="img" src="{% url 'books:canvas-image' instance.slug canvas.short_id 'large' %}" />
 
-        <div class="zoom-selections">
-          {# image selection zones #}
-          {% for intervention in canvas.intervention_set.all %}
-          {# provides x,y offset and width,height in percentages #}
-          {{ intervention.extra_data.image_selection }}
-          {% endfor %}
-        </div>
-
         {# deep zoom #}
         <div id="deep-zoom"></div>
       </section>
 
-      <section class="annotation-cards">
+      <div class="annotation-selections"></div>
+
+      <section class="collection annotation-cards">
         {% for intervention in canvas.intervention_set.all %}
           {% include 'components/intervention-card.html' %}
         {% endfor %}

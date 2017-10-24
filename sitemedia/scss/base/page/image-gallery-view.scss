@@ -91,12 +91,13 @@ a.gallery-image-view__list-item {
 }
 
 .gallery-image-view__container {
+  display: flex;
   position: relative;
   padding: 2em $gutter-size;
 
   .deep-zoom-component {
     $deep-zoom-height: 600px;
-    $deep-zoom-width: 600px;
+    $deep-zoom-width: 500px;
 
     position: relative;
     width: $deep-zoom-width;
@@ -115,6 +116,33 @@ a.gallery-image-view__list-item {
       top: 0;
       left: 0;
     }
+  }
+}
+
+.collection.annotation-cards {
+  width: 40%;
+  flex-direction: column;
+
+  .collection__item {
+    flex-basis: 1em;
+
+    &,
+    .item__body {
+      width: 100%;
+    }
+  }
+}
+
+.annotation-selections {
+  height: 100%;
+  display: block;
+  position: absolute;
+  width: 100%;
+
+  .zone {
+    position: absolute;
+    display: block;
+    background: $red;
   }
 }
 
