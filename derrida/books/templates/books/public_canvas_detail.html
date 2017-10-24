@@ -95,9 +95,10 @@
       {% endwith %}
 
       {# locations where cited by Derrida #}
-      {% if instance.reference_set.all %}
-        <h3 class="gallery-image-view__list-title">Cited in <span class="book-chapter-title">{{ instance.reference_set.all.0.derridawork }}</span></h3>
-        {% for reference in instance.reference_set.all %}
+      {# using corresponding references, since that is the only reliable way to identify #}
+      {% if canvas.reference_set.all %}
+        <h3 class="gallery-image-view__list-title">Cited in <span class="book-chapter-title">{{ canvas.reference_set.all.0.derridawork }}</span></h3>
+        {% for reference in canvas.reference_set.all %}
           <span class="gallery-image-view__list-item">p.{{ reference.derridawork_page }}</span>
         {% endfor %}
         <hr class="gallery-image-view__list-end" />

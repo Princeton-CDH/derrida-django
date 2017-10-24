@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django import forms
 from django.core.validators import RegexValidator
 from django.utils.safestring import mark_safe
@@ -35,6 +36,8 @@ class FacetChoiceField(forms.MultipleChoiceField):
 
 
 class RangeWidget(forms.MultiWidget):
+    # widget separator (regular dash for now; could use en dash?)
+    sep = '-'
     def __init__(self, *args, **kwargs):
         widgets = [
             forms.NumberInput(),
@@ -44,7 +47,7 @@ class RangeWidget(forms.MultiWidget):
 
     def decompress(self, value):
         if value:
-            return [int(val) for val in value.split('-')]
+            return [int(val) for val in value.split(self.sep)]
         return [None, None]
 
 
@@ -74,7 +77,7 @@ class RangeField(forms.MultiValueField):
         )
 
     def compress(self, data_list):
-        return '-'.join(['%d' % val if val else ''for val in data_list])
+        return self.widget.sep.join(['%d' % val if val else '' for val in data_list])
 
 
 class InstanceSearchForm(forms.Form):

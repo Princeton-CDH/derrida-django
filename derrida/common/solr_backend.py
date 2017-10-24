@@ -41,7 +41,7 @@ class RangeSolrSearchQuery(SolrSearchQuery):
             return search_kwargs
 
         range_kwargs = {
-            'facet.range': self.range_facets.keys()
+            'facet.range': list(self.range_facets.keys())
         }
         for field, opts in self.range_facets.items():
             # NOTE: not exposing other range facet params for now
@@ -61,13 +61,15 @@ class RangeSolrSearchQuery(SolrSearchQuery):
             # copy facet range data into existing facet data
             facets['ranges'] = results['facet_ranges'][0]
             for data in facets['ranges'].values():
-                # find the max value for the facet_ranges
-                data['max'] = max(data['counts'][1::2])
+                # possible to get no counts, in which case we can't calculate a max
+                if data['counts']:
+                    # find the max value for the facet_ranges
+                    data['max'] = max(data['counts'][1::2])
 
-                # solr returns a list of value, count, value, count
-                # use zip to convert into a list of two-tuples
-                # (thanks to https://stackoverflow.com/questions/14902686/turn-flat-list-into-two-tuples)
-                data['counts'] = list(zip(data['counts'][::2], data['counts'][1::2]))
+                    # solr returns a list of value, count, value, count
+                    # use zip to convert into a list of two-tuples
+                    # (thanks to https://stackoverflow.com/questions/14902686/turn-flat-list-into-two-tuples)
+                    data['counts'] = list(zip(data['counts'][::2], data['counts'][1::2]))
         return facets
 
     def _clone(self, *args, **kwargs):
