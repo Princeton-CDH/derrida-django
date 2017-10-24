@@ -25,8 +25,7 @@ INSTALLED_APPS = [
     'dal',
     'dal_select2',
     # dal and dal_select2 must be added before grappelli
-    # 'grappelli',
-    'grappelli_safe',
+    'grappelli',
     'compressor',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -88,7 +87,7 @@ MIDDLEWARE = [
 # Store these package names here as they may change in the future since
 # at the moment we are using custom forks of them.
 PACKAGE_NAME_FILEBROWSER = "filebrowser_safe"
-PACKAGE_NAME_GRAPPELLI = "grappelli_safe"
+PACKAGE_NAME_GRAPPELLI = "grappelli"
 
 #########################
 # OPTIONAL APPLICATIONS #
@@ -110,6 +109,9 @@ AUTHENTICATION_BACKENDS = (
 )
 
 ROOT_URLCONF = 'derrida.urls'
+
+# override mezzanine version of jquery-ui with a more up-to-date version
+JQUERY_UI_FILENAME = 'jquery-ui-1.12.1.min.js'
 
 TEMPLATES = [
     {

@@ -30,6 +30,11 @@
 
 {% block extrahead %}
     {{ block.super }}
+    {# csrf from mezzanine admin base site template #}
+    <script>
+    window.__csrf_token = '{{ csrf_token }}';
+    </script>
+    <script src="{% static "mezzanine/js/admin/ajax_csrf.js" %}"></script>
     {# Since both are in tandem, include both js files in compressor #}
     {% compress js %}
     <script src="{% static 'js/material.min.js' %}"></script>
