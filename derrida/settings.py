@@ -134,6 +134,7 @@ TEMPLATES = [
                 'mezzanine.template.loader_tags',
             ],
             'loaders': [
+                'apptemplates.Loader',
                 # 'mezzanine.template.loaders.host_themes.Loader',
                 'django.template.loaders.filesystem.Loader',
                 'django.template.loaders.app_directories.Loader',

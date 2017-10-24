@@ -1,0 +1,25 @@
+{% extends "grappelli:admin/index.html" %}
+{# Harmonize mezzanine and stock-grappelli dashboard. #}
+{% load i18n mezzanine_tags staticfiles %}
+
+{% block extrahead %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static "admin/grappelli_safe_dashboard.css" %}">
+{# <link rel="stylesheet" href="{% static settings.MEZZANINE_ADMIN_PREFIX|add:"css/dashboard.css" %}"> #}
+<link rel="stylesheet" href="{% static "mezzanine/css/admin/dashboard.css" %}">
+<!--[if IE 7]><style>.dashboard #content {padding-top: 80px;}</style><![endif]-->
+{% endblock %}
+
+{% block content %}
+{% comment %}
+Get customized app list from mezzanine via app_list tag (sets in context
+as dashboard_app_list), but suppress the output.
+Then use default grappelli styles to render.
+{% endcomment %}
+<div style="display:none">{% app_list %}</div>
+{% with app_list=dashboard_app_list %}
+    {{ block.super}}
+{% endwith %}
+{% endblock %}
+
+
