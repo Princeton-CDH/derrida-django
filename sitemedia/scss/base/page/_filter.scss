@@ -365,6 +365,29 @@
       height: $i * 10%;
     }
   }
+
+  &.is-selected {
+    background-color: $red;
+  }
+
+  &.is-selected ~ .frequency_chart__bar:not(.is-selected) {
+    background-color: transparentize($red, 0.4);
+
+    &:hover,
+    &:active {
+      background-color: transparentize($red, 0.2);
+    }
+  }
+
+  &.is-selected ~ &.is-selected ~ &,
+  &.is-selected.is-selected--end ~ & {
+    background-color: lighten($medium-grey, 20%);
+
+    &:hover,
+    &:active {
+      background-color: $blue;
+    }
+  }
 }
 
 .frequency_chart-axis {

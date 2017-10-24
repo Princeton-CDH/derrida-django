@@ -470,7 +470,9 @@ $(function() {
       $yearFilter.hide();
       setValueForFilterInput();
 
-      var $lastInput = $yearFilter.find(".filter__search input").last()
+      var $inputs = $yearFilter.find(".filter__search input"),
+          $firstInput = $inputs.first(),
+          $lastInput = $inputs.last();
       $lastInput.attr({placeholder: "Last"}).before($("<label/>").addClass("filter__search-label").text("to"));
 
       $yearFilter.find(".clear-link").on("click", function(e) {
@@ -506,6 +508,86 @@ $(function() {
         });
 
       var namedClickEvent = "click.filter--" + fieldName;
+
+      var $histogramBars = $yearFilter.find(".frequency_chart__bar"),
+          prefillRanges = function() {
+            $histogramBars.each(function(index, histogramBar) {
+              var $histogramBar = $(histogramBar),
+                  year = $histogramBar.data("year"),
+                  firstYear = $firstInput.val(),
+                  lastYear = $lastInput.val();
+
+              if (year == firstYear == lastYear) {
+                $histogramBar.addClass("is-selected");
+                $histogramBar.addClass("is-selected--end");
+                return false;
+              } else if (year == firstYear) {
+                $histogramBar.addClass("is-selected");
+              } else if (year == lastYear) {
+                $histogramBar.addClass("is-selected");
+              }
+
+              if ($histogramBars.find(".is-selected").length == 2) {
+                return false;
+              }
+            });
+          };
+
+      $histogramBars.on(namedClickEvent, function(e) {
+        var $this = $(this),
+            $selected = $this.siblings(".is-selected"),
+            addSelection = function(options) {
+              options = options || {};
+              $this.addClass("is-selected");
+              if (options.isSingleYear === true) {
+                $this.addClass("is-selected--end");
+              }
+            },
+            clearSelection = function() {
+              $selected.removeClass("is-selected");
+              $selected.removeClass("is-selected--end");
+              $firstInput.val("");
+              $lastInput.val("");
+            };
+
+        switch ($selected.length) {
+          case 0:
+            if ($this.hasClass("is-selected")) {
+              addSelection({isSingleYear: true});
+              $firstInput.val($this.data("year"));
+              $lastInput.val($this.data("year"));
+            } else {
+              addSelection();
+              $firstInput.val($this.data("year"));
+            }
+            break;
+          case 1:
+            var selectedIndex = $histogramBars.index($selected),
+                thisIndex = $histogramBars.index($this);
+            if (selectedIndex < thisIndex) {
+              if ($this.hasClass("is-selected")) {
+                $selected.removeClass("is-selected");
+                addSelection({isSingleYear: true});
+                $firstInput.val($this.data("year"));
+              } else {
+                $selected.removeClass("is-selected--end");
+                addSelection();
+                $lastInput.val($this.data("year"));
+              }
+            } else {
+              clearSelection();
+              addSelection();
+              $firstInput.val($this.data("year"));
+            }
+            break;
+          case 2:
+            clearSelection();
+            addSelection();
+            $firstInput.val($this.data("year"));
+            break;
+        }
+      });
+
       $("body").on(namedClickEvent, function(e) {
         var $target = $(e.target),
             filterSelector = selector,
