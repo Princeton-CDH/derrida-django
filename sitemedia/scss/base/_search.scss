@@ -84,6 +84,7 @@
     .background-colored--dark & {
       color: $white;
       opacity: 0.8;
+      border-bottom-color: transparentize($white, 0.2);
     }
   }
 }
