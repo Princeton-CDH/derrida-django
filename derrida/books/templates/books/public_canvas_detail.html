@@ -24,7 +24,7 @@
 </script>
 
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
+  $(function () {
     function htmlDecode(input) {
       var doc = new DOMParser().parseFromString(input, "text/html");
       return doc.documentElement.textContent;
@@ -38,9 +38,9 @@
       return (parseFloat(percentVal)/100) * rel + "px"
     }
 
-
-    var $deepZoom = $(".deep-zoom-component"),
-        $img = $(".deep-zoom-component .img"),
+    var $annotationSection = $(".annotation-selections"),
+        $deepZoom = $(".deep-zoom-component"),
+        $img = $(".gallery-image-view__img"),
         imgH = parseFloat($img.height()),
         imgW = parseFloat($img.width()),
         zones = [];
@@ -51,20 +51,64 @@
       zones.push(parseJSONFromHtml(data));
     {% endfor %}
 
-    $.each(zones, function(index, zone) {
-      var zoneCSS = {
-          height: calcRelativePosition(zone.h, imgH),
-          width: calcRelativePosition(zone.w, imgW),
-          top: calcRelativePosition(zone.y, imgH),
-          left: calcRelativePosition(zone.x, imgW)
+    var drawAttempts = 0;
+    function drawZones() {
+      // if the image is not yet drawn, attempt to redraw zones
+      if (imgH === 0) {
+        // limit attmpts to draw zones
+        if (drawAttempts > 6) {
+          console.log("Failed to calculate and draw annotation areas");
+          return;
         }
-      var $zone = $("<div/>").addClass("zone").css(zoneCSS);
-      $(".annotation-selections").css({
-        height: $deepZoom.height(),
-        width: $deepZoom.width(),
-        margin: $deepZoom.css("margin")
-      }).append($zone);
-    });
+        imgH = parseFloat($img.height());
+        imgW = parseFloat($img.width());
+        drawAttempts++;
+        setTimeout(drawZones, 500);
+        return;
+      }
+
+      var zoneDivs = [];
+      $.each(zones, function(index, zone) {
+        var zoneCSS = {
+            height: calcRelativePosition(zone.h, imgH),
+            width: calcRelativePosition(zone.w, imgW),
+            top: calcRelativePosition(zone.y, imgH),
+            left: calcRelativePosition(zone.x, imgW)
+          }
+        var $zone = $("<div/>").addClass("zone").css(zoneCSS);
+        zoneDivs.push($zone);
+      });
+
+      if (zoneDivs.length > 0) {
+        $annotationSection.css({
+          height: $deepZoom.height(),
+          width: $deepZoom.width()
+        }).append(zoneDivs);
+        setTimeout(function() {
+          $annotationSection.addClass("has-zones-added");
+        }, 100)
+      }
+      return;
+    }
+
+    drawZones();
+
+    var $annotationSelections = $(".annotation-selections")
+    $(".gallery-image-view__nav .mdl-layout__tab").on("click", function(e){
+      var $this = $(this);
+      if (! $this.hasClass("is-active")) {
+        $this.siblings(".is-active").removeClass("is-active");
+        $this.addClass("is-active");
+      }
+
+      if ($this.attr("href") === "#annotations") {
+        $annotationSection.removeClass("is-hidden");
+        $deepZoom.addClass("is-hidden");
+      } else if ($this.attr("href") === "#zoom") {
+        $annotationSection.addClass("is-hidden");
+        $deepZoom.removeClass("is-hidden");
+      }
+    })
   });
 </script>
 {% endblock %}
@@ -163,15 +207,20 @@
       Display a placeholder for the image, and show all other content.
       {% endcomment %}
 
-      <section class="deep-zoom-component">
-        {# large size image #}
-        <img class="img" src="{% url 'books:canvas-image' instance.slug canvas.short_id 'large' %}" />
+      <header class="gallery-image-view__nav">
+        <a href="#annotations" class="mdl-layout__tab is-active">Annotations</a>
+        <a href="#zoom" class="mdl-layout__tab">Zoom</a>
+      </header>
 
+      <section class="deep-zoom-component">
         {# deep zoom #}
         <div id="deep-zoom"></div>
       </section>
 
-      <div class="annotation-selections"></div>
+      <div class="annotation-selections">
+        {# large size image #}
+        <img class="gallery-image-view__img" src="{% url 'books:canvas-image' instance.slug canvas.short_id 'large' %}" />
+      </div>
 
       <section class="collection annotation-cards annotation-list">
         {% for intervention in canvas.intervention_set.all %}

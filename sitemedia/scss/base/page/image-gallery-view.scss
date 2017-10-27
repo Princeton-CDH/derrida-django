@@ -90,26 +90,20 @@ a.gallery-image-view__list-item {
   }
 }
 
+$deep-zoom-height: 600px;
+$deep-zoom-width: 500px;
+
 .gallery-image-view__container {
   display: flex;
   position: relative;
-  padding: 2em $gutter-size;
+  padding: 4em $gutter-size 2em 0;
 
   .deep-zoom-component {
-    $deep-zoom-height: 600px;
-    $deep-zoom-width: 500px;
-
     position: relative;
     width: $deep-zoom-width;
     margin-left: $gutter-size;
     overflow: scroll;
     text-align: center;
-
-    .img {
-      margin-left: 2em;
-      max-height: $deep-zoom-height;
-      max-width: $deep-zoom-width;
-    }
 
     #deep-zoom {
       position: absolute;
@@ -119,6 +113,23 @@ a.gallery-image-view__list-item {
       left: 0;
     }
   }
+
+  .is-hidden {
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+
+.gallery-image-view__nav {
+  width: 100%;
+  position: absolute;
+  top: 0;
+}
+
+.gallery-image-view__img {
+  max-height: $deep-zoom-height;
+  max-width: $deep-zoom-width;
 }
 
 .collection.annotation-cards {
@@ -140,11 +151,18 @@ a.gallery-image-view__list-item {
   display: block;
   position: absolute;
   width: 100%;
+  margin: 0 0 0 7em;
 
   .zone {
     position: absolute;
     display: block;
     background: transparentize($red, 0.5);
+    opacity: 0;
+    @include transition(opacity $base-duration $base-timing);
+  }
+
+  &.has-zones-added .zone {
+    opacity: 1;
   }
 }
 
