@@ -62,15 +62,6 @@ urlpatterns = [
 ]
 
 
-# # NOTE: for some reason this isn't getting added automatically
-# if settings.DEBUG:
-#     try:
-#         import debug_toolbar
-#         urlpatterns += url(r'^__debug__/', include(debug_toolbar.urls)),
-#     except ImportError:
-#         pass
-
-
 # Adds ``STATIC_URL`` to the context of error pages, so that error
 # pages can use JS, CSS and images.
 handler404 = "mezzanine.core.views.page_not_found"
