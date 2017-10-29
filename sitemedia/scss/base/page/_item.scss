@@ -57,6 +57,7 @@
 }
 
 .item-section {
+  min-height: 100vh;
   @include grid-column(4);
 
   @include grid-media($large-medium-viewport-grid) {
