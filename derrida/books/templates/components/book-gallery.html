@@ -5,7 +5,7 @@ book details view.
 {% load static %}
 
 <header class="item-header" id="book-header">
-  {% include "components/book-header.html" with book=instance %}
+  {% include "components/book-header.html" with book=instance hideLicense=True %}
   <nav class="item-navigation">
     {% if book.overview_images %}
     <a class="item-navigation-link item-navigation-link--active" href="#overview">Overview Images</a>
@@ -18,6 +18,8 @@ book details view.
     <a class="item-navigation-link" href="#insertions">Insertions</a>
     {% endif %}
   </nav>
+
+  {% include "components/book-license.html" with book=instance %}
 </header>
 
 <section class="item-section">

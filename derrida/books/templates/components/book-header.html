@@ -15,7 +15,7 @@ object for accessing properties to render.
 <h1 class="item-title">{{ book.display_title }}</h1>
 <p class="item-author">
   {% for author in book.work.authors.all %}
-      {{ author.firstname_last }}{% if not forloop.last %}; {% endif %}
+    {{ author.firstname_last }}{% if not forloop.last %}; {% endif %}
   {% endfor %}
 </p>
 <p class="item-term__value">{{ book.copyright_year }}{% if book.copy %} - {{ book.copy }}{% endif %}</p>
@@ -23,14 +23,6 @@ object for accessing properties to render.
 <p class="item-pages">{{book.start_page}}</p>
 {% endif %}
 
-{# NOTE: iiif provider logo should also be displayed somewhere according to iiif spec #}
-{# available as book.digital_edition.logo if we want it #}
-
-{# for now, only supports rightsstatments.org licenses (should work for PUL content) #}
-<p>
-    {% if book.digital_edition.license %}
-    <img src="{% static 'img/rightsstatements_org/' %}{{ book.digital_edition.rights_statement_id }}.svg"/>
-    <a href="{{ book.digital_edition.license }}"><span class="arrow_icon">⟶</span> Learn More</a>
-    {% endif %}
-
-</p>
+{% if hideLicense != True %}
+  {% include "components/book-license.html" %}
+{% endif %}

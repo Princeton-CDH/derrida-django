@@ -1,0 +1,18 @@
+{% comment %}
+The book-license template is used to display license information for a book
+record. The template has one parameter `book`, which acts as the primary
+object for accessing properties to render.
+{% endcomment %}
+{% load static %}
+
+{# NOTE: iiif provider logo should also be displayed somewhere according to iiif spec #}
+{# available as book.digital_edition.logo if we want it #}
+
+{# for now, only supports rightsstatments.org licenses (should work for PUL content) #}
+{% if book.digital_edition.license %}
+<footer class="item-license">
+  <!-- {{ book.digital_edition.rights_statement_id }} -->
+  <img class="item-license__img" src="{% static 'img/rightsstatements_org/' %}CNE.svg"/>
+  <a class="item-license__link" href="{{ book.digital_edition.license }}"><span class="arrow_icon">→</span> Learn More</a>
+</footer>
+{% endif %}
