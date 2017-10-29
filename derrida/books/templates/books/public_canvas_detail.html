@@ -93,7 +93,6 @@
 
     drawZones();
 
-    var $annotationSelections = $(".annotation-selections")
     $(".gallery-image-view__nav .mdl-layout__tab").on("click", function(e){
       var $this = $(this);
       if (! $this.hasClass("is-active")) {
@@ -101,14 +100,48 @@
         $this.addClass("is-active");
       }
 
+      var $annotationCards = $(".annotation-cards");
       if ($this.attr("href") === "#annotations") {
         $annotationSection.removeClass("is-hidden");
+        $annotationCards.removeClass("is-hidden");
         $deepZoom.addClass("is-hidden");
       } else if ($this.attr("href") === "#zoom") {
         $annotationSection.addClass("is-hidden");
+        $annotationCards.addClass("is-hidden");
         $deepZoom.removeClass("is-hidden");
       }
-    })
+    });
+
+    var $annotationCards = $(".annotation-cards .collection__item"),
+        $annotationSelections = $(".annotation-selections");
+    $annotationCards.on("click", function() {
+      var $this = $(this),
+          $zones = $annotationSelections.find(".zone"),
+          idx = $(".collection__item").index($this),
+          $selectedZone = $($zones[idx]);
+
+      if (! $this.hasClass("is-selected")) {
+        $this.siblings(".is-selected").removeClass("is-selected");
+        $this.addClass("is-selected");
+
+        $zones.removeClass("is-selected");
+        $selectedZone.addClass("is-selected");
+      }
+    });
+
+    $annotationSelections.on("click", ".zone", function() {
+      var $this = $(this),
+          $zones = $annotationSelections.find(".zone"),
+          idx = $zones.index($this),
+          $selectedCard = $($annotationCards[idx]);
+      if (! $this.hasClass("is-selected")) {
+        $annotationCards.removeClass("is-selected");
+        $selectedCard.addClass("is-selected");
+
+        $zones.removeClass("is-selected");
+        $this.addClass("is-selected");
+      }
+    });
   });
 </script>
 {% endblock %}
@@ -208,11 +241,13 @@
       {% endcomment %}
 
       <header class="gallery-image-view__nav">
-        <a href="#annotations" class="mdl-layout__tab is-active">Annotations</a>
-        <a href="#zoom" class="mdl-layout__tab">Zoom</a>
+        <nav class="nav-tabs">
+          <a href="#annotations" class="mdl-layout__tab is-active">Annotations</a>
+          <a href="#zoom" class="mdl-layout__tab">Zoom</a>
+        </nav/>
       </header>
 
-      <section class="deep-zoom-component">
+      <section class="deep-zoom-component is-hidden">
         {# deep zoom #}
         <div id="deep-zoom"></div>
       </section>

@@ -367,3 +367,12 @@
     }
   }
 }
+
+.mdl-layout.is-upgraded .gallery-image-view__nav .mdl-layout__tab {
+  height: 40px;
+
+  &.is-active::after {
+    background-color: $primary-color;
+    height: 2px;
+  }
+}

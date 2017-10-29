@@ -100,15 +100,19 @@ $deep-zoom-width: 500px;
 
   .deep-zoom-component {
     position: relative;
-    width: $deep-zoom-width;
+    width: 100%;
     margin-left: $gutter-size;
     overflow: scroll;
     text-align: center;
 
+    &.is-hidden {
+      width: $deep-zoom-width;
+    }
+
     #deep-zoom {
       position: absolute;
       height: $deep-zoom-height;
-      width: $deep-zoom-width;
+      width: 100%;
       top: 0;
       left: 0;
     }
@@ -122,9 +126,20 @@ $deep-zoom-width: 500px;
 }
 
 .gallery-image-view__nav {
+  display: flex;
   width: 100%;
   position: absolute;
   top: 0;
+
+  .nav-tabs {
+    margin: auto;
+
+    @include grid-media($large-medium-viewport-grid) {
+      .mdl-layout__tab:first-child {
+        margin-left: -60%;
+      }
+    }
+  }
 }
 
 .gallery-image-view__img {
@@ -138,6 +153,20 @@ $deep-zoom-width: 500px;
 
   .collection__item {
     flex-basis: 1em;
+    max-width: 270px;
+    padding: 10px;
+    background-color: $white;
+    border: 1px solid transparent;
+    cursor: pointer;
+    border-radius: 2px;
+    box-sizing: border-box;
+    @include shadow-2dp();
+    transition: border $base-duration $base-timing, box-shadow $base-duration $base-timing;
+
+    &.is-selected {
+      border-bottom-color: $red;
+      box-shadow: 0 2px 2px 0 transparent, 0 3px 1px -2px transparent, 0 1px 5px 0 transparentize($black, 0.9);
+    }
 
     &,
     .item__body {
@@ -156,13 +185,18 @@ $deep-zoom-width: 500px;
   .zone {
     position: absolute;
     display: block;
-    background: transparentize($red, 0.5);
+    background: transparentize($red, 0.6);
     opacity: 0;
     @include transition(opacity $base-duration $base-timing);
+
+    &.is-selected {
+      background-color: transparentize($red, 0.4);
+    }
   }
 
   &.has-zones-added .zone {
     opacity: 1;
+    cursor: pointer;
   }
 }
 
