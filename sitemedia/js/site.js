@@ -147,10 +147,33 @@ $(function() {
     }
   }
 
+  var initBookHeaderAttempts = 0,
+      maxNumberOfBookHeaderAttempts = 4;
   function initBookHeader() {
-    var $bookHeader = $("#book-header");
+    var $bookHeader = $("#book-header"),
+        maxAttempts = initBookHeaderAttempts < maxNumberOfBookHeaderAttempts,
+        retryInit = function() {
+         setTimeout(initBookHeader, 300);
+         initBookHeaderAttempts ++;
+       };
+
     if (! $bookHeader.length) {
       return false;
+    }
+
+    var $imageGalleryImg = $(".item-gallery .img");
+    if ($imageGalleryImg.length > 0) {
+      var imageGalleryImagesLoaded = $imageGalleryImg.last().height();
+      if (maxAttempts && ! imageGalleryImagesLoaded) {
+        retryInit();
+        return;
+      }
+    }
+
+    var imageHasLoaded = $bookHeader.find(".item-header__image").height()
+    if (maxAttempts && ! imageHasLoaded) {
+      retryInit();
+      return;
     }
     $bookHeader.stickySidebar({
       topSpacing: 20,
@@ -196,18 +219,23 @@ $(function() {
         clearTimeout($.data(this, "scrollTimer"));
         $.data(this, "scrollTimer", setTimeout(function() {
             var activeTab = "",
-                offset = 64;
+                offset = 64,
+                toggleFocus = function(name) {
+                  $(".item-navigation-link").removeClass(activeClass);
+                  var $focus = $(".item-navigation-link[href='#"+name+"']");
+                  if ($focus.length > 0) {
+                    $focus.addClass(activeClass);
+                  }
+                };
             if (navLinkSelectors.length) {
               if ($body.scrollTop() < offset) {
                 var $this = $(navLinkSelectors[0]);
-                $(".item-navigation-link").removeClass(activeClass);
-                $(".item-navigation-link[href=#"+$this.attr("name")+"]").addClass(activeClass);
+                toggleFocus($this.attr("name"));
               } else {
                 $(navLinkSelectors.join(",")).each(function() {
                   var $this = $(this);
                   if ($this.position().top < $body.scrollTop() + offset ) {
-                    $(".item-navigation-link").removeClass(activeClass);
-                    $(".item-navigation-link[href=#"+$this.attr("name")+"]").addClass(activeClass);
+                    toggleFocus($this.attr("name"));
                   }
                 });
               }
