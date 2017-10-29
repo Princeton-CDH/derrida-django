@@ -193,6 +193,14 @@
       padding: 14px 10px;
     }
   }
+
+  .submit-button.is-hidden {
+    visibility: hidden;
+    position: absolute;
+    overflow: hidden;
+    height: 0;
+    width: 0;
+  }
 }
 
 
