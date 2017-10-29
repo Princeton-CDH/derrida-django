@@ -284,6 +284,37 @@
         }
       }
     }
+
+  }
+}
+
+.background-colored--dark .header__search-button .mdl-button .svg {
+  path,
+  polygon {
+    fill: transparentize($base-font-color, 0.4);
+  }
+
+  &:hover,
+  &:active {
+    path,
+    polygon {
+      fill: $primary-color;
+    }
+  }
+
+  @include grid-media($xlarge-viewport-grid) {
+    path,
+    polygon {
+      fill: transparentize($white, 0.4);
+    }
+
+    &:hover,
+    &:active {
+      path,
+      polygon {
+        fill: $white;
+      }
+    }
   }
 }
 
