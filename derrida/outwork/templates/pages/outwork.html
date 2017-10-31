@@ -2,6 +2,8 @@
 {# template for outwork content #}
 {% load mezzanine_tags %}
 
+{% block page-context-id %}outwork-page{% endblock %}
+
 {% block metadata %}
 {{ block.super }}
 {% if page.outwork.author %}
@@ -15,16 +17,18 @@
 {# suppress description from displaying in header as lead #}
 {% block lead %}{% endblock %}
 
-{% block main %}{{ block.super }}
+{% block main %}
+{{ block.super }}
+
 {% if page.outwork.author %}
-<div>{{ page.outwork.author }}</div>
+<p class="outwork-page__author">{{ page.outwork.author }}</p>
 {% endif %}
 
 {% if page.outwork.orig_pubdate %}
-<div>{{ page.outwork.orig_pubdate }}</div>
+<p class="outwork-page__date">{{ page.outwork.orig_pubdate }}</p>
 {% endif %}
 
-<div>{{ page.description }}</div>
+<p class="outwork-page__lead">{{ page.description }}</p>
 
 {{ page.outwork.content|richtext_filters|safe }}
 {% endblock %}
