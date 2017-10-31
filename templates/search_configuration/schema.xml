@@ -439,13 +439,12 @@
                     ignoreCase="true"
                     words="lang/stopwords_en.txt"
             />
-            <filter class="solr.LowerCaseFilterFactory"/>
             <filter class="solr.EnglishPossessiveFilterFactory"/>
             <filter class="solr.KeywordMarkerFilterFactory" protected="protwords.txt"/>
             <!-- Optionally you may want to use this less aggressive stemmer instead of PorterStemFilterFactory:
             <filter class="solr.EnglishMinimalStemFilterFactory"/>
               -->
-            <filter class="solr.ASCIIFoldingFilterFactory" preserveOriginal="false" />
+            <filter class="solr.ICUFoldingFilterFactory"/>
             <filter class="solr.PorterStemFilterFactory"/>
         </analyzer>
         <analyzer type="query">
@@ -455,13 +454,12 @@
                     ignoreCase="true"
                     words="lang/stopwords_en.txt"
             />
-            <filter class="solr.LowerCaseFilterFactory"/>
             <filter class="solr.EnglishPossessiveFilterFactory"/>
             <filter class="solr.KeywordMarkerFilterFactory" protected="protwords.txt"/>
             <!-- Optionally you may want to use this less aggressive stemmer instead of PorterStemFilterFactory:
             <filter class="solr.EnglishMinimalStemFilterFactory"/>
               -->
-            <filter class="solr.ASCIIFoldingFilterFactory" preserveOriginal="false" />
+            <filter class="solr.ICUFoldingFilterFactory"/>
             <filter class="solr.PorterStemFilterFactory"/>
         </analyzer>
     </fieldType>
