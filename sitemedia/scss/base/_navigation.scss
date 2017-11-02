@@ -130,6 +130,7 @@
 @include grid-media($xlarge-viewport-grid) {
   .mdl-layout__header {
     background-color: transparent;
+    pointer-events: none;
 
     .mdl-navigation__link {
       display: none;

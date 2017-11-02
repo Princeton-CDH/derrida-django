@@ -1,7 +1,16 @@
 #outwork-page {
+  .page-header--link {
+    padding-bottom: 0;
+    display: none;
+
+    @include grid-media($xlarge-viewport-grid) {
+      display: block;
+    }
+  }
+
   article {
     display: block;
-    margin: 5rem auto 10rem;
+    margin: 6rem auto 10rem;
     transition: margin-top 0.5s ease;
     max-width: 80%;
 
@@ -73,7 +82,7 @@
     width: auto;
   }
 
-  a {
+  article a {
     color: inherit;
     text-decoration: none;
     border-bottom: 2px solid $primary-color;
