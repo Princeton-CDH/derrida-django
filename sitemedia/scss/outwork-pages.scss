@@ -8,24 +8,6 @@
     }
   }
 
-  article {
-    display: block;
-    margin: 6rem auto 10rem;
-    transition: margin-top 0.5s ease;
-    max-width: 80%;
-
-    @include grid-media($xlarge-viewport-grid) {
-      margin-top: 8rem;
-      max-width: 70%;
-    }
-  }
-
-  h1 {
-    font-size: ems(20px, 14);
-    color: $primary-color;
-    padding-bottom: 2rem;
-  }
-
   .outwork-page__author {
     @include secondary-font-style();
     font-size: ems(18px, 14);
@@ -64,44 +46,74 @@
     }
   }
 
-  p {
-    @include primary-font-style();
-    line-height: 1.3;
+  article {
+    display: block;
+    margin: 6rem auto 10rem;
+    transition: margin-top 0.5s ease;
+    max-width: 80%;
 
-    em, i {
-      @include primary-font-style("italic");
+    @include grid-media($xlarge-viewport-grid) {
+      margin-top: 8rem;
+      max-width: 70%;
     }
 
-    strong, b {
-      @include primary-font-style("bold");
-    }
-  }
-
-  img {
-    max-height: 80vh;
-    width: auto;
-  }
-
-  article a {
-    color: inherit;
-    text-decoration: none;
-    border-bottom: 2px solid $primary-color;
-    transition: border $base-duration $base-timing, color $base-duration $base-timing;
-
-    &:hover,
-    &:active {
+    h1 {
+      font-size: ems(20px, 14);
       color: $primary-color;
-      border-bottom-width: 2px;
+      padding-bottom: 2rem;
     }
-  }
 
-  .footnote {
-    opacity: 0.6;
-    font-size: 1rem;
-    padding-top: 5em;
+    h2 {
+      font-size: ems(22px, 14);
+      margin-top: 2.2rem;
+      margin-bottom: 0.4rem;
+    }
 
-    & + .footnote {
-      padding-top: 0;
+    h3 {
+      font-size: ems(18px, 14);
+      margin-top: 2rem;
+      margin-bottom: 0.2rem;
+    }
+
+    p {
+      @include primary-font-style();
+      line-height: 1.3;
+
+      em, i {
+        @include primary-font-style("italic");
+      }
+
+      strong, b {
+        @include primary-font-style("bold");
+      }
+    }
+
+    img {
+      max-height: 80vh;
+      width: auto;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+      border-bottom: 2px solid $primary-color;
+      transition: border $base-duration $base-timing, color $base-duration $base-timing;
+
+      &:hover,
+      &:active {
+        color: $primary-color;
+        border-bottom-width: 2px;
+      }
+    }
+
+    .footnote {
+      opacity: 0.6;
+      font-size: 1rem;
+      padding-top: 5em;
+
+      & + .footnote {
+        padding-top: 0;
+      }
     }
   }
 }
