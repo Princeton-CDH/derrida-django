@@ -21,16 +21,9 @@
 
   {% include "components/page-filter.html" with formItems=form %}
   {% include "components/page-sort.html" with number=count orderBy=orderBy %}
+  {# NOTE: author first letters available via solr facet, but may need some processing in the view for display #}
 
   <div class="container">
-  {# TEST version of the form for implementing functionality; integration with design still TODO #}
-  <form>
-  {{ form }}
-  <input type="submit"/>
-</form>
-
-{# NOTE: author first letters available via solr facet, but may need some processing in the view for display #}
-
     <article class="collection">
        {% for intervention in object_list %}
             {% include 'components/intervention-list-item.html' %}

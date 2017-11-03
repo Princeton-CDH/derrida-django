@@ -109,6 +109,30 @@
       </div>
       {% endif %}
 
+      {% if 'annotation_language' in form.fields %}
+      <div class="filter__selector filter__selector--condensed">
+        {% include 'components/form/checkbox-selection.html' with name='annotation_language' label=form.annotation_language.label items=form.annotation_language %}
+      </div>
+      {% endif %}
+
+      {% if 'annotation_type' in form.fields %}
+      <div class="filter__selector filter__selector--condensed">
+        {% include 'components/form/checkbox-selection.html' with name='annotation_type' label=form.annotation_type.label items=form.annotation_type %}
+      </div>
+      {% endif %}
+
+      {% if 'hand' in form.fields %}
+      <div class="filter__selector filter__selector--condensed">
+        {% include 'components/form/checkbox-selection.html' with name='hand' label=form.hand.label items=form.hand %}
+      </div>
+      {% endif %}
+
+      {% if 'ink' in form.fields %}
+      <div class="filter__selector filter__selector--condensed">
+        {% include 'components/form/checkbox-selection.html' with name='ink' label=form.ink.label items=form.ink %}
+      </div>
+      {% endif %}
+
       {% if 'item_type' in form.fields %}
       <div class="filter__selector filter__selector--condensed">
         {% include 'components/form/checkbox-selection.html' with name='publication_type' label=form.item_type.label items=form.item_type %}
