@@ -101,6 +101,7 @@ $deep-zoom-width: 500px;
   .deep-zoom-component {
     position: relative;
     width: 100%;
+    min-height: 80vh;
     margin-left: $gutter-size;
     overflow: scroll;
     text-align: center;
