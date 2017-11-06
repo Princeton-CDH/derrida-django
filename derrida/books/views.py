@@ -18,7 +18,8 @@ import requests
 
 from derrida.books.forms import ReferenceSearchForm, InstanceSearchForm, \
     SearchForm, SuppressImageForm
-from derrida.books.models import Publisher, Language, Instance, Reference, DerridaWorkSection
+from derrida.books.models import Publisher, Language, Instance, Reference, \
+    DerridaWork, DerridaWorkSection
 from derrida.common.utils import absolutize_url
 from derrida.interventions.models import Intervention
 
@@ -56,7 +57,7 @@ class InstanceDetailView(DetailView):
 
 class InstanceReferenceDetailView(InstanceDetailView):
 
-    template_name = 'books/detail/citations.html'
+    template_name = 'books/detail/references.html'
 
     def get_context_data(self, *args, **kwargs):
         context = super(InstanceReferenceDetailView, self)\
@@ -278,6 +279,10 @@ class ReferenceHistogramView(ListView):
 
     def get_context_data(self):
         context = super(ReferenceHistogramView, self).get_context_data()
+        context.update({
+            'derrida_works': DerridaWork.objects.all(),
+            'derridawork_slug': self.kwargs.get('derridawork_slug', None)
+        })
         if self.kwargs.get('mode', None) == 'section':
             # get sections for the specified derrida work
             sections = DerridaWorkSection.objects \

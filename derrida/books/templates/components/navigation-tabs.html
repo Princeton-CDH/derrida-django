@@ -3,6 +3,6 @@
   <span class="item-nav__spacer"></span>
   <a href="{% url 'books:detail-gallery' slug=book.slug %}" class="item-nav__link {% if is_gallery %}item-nav__link--active{% endif %}">Image Gallery</a>
   <span class="item-nav__spacer"></span>
-  <a href="{% url 'books:detail-citations' slug=book.slug %}" class="item-nav__link {% if is_citations %}item-nav__link--active{% endif %}">Citation View</a>
+  <a href="{% url 'books:detail-references' slug=book.slug %}" class="item-nav__link {% if is_references %}item-nav__link--active{% endif %}">References</a>
   <span class="item-nav__spacer item-nav__spacer--end"></span>
 </nav>

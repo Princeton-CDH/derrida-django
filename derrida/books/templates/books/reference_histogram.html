@@ -24,8 +24,10 @@
   <section class="page-sort">
     <header class="page-sort__header">
       <p class="sort-label">View By</p>
-      <a class="sort-link {% if mode == 'section' %}sort-link--active{% endif %}"
-        href="{% url 'books:reference-histogram' derridawork_slug='de-la-grammatologie' %}">Instance of Reference</a>
+      {% for dw in derrida_works %}
+      <a class="sort-link {% if mode == 'section' and derridawork_slug == dw.slug %}sort-link--active{% endif %}"
+        href="{% url 'books:reference-histogram' derridawork_slug=dw.slug %}">Chapter in <em>{{ dw.short_title }}</em></a>
+      {% endfor %}
       <a class="sort-link {% if mode != 'section' %}sort-link--active{% endif %}"
       href="{% url 'books:reference-histogram' %}">Author of cited work</a>
     </header>
