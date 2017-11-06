@@ -151,8 +151,13 @@ $deep-zoom-width: 500px;
 .collection.annotation-cards {
   width: 40%;
   flex-direction: column;
+  flex-wrap: nowrap;
+  max-height: 80vh;
+  overflow: scroll;
+  position: relative;
 
   .collection__item {
+    position: relative;
     flex-basis: 1em;
     max-width: 270px;
     padding: 10px;
@@ -172,6 +177,7 @@ $deep-zoom-width: 500px;
     &,
     .item__body {
       width: 100%;
+      margin-left: 0;
     }
   }
 }

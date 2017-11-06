@@ -129,15 +129,22 @@
       }
     });
 
+    var $annotationList = $(".annotation-list");
     $annotationSelections.on("click", ".zone", function() {
       var $this = $(this),
           $zones = $annotationSelections.find(".zone"),
           idx = $zones.index($this),
           $selectedCard = $($annotationCards[idx]);
       if (! $this.hasClass("is-selected")) {
+        // Add the highlight class to card
         $annotationCards.removeClass("is-selected");
         $selectedCard.addClass("is-selected");
 
+        // Scroll annotation list so the selected card is in view.
+        var top = $selectedCard.position().top;
+        $annotationList.animate({ scrollTop: top });
+
+        // Add the highlight class to zone
         $zones.removeClass("is-selected");
         $this.addClass("is-selected");
       }
