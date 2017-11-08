@@ -1,9 +1,14 @@
 $(function() {
+
+  function submitFilterForm() {
+    $(".mdl-layout").addClass("is-submitting");
+    $(".page-filter__form").submit();
+  }
+
   function initPageFilter() {
     var $pageFilter = $(".page-filter");
     if ($pageFilter.length) {
-      var $container = $pageFilter.find(".container"),
-          checkForActiveFilters = function() {
+      var checkForActiveFilters = function() {
             var $filterInputs = $pageFilter.find(".mdl-textfield__input, .mdl-switch__input"),
                 activeFilters = $filterInputs.filter(function() {
                   var $this = $(this);
@@ -19,21 +24,21 @@ $(function() {
               $pageFilter.removeClass("is-active");
             }
           };
-      if (! $pageFilter.hasClass("is-visible")) {
-        $container.hide();
-      }
 
       $(".toggle-button").on("click", function(e) {
         e.preventDefault();
         if ($pageFilter.hasClass("is-visible")) {
           $pageFilter.removeClass("is-visible");
-          $container.slideUp(500);
         } else {
           $pageFilter.addClass("is-visible");
-          $container.slideDown(500);
         }
 
         checkForActiveFilters();
+      });
+
+      var $filterForm = $(".page-filter__form");
+      $filterForm.on("change", "input[type='checkbox']", function() {
+        submitFilterForm();
       });
 
     checkForActiveFilters();
@@ -115,6 +120,9 @@ $(function() {
     if ($searchForm.length) {
       $("[data-action=toggle-search-form]").on("click", function() {
         $searchForm.toggleClass("is-hidden");
+        if (! $searchForm.hasClass("is-hidden")) {
+          $("#id_query").focus();
+        }
       });
     }
   }
@@ -139,10 +147,33 @@ $(function() {
     }
   }
 
+  var initBookHeaderAttempts = 0,
+      maxNumberOfBookHeaderAttempts = 4;
   function initBookHeader() {
-    var $bookHeader = $("#book-header");
+    var $bookHeader = $("#book-header"),
+        maxAttempts = initBookHeaderAttempts < maxNumberOfBookHeaderAttempts,
+        retryInit = function() {
+         setTimeout(initBookHeader, 300);
+         initBookHeaderAttempts ++;
+       };
+
     if (! $bookHeader.length) {
       return false;
+    }
+
+    var $imageGalleryImg = $(".item-gallery .img");
+    if ($imageGalleryImg.length > 0) {
+      var imageGalleryImagesLoaded = $imageGalleryImg.last().height();
+      if (maxAttempts && ! imageGalleryImagesLoaded) {
+        retryInit();
+        return;
+      }
+    }
+
+    var imageHasLoaded = $bookHeader.find(".item-header__image").height()
+    if (maxAttempts && ! imageHasLoaded) {
+      retryInit();
+      return;
     }
     $bookHeader.stickySidebar({
       topSpacing: 20,
@@ -188,18 +219,23 @@ $(function() {
         clearTimeout($.data(this, "scrollTimer"));
         $.data(this, "scrollTimer", setTimeout(function() {
             var activeTab = "",
-                offset = 64;
+                offset = 64,
+                toggleFocus = function(name) {
+                  $(".item-navigation-link").removeClass(activeClass);
+                  var $focus = $(".item-navigation-link[href='#"+name+"']");
+                  if ($focus.length > 0) {
+                    $focus.addClass(activeClass);
+                  }
+                };
             if (navLinkSelectors.length) {
               if ($body.scrollTop() < offset) {
                 var $this = $(navLinkSelectors[0]);
-                $(".item-navigation-link").removeClass(activeClass);
-                $(".item-navigation-link[href=#"+$this.attr("name")+"]").addClass(activeClass);
+                toggleFocus($this.attr("name"));
               } else {
                 $(navLinkSelectors.join(",")).each(function() {
                   var $this = $(this);
                   if ($this.position().top < $body.scrollTop() + offset ) {
-                    $(".item-navigation-link").removeClass(activeClass);
-                    $(".item-navigation-link[href=#"+$this.attr("name")+"]").addClass(activeClass);
+                    toggleFocus($this.attr("name"));
                   }
                 });
               }
@@ -331,7 +367,7 @@ $(function() {
       })
       .on("blur", function(e) {
         e.preventDefault();
-        var isOpen = $(this).parent().addClass("is-open");
+        var isOpen = $(this).parent().hasClass("is-open");
         if (! isOpen) {
           $authorFilter.slideUp();
         }
@@ -362,10 +398,17 @@ $(function() {
       setSelectedOptionsValues(this);
     });
 
+    var initialValue = $authorSelectionInput.val();
     var closeFilter = function($openInput) {
       $authorFilter.slideUp();
       $openInput.removeClass("is-open").removeClass("is-focused");
+
+      if ($authorSelectionInput.val() !== initialValue) {
+        submitFilterForm();
+      }
     }
+
+    $(".filter--author.is-not-ready").removeClass("is-not-ready");
 
     $("body").on("click.filter--author", function(e) {
       var $target = $(e.target),
@@ -415,9 +458,313 @@ $(function() {
     });
   }
 
+  function initAnnotatorDropdown() {
+    var $marginContainer = $(".margin-container");
+
+    if ($marginContainer.length) {
+      $marginContainer.on("click", ".dropdown-toggle", function() {
+        var $menu = $(this).parent().find(".dropdown-menu");
+        if ($menu.css("display") === "none") {
+          $menu.css({ display: "block" });
+        } else {
+          $menu.css({ display: "none" });
+        }
+      });
+    }
+  }
+
+  function arraysAreEqual(array1, array2) {
+    return $(array1).not(array2).length === 0 && $(array2).not(array1).length === 0
+  }
+
+  function initGlobalFunctions() {
+    window.initYearSelector = function(options) {
+      var selector = options.selector,
+          fieldName = options.fieldName;
+
+      var $yearFilter = $(selector),
+          $filterInput = $("#" + fieldName + "-year-selection"),
+          $yearRangeInputs = $yearFilter.find(".filter__search-field"),
+          getValues = function() {
+            return $yearRangeInputs.map(function() { return this.value });
+          },
+          setValueForFilterInput = function(values) {
+            values = values || getValues();
+            var displayValue = (values[0] || values[1]) ?
+              values[0] + " - " + values[1] : "";
+            $filterInput.val(displayValue);
+          };
+
+      $yearFilter.hide();
+      setValueForFilterInput();
+
+      var $inputs = $yearFilter.find(".filter__search input"),
+          $firstInput = $inputs.first(),
+          $lastInput = $inputs.last();
+      $lastInput.attr({placeholder: "Last"}).before($("<label/>").addClass("filter__search-label").text("to"));
+
+      $yearFilter.find(".clear-link").on("click", function(e) {
+        e.preventDefault();
+        $yearRangeInputs.each(function() {
+           $(this).val("");
+        });
+      });
+
+      var initialValues = getValues();
+      var closeFilter = function($openInput) {
+        var currentValues = getValues();
+        $yearFilter.slideUp();
+        $openInput.removeClass("is-open").removeClass("is-focused");
+
+        if (! arraysAreEqual(initialValues, currentValues)) {
+          setValueForFilterInput(currentValues);
+          $(".mdl-layout").addClass("is-submitting");
+          $(".page-filter__form").submit();
+        }
+      };
+
+      $filterInput.on("focus", function() {
+          $(this).parent().addClass("is-open");
+          $yearFilter.slideDown();
+        })
+        .on("blur", function(e) {
+          e.preventDefault();
+          var isOpen = $(this).parent().addClass("is-open");
+          if (! isOpen) {
+            $yearFilter.slideUp();
+          }
+        });
+
+      var namedClickEvent = "click.filter--" + fieldName;
+
+      var $histogramBars = $yearFilter.find(".frequency_chart__bar"),
+          prefillRanges = function() {
+            $histogramBars.each(function(index, histogramBar) {
+              var $histogramBar = $(histogramBar),
+                  year = $histogramBar.data("year"),
+                  firstYear = $firstInput.val(),
+                  lastYear = $lastInput.val();
+
+              if (year == firstYear == lastYear) {
+                $histogramBar.addClass("is-selected");
+                $histogramBar.addClass("is-selected--end");
+                return false;
+              } else if (year == firstYear) {
+                $histogramBar.addClass("is-selected");
+              } else if (year == lastYear) {
+                $histogramBar.addClass("is-selected");
+              }
+
+              if ($histogramBars.find(".is-selected").length == 2) {
+                return false;
+              }
+            });
+          };
+
+      $histogramBars.on(namedClickEvent, function(e) {
+        var $this = $(this),
+            $selected = $this.siblings(".is-selected"),
+            addSelection = function(options) {
+              options = options || {};
+              $this.addClass("is-selected");
+              if (options.isSingleYear === true) {
+                $this.addClass("is-selected--end");
+              }
+            },
+            clearSelection = function() {
+              $selected.removeClass("is-selected");
+              $selected.removeClass("is-selected--end");
+              $firstInput.val("");
+              $lastInput.val("");
+            };
+
+        switch ($selected.length) {
+          case 0:
+            if ($this.hasClass("is-selected")) {
+              addSelection({isSingleYear: true});
+              $firstInput.val($this.data("year"));
+              $lastInput.val($this.data("year"));
+            } else {
+              addSelection();
+              $firstInput.val($this.data("year"));
+            }
+            break;
+          case 1:
+            var selectedIndex = $histogramBars.index($selected),
+                thisIndex = $histogramBars.index($this);
+            if (selectedIndex < thisIndex) {
+              if ($this.hasClass("is-selected")) {
+                $selected.removeClass("is-selected");
+                addSelection({isSingleYear: true});
+                $firstInput.val($this.data("year"));
+              } else {
+                $selected.removeClass("is-selected--end");
+                addSelection();
+                $lastInput.val($this.data("year"));
+              }
+            } else {
+              clearSelection();
+              addSelection();
+              $firstInput.val($this.data("year"));
+            }
+            break;
+          case 2:
+            clearSelection();
+            addSelection();
+            $firstInput.val($this.data("year"));
+            break;
+        }
+      });
+
+      $("body").on(namedClickEvent, function(e) {
+        var $target = $(e.target),
+            filterSelector = selector,
+            $openInput = $yearFilter.prev(".is-open"),
+            isOpenText = $target.is(".is-open") || $target.parents(".is-open").length,
+            $filter = $target.is(filterSelector) ? $target : $target.parents(filterSelector).first();
+
+        if (! $filter.length && ! isOpenText && $openInput.length) {
+          closeFilter($openInput);
+        } else if ($openInput.length && ! $target.parent().next().is(filterSelector) && ! $target.parents(filterSelector).length) {
+          closeFilter($openInput);
+        } else if ($openInput.length) {
+          $openInput.addClass("is-focused");
+        }
+      });
+    };
+
+    window.initCheckboxSelector = function(options) {
+      var filterInputSelector = options.filterInputSelector,
+          filterCheckListSelector = options.filterCheckListSelector,
+          filterSelector = options.filterSelector,
+          filterClickEvent = options.filterClickEvent,
+          isDisabled = options.isDisabled;
+
+      //transform list items
+      var $oldLabels = $(filterCheckListSelector + " label"),
+          $newLabels = $("<div/>");
+
+      $oldLabels.remove();
+      $oldLabels.each(function() {
+        var $this = $(this),
+            $countLabel = $this.children("span"),
+            count = $countLabel.text();
+        $countLabel.remove();
+
+        var labelText = $this.text().trim(),
+            $input = $this.find("input"),
+            inputAttr = {
+              id: $input.attr("id"),
+              name: $input.attr("name"),
+              value: $input.attr("value"),
+              checked: $input.attr("checked"),
+              type: "checkbox"
+            };
+        if (isDisabled || $input.attr("disabled")) {
+          inputAttr.disabled = "disabled";
+        }
+
+        var $label = $("<label/>")
+              .addClass("mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect")
+              .append(
+                $("<input/>").attr(inputAttr).addClass("mdl-checkbox__input"))
+              .append($("<span/>").addClass("name").text(labelText))
+              .append($("<span/>").addClass("filter__count").text(count));
+
+          $newLabels.append($label);
+      });
+
+      var $checkboxFilter = $(filterSelector);
+      $checkboxFilter.hide();
+
+      $(filterCheckListSelector).append($newLabels.html());
+
+      var $checkboxFilterSelectionInput = $(filterInputSelector),
+          clearSelectionInput = function() {
+            $checkboxFilterSelectionInput.val("");
+          };
+
+      $checkboxFilter.find(".clear-link").on("click", function(e) {
+        e.preventDefault();
+        var $checkboxes = $(this).parents(".filter").find(".mdl-checkbox__input");
+        $checkboxes.each(function() {
+          var $checkbox = $(this);
+          $checkbox.removeProp("checked");
+          $checkbox.parent().removeClass("is-checked");
+        });
+        clearSelectionInput();
+      });
+
+      $checkboxFilterSelectionInput.on("focus", function() {
+          $(this).parent().addClass("is-open");
+          $checkboxFilter.slideDown();
+        })
+        .on("blur", function(e) {
+          e.preventDefault();
+          var isOpen = $(this).parent().addClass("is-open");
+          if (! isOpen) {
+            $checkboxFilter.slideUp();
+          }
+        });
+
+        var setSelectedOptionsValues = function(context) {
+          var $elem = $(context),
+              optionText = $elem.val(),
+              checkboxFilterSelectionVal = $checkboxFilterSelectionInput.val() ? $checkboxFilterSelectionInput.val().split("; ") : [];
+          if ($elem.prop("checked")) {
+            checkboxFilterSelectionVal.push(optionText)
+          } else {
+            checkboxFilterSelectionVal = $.grep(checkboxFilterSelectionVal, function(value) {
+              return value != optionText;
+            });
+          }
+          $checkboxFilterSelectionInput.val(checkboxFilterSelectionVal.join("; "));
+        }
+
+        $(filterCheckListSelector + " input:checked").each(function() {
+          setSelectedOptionsValues(this);
+        });
+
+        $(filterCheckListSelector + " input").on("change", function() {
+          setSelectedOptionsValues(this);
+        });
+
+        var initialValue = $checkboxFilterSelectionInput.val();
+        var closeFilter = function($openInput) {
+          $checkboxFilter.slideUp();
+          $openInput.removeClass("is-open").removeClass("is-focused");
+
+          if ($checkboxFilterSelectionInput.val() !== initialValue) {
+            $(".mdl-layout").addClass("is-submitting");
+            $(".page-filter__form").submit();
+          }
+        };
+
+        $(filterSelector + ".is-not-ready").removeClass("is-not-ready");
+
+        var clickEvent = "click.filter--" + filterClickEvent;
+        $("body").on(clickEvent, function(e) {
+          var $target = $(e.target),
+              $openInput = $checkboxFilter.prev(".is-open"),
+              isOpenText = $target.is(".is-open") || $target.parents(".is-open").length,
+              $filter = $target.is(filterSelector) ? $target : $target.parents(filterSelector).first();
+
+          if (! $filter.length && ! isOpenText && $openInput.length) {
+            closeFilter($openInput);
+          } else if ($openInput.length && ! $target.parent().next().is(filterSelector) && ! $target.parents(filterSelector).length) {
+            closeFilter($openInput);
+          } else if ($openInput.length) {
+            $openInput.addClass("is-focused");
+          }
+        });
+    }
+  }
+
   initSearchForm();
   initPageFilter();
   initBookHeader();
   initVisualization();
   initCustomActions();
+  initAnnotatorDropdown();
+  initGlobalFunctions();
 });

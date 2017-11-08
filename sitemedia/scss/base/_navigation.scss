@@ -4,10 +4,14 @@
   box-shadow: none;
   background-color: $header-background-color;
   color: $header-text-color;
+  z-index: 10;
 
   @include grid-media($xlarge-viewport-grid) {
     position: fixed;
-    z-index: 5;
+
+    .disable-coordinate-navigation & {
+      position: relative;
+    }
   }
 
   &.mdl-layout__header--transparent {
@@ -45,15 +49,36 @@
 .mdl-navigation__link {
   @include secondary-font-style();
   opacity: 0.8;
+  line-height: 1;
+  outline: none;
 
   .navigation-title {
-    border-bottom: 0 solid transparent;
-    transition: border $base-duration $base-timing;
-    padding: 0 10px;
+    margin: 0 10px;
+    padding: 0;
+    position: relative;
+    line-height: 1;
+
+    &::after {
+      content: "";
+      display: block;
+      position: absolute;
+      bottom: -0.2111em;;
+      left: 0;
+      width: 100%;
+      border-bottom: solid 3px $primary-color;
+      @include transform(scaleX(0));
+      @include transform-origin(0% 50%);
+      @include transition(transform 250ms ease-in-out);
+    }
   }
 
   &:hover,
-  &:active,
+  &:active {
+    .navigation-title::after {
+      @include transform(scaleX(1));
+    }
+  }
+
   &.mdl-navigation__link--active {
     .navigation-title {
       border-bottom: 3px solid $primary-color;
@@ -80,6 +105,10 @@
 
   & > .mdl-navigation {
     display: none;
+
+    .disable-coordinate-navigation & {
+      display: flex;
+    }
   }
 }
 
@@ -87,6 +116,11 @@
 .mdl-layout__header-row .mdl-navigation__link {
   color: $header-text-color;
   font-size: 1.15em;
+  line-height: 0;
+  height: 2em;
+  display: flex;
+  align-items: center;
+  z-index: 6;
 }
 
 .mdl-layout__header-row--aligned-left {
@@ -134,6 +168,10 @@
 
     .mdl-navigation__link {
       display: none;
+
+      .disable-coordinate-navigation & {
+        display: flex;
+      }
     }
 
     .background-colored--dark & {
@@ -147,6 +185,10 @@
     display: block;
     z-index: 10;
 
+    .disable-coordinate-navigation & {
+      display: none;
+    }
+
     .background-colored--dark & {
       .mdl-navigation__link {
         color: $white;
@@ -158,7 +200,7 @@
       -webkit-font-smoothing: antialiased;
       opacity: 1;
       padding: 0;
-      font-size: 1.6em;
+      font-size: 20px;
       position: fixed;
       width: 12rem;
       white-space: nowrap;
@@ -194,6 +236,10 @@
 
   .mdl-layout__header.mdl-layout__header--transparent {
     pointer-events: none;
+
+    .disable-coordinate-navigation & {
+      pointer-events: auto;
+    }
   }
 
   .mdl-layout-logo {
@@ -205,19 +251,106 @@
   }
 }
 
+.header__search-button,
+.search-form-header {
+  .mdl-button .svg {
+    height: 100%;
+    margin: 8px 0;
+    zoom: 0.8;
+
+    path,
+    polygon {
+      fill: transparentize($base-font-color, 0.4);
+    }
+
+    &:hover,
+    &:active {
+      path,
+      polygon {
+        fill: $primary-color;
+      }
+    }
+
+    .background-colored--dark & {
+      path,
+      polygon {
+        fill: transparentize($white, 0.4);
+      }
+
+      &:hover,
+      &:active {
+        path,
+        polygon {
+          fill: $white;
+        }
+      }
+    }
+
+  }
+}
+
+.background-colored--dark .header__search-button .mdl-button .svg {
+  path,
+  polygon {
+    fill: transparentize($base-font-color, 0.4);
+  }
+
+  &:hover,
+  &:active {
+    path,
+    polygon {
+      fill: $primary-color;
+    }
+  }
+
+  @include grid-media($xlarge-viewport-grid) {
+    path,
+    polygon {
+      fill: transparentize($white, 0.4);
+    }
+
+    &:hover,
+    &:active {
+      path,
+      polygon {
+        fill: $white;
+      }
+    }
+  }
+}
+
 // Mobile navigation
+.mdl-layout__obfuscator.is-visible {
+  display: none;
+}
+
 .mdl-layout__drawer {
   width: 100%;
-  padding-top: 4em;
-  @include prefixer(transform, translateX(-100%), webkit moz ms o spec);
+  padding-top: 1em;
+  height: auto;
+  padding-bottom: 2em;
+  z-index: 4;
+  @include prefixer(transform, translateY(-100%), webkit moz ms o spec);
+
+  &.is-visible {
+    @include prefixer(transform, translateY(4.4em), webkit moz ms o spec);
+
+    & ~ main {
+      padding-top: 11em;
+    }
+
+    .search-form-header:not(.is-hidden) + & ~ main {
+      padding-top: 15.4em;
+    }
+  }
 
   .mdl-navigation {
-    transition: padding-top 0.5s $base-timing;
+    @include transition(padding-top 0.5s $base-timing);
   }
 
   .search-form-header + &.is-visible {
     .mdl-navigation {
-      padding-top: 6em;
+      padding-top: 4em;
     }
   }
 
@@ -264,5 +397,14 @@
       width: 100%;
       height: 100%;
     }
+  }
+}
+
+.mdl-layout.is-upgraded .gallery-image-view__nav .mdl-layout__tab {
+  height: 40px;
+
+  &.is-active::after {
+    background-color: $primary-color;
+    height: 2px;
   }
 }

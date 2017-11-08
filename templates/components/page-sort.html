@@ -3,7 +3,7 @@
   <div class="container">
     <header class="page-sort__header">
       <p class="sort-label sort-label--diminished ">{{ total|intcomma }} Result{{ total|pluralize }}</p>
-      <a class="sort-link sort-link--danger" href="{{ request.path }}">Clear All</a>
+      <a class="sort-link" href="{{ request.path }}">Clear All</a>
     </header>
     {% if form.order_by %}
     <header class="page-sort__header">

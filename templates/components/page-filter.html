@@ -28,13 +28,14 @@
 </script>
 {% endif %}
 <section class="page-filter {% if not hide_filter %}is-visible{% endif %}">
-<form>
+<form class="page-filter__form">
   <div class="container">
     <header class="page-filter__header">
       <p>Only show cited books that:</p>
     </header>
 
     <section class="filter__section">
+
 
       {% if 'is_extant' in form.fields %}
       <div class="filter__selector"> {# is_extant #}
@@ -48,9 +49,9 @@
 
       {% if 'is_annotated' in form.fields %}
       <div class="filter__selector">  {# is_annotated #}
-        <label class="mdl-switch__label mdl-switch__label--right" for="contains-annotation">{{ form.is_annotated.label }}
+        <label class="mdl-switch__label mdl-switch__label--right" for="is-annotation">{{ form.is_annotated.label }}
           <span class="mdl-switch mdl-switch--right mdl-js-switch">
-            {% render_field form.is_annotated class="mdl-switch__input" id="contains-annotation" %}
+            {% render_field form.is_annotated class="mdl-switch__input" id="is-annotation" %}
           </span>
         </label>
       </div>
@@ -59,9 +60,9 @@
       {# FIXME: reusing id because otherwise javascript doesn't fire, but not sure where set #}
       {% if 'corresponding_intervention' in form.fields %}
       <div class="filter__selector">
-        <label class="mdl-switch__label mdl-switch__label--right" for="id_instance_is_extant" {#corresponding_intervention#}>{{ form.corresponding_intervention.label }}
+        <label class="mdl-switch__label mdl-switch__label--right" for="corresponding_intervention">{{ form.corresponding_intervention.label }}
           <span class="mdl-switch mdl-switch--right mdl-js-switch">
-            {% render_field form.corresponding_intervention class="mdl-switch__input" id="id_instance_is_extant"  %} {# corresponding_intervention#}
+            {% render_field form.corresponding_intervention class="mdl-switch__input" id="corresponding_intervention" %}
           </span>
         </label>
       </div>
@@ -81,7 +82,7 @@
 
       {% if 'derridawork' in form.fields %}
       <div class="filter__selector filter__selector--condensed">
-        {% include 'components/form/checkbox-selection.html' with name='derridawork' label=form.derridawork.label items=form.derridawork %}
+        {% include 'components/form/checkbox-selection.html' with disabled='disabled' name='derridawork' label=form.derridawork.label items=form.derridawork %}
       </div>
       {% endif %}
 
@@ -151,8 +152,31 @@
       </div>
       {% endif %}
 
-      <input type="submit" class="mdl-button mdl-js-button mdl-button--primary"/>
+      {% if form.work_year %}
+      <div class="filter__selector filter__selector--condensed">
+        {% include 'components/form/year-selection.html' with name='work_year' label=form.work_year.label items=form.work_year ranges=facets.ranges.work_year %}
+      </div>
+      {% endif %}
+
+      {% if form.copyright_year %}
+      <div class="filter__selector filter__selector--condensed">
+        {% include 'components/form/year-selection.html' with name='copyright_year' label=form.copyright_year.label items=form.copyright_year ranges=facets.ranges.copyright_year %}
+      </div>
+      {% endif %}
+
+      {% if form.print_year %}
+      <div class="filter__selector filter__selector--condensed">
+        {% include 'components/form/year-selection.html' with name='print_year' label=form.print_year.label items=form.print_year ranges=facets.ranges.print_year %}
+      </div>
+      {% endif %}
     </section>
+
+    {# We need to update the components after being rendered in each of the checkbox-selection #}
+    <script>
+      $(function() {
+        componentHandler.upgradeDom();
+      });
+    </script>
   </div>
   <div class="hidden">{{form.order_by}}</div>
   </form>
