@@ -296,17 +296,17 @@
           {% include 'components/intervention-card.html' %}
         {% endfor %}
       </section>
-
-      <footer class="gallery-image-view__footer">
-        {# logo for IIIF provider of digitized item #}
-        <img src="{{ instance.digital_edition.logo }}" />
-        {# for now, only supports rightsstatments.org licenses (should work for PUL content) #}
-          {% if instance.digital_edition.license %}
-          <a href="{{ instance.digital_edition.license }}">
-            <img src="{% static 'img/rightsstatements_org/' %}{{ instance.digital_edition.rights_statement_id }}.svg"/>
-          </a>
-        {% endif %}
-      </footer>
     </article>
+    <footer class="gallery-image-view__footer">
+      {# for now, only supports rightsstatments.org licenses (should work for PUL content) #}
+      {% if instance.digital_edition.license %}
+        <a href="{{ instance.digital_edition.license }}">
+          <img class="img" src="{% static 'img/rightsstatements_org/' %}{{ instance.digital_edition.rights_statement_id }}.svg" />
+        </a>
+      {% endif %}
+
+      {# logo for IIIF provider of digitized item #}
+      <img class="img" src="https://pulsearch.princeton.edu/assets/pul-logo-new-744d8c02ecb992018c5d9ca281514c06d983db8d3baf7d1c9e18ab4df09f1e49.svg"/>
+    </footer>
   </article>
 {% endblock %}

@@ -17,6 +17,7 @@
   width: 100%;
   display: flex;
   flex-direction: column;
+  position: relative;
 
   @include grid-media($large-medium-viewport-grid) {
     flex-direction: row;
@@ -96,7 +97,7 @@ $deep-zoom-width: 500px;
 .gallery-image-view__container {
   display: flex;
   position: relative;
-  padding: 4em $gutter-size 2em 0;
+  padding: 4em $gutter-size 4em 0;
 
   .deep-zoom-component {
     position: relative;
@@ -146,6 +147,23 @@ $deep-zoom-width: 500px;
 .gallery-image-view__img {
   max-height: $deep-zoom-height;
   max-width: $deep-zoom-width;
+}
+
+.gallery-image-view__footer {
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+  display: flex;
+  padding-right: 4%;
+  flex-direction: row-reverse;
+  padding-bottom: 1em;
+
+  .img {
+    width: auto;
+    height: 2em;
+    align-self: center;
+    margin-left: 1em;
+  }
 }
 
 .collection.annotation-cards {
