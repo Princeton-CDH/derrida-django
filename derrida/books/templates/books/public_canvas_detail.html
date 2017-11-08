@@ -129,9 +129,7 @@
     }
 
     function updateHashWithCardReference(referenceId) {
-      if (window.location.hash.indexOf("#annotations") !== -1) {
-        window.location.hash = "#annotations/" + referenceId;
-      }
+      window.location.hash = "#annotations/" + referenceId;
     }
 
     var $annotationCards = $(".annotation-cards .collection__item"),
