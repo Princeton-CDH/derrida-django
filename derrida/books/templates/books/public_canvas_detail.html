@@ -100,22 +100,21 @@
         $this.addClass("is-active");
       }
 
-      var $annotationCards = $(".annotation-cards");
-      if ($this.attr("href") === "#annotations") {
+      var $annotationCards = $(".annotation-cards"),
+          hash = $this.attr("href");
+      if (hash === "#annotations") {
         $annotationSection.removeClass("is-hidden");
         $annotationCards.removeClass("is-hidden");
         $deepZoom.addClass("is-hidden");
-      } else if ($this.attr("href") === "#zoom") {
+      } else if (hash === "#zoom") {
         $annotationSection.addClass("is-hidden");
         $annotationCards.addClass("is-hidden");
         $deepZoom.removeClass("is-hidden");
       }
     });
 
-    var $annotationCards = $(".annotation-cards .collection__item"),
-        $annotationSelections = $(".annotation-selections");
-    $annotationCards.on("click", function() {
-      var $this = $(this),
+    function selectAnnotationCard($card) {
+      var $this = $card,
           $zones = $annotationSelections.find(".zone"),
           idx = $(".collection__item").index($this),
           $selectedZone = $($zones[idx]);
@@ -127,6 +126,20 @@
         $zones.removeClass("is-selected");
         $selectedZone.addClass("is-selected");
       }
+    }
+
+    function updateHashWithCardReference(referenceId) {
+      if (window.location.hash.indexOf("#annotations") !== -1) {
+        window.location.hash = "#annotations/" + referenceId;
+      }
+    }
+
+    var $annotationCards = $(".annotation-cards .collection__item"),
+        $annotationSelections = $(".annotation-selections");
+    $annotationCards.on("click", function() {
+      var $this = $(this);
+      selectAnnotationCard($this);
+      updateHashWithCardReference($this.data("refId"));
     });
 
     var $annotationList = $(".annotation-list");
@@ -147,8 +160,22 @@
         // Add the highlight class to zone
         $zones.removeClass("is-selected");
         $this.addClass("is-selected");
+
+        // update hash
+        updateHashWithCardReference($selectedCard.data("refId"));
       }
     });
+
+
+    if (window.location.hash.indexOf("#annotations/") !== -1) {
+      var annotationId = window.location.hash.split("/")[1];
+      console.log(annotationId);
+      var $selected = $(".annotation-cards .collection__item[data-ref-id=" + annotationId + "]");
+      if ($selected.length === 1) {
+        selectAnnotationCard($selected);
+      }
+    }
+
   });
 </script>
 {% endblock %}
@@ -273,15 +300,12 @@
       <footer class="gallery-image-view__footer">
         {# logo for IIIF provider of digitized item #}
         <img src="{{ instance.digital_edition.logo }}" />
-
         {# for now, only supports rightsstatments.org licenses (should work for PUL content) #}
-        <p>
           {% if instance.digital_edition.license %}
           <a href="{{ instance.digital_edition.license }}">
-          <img src="{% static 'img/rightsstatements_org/' %}{{ instance.digital_edition.rights_statement_id }}.svg"/>
+            <img src="{% static 'img/rightsstatements_org/' %}{{ instance.digital_edition.rights_statement_id }}.svg"/>
           </a>
-          {% endif %}
-        </p>
+        {% endif %}
       </footer>
     </article>
   </article>
