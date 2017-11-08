@@ -68,7 +68,7 @@ b, strong {
 a {
   color: $action-color;
   text-decoration-skip: ink;
-  transition: color $base-duration $base-timing;
+  @include transition(color $base-duration $base-timing);
 
   &:hover {
     color: shade($action-color, 25%);
@@ -89,5 +89,5 @@ hr {
 }
 
 .arrow_icon {
-  font-family: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Geneva, Verdana, sans-serif;
+  font-family: "Cambria", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Geneva, Verdana, sans-serif;
 }

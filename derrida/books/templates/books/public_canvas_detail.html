@@ -6,144 +6,305 @@
 
 {% block header_class %}mdl-layout__header--transparent{% endblock %}
 
-{% block page-context-id %}books-detail{% endblock %}
+{% block body_class %}disable-coordinate-navigation{% endblock %}
+
+{% block page-context-id %}book-image-gallery{% endblock %}
+
+{% block page-js %}
+<script src="{% static 'js//openseadragon/openseadragon.min.js' %}"></script>
+<script type="text/javascript" charset="utf-8">
+  document.addEventListener('DOMContentLoaded', function (){
+    // basic seadragon configuration for deep zoom
+      var viewer = OpenSeadragon({
+        id: "deep-zoom",
+        prefixUrl: "{% static 'js/openseadragon/images/' %}",
+        tileSources: "{% url 'books:canvas-image' instance.slug canvas.short_id 'info' %}",
+    });
+  });
+</script>
+
+<script>
+  $(function () {
+    function htmlDecode(input) {
+      var doc = new DOMParser().parseFromString(input, "text/html");
+      return doc.documentElement.textContent;
+    }
+
+    function parseJSONFromHtml(input) {
+      return JSON.parse(htmlDecode(input).replace(/\'/g, '\"'))
+    }
+
+    function calcRelativePosition(percentVal, rel) {
+      return (parseFloat(percentVal)/100) * rel + "px"
+    }
+
+    var $annotationSection = $(".annotation-selections"),
+        $deepZoom = $(".deep-zoom-component"),
+        $img = $(".gallery-image-view__img"),
+        imgH = parseFloat($img.height()),
+        imgW = parseFloat($img.width()),
+        zones = [];
+    {# image selection zones #}
+    {% for intervention in canvas.intervention_set.all %}
+    {# provides x,y offset and width,height in percentages #}
+      var data = "{{ intervention.extra_data.image_selection }}";
+      zones.push(parseJSONFromHtml(data));
+    {% endfor %}
+
+    var drawAttempts = 0;
+    function drawZones() {
+      // if the image is not yet drawn, attempt to redraw zones
+      if (imgH === 0) {
+        // limit attmpts to draw zones
+        if (drawAttempts > 6) {
+          console.log("Failed to calculate and draw annotation areas");
+          return;
+        }
+        imgH = parseFloat($img.height());
+        imgW = parseFloat($img.width());
+        drawAttempts++;
+        setTimeout(drawZones, 500);
+        return;
+      }
+
+      var zoneDivs = [];
+      $.each(zones, function(index, zone) {
+        var zoneCSS = {
+            height: calcRelativePosition(zone.h, imgH),
+            width: calcRelativePosition(zone.w, imgW),
+            top: calcRelativePosition(zone.y, imgH),
+            left: calcRelativePosition(zone.x, imgW)
+          }
+        var $zone = $("<div/>").addClass("zone").css(zoneCSS);
+        zoneDivs.push($zone);
+      });
+
+      if (zoneDivs.length > 0) {
+        $annotationSection.css({
+          height: $deepZoom.height(),
+          width: $deepZoom.width()
+        }).append(zoneDivs);
+        setTimeout(function() {
+          $annotationSection.addClass("has-zones-added");
+        }, 100)
+      }
+      return;
+    }
+
+    drawZones();
+
+    $(".gallery-image-view__nav .mdl-layout__tab").on("click", function(e){
+      var $this = $(this);
+      if (! $this.hasClass("is-active")) {
+        $this.siblings(".is-active").removeClass("is-active");
+        $this.addClass("is-active");
+      }
+
+      var $annotationCards = $(".annotation-cards"),
+          hash = $this.attr("href");
+      if (hash === "#annotations") {
+        $annotationSection.removeClass("is-hidden");
+        $annotationCards.removeClass("is-hidden");
+        $deepZoom.addClass("is-hidden");
+      } else if (hash === "#zoom") {
+        $annotationSection.addClass("is-hidden");
+        $annotationCards.addClass("is-hidden");
+        $deepZoom.removeClass("is-hidden");
+      }
+    });
+
+    function selectAnnotationCard($card) {
+      var $this = $card,
+          $zones = $annotationSelections.find(".zone"),
+          idx = $(".collection__item").index($this),
+          $selectedZone = $($zones[idx]);
+
+      if (! $this.hasClass("is-selected")) {
+        $this.siblings(".is-selected").removeClass("is-selected");
+        $this.addClass("is-selected");
+
+        $zones.removeClass("is-selected");
+        $selectedZone.addClass("is-selected");
+      }
+    }
+
+    function updateHashWithCardReference(referenceId) {
+      window.location.hash = "#annotations/" + referenceId;
+    }
+
+    var $annotationCards = $(".annotation-cards .collection__item"),
+        $annotationSelections = $(".annotation-selections");
+    $annotationCards.on("click", function() {
+      var $this = $(this);
+      selectAnnotationCard($this);
+      updateHashWithCardReference($this.data("refId"));
+    });
+
+    var $annotationList = $(".annotation-list");
+    $annotationSelections.on("click", ".zone", function() {
+      var $this = $(this),
+          $zones = $annotationSelections.find(".zone"),
+          idx = $zones.index($this),
+          $selectedCard = $($annotationCards[idx]);
+      if (! $this.hasClass("is-selected")) {
+        // Add the highlight class to card
+        $annotationCards.removeClass("is-selected");
+        $selectedCard.addClass("is-selected");
+
+        // Scroll annotation list so the selected card is in view.
+        var top = $selectedCard.position().top;
+        $annotationList.animate({ scrollTop: top });
+
+        // Add the highlight class to zone
+        $zones.removeClass("is-selected");
+        $this.addClass("is-selected");
+
+        // update hash
+        updateHashWithCardReference($selectedCard.data("refId"));
+      }
+    });
+
+
+    if (window.location.hash.indexOf("#annotations/") !== -1) {
+      var annotationId = window.location.hash.split("/")[1];
+      console.log(annotationId);
+      var $selected = $(".annotation-cards .collection__item[data-ref-id=" + annotationId + "]");
+      if ($selected.length === 1) {
+        selectAnnotationCard($selected);
+      }
+    }
+
+  });
+</script>
+{% endblock %}
 
 {% block content %}
   <header class="page-header page-header--link">
     <div class="container">
-      <h1 class="page-header__heading"><a href="{% url 'books:detail-gallery' instance.slug %}"><span class="arrow_icon">←</span> Book Image Gallery</a></h1>
+      <h1 class="page-header__heading"><a class="page-header__link" href="{% url 'books:detail-gallery' instance.slug %}"><span class="arrow_icon">⟵</span> Book Image Gallery</a></h1>
     </div>
   </header>
-  <article class="item">
-    <div class="container">
-
-        {# brief title information (copied from book-header) #}
-        {% with book=instance %}
-        <h1 class="item-title">{{ book.work.primary_title }}</h1>
-        <p class="item-author">
-          {% for author in book.work.authors.all %}
-            {% if not forloop.last %}
-              {{ author.authorized_name }};
-            {% else %}
-              {{ author.authorized_name }}
-            {% endif %}
-          {% endfor %}
-        </p>
-        <p class="item-term__value">{{ book.copyright_year }}{% if book.copy %} - {{ book.copy }}{% endif %}</p>
-        {% endwith %}
-
-        {# locations where cited by Derrida #}
-        {% if instance.reference_set.all %}
-        Cited in <em>{{ instance.reference_set.all.0.derridawork }}</em>
-        <ul>
-        {% for reference in instance.reference_set.all %}
-            <li>p.{{ reference.derridawork_page }}</li>
+  <article class="gallery-image-view">
+    <header class="gallery-image-view__header">
+      {# brief title information (copied from book-header) #}
+      {% with book=instance %}
+      <h1 class="item-title">{{ book.work.primary_title }}</h1>
+      <p class="item-author">
+        {% for author in book.work.authors.all %}
+          {% if not forloop.last %}
+            {{ author.authorized_name }};
+          {% else %}
+            {{ author.authorized_name }}
+          {% endif %}
         {% endfor %}
-        </ul>
-        {% endif %}
+      </p>
+      <p class="item-term__value">{{ book.copyright_year }}{% if book.copy %} - {{ book.copy }}{% endif %}</p>
+      {% endwith %}
+
+      {# locations where cited by Derrida #}
+      {# using corresponding references, since that is the only reliable way to identify #}
+      {% if canvas.reference_set.all %}
+        <h3 class="gallery-image-view__list-title">Cited in <span class="book-chapter-title">{{ canvas.reference_set.all.0.derridawork }}</span></h3>
+        {% for reference in canvas.reference_set.all %}
+          <span class="gallery-image-view__list-item">p.{{ reference.derridawork_page }}</span>
+        {% endfor %}
+        <hr class="gallery-image-view__list-end" />
+      {% endif %}
 
       {# pages in this volume - navigation list #}
 
       {# overview images #}
       {% if instance.overview_images %}
-      <h3>Overview Images</h3>
-      <ul>
-      {% for ov_canvas in instance.overview_images %}
-          <li><a href="{% url 'books:canvas-detail' instance.slug ov_canvas.short_id %}">
-              {{ ov_canvas.label }}</a></li>
-      {% endfor %}
-      </ul>
+        <h3 class="gallery-image-view__list-title--bold">Overview Images</h3>
+        {% for ov_canvas in instance.overview_images %}
+          <a class="gallery-image-view__list-item" href="{% url 'books:canvas-detail' instance.slug ov_canvas.short_id %}">
+            {{ ov_canvas.label }}
+          </a>
+        {% endfor %}
+        <hr class="gallery-image-view__list-end" />
       {% endif %}
 
       {% if instance.annotated_pages %}
-      <h3>Annotated pages</h3>
-      <ul>
-     {% for anno_canvas in instance.annotated_pages %}
-          <li><a href="{% url 'books:canvas-detail' instance.slug anno_canvas.short_id %}">
-              {{ anno_canvas.label }}</a></li>
-      {% endfor %}
-      </ul>
+        <h3 class="gallery-image-view__list-title--bold">Annotated pages</h3>
+        {% for anno_canvas in instance.annotated_pages %}
+          <a class="gallery-image-view__list-item" href="{% url 'books:canvas-detail' instance.slug anno_canvas.short_id %}">
+            {{ anno_canvas.label }}
+          </a>
+        {% endfor %}
+        <hr class="gallery-image-view__list-end" />
       {% endif %}
 
        {% if instance.insertion_images %}
-       <h3>Insertions</h3>
-       <ul>
-       {% for ins_canvas in instance.insertion_images %}
-          <li><a href="{% url 'books:canvas-detail' instance.slug ins_canvas.short_id %}">
-              {{ ins_canvas.label }}</a></li>
-      {% endfor %}
-      </ul>
+         <h3 class="gallery-image-view__list-title--bold">Insertions</h3>
+         {% for ins_canvas in instance.insertion_images %}
+          <a class="gallery-image-view__list-item" href="{% url 'books:canvas-detail' instance.slug ins_canvas.short_id %}">
+            {{ ins_canvas.label }}
+          </a>
+        {% endfor %}
+        <hr class="gallery-image-view__list-end" />
       {% endif %}
 
+      {% if suppress_form and perms.books.change_instance %}
+      <section class="gallery-image-view__form">
+        <h3 class="gallery-image-view__list-title--bold">Admin Actions</h3>
+        {# admin form - suppress current page image or all annotated page images for this volume #}
+        {# display if suppress form is present and user has permission to change book instance #}
+        {% if instance.suppress_all_images %}
+          <p>All annotated page images in this volume are suppressed.</p>
+        {% elif canvas_suppressed %}
+          <p>This page image is suppressed.</p>
+        {% else %}
+          <form class="suppress-form" method="POST" action="{% url 'books:suppress-canvas' instance.slug %}">
+            {% csrf_token %}
+            Suppress {{ suppress_form.suppress }}
+            {{ suppress_form.canvas_id }}
+            <input type="submit"/>
+          </form>
+        {% endif %}
+      </section>
+      {% endif %}
+    </header>
 
-  {# admin form - suppress current page image or all annotated page images for this volume #}
-  {# display if suppress form is present and user has permission to change book instance #}
-  {% if suppress_form and perms.books.change_instance %}
-    {% if instance.suppress_all_images %}
-      <p>All annotated page images in this volume are suppressed.</p>
-    {% elif canvas_suppressed %}
-        <p>This page image is suppressed.</p>
-    {% else %}
-    <div>
-      <form method="POST" action="{% url 'books:suppress-canvas' instance.slug %}">
-        {% csrf_token %}
-        Suppress {{ suppress_form.suppress }}
-        {{ suppress_form.canvas_id }}
-        <input type="submit"/>
-      </form>
-    </div>
-    {% endif %}
-  {% endif %}
+    <article class="gallery-image-view__container">
+      {% comment %}
+      NOTE: if canvas_suppressed is true, access to page image has been restricted
+      by an admin due to a copyright holder take-down request.
+      Display a placeholder for the image, and show all other content.
+      {% endcomment %}
 
-{% comment %}
-NOTE: if canvas_suppressed is true, access to page image has been restricted
-by an admin due to a copyright holder take-down request.
-Display a placeholder for the image, and show all other content.
-{% endcomment %}
+      <header class="gallery-image-view__nav">
+        <nav class="nav-tabs">
+          <a href="#annotations" class="mdl-layout__tab is-active">Annotations</a>
+          <a href="#zoom" class="mdl-layout__tab">Zoom</a>
+        </nav/>
+      </header>
 
-      {# large size image #}
-      <img class="img" src="{% url 'books:canvas-image' instance.slug canvas.short_id 'large' %}" />
+      <section class="deep-zoom-component is-hidden">
+        {# deep zoom #}
+        <div id="deep-zoom"></div>
+      </section>
 
-      {# image selection zones  #}
-       {# {% for intervention in canvas.intervention_set.all %} #}
-       {# provides x,y offset and width,height in percentages #}
-       {# {{ intervention.extra_data.image_selection }} #}
-       {# {% endfor %} #}
+      <div class="annotation-selections">
+        {# large size image #}
+        <img class="gallery-image-view__img" src="{% url 'books:canvas-image' instance.slug canvas.short_id 'large' %}" />
+      </div>
 
-        <article class="collection">
-       {% for intervention in canvas.intervention_set.all %}
-            {% include 'components/intervention-card.html' %}
-       {% endfor %}
+      <section class="collection annotation-cards annotation-list">
+        {% for intervention in canvas.intervention_set.all %}
+          {% include 'components/intervention-card.html' %}
+        {% endfor %}
+      </section>
     </article>
+    <footer class="gallery-image-view__footer">
+      {# for now, only supports rightsstatments.org licenses (should work for PUL content) #}
+      {% if instance.digital_edition.license %}
+        <a href="{{ instance.digital_edition.license }}">
+          <img class="img" src="{% static 'img/rightsstatements_org/' %}{{ instance.digital_edition.rights_statement_id }}.svg" />
+        </a>
+      {% endif %}
 
- {# deep zoom #}
-<div id="deep-zoom" style="width: 800px; height: 600px;"></div>
-<script src="{% static 'js//openseadragon/openseadragon.min.js' %}"></script>
-<script type="text/javascript" charset="utf-8">
-   $(document).ready(function () {
-      // basic seadragon configuration for deep zoom
-        var viewer = OpenSeadragon({
-          id: "deep-zoom",
-          prefixUrl: "{% static 'js/openseadragon/images/' %}",
-          tileSources: "{% url 'books:canvas-image' instance.slug canvas.short_id 'info' %}",
-      });
-    });
-</script>
-
-    </div>
-
-{# logo for IIIF provider of digitized item #}
-<img src="{{ instance.digital_edition.logo }}" />
-
-{# for now, only supports rightsstatments.org licenses (should work for PUL content) #}
-<p>
-    {% if instance.digital_edition.license %}
-    <a href="{{ instance.digital_edition.license }}">
-    <img src="{% static 'img/rightsstatements_org/' %}{{ instance.digital_edition.rights_statement_id }}.svg"/>
-    </a>
-    {% endif %}
-
-</p>
+      {# logo for IIIF provider of digitized item #}
+      <img class="img" src="{{ instance.digital_edition.logo }}"/>
+    </footer>
   </article>
 {% endblock %}
-

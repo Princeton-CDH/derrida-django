@@ -6,11 +6,14 @@ from django.core.exceptions import ValidationError
 from django.http import QueryDict
 from django.test import TestCase
 from django.urls import reverse
+from haystack.query import SearchQuerySet
 import pytest
 
 from derrida.common.models import Named, Notable, DateRange
 from derrida.common.utils import absolutize_url
 from derrida.common.templatetags.derrida_tags import querystring_replace
+from derrida.common.solr_backend import RangeSolrSearchQuery, \
+    SolrRangeSearchBackend
 
 
 class TestNamed(TestCase):
@@ -148,4 +151,70 @@ def test_absolutize_url():
     assert absolutize_url(local_path) == 'https://example.org/sub/foo/bar/'
 
 
+class TestRangeSolrEngine(object):
+
+    # this depends on local/test settings, but flagging here might
+    # actually be helpful
+    def test_config(self):
+        sqs = SearchQuerySet()
+        assert isinstance(sqs.query, RangeSolrSearchQuery)
+        assert isinstance(sqs.query.backend, SolrRangeSearchBackend)
+
+    def test_add_range_facet(self):
+        # normal facet shouldn't set range facet
+        sqs = SearchQuerySet().facet('title_exact')
+        assert not sqs.query.range_facets
+
+        range_field = 'publication_date'
+        opts = {'start': 1, 'end': 100, 'gap': 10, 'range': True}
+        sqs = SearchQuerySet().facet(range_field, **opts)
+        assert range_field in sqs.query.range_facets
+        assert sqs.query.range_facets[range_field] == opts
+
+    def test_build_range_facet_params(self):
+        # no range facet
+        sqs = SearchQuerySet()
+        params = sqs.query.build_params()
+        assert 'facet.range' not in params
+
+        # with range facet
+        range_field = 'publication_date'
+        opts = {'start': 1, 'end': 100, 'gap': 10, 'range': True}
+        sqs = SearchQuerySet().facet(range_field, **opts)
+        params = sqs.query.build_params()
+        assert params['facet.range'] == [range_field]
+        assert params['f.publication_date.facet.range.start'] == opts['start']
+        assert params['f.publication_date.facet.range.end'] == opts['end']
+        assert params['f.publication_date.facet.range.gap'] == opts['gap']
+
+    def test_clone(self):
+        # with range facet
+        range_field = 'publication_date'
+        opts = {'start': 1, 'end': 100, 'gap': 10, 'range': True}
+        sqs = SearchQuerySet().facet(range_field, **opts)
+        cloned_sqs = sqs._clone()
+        # preserves range facets and query subclass
+        assert cloned_sqs.query.range_facets == sqs.query.range_facets
+        assert isinstance(cloned_sqs.query, RangeSolrSearchQuery)
+
+    def test_post_process_facets(self):
+        # sample facet range response
+        result = {
+            'facets': {},
+            'facet_ranges': [
+                {'print_year':
+                    {'counts': ['1954', 1, '1955', 0, '1956', 5, '1957', 0, '1958', 0, '1959', 0, '1960', 0, '1961', 0, '1962', 10, '1963', 0],
+                    'gap': 1, 'end': 1964, 'start': 1954},
+                },
+            ]
+        }
+        sqs = SearchQuerySet()
+        facets = sqs.query.post_process_facets(result)
+        assert 'ranges' in facets
+        assert facets['ranges']['print_year']
+        # flat list converted into turn-flat-list-into-two-tuples
+        assert facets['ranges']['print_year']['counts'][0] == ('1954', 1)
+        for range_field in ['gap', 'end', 'start']:
+            assert range_field in facets['ranges']['print_year']
+        assert facets['ranges']['print_year']['max'] == 10
 

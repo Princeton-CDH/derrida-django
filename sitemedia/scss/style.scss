@@ -21,6 +21,14 @@ main {
   z-index: 3;
 }
 
+.mdl-layout.is-submitting {
+  &,
+  & .mdl-switch__thumb,
+  & .mdl-textfield__input {
+    cursor: wait;
+  }
+}
+
 // Home Page style
 @import "homepage";
 

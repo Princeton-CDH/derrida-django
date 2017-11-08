@@ -1,15 +1,15 @@
 {% load static %}
 
 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-  <input class="mdl-textfield__input" type="text" name="author-selection" id="author-selection" readonly="readonly" />
+  <input class="mdl-textfield__input" type="text" id="author-selection" readonly="readonly" />
   <label class="mdl-textfield__label" for="author-selection">Author</label>
 </div>
-<div class="filter filter--author" id="authors">
+<div class="filter filter--author is-not-ready" id="authors">
   <header class="filter__search">
     <label class="mdl-button mdl-js-button mdl-button--icon" for="filter__search-term">
       <img src="{% static "img/icons/Search.svg" %}" />
     </label>
-    <input class="filter__search-field filter__search-field--authors" id="filter__search-term" name="filter__search-term" placeholder="Search" />
+    <input class="filter__search-field filter__search-field--authors" id="filter__search-term" placeholder="Search" />
   </header>
 
   <nav class="filter__nav"></nav>

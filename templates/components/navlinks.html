@@ -7,12 +7,12 @@
   <span class="navigation-title">Derrida's Library</span>
 </a>
 
-<a class="mdl-navigation__link {% if vis_url in request.path %}mdl-navigation__link--active{% endif %}" href="{{ vis_url }}">
-  <span class="navigation-title">Visualization</span>
-</a>
-
 <a class="mdl-navigation__link {% if cit_url in request.path and not vis_url in request.path %}mdl-navigation__link--active{% endif %}" href="{{ cit_url }}">
   <span class="navigation-title">Reference List</span>
+</a>
+
+<a class="mdl-navigation__link {% if vis_url in request.path %}mdl-navigation__link--active{% endif %}" href="{{ vis_url }}">
+  <span class="navigation-title">Visualization</span>
 </a>
 
 <a class="mdl-navigation__link {% if out_url in request.path %}mdl-navigation__link--active{% endif %}" href="{{ out_url }}">

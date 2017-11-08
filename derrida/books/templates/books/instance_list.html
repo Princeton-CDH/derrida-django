@@ -11,7 +11,7 @@
 {% block content %}
   <header class="page-header">
     <div class="container page-header__container">
-      <h1 class="page-header__heading">Derrida's Library</h1>
+      <h1 class="page-header__heading"><a class="page-header__link" href="{{ request.path }}">Derrida's Library</a></h1>
       <div class="page-header__callout">
         <p class="lead">Browse Derrida’s personal copies of the books referenced in his published works. Only books extant in the Library of Jacques Derrida collection, held at the Princeton University Library’s Department of Rare Books and Special Collections, are displayed below.</p>
         <p><a class="callout__link" href="{% url 'books:reference-list' %}/">A full list of references is accessible through Reference List.</a></p>
@@ -23,10 +23,6 @@
   {% include "components/page-sort.html" with number=count orderBy=orderBy %}
 
   <div class="container">
-  {# TEST version of the form for implementing functionality; integration with design still TODO #}
-
-{# NOTE: author first letters available via solr facet, but may need some processing in the view for display #}
-
     <article class="collection collection--condensed">
       {% for instance in object_list %}
         {% url 'books:detail' instance.slug as instance_url %}

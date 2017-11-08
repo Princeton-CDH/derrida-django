@@ -30,6 +30,14 @@ textarea {
   }
 }
 
+.mdl-button:hover {
+  background: none;
+}
+
+.mdl-textfield__label--disabled {
+  cursor: default;
+}
+
 // Switch
 @import "switch";
 

@@ -10,10 +10,12 @@
   position: absolute;
 
   @include grid-media($xlarge-viewport-grid) {
-    position: fixed;
-    top: 0;
-    margin: 0 10%;
-    width: 80%;
+    .mdl-layout:not(.disable-coordinate-navigation) & {
+      position: fixed;
+      top: 0;
+      margin: 0 10%;
+      width: 80%;
+    }
   }
 
   &.is-hidden {
@@ -23,18 +25,18 @@
   &.is-fixed {
     position: fixed;
     top: 0;
-    z-index: 4;
+    z-index: 5;
 
     &::before {
       content: "";
       background: $base-background-color;
       position: absolute;
-      width: 120%;
+      width: 200%;
       top: 0;
-      margin-left: -10%;
+      left: -50%;
       height: 4em;
       z-index: -3;
-      transition: background-color $search-duration $base-timing, top $search-duration $base-timing;
+      @include transition(background-color $search-duration $base-timing, top $search-duration $base-timing);
     }
 
     &.is-hidden::before {
@@ -44,7 +46,7 @@
   }
 
   & ~ main {
-    transition: padding-top $search-duration $base-timing;
+    @include transition(padding-top $search-duration $base-timing);
   }
 
   &:not(.is-hidden) ~ main {
@@ -59,9 +61,9 @@
 
   .search-form-header__form {
     height: $search-height;
-    transition: margin-bottom $search-duration $base-timing,
+    @include transition(margin-bottom $search-duration $base-timing,
       height $search-duration $base-timing,
-      opacity $search-duration $base-timing;
+      opacity $search-duration $base-timing);
 
     @include grid-media($xlarge-viewport-grid) {
       margin-bottom: 5em;
@@ -82,6 +84,7 @@
     .background-colored--dark & {
       color: $white;
       opacity: 0.8;
+      border-bottom-color: transparentize($white, 0.2);
     }
   }
 }
@@ -90,27 +93,57 @@
   display: flex;
   margin: auto;
 
+  .mdl-button--search {
+    border-bottom: 1px solid $primary-color;
+    border-radius: 0;
+    margin-bottom: 4px;
+    min-width: 0;
+    width: 30px;
+    padding-right: 10px;
+    margin-left: 6px;
+
+    .img {
+      width: 100%;
+    }
+  }
+
   .mdl-textfield {
     align-self: center;
     width: 100%;
   }
 
-  .mdl-textfield--floating-label.is-focused .mdl-textfield__label,
-  .mdl-textfield--floating-label.is-dirty .mdl-textfield__label {
-    opacity: 0;
+  .mdl-textfield__label--search {
+    $label-offset: 25px;
+    width: calc(100% + $label-offset);
+    left: -$label-offset;
+    padding-left: $label-offset;
+
+    &::after {
+      left: 0;
+      transform-origin: 0 0;
+    }
+}
+
+  .mdl-textfield__label {
+    font-size: 14px;
   }
 
   .mdl-selectfield {
     align-self: center;
     width: 150px;
     padding-bottom: 0;
-    padding-top: 10px;
+    padding-top: 0.75em;
     margin-right: 2rem;
+
+    &.is-active {
+      padding-top: 22px;
+    }
 
     .selectize-input,
     .selectize-input.has-options,
     .selectize-input.has-items {
-      padding-bottom: 0.4rem;
+      padding-bottom: 0.6rem;
+      margin-top: -0.4rem;
       color: $base-font-color;
       border-bottom-color: $primary-color;
 
@@ -125,9 +158,13 @@
     }
   }
 
+  .selectize-input > * {
+    font-size: 12px;
+  }
+
   .selectize-control.single .selectize-input.input-active {
     background: transparent;
-    padding-bottom: 0.6rem;
+    margin-top: -0.6rem;
   }
 
   .selectize-control.single .selectize-input::after {
@@ -149,13 +186,20 @@
 
   .selectize-dropdown {
     border: 1px solid $primary-color;
-    margin-top: -4px;
     border-radius: 0;
 
     .option {
       font-size: 0.9rem;
       padding: 14px 10px;
     }
+  }
+
+  .submit-button.is-hidden {
+    visibility: hidden;
+    position: absolute;
+    overflow: hidden;
+    height: 0;
+    width: 0;
   }
 }
 
@@ -164,15 +208,13 @@
   width: 100%;
 }
 
-.mdl-textfield--floating-label.is-upgraded {
+.mdl-textfield.is-upgraded {
   .mdl-textfield__label {
     color: $base-font-color;
     opacity: 0.4;
   }
 
   &.is-focused .mdl-textfield__label {
-    opacity: 0.8;
-
     &::after {
       background-color: $primary-color;
     }

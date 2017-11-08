@@ -15,7 +15,7 @@ $_button-background-color-hover: shade($action-color, 20%);
   padding: $small-spacing $base-spacing;
   text-align: center;
   text-decoration: none;
-  transition: background-color $base-duration $base-timing;
+  @include transition(background-color $base-duration $base-timing);
   user-select: none;
   vertical-align: middle;
   white-space: nowrap;
