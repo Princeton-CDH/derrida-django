@@ -11,8 +11,7 @@ object for accessing properties to render.
 {# for now, only supports rightsstatments.org licenses (should work for PUL content) #}
 {% if book.digital_edition.license %}
 <footer class="item-license">
-  <!-- {{ book.digital_edition.rights_statement_id }} -->
-  <img class="item-license__img" src="{% static 'img/rightsstatements_org/' %}CNE.svg"/>
+  <img class="item-license__img" src="{% static 'img/rightsstatements_org/' %}{{ book.digital_edition.rights_statement_id }}.svg"/>
   <a class="item-license__link" href="{{ book.digital_edition.license }}"><span class="arrow_icon">→</span> Learn More</a>
 </footer>
 {% endif %}
