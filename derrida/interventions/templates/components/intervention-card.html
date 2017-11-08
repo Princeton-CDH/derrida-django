@@ -10,5 +10,6 @@
     <h3 class="item__heading">{% firstof intervention.author.firstname_last 'Unknown' %}</h3>
     <p class="item__excerpt">{{ intervention.text }}</p>
     <p class="item__excerpt">{{ intervention.quote }}</p>
+    <a class="item__link" href="#annotations/{{ intervention.id }}"><i class="material-icons">link</i></a>
   </div>
 </section>

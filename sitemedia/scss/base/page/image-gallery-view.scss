@@ -198,6 +198,27 @@ $deep-zoom-width: 500px;
       margin-left: 0;
     }
   }
+
+  .item__link {
+    border: 0;
+    position: relative;
+    right: 0;
+    display: block;
+    text-align: right;
+    margin-bottom: -0.5em;
+    margin-right: -5px;
+    outline: none;
+
+    &:hover,
+    &:active {
+      color: $primary-color;
+    }
+
+    .material-icons {
+      font-size: 1.2em;
+      transform: rotateZ(-40deg);
+    }
+  }
 }
 
 .annotation-selections {
