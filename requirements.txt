@@ -22,6 +22,8 @@ git+https://github.com/django-haystack/django-haystack.git@master#egg=django-hay
 pysolr
 django-widget-tweaks
 django-markdownify
+# manually pin a compatible version of pillow for mezzanine image preview
+pillow<4.2
 # mezzanine from github required for django 1.11 compatibility; should be > 4.2.3
 git+https://github.com/stephenmcd/mezzanine.git@397409d#egg=mezzanine
 django-fullurl
