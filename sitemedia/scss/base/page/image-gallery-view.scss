@@ -32,7 +32,7 @@
   }
 
   .item-term__value {
-    font-size: ems(12px, 14);
+    font-size: 12px;
   }
 
   .book-chapter-title {
@@ -42,7 +42,7 @@
 
 .gallery-image-view__list-title,
 .gallery-image-view__list-title--bold {
-  font-size: ems(12px, 14);
+  font-size: 12px;
 }
 
 .gallery-image-view__list-title {
@@ -54,7 +54,7 @@
 }
 
 .gallery-image-view__list-item {
-  font-size: ems(12px, 14);
+  font-size: 12px;
   width: 100%;
   display: inline-block;
 }
@@ -93,6 +93,7 @@ a.gallery-image-view__list-item {
 
 $deep-zoom-height: 600px;
 $deep-zoom-width: 500px;
+$max-component-height: 78vh;
 
 .gallery-image-view__container {
   display: flex;
@@ -102,7 +103,7 @@ $deep-zoom-width: 500px;
   .deep-zoom-component {
     position: relative;
     width: 100%;
-    min-height: 80vh;
+    min-height: $max-component-height;
     margin-left: $gutter-size;
     overflow: scroll;
     text-align: center;
@@ -170,7 +171,7 @@ $deep-zoom-width: 500px;
   width: 40%;
   flex-direction: column;
   flex-wrap: nowrap;
-  max-height: 80vh;
+  max-height: $max-component-height;
   overflow: scroll;
   position: relative;
 
@@ -184,18 +185,22 @@ $deep-zoom-width: 500px;
     cursor: pointer;
     border-radius: 2px;
     box-sizing: border-box;
-    @include shadow-2dp();
+    box-shadow: 0;
     transition: border $base-duration $base-timing, box-shadow $base-duration $base-timing;
 
     &.is-selected {
-      border-bottom-color: $red;
-      box-shadow: 0 2px 2px 0 transparent, 0 3px 1px -2px transparent, 0 1px 5px 0 transparentize($black, 0.9);
+      border-bottom-color: $orange-red;
     }
 
     &,
     .item__body {
       width: 100%;
       margin-left: 0;
+    }
+
+    .text-badge {
+      font-size: 10px;
+      padding: 0.2rem 0.4rem 0.15rem;
     }
   }
 
@@ -231,12 +236,14 @@ $deep-zoom-width: 500px;
   .zone {
     position: absolute;
     display: block;
-    background: transparentize($red, 0.6);
+    background: transparentize($orange-red, 0.75);
+    border: 1px solid transparent;
     opacity: 0;
     @include transition(opacity $base-duration $base-timing);
 
     &.is-selected {
       background-color: transparentize($red, 0.4);
+      border-color: $orange-red;
     }
   }
 
