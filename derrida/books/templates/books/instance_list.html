@@ -28,7 +28,7 @@
         {% url 'books:detail' instance.slug as instance_url %}
         {% include 'components/books-list-item.html' with href=instance_url book=instance %}
       {% empty %}
-        <p>No trace of what you were searching for was found. Try a different keyword.</p>
+        {% include 'components/search-results-empty.html' %}
       {% endfor %}
     </article>
     {% if is_paginated %}

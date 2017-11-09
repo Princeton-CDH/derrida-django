@@ -19,7 +19,7 @@
       {% for manifest in manifests %}
         {% include 'djiffy/snippets/manifest_card.html' with href=manifest.get_absolute_url book=manifest %}
       {% empty %}
-        <p>No trace of what you were searching for was found. Try a different keyword.</p>
+        {% include 'components/search-results-empty.html' %}
       {% endfor %}
     </article>
   </div>

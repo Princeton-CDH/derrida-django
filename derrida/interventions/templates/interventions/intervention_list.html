@@ -26,9 +26,9 @@
   <div class="container">
     <article class="collection">
        {% for intervention in object_list %}
-            {% include 'components/intervention-list-item.html' %}
+          {% include 'components/intervention-list-item.html' %}
        {% empty %}
-        <p>No trace of what you were searching for was found. Try a different keyword.</p>
+          {% include 'components/search-results-empty.html' %}
         {% endfor %}
     </article>
     {% if is_paginated %}

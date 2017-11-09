@@ -25,7 +25,7 @@
     {% for reference in object_list %}
       {% include 'components/citation-list-item.html' with reference=reference %}
     {% empty %}
-        <p>No trace of what you were searching for was found. Try a different keyword.</p>
+      {% include 'components/search-results-empty.html' %}
     {% endfor %}
   </article>
     {% if is_paginated %}

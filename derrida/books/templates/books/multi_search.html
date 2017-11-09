@@ -27,10 +27,8 @@
     {% for book in instance_list %}
       {% url 'books:detail' book.slug as instance_url %}
       {% include 'components/books-list-item.html' with href=instance_url shorten=True %}
-      {% empty %}
-      <section class="search__no-results">
-        <p>No trace of what you were searching for was found. Try a different keyword.</p>
-      </section>
+    {% empty %}
+      {% include 'components/search-results-empty.html' %}
     {% endfor %}
   </article>
 
@@ -43,10 +41,8 @@
 
     {% for reference in reference_list %}
       {% include 'components/citation-list-item.html' with reference=reference %}
-      {% empty %}
-      <section class="search__no-results">
-        <p>No trace of what you were searching for was found. Try a different keyword.</p>
-      </section>
+    {% empty %}
+      {% include 'components/search-results-empty.html' %}
     {% endfor %}
   </article>
 
@@ -58,11 +54,9 @@
     </h2>
     </header>
     {% for intervention in intervention_list %}
-        {% include 'components/intervention-list-item.html' %}
+      {% include 'components/intervention-list-item.html' %}
     {% empty %}
-      <section class="search__no-results">
-        <p>No trace of what you were searching for was found. Try a different keyword.</p>
-      </section>
+      {% include 'components/search-results-empty.html' %}
     {% endfor %}
   </article>
 
@@ -74,11 +68,9 @@
       </h2>
     </header>
     {% for outwork in outwork_list %}
-        {% include 'outwork/components/outwork-list-item.html' %}
+      {% include 'outwork/components/outwork-list-item.html' %}
     {% empty %}
-      <section class="search__no-results">
-        <p>No trace of what you were searching for was found. Try a different keyword.</p>
-      </section>
+      {% include 'components/search-results-empty.html' %}
     {% endfor %}
   </article>
 </div>

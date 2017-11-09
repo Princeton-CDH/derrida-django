@@ -15,7 +15,7 @@
     {% for outwork in object_list %}
       {% include 'outwork/components/outwork-list-item.html' with outwork=outwork %}
     {% empty %}
-        <p>No trace of what you were searching for was found. Try a different keyword.</p>
+      {% include 'components/search-results-empty.html' %}
     {% endfor %}
   </article>
     {% if is_paginated %}
