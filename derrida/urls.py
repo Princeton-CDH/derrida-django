@@ -15,6 +15,8 @@ from derrida.books.views import SearchView
 
 
 urlpatterns = [
+    url(r'^404/$', mezzanine.core.views.page_not_found, ),
+
      url(r'^robots\.txt$', TemplateView.as_view(template_name='robots.txt',
         content_type='text/plain')),
     url(r'^favicon\.ico$', RedirectView.as_view(url='/static/favicon.ico',
