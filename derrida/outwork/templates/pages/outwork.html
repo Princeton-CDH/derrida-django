@@ -20,7 +20,9 @@
 {% block pageHeader %}
 <header class="page-header page-header--link">
   <div class="container">
-    <h1 class="page-header__heading"><a href="{% url 'outwork:list' %}"><span class="arrow_icon">←</span> Outwork</a></h1>
+    <h1 class="page-header__heading">
+      <a href="{% url 'outwork:list' %}"><span class="arrow_icon">←</span> Outwork</a>
+    </h1>
   </div>
 </header>
 {% endblock %}
