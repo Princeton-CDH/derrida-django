@@ -8,6 +8,10 @@
     }
   }
 
+  .page-header__heading a {
+    text-decoration: none;
+  }
+
   .outwork-page__author {
     @include secondary-font-style();
     font-size: ems(18px, 14);
