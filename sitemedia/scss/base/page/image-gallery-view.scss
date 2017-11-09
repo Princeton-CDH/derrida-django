@@ -236,13 +236,12 @@ $max-component-height: 78vh;
   .zone {
     position: absolute;
     display: block;
-    background: transparentize($orange-red, 0.75);
+    background-color: transparentize($orange-red, 0.75);
     border: 1px solid transparent;
     opacity: 0;
     @include transition(opacity $base-duration $base-timing);
 
     &.is-selected {
-      background-color: transparentize($red, 0.4);
       border-color: $orange-red;
     }
   }
