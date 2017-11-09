@@ -93,24 +93,39 @@
 
     drawZones();
 
-    $(".gallery-image-view__nav .mdl-layout__tab").on("click", function(e){
-      var $this = $(this);
-      if (! $this.hasClass("is-active")) {
-        $this.siblings(".is-active").removeClass("is-active");
-        $this.addClass("is-active");
+    $(".gallery-image-view__nav .mdl-switch__label").on("click", function(e) {
+      var $this = $(this),
+          $input = $this.find(".mdl-switch__input"),
+          $switch = $this.find(".mdl-switch"),
+          $sibling = $this.siblings().first().find(".mdl-switch"),
+          $siblingInput = $sibling.find("input");
+          value = $switch.hasClass("is-checked") ? $siblingInput.val() : $input.val();
+
+      function toggleViews() {
+        var $annotationSwitch = $("#annotations-switch"),
+            $zoomSwitch = $("#zoom-switch"),
+            $annotationCards = $(".annotation-cards");
+        if (value === "annotations") {
+          $annotationSection.removeClass("is-hidden");
+          $annotationCards.removeClass("is-hidden");
+          $deepZoom.addClass("is-hidden");
+
+          $zoomSwitch.removeClass("is-checked");
+          $annotationSwitch.addClass("is-checked");
+
+        } else if (value === "zoom") {
+          $annotationSection.addClass("is-hidden");
+          $annotationCards.addClass("is-hidden");
+          $deepZoom.removeClass("is-hidden");
+
+          $annotationSwitch.removeClass("is-checked");
+          $zoomSwitch.addClass("is-checked");
+        } else {
+          return false;
+        }
       }
 
-      var $annotationCards = $(".annotation-cards"),
-          hash = $this.attr("href");
-      if (hash === "#annotations") {
-        $annotationSection.removeClass("is-hidden");
-        $annotationCards.removeClass("is-hidden");
-        $deepZoom.addClass("is-hidden");
-      } else if (hash === "#zoom") {
-        $annotationSection.addClass("is-hidden");
-        $annotationCards.addClass("is-hidden");
-        $deepZoom.removeClass("is-hidden");
-      }
+      setTimeout(toggleViews, 100);
     });
 
     function selectAnnotationCard($card) {
@@ -164,7 +179,6 @@
       }
     });
 
-
     if (window.location.hash.indexOf("#annotations/") !== -1) {
       var annotationId = window.location.hash.split("/")[1];
       console.log(annotationId);
@@ -173,7 +187,6 @@
         selectAnnotationCard($selected);
       }
     }
-
   });
 </script>
 {% endblock %}
@@ -182,8 +195,23 @@
   <header class="page-header page-header--link">
     <div class="container">
       <h1 class="page-header__heading"><a class="page-header__link" href="{% url 'books:detail-gallery' instance.slug %}"><span class="arrow_icon">⟵</span> Book Image Gallery</a></h1>
+
+      <nav class="gallery-image-view__nav">
+        <label class="mdl-switch__label mdl-switch__label--right">Display Annotations
+          <span class="mdl-switch mdl-switch--right mdl-js-switch" id="annotations-switch">
+            <input type="checkbox" name="view" value="annotations" checked="checked" class="mdl-switch__input" />
+          </span>
+        </label>
+
+        <label class="mdl-switch__label mdl-switch__label--right">Turn on Deep Zoom
+          <span class="mdl-switch mdl-switch--right mdl-js-switch" id="zoom-switch">
+            <input type="checkbox" name="view" value="zoom" class="mdl-switch__input" />
+          </span>
+        </label>
+      </nav>
     </div>
   </header>
+
   <article class="gallery-image-view">
     <header class="gallery-image-view__header">
       {# brief title information (copied from book-header) #}
@@ -271,13 +299,6 @@
       by an admin due to a copyright holder take-down request.
       Display a placeholder for the image, and show all other content.
       {% endcomment %}
-
-      <header class="gallery-image-view__nav">
-        <nav class="nav-tabs">
-          <a href="#annotations" class="mdl-layout__tab is-active">Annotations</a>
-          <a href="#zoom" class="mdl-layout__tab">Zoom</a>
-        </nav/>
-      </header>
 
       <section class="deep-zoom-component is-hidden">
         {# deep zoom #}
