@@ -128,6 +128,20 @@
       setTimeout(toggleViews, 100);
     });
 
+    var $toggle = $(".page-header__toggle"),
+        $sideBar = $(".gallery-image-view__header");
+    $toggle.on("click", function(e) {
+      e.preventDefault();
+      var $this = $(this);
+      if ($this.hasClass("is-active")) {
+        $sideBar.addClass("is-hidden");
+        $this.removeClass("is-active");
+      } else {
+        $sideBar.removeClass("is-hidden");
+        $this.addClass("is-active");
+      }
+    });
+
     function selectAnnotationCard($card) {
       var $this = $card,
           $zones = $annotationSelections.find(".zone"),
@@ -181,7 +195,6 @@
 
     if (window.location.hash.indexOf("#annotations/") !== -1) {
       var annotationId = window.location.hash.split("/")[1];
-      console.log(annotationId);
       var $selected = $(".annotation-cards .collection__item[data-ref-id=" + annotationId + "]");
       if ($selected.length === 1) {
         selectAnnotationCard($selected);
@@ -194,6 +207,7 @@
 {% block content %}
   <header class="page-header page-header--link">
     <div class="container">
+      <a class="page-header__toggle is-active"><img class="icon" src="{% static 'img/icons/Expand.svg' %}" /></a>
       <h1 class="page-header__heading"><a class="page-header__link" href="{% url 'books:detail-gallery' instance.slug %}"><span class="arrow_icon">⟵</span> Book Image Gallery</a></h1>
 
       <nav class="gallery-image-view__nav">

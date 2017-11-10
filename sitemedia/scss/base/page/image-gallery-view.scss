@@ -14,13 +14,38 @@
 
   .page-header .container {
     display: flex;
-    max-width: 600px;
+
+    @include grid-media($xlarge-viewport-grid) {
+      max-width: 700px;
+      margin-left: 300px;
+    }
   }
 
   .page-header__heading {
     width: 100%;
     text-align: right;
     padding-right: 10%;
+  }
+
+  .page-header__toggle {
+    position: absolute;
+    left: 5px;
+    padding: 0 10px;
+    @include transition(left $base-duration $base-timing);
+
+    .icon {
+      width: 1.5em;
+      transform: rotateZ(-90deg);
+      @include transition(transform $base-duration $base-timing);
+    }
+
+    &.is-active {
+      left: 265px;
+
+      .icon {
+        transform: rotateZ(90deg);
+      }
+    }
   }
 }
 
@@ -95,10 +120,21 @@ a.gallery-image-view__list-item {
 .gallery-image-view__header {
   background: $white;
   padding: 0 ems(20px);
+  opacity: 1;
+  @include transition( opacity $base-duration $base-timing,
+    transform $base-duration $base-timing,
+    width $base-duration $base-timing 10ms);
 
   @include grid-media($large-medium-viewport-grid) {
     width: 300px;
     min-width: 300px;
+  }
+
+  &.is-hidden {
+    opacity: 0;
+    transform: translateX(-300px);
+    min-width: 0;
+    width: 0;
   }
 }
 
@@ -244,7 +280,7 @@ $max-component-height: 78vh;
   display: block;
   position: absolute;
   width: 100%;
-  margin: 0 0 0 7em;
+  margin: 0 0 0 5%;
 
   .zone {
     position: absolute;
