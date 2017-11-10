@@ -11,6 +11,17 @@
       }
     }
   }
+
+  .page-header .container {
+    display: flex;
+    max-width: 600px;
+  }
+
+  .page-header__heading {
+    width: 100%;
+    text-align: right;
+    padding-right: 10%;
+  }
 }
 
 .gallery-image-view {
@@ -89,17 +100,6 @@ a.gallery-image-view__list-item {
     width: 300px;
     min-width: 300px;
   }
-}
-
-.page-header .container {
-  display: flex;
-  max-width: 600px;
-}
-
-.page-header__heading {
-  width: 100%;
-  text-align: right;
-  padding-right: 10%;
 }
 
 $deep-zoom-height: 600px;
