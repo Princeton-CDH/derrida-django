@@ -138,8 +138,12 @@
 
   .item-term__value {
     font-weight: 300;
-    @include primary-font-style("italic");
+    @include primary-font-style();
     @include grid-column(4);
+
+    &.item-term__value--title {
+      @include primary-font-style("italic");
+    }
 
     .item-term__link {
       @include faded-link();
