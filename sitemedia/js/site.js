@@ -113,9 +113,23 @@ $(function() {
     }
   }
 
+  function initSearchFormOnFocus() {
+    var $searchHeaderForm = $(".search-form-header__form");
+    console.log($searchHeaderForm)
+    if ($searchHeaderForm.length) {
+      $(".search-form-header__form .mdl-textfield__input").on("focus", function() {
+          $searchHeaderForm.addClass("is-focused");
+        }).on("blur", function() {
+          $searchHeaderForm.removeClass("is-focused");
+        });
+    }
+  }
+
   function initSearchForm() {
     initSelectize();
     initFixedScrollSearchHeader();
+    initSearchFormOnFocus();
+
     var $searchForm = $(".search-form-header");
     if ($searchForm.length) {
       $("[data-action=toggle-search-form]").on("click", function() {

@@ -61,6 +61,13 @@
 
   .search-form-header__form {
     height: $search-height;
+    filter: grayscale(100);
+
+    &.is-focused,
+    &:hover {
+      filter: grayscale(0);
+    }
+
     @include transition(margin-bottom $search-duration $base-timing,
       height $search-duration $base-timing,
       opacity $search-duration $base-timing);
@@ -217,6 +224,8 @@
   &.is-focused .mdl-textfield__label {
     &::after {
       background-color: $primary-color;
+      width: 0;
+      visibility: hidden;
     }
   }
 
