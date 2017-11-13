@@ -133,6 +133,7 @@
 
       .item__body {
         @include grid-column(7);
+        margin-left: 0;
       }
     }
   }
