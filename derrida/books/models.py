@@ -1,5 +1,6 @@
 import json
 import re
+from unidecode import unidecode
 
 from django.db import models
 from django.contrib.contenttypes.fields import GenericRelation
@@ -15,7 +16,6 @@ from derrida.common.models import Named, Notable, DateRange
 from derrida.places.models import Place
 from derrida.people.models import Person
 from derrida.footnotes.models import Footnote
-from derrida.utils import deligature
 
 Q = models.Q
 
@@ -178,6 +178,7 @@ class Instance(Notable):
     )
     # identifying slug for use in get_absolute_url, indexed for speed
     slug = models.SlugField(max_length=255,
+                            unique=True,
                             help_text=('Editing this after a record is '
                                        'created should be done with caution '
                                        'as it will break the previous URL.'))
@@ -310,7 +311,7 @@ class Instance(Notable):
             # if still no year, use blank string
             year = ''
         # return a slug with no distinction for copies
-        return slugify('%s %s %s' % (author, deligature(title), year))
+        return slugify('%s %s %s' % (author, unidecode(title), year))
 
     def generate_safe_slug(self):
         '''Generate a verified slug with copy handling for :class:`Instance`
