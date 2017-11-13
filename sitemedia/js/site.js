@@ -117,9 +117,9 @@ $(function() {
     var $searchHeaderForm = $(".search-form-header__form");
     console.log($searchHeaderForm)
     if ($searchHeaderForm.length) {
-      $(".search-form-header__form .mdl-textfield__input").on("focus", function() {
+      $(".search-form-header__form .mdl-textfield__input").on("focus.mainSearch", function() {
           $searchHeaderForm.addClass("is-focused");
-        }).on("blur", function() {
+        }).on("blur.mainSearch", function() {
           $searchHeaderForm.removeClass("is-focused");
         });
     }
