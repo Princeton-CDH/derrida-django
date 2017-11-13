@@ -272,11 +272,11 @@
   cursor: default;
 }
 .selectize-dropdown .active {
-  background-color: #f5fafd;
-  color: #495c68;
+  background-color: transparent;
+  color: $primary-color;
 }
 .selectize-dropdown .active.create {
-  color: #495c68;
+  color: $primary-color;
 }
 .selectize-dropdown .create {
   color: rgba(48, 48, 48, 0.5);
