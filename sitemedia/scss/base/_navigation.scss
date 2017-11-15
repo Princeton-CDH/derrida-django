@@ -47,7 +47,7 @@
 }
 
 .mdl-navigation__link {
-  @include secondary-font-style();
+  @include secondary-font-style("bold");
   opacity: 0.8;
   line-height: 1;
   outline: none;
