@@ -1,5 +1,19 @@
 $(function() {
 
+  function initNavigationButton() {
+    var $drawerButton = $("<div/>").addClass("mdl-layout__drawer-button").addClass("active"),
+        $svg = $("<svg/>")
+          .addClass("svg-icon")
+          .attr({
+            xmlns: "http://www.w3.org/2000/svg",
+            viewBox: "0 0 20 20"
+          })
+          .html(
+            '<rect x="2.4" y="3.3" width="15.2" height="2" fill="#979797"/><rect x="2.4" y="9" width="15.2" height="2" fill="#979797"/><rect x="2.4" y="14.7" width="15.2" height="2" fill="#979797"/>'
+          );
+    $("body").append($drawerButton.append($svg));
+  }
+
   function submitFilterForm() {
     $(".mdl-layout").addClass("is-submitting");
     $(".page-filter__form").submit();
@@ -773,6 +787,7 @@ $(function() {
     }
   }
 
+  initNavigationButton();
   initSearchForm();
   initPageFilter();
   initBookHeader();
