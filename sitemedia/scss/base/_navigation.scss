@@ -330,7 +330,17 @@
   height: auto;
   padding-bottom: 2em;
   z-index: 4;
+  box-shadow: none;
+  background: none;
   @include prefixer(transform, translateY(-100%), webkit moz ms o spec);
+
+  .background-colored--dark & {
+    background: $white;
+  }
+
+  @include grid-media($large-medium-viewport-grid) {
+    display: none;
+  }
 
   &.is-visible {
     @include prefixer(transform, translateY(4.4em), webkit moz ms o spec);
