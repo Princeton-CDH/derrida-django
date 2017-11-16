@@ -349,7 +349,7 @@
 
 .item__indicator {
   position: absolute;
-  right: 8%;
+  right: calc(4.666% + 10px); // Need to account for margins on item container
   top: -10px;
   width: 30px;
   z-index: 10;
