@@ -528,7 +528,7 @@ $(function() {
       var $inputs = $yearFilter.find(".filter__search input"),
           $firstInput = $inputs.first(),
           $lastInput = $inputs.last();
-      $lastInput.attr({placeholder: "Last"}).before($("<label/>").addClass("filter__search-label").text("to"));
+      $lastInput.attr({placeholder: "End"}).before($("<label/>").addClass("filter__search-label").text("to"));
 
       $yearFilter.find(".clear-link").on("click", function(e) {
         e.preventDefault();
