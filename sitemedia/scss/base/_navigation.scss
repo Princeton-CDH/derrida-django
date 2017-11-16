@@ -427,7 +427,7 @@
 
   &.active {
     opacity: 1;
-    z-index: 0;
+    z-index: 11;
   }
 
   .svg-icon {
@@ -447,7 +447,8 @@
     @include transition(transform $base-duration $base-timing);
   }
 
-  &:hover ~ .mdl-layout__drawer-button .svg-icon rect {
+  &:hover ~ .mdl-layout__drawer-button .svg-icon rect,
+  &.active:hover .svg-icon rect {
     background: $primary-color;
   }
 }
