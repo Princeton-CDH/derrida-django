@@ -785,6 +785,34 @@ $(function() {
           }
         });
     }
+
+    $.getElementSize = $.getElementSize || function(selector) {
+      var $element = $(selector);
+      return {
+        x: $element.width(),
+        y: $element.height()
+      };
+    }
+
+    $.getPageScroll = $.getPageScroll || function(selector) {
+      var $element = $(selector)
+      return {
+        x: $element.scrollLeft(),
+        y: $element.scrollTop()
+      };
+    }
+
+    $.addClass = $.addClass || function(selector, className) {
+      $(selector).addClass(className);
+    }
+
+    $.getWindowSize = $.getWindowSize || function() {
+      var $window = $(window);
+      return {
+        x: $window.width(),
+        y: $window.height()
+      };
+    }
   }
 
   initNavigationButton();
