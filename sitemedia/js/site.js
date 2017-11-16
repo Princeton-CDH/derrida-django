@@ -1,5 +1,19 @@
 $(function() {
 
+  function initNavigationButton() {
+    var $drawerButton = $("<div/>").addClass("mdl-layout__drawer-button").addClass("active"),
+        $svg = $("<svg/>")
+          .addClass("svg-icon")
+          .attr({
+            xmlns: "http://www.w3.org/2000/svg",
+            viewBox: "0 0 20 20"
+          })
+          .html(
+            '<rect x="2.4" y="3.3" width="15.2" height="2" fill="#979797"/><rect x="2.4" y="9" width="15.2" height="2" fill="#979797"/><rect x="2.4" y="14.7" width="15.2" height="2" fill="#979797"/>'
+          );
+    $("body").append($drawerButton.append($svg));
+  }
+
   function submitFilterForm() {
     $(".mdl-layout").addClass("is-submitting");
     $(".page-filter__form").submit();
@@ -115,7 +129,6 @@ $(function() {
 
   function initSearchFormOnFocus() {
     var $searchHeaderForm = $(".search-form-header__form");
-    console.log($searchHeaderForm)
     if ($searchHeaderForm.length) {
       $(".search-form-header__form .mdl-textfield__input").on("focus.mainSearch", function() {
           $searchHeaderForm.addClass("is-focused");
@@ -366,6 +379,7 @@ $(function() {
       $checkboxes.each(function() {
         var $checkbox = $(this);
         $checkbox.removeProp("checked");
+        $checkbox.removeAttr("checked");
         $checkbox.parent().removeClass("is-checked");
       });
       authorList.filter();
@@ -515,7 +529,7 @@ $(function() {
       var $inputs = $yearFilter.find(".filter__search input"),
           $firstInput = $inputs.first(),
           $lastInput = $inputs.last();
-      $lastInput.attr({placeholder: "Last"}).before($("<label/>").addClass("filter__search-label").text("to"));
+      $lastInput.attr({placeholder: "End"}).before($("<label/>").addClass("filter__search-label").text("to"));
 
       $yearFilter.find(".clear-link").on("click", function(e) {
         e.preventDefault();
@@ -532,8 +546,7 @@ $(function() {
 
         if (! arraysAreEqual(initialValues, currentValues)) {
           setValueForFilterInput(currentValues);
-          $(".mdl-layout").addClass("is-submitting");
-          $(".page-filter__form").submit();
+          submitFilterForm();
         }
       };
 
@@ -704,6 +717,7 @@ $(function() {
         $checkboxes.each(function() {
           var $checkbox = $(this);
           $checkbox.removeProp("checked");
+          $checkbox.removeAttr("checked");
           $checkbox.parent().removeClass("is-checked");
         });
         clearSelectionInput();
@@ -721,26 +735,35 @@ $(function() {
           }
         });
 
-        var setSelectedOptionsValues = function(context) {
-          var $elem = $(context),
-              optionText = $elem.val(),
-              checkboxFilterSelectionVal = $checkboxFilterSelectionInput.val() ? $checkboxFilterSelectionInput.val().split("; ") : [];
-          if ($elem.prop("checked")) {
-            checkboxFilterSelectionVal.push(optionText)
-          } else {
-            checkboxFilterSelectionVal = $.grep(checkboxFilterSelectionVal, function(value) {
-              return value != optionText;
-            });
-          }
-          $checkboxFilterSelectionInput.val(checkboxFilterSelectionVal.join("; "));
+        var setSelectedOptionsValues = function($checklist) {
+          var $checklists = $checklist || $(".filter__check-list").has("input[checked=checked]");
+
+          $checklists.each(function() {
+            var $this = $(this),
+                $checkedOptions = $this.find("input[checked=checked]"),
+                name = $checkedOptions.first().attr("name"),
+                $input = $("#" + name + "-selection");
+
+            if ($checkedOptions.length > 1) {
+              $input.val($checkedOptions.length + " selected");
+            } else if ($checkedOptions.length === 1) {
+              $input.val($checkedOptions.first().val());
+            } else {
+              $input.val();
+            }
+          });
         }
 
-        $(filterCheckListSelector + " input:checked").each(function() {
-          setSelectedOptionsValues(this);
-        });
+        setSelectedOptionsValues();
 
         $(filterCheckListSelector + " input").on("change", function() {
-          setSelectedOptionsValues(this);
+          var $this = $(this);
+          if (! $this.attr("checked")) {
+            $this.attr("checked", "checked");
+          } else {
+            $this.removeAttr("checked");
+          }
+          setSelectedOptionsValues($this.parents(".filter__check-list"));
         });
 
         var initialValue = $checkboxFilterSelectionInput.val();
@@ -749,8 +772,7 @@ $(function() {
           $openInput.removeClass("is-open").removeClass("is-focused");
 
           if ($checkboxFilterSelectionInput.val() !== initialValue) {
-            $(".mdl-layout").addClass("is-submitting");
-            $(".page-filter__form").submit();
+            submitFilterForm();
           }
         };
 
@@ -772,8 +794,37 @@ $(function() {
           }
         });
     }
+
+    $.getElementSize = $.getElementSize || function(selector) {
+      var $element = $(selector);
+      return {
+        x: $element.width(),
+        y: $element.height()
+      };
+    }
+
+    $.getPageScroll = $.getPageScroll || function(selector) {
+      var $element = $(selector)
+      return {
+        x: $element.scrollLeft(),
+        y: $element.scrollTop()
+      };
+    }
+
+    $.addClass = $.addClass || function(selector, className) {
+      $(selector).addClass(className);
+    }
+
+    $.getWindowSize = $.getWindowSize || function() {
+      var $window = $(window);
+      return {
+        x: $window.width(),
+        y: $window.height()
+      };
+    }
   }
 
+  initNavigationButton();
   initSearchForm();
   initPageFilter();
   initBookHeader();

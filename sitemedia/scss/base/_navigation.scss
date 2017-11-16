@@ -47,7 +47,7 @@
 }
 
 .mdl-navigation__link {
-  @include secondary-font-style();
+  @include secondary-font-style("bold");
   opacity: 0.8;
   line-height: 1;
   outline: none;
@@ -330,7 +330,17 @@
   height: auto;
   padding-bottom: 2em;
   z-index: 4;
+  box-shadow: none;
+  background: none;
   @include prefixer(transform, translateY(-100%), webkit moz ms o spec);
+
+  .background-colored--dark & {
+    background: $white;
+  }
+
+  @include grid-media($large-medium-viewport-grid) {
+    display: none;
+  }
 
   &.is-visible {
     @include prefixer(transform, translateY(4.4em), webkit moz ms o spec);
@@ -361,6 +371,7 @@
   }
 
   .mdl-navigation .mdl-navigation__link {
+    color: $black;
     padding: 0.5rem 1rem;
 
     &:hover,
@@ -406,5 +417,54 @@
   &.is-active::after {
     background-color: $primary-color;
     height: 2px;
+  }
+}
+
+.mdl-layout__drawer-button {
+  opacity: 0;
+  margin-top: 1em;
+  margin-left: 1em;
+
+  &.active {
+    opacity: 1;
+    z-index: 11;
+  }
+
+  .svg-icon {
+    width: 20px;
+    height: 20px;
+    display: block;
+    position: relative;
+  }
+
+  rect {
+    display: block;
+    position: relative;
+    height: 2px;
+    margin-bottom: 5px;
+    width: 100%;
+    background-color: transparentize($black, 0.4);
+    @include transition(transform $base-duration $base-timing);
+  }
+
+  &:hover ~ .mdl-layout__drawer-button .svg-icon rect,
+  &.active:hover .svg-icon rect {
+    background: $primary-color;
+  }
+}
+
+.mdl-layout__drawer.is-visible ~ .mdl-layout__drawer-button .svg-icon rect {
+  &:nth-child(2) {
+    opacity: 0;
+  }
+
+  &:nth-child(1) {
+    transform: rotateZ(45deg) translate(8px, 4px);
+    transform-origin: 50% 0;
+  }
+
+  &:nth-child(3) {
+    transform: rotateZ(-45deg) translate(5px, -3px);
+    transform-origin: 50% 0;
   }
 }

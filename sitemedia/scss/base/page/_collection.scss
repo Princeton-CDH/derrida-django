@@ -16,9 +16,13 @@
 .collection--condensed {
   .collection__item {
     @include grid-column(4);
+    max-width: 212px;
+    margin-bottom: 0;
 
     @media screen and (min-width: 550px) {
       @include grid-column(2);
+      max-width: none;
+      margin-bottom: inherit;
     }
 
     @include grid-media($large-medium-viewport-grid) {
@@ -160,9 +164,11 @@
 }
 
 .item__heading {
+  font-size: ems(15px, 14);
+  @include grid-media($xlarge-viewport-grid) {
+    font-size: ems(19px, 14);
+  }
   @include secondary-font-style("italic");
-  font-size: ems(19px);
-  font-style: italic;
   margin-top: 0.4em;
 
   .collection--condensed & {
@@ -190,7 +196,10 @@
 }
 
 .item__author {
-  font-size: ems(18px);
+  font-size: ems(14px, 14);
+  @include grid-media($xlarge-viewport-grid) {
+    font-size: ems(18px, 14);
+  }
   @include secondary-font-style();
 }
 
@@ -349,7 +358,7 @@
 
 .item__indicator {
   position: absolute;
-  right: 8%;
+  right: calc(4.666% + 10px); // Need to account for margins on item container
   top: -10px;
   width: 30px;
   z-index: 10;

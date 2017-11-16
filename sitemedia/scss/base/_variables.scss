@@ -63,7 +63,7 @@ $primary-color: $blue;
 $accent-color: $orange-red;
 
 // Font Colors
-$base-font-color: $dark-grey;
+$base-font-color: $black;
 $action-color: $primary-color;
 
 $base-border-color: $light-grey;
@@ -74,7 +74,8 @@ $base-background-color: $grey-100;
 $secondary-background-color: tint($base-border-color, 75%);
 
 // Header and Tab Colors
-$header-background-color: $white;$header-text-color: $dark-grey;
+$header-background-color: $white;
+$header-text-color: $black;
 $header-accent-color: $cdh-blue;
 $header-row-height: 64px;
 

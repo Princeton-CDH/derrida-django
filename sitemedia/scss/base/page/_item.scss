@@ -32,14 +32,18 @@
 
 .item-title {
   @include secondary-font-style("italic");
-  font-size: 1.6em;
+  font-size: ems(19px, 14);
   margin: 1em 0 0.25em;
 }
 
 .item-author {
-  font-size: 1.3em;
+  font-size: ems(18px, 14);
   @include secondary-font-style();
   margin-bottom: 6px;
+
+  & + .item-term__value{
+    font-size: ems(12px, 14);
+  }
 }
 
 .item-pages {
@@ -170,7 +174,6 @@
       &.collection {
         @include grid-column(12);
         margin-left: - $gutter-size;
-        font-size: 0.75rem;
       }
 
       &.item-term__value--aside {
@@ -179,7 +182,6 @@
       }
     }
   }
-
 
   &.item-term--callout {
     border-top: 1px solid rgba($black, 0.2);
@@ -214,6 +216,16 @@
         margin-left: inherit;
       }
     }
+  }
+}
+
+.collection.item-term__value {
+  .item__heading {
+    font-size: 15px;
+  }
+
+  .item__author {
+    font-size: 14px;
   }
 }
 
