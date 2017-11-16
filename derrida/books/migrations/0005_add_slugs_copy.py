@@ -4,10 +4,10 @@ from __future__ import unicode_literals
 
 import re
 import sys
+from unidecode import unidecode
 import django.core.validators
 from django.db import migrations, models
 from django.db.transaction import atomic
-from derrida.utils import deligature
 from django.utils.text import slugify
 
 
@@ -37,7 +37,8 @@ def generate_base_slug(obj):
         # if still no year, use blank string
         year = ''
     # return a slug with no distinction for copies
-    return slugify('%s %s %s' % (author, deligature(title), year))
+    return slugify('%s %s %s' % (author, unidecode(title), year))
+
 
 def add_slugs(apps, schema_editor):
     '''Add slugs to models as part of migration'''
@@ -121,6 +122,8 @@ class Migration(migrations.Migration):
             model_name='instance',
             name='slug',
             field=models.SlugField(
+                blank=False,
+                unique=True,
                 max_length=255,
                 help_text='Editing this after a record is created should be done with caution as it will break the previous URL.',
             ),
