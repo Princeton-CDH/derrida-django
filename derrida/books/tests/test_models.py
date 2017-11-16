@@ -234,6 +234,22 @@ class TestInstance(TestCase):
         # with -C as its suffix
         la_vie = Instance.objects.get(slug=la_vie.generate_base_slug())
         la_vie.generate_safe_slug() == la_vie.generate_base_slug() + '-C'
+        # get the original again, and see if a duplicate will produce the -C ending
+        la_vie = Instance.objects.filter(work__short_title__contains="La vie").order_by('slug')[0]
+        la_vie.pk = None
+        la_vie.slug = ''
+        la_vie.save()
+        la_vie.refresh_from_db()
+        assert la_vie.slug == la_vie.generate_base_slug() + '-C'
+
+    def test_save(self):
+        # on save, if empty slug, should set one with generate safe slug
+        la_vie = Instance.objects.get(work__short_title__contains="La vie")
+        la_vie.slug = ''
+        expected_slug = la_vie.generate_safe_slug()
+        la_vie.save()
+        la_vie.refresh_from_db()
+        assert la_vie.slug == expected_slug
 
     def test_get_absolute_url(self):
         la_vie = Instance.objects.get(work__short_title__contains="La vie")
