@@ -379,6 +379,7 @@ $(function() {
       $checkboxes.each(function() {
         var $checkbox = $(this);
         $checkbox.removeProp("checked");
+        $checkbox.removeAttr("checked");
         $checkbox.parent().removeClass("is-checked");
       });
       authorList.filter();
@@ -545,8 +546,7 @@ $(function() {
 
         if (! arraysAreEqual(initialValues, currentValues)) {
           setValueForFilterInput(currentValues);
-          $(".mdl-layout").addClass("is-submitting");
-          $(".page-filter__form").submit();
+          submitFilterForm();
         }
       };
 
@@ -717,6 +717,7 @@ $(function() {
         $checkboxes.each(function() {
           var $checkbox = $(this);
           $checkbox.removeProp("checked");
+          $checkbox.removeAttr("checked");
           $checkbox.parent().removeClass("is-checked");
         });
         clearSelectionInput();
@@ -734,26 +735,35 @@ $(function() {
           }
         });
 
-        var setSelectedOptionsValues = function(context) {
-          var $elem = $(context),
-              optionText = $elem.val(),
-              checkboxFilterSelectionVal = $checkboxFilterSelectionInput.val() ? $checkboxFilterSelectionInput.val().split("; ") : [];
-          if ($elem.prop("checked")) {
-            checkboxFilterSelectionVal.push(optionText)
-          } else {
-            checkboxFilterSelectionVal = $.grep(checkboxFilterSelectionVal, function(value) {
-              return value != optionText;
-            });
-          }
-          $checkboxFilterSelectionInput.val(checkboxFilterSelectionVal.join("; "));
+        var setSelectedOptionsValues = function($checklist) {
+          var $checklists = $checklist || $(".filter__check-list").has("input[checked=checked]");
+
+          $checklists.each(function() {
+            var $this = $(this),
+                $checkedOptions = $this.find("input[checked=checked]"),
+                name = $checkedOptions.first().attr("name"),
+                $input = $("#" + name + "-selection");
+
+            if ($checkedOptions.length > 1) {
+              $input.val($checkedOptions.length + " selected");
+            } else if ($checkedOptions.length === 1) {
+              $input.val($checkedOptions.first().val());
+            } else {
+              $input.val();
+            }
+          });
         }
 
-        $(filterCheckListSelector + " input:checked").each(function() {
-          setSelectedOptionsValues(this);
-        });
+        setSelectedOptionsValues();
 
         $(filterCheckListSelector + " input").on("change", function() {
-          setSelectedOptionsValues(this);
+          var $this = $(this);
+          if (! $this.attr("checked")) {
+            $this.attr("checked", "checked");
+          } else {
+            $this.removeAttr("checked");
+          }
+          setSelectedOptionsValues($this.parents(".filter__check-list"));
         });
 
         var initialValue = $checkboxFilterSelectionInput.val();
@@ -762,8 +772,7 @@ $(function() {
           $openInput.removeClass("is-open").removeClass("is-focused");
 
           if ($checkboxFilterSelectionInput.val() !== initialValue) {
-            $(".mdl-layout").addClass("is-submitting");
-            $(".page-filter__form").submit();
+            submitFilterForm();
           }
         };
 
