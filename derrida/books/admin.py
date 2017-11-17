@@ -328,6 +328,9 @@ class InstanceAdminForm(forms.ModelForm):
             widget=forms.widgets.DateInput(format="%Y-%m-%d"),
             help_text=Instance.print_date_help_text,
             required=False)
+    # override slug to let it be optional on the form but required on db end
+    slug = forms.SlugField(max_length=255, required=False,
+        widget=forms.widgets.TextInput(attrs={"class": "vTextField"}))
 
     class Meta:
         model = Work
@@ -345,7 +348,6 @@ class InstanceAdminForm(forms.ModelForm):
             )
 
         }
-
 
 class InstanceAdmin(admin.ModelAdmin):
     form = InstanceAdminForm
