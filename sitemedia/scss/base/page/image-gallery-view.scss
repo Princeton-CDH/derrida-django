@@ -321,3 +321,27 @@ $max-component-height: 78vh;
     font-size: 0.9em;
   }
 }
+
+
+.is-full-screen {
+  header {
+    display: none;
+  }
+
+  .deep-zoom-component {
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: $black-0;
+    z-index: 100;
+    margin: 0;
+  }
+
+  .gallery-image-view__container .deep-zoom-component #deep-zoom {
+    height: 100%;
+  }
+}
