@@ -6,7 +6,7 @@
 # immediately.
 
 DEBUG = False
-
+ALLOWED_HOSTS = ["*"]
 # disable compression for tests that check javascript contents
 COMPRESS_ENABLED = False
 
