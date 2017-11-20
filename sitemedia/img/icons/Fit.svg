@@ -1,0 +1,19 @@
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: none;
+        stroke: #979797;
+        stroke-miterlimit: 10;
+        stroke-width: 2px;
+      }
+    </style>
+  </defs>
+  <title>Fit</title>
+  <g>
+    <polyline class="cls-1" points="4.1 8 4.1 4 8.1 4"/>
+    <polyline class="cls-1" points="11.9 4 15.9 4 15.9 8"/>
+    <polyline class="cls-1" points="15.9 12 15.9 16 11.9 16"/>
+    <polyline class="cls-1" points="8.1 16 4.1 16 4.1 12"/>
+  </g>
+</svg>
