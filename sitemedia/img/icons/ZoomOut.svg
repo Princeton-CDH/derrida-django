@@ -2,13 +2,10 @@
   <defs>
     <style>
       .cls-1 {
-        fill: none;
-        stroke: #979797;
-        stroke-miterlimit: 10;
-        stroke-width: 2px;
+        fill: #979797;
       }
     </style>
   </defs>
   <title>ZoomOut</title>
-  <line class="cls-1" x1="2.4" y1="10" x2="17.6" y2="10"/>
+  <rect class="cls-1" x="2.4" y="9" width="15.2" height="2"/>
 </svg>
