@@ -822,6 +822,19 @@ $(function() {
         y: $window.height()
       };
     }
+
+    $.isFullScreen = function() {
+      return (screen.availHeight || screen.height-30) <= window.innerHeight;
+    }
+
+    $.delegate = function( selector, types, data, fn ) {
+      return this.on( types, selector, data, fn );
+    }
+
+    $.undelegate = function( selector, types, fn ) {
+      // ( namespace ) or ( selector, types [, fn] )
+      return arguments.length === 1 ? this.off( selector, "**" ) : this.off( types, selector || "**", fn );
+    }
   }
 
   initNavigationButton();
