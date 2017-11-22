@@ -16,6 +16,8 @@ deploy: '{{ install_root }}/{{ version }}-{{ repo_info.after}}'
 # Database info from deploy user environment
 db_name: "{{ lookup('env', 'DERRIDA_DB_NAME') }}"
 db_host: "{{ lookup('env', 'DB_HOST') }}"
+# project user for CACHE group ownership
+project_user: derrida
 # Database backup location
 db_backup: '/tmp/pre-{{ version }}-{{ repo_info.after }}-{{ djangoapp }}.sql'
 # Symlink for /var/www

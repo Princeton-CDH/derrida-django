@@ -1,3 +1,9 @@
+- name: Make a database dump to /tmp just in case
+  mysql_db:
+    state: dump
+    login_host: "{{ db_host}}"
+    name: "{{ db_name }}"
+    target: "{{ db_backup }}"
 - name: Make a directory for virtualenv
   file:
       path: "{{ deploy }}/env"
@@ -20,7 +26,6 @@
     virtualenv: "{{ deploy }}/env"
     requirements: "{{ deploy }}/requirements.txt"
     virtualenv_site_packages: yes
-
 - name: Install local_settings.py
   copy:
     src: "{{ lookup('env', 'HOME') }}/.deploy/{{ local_settings_path }}"
@@ -37,11 +42,10 @@
     owner: deploy
     group: apache
     mode: 0770
-- name: Set ownership recursively
-  file:
-    path: "{{ deploy }}"
-    state: directory
-    owner: deploy
-    group: apache
-    recurse: yes
   ignore_errors: true
+- name: chgrp the CACHE folder to project user
+  shell: "sudo chgrp -R {{ project_user }} {{ deploy }}/static/CACHE"
+  args:
+    warn: False
+    executable: /bin/bash
+    when: group == "qa"

@@ -17,4 +17,4 @@ db_host: "{{ lookup('env', 'DB_HOST') }}"
 # Database backup location
 db_backup: '/tmp/pre-{{ version }}-{{ repo_info.after }}-{{ djangoapp }}.sql'
 # Symlink for /var/www
-symlink: 'mep2'
+symlink: 'derridas-margins'
