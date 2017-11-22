@@ -1,0 +1,15 @@
+- hosts: '{{ group | default("qa") }}'
+  connection: '{{ conn | default("local") }}'
+  remote_user: deploy
+  # Set environment to use scl rh-python35
+  environment:
+    PATH: '/opt/rh/rh-python35/root/usr/bin/:{{ lookup("env","PATH") }}'
+    LD_LIBRARY_PATH: '/opt/rh/rh-python35/root/usr/lib64'
+  roles:
+      # Creates repo variable names and builds repo
+      - projectrepo
+      # Builds a production deploy and sets file permissions correctly
+      - buildprod
+      # Makes an emergency database backup, run migrations, and then resets
+      # symlinks
+      - golive
