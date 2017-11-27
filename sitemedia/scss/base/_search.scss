@@ -65,12 +65,6 @@
 
   .search-form-header__form {
     height: $search-height;
-    filter: grayscale(100);
-
-    &.is-focused,
-    &:hover {
-      filter: grayscale(0);
-    }
 
     @include transition(margin-bottom $search-duration $base-timing,
       height $search-duration $base-timing,
@@ -78,6 +72,34 @@
 
     @include grid-media($xlarge-viewport-grid) {
       margin-bottom: 5em;
+    }
+
+    & > * {
+      filter: grayscale(100);
+    }
+
+    &.is-focused > *,
+    &:hover > * {
+      filter: grayscale(0);
+    }
+
+    // Never grey out the selection options
+    & > .mdl-selectfield {
+      filter: grayscale(0);
+      .selectize-input {
+        filter: grayscale(100);
+      }
+
+      .selectize-dropdown {
+        filter: grayscale(0);
+      }
+    }
+
+    &.is-focused > .mdl-selectfield,
+    &:hover > .mdl-selectfield {
+      .selectize-input {
+        filter: grayscale(0);
+      }
     }
   }
 
