@@ -282,9 +282,8 @@
   color: rgba(48, 48, 48, 0.5);
 }
 .selectize-dropdown-content {
-  overflow-y: auto;
+  overflow-y: hidden;
   overflow-x: hidden;
-  max-height: 200px;
   -webkit-overflow-scrolling: touch;
 }
 .selectize-control.single .selectize-input,
