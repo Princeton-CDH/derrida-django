@@ -197,6 +197,12 @@
     color: $grey-500;
   }
 
+  .selectize-input > .item {
+    width: 100%;
+    z-index: 3;
+    position: relative;
+  }
+
   .selectize-control.single .selectize-input.input-active {
     background: transparent;
     margin-top: -0.6rem;
