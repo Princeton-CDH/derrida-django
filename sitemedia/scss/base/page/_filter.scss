@@ -28,7 +28,11 @@
 
   .is-visible & {
     transform: scaleY(1);
-    max-height: 45em;
+    max-height: 65em;
+
+    @include grid-media($large-medium-viewport-grid) {
+      max-height: 45em;
+    }
   }
 }
 
