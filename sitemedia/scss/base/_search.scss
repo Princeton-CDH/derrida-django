@@ -246,6 +246,10 @@
 .mdl-textfield.is-upgraded {
   .mdl-textfield__label {
     color: $base-font-color;
+
+    &.mdl-textfield__label--search {
+      color: $grey-500;
+    }
   }
 
   &.is-focused .mdl-textfield__label {
