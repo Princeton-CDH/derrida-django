@@ -214,15 +214,16 @@
     background-image: url("../img/icons/Expand.svg");
     background-position: center;
     background-repeat: no-repeat;
-    background-size: 50%;
+    background-size: 60%;
     width: 30px;
     height: 30px;
-    margin-top: -15px;
+    margin-top: -17px;
+    margin-right: -15px;
     line-height: 1;
   }
 
   .mdl-selectfield.is-active .selectize-control.single .selectize-input::after {
-    background-image: url("../img/icons/Collapse.svg");
+    background-image: url("../img/icons/Collapse-focus.svg");
   }
 
   .selectize-dropdown {
