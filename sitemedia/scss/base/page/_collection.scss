@@ -180,7 +180,8 @@
 .item__link {
   @include faded-link();
   color: inherit;
-  line-height: 1.4;
+  line-height: 1.5;
+  padding-bottom: 1.3px;
 }
 
 .item__secondary-link {
