@@ -37,6 +37,10 @@
       height: 4em;
       z-index: -3;
       @include transition(background-color $search-duration $base-timing, top $search-duration $base-timing);
+
+      .background-colored--light-navy & {
+        background-color: $light-navy;
+      }
     }
 
     &.is-hidden::before {
@@ -168,6 +172,7 @@
 
   .selectize-input > * {
     font-size: 12px;
+    color: $grey-500;
   }
 
   .selectize-control.single .selectize-input.input-active {
@@ -231,7 +236,7 @@
 
   .background-colored--dark & {
     .mdl-textfield__label {
-      color: $white;
+      color: $grey-500;
     }
 
     .mdl-textfield__input {
