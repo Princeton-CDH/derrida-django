@@ -213,6 +213,10 @@
   margin-bottom: 1.2em;
 }
 
+.item__date {
+  @include primary-font-style();
+}
+
 .item-gallery {
   display: flex;
   flex-flow: row;
