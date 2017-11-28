@@ -1,15 +1,21 @@
 {# annotation card for display with large page image #}
 <section class="collection__item item annotation marginalia-item" data-ref-id="{{ intervention.id }}">
   <div class="item__body">
-    {% for annotype in intervention.annotation_type %}
-    {% if annotype != 'nonverbal annotation' and annotype != 'verbal annotation' %}
-    <a class="text-badge text-badge--red text-badge--link" href="{% url 'interventions:list' %}?annotation_type={{ annotype }}">{{ annotype }}</a>
-    {% endif %}
-    {% endfor %}
+    <div class="item__body__header">
+      {% for annotype in intervention.annotation_type %}
+        {% if annotype != 'nonverbal annotation' and annotype != 'verbal annotation' %}
+          <a class="text-badge text-badge--red text-badge--link" href="{% url 'interventions:list' %}?annotation_type={{ annotype }}">{{ annotype }}</a>
+        {% endif %}
+      {% endfor %}
 
-    <h3 class="item__heading">{% firstof intervention.author.firstname_last 'Unknown' %}</h3>
+      <a class="item__link" href="#annotations/{{ intervention.id }}">Permalink</a>
+    </div>
+
+    <h3 class="item__heading"><span>{% firstof intervention.author.firstname_last 'Unknown' %}</span></h3>
+    {% if intervention.text_language %}
+      <p class="item__language">Anchor Text: {{ intervention.text_language | default:"French" }}</p>
+    {% endif %}
     <p class="item__excerpt">{{ intervention.text }}</p>
     <p class="item__excerpt">{{ intervention.quote }}</p>
-    <a class="item__link" href="#annotations/{{ intervention.id }}"><i class="material-icons">link</i></a>
   </div>
 </section>
