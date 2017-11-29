@@ -101,7 +101,7 @@ class ReferenceIndex(indexes.SearchIndex, indexes.Indexable):
     #: is instance annotated?; :attr:`derrida.books.models.Instance.is_annotated`
     instance_is_annotated = indexes.FacetBooleanField(model_attr='instance__is_annotated')
     #: instance slug, for generating urls and filtering by instance
-    instance_slug = indexes.CharField(model_attr='instance__slug')
+    instance_slug = indexes.CharField()
     #: instance copy, for distinguishing multiple copies of the same edition
     instance_copy = indexes.CharField(model_attr='instance__copy', null=True)
     #: boolean indicating if instance has digital edition
@@ -118,3 +118,8 @@ class ReferenceIndex(indexes.SearchIndex, indexes.Indexable):
     def prepare_corresponding_intervention(self, reference):
         return reference.interventions.count()
 
+    def prepare_instance_slug(self, reference):
+        '''Override slug to use collected_instance if it exists'''
+        if reference.instance.collected_in:
+            return reference.instance.collected_in.slug
+        return reference.instance.slug
