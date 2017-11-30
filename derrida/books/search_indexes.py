@@ -119,7 +119,10 @@ class ReferenceIndex(indexes.SearchIndex, indexes.Indexable):
         return reference.interventions.count()
 
     def prepare_instance_slug(self, reference):
-        '''Override slug to use collected_instance if it exists'''
+        '''Override slug to use its collected_in.instance.slug if it exists.
+        Ensures that references for book sections appear with the
+        containing instance.
+        '''
         if reference.instance.collected_in:
             return reference.instance.collected_in.slug
         return reference.instance.slug
