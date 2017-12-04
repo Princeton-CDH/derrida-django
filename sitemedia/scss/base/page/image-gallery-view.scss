@@ -1,25 +1,32 @@
-.mdl-layout__header,
-.page-header {
-  @include grid-media($large-medium-viewport-grid) {
-    background: linear-gradient(to right, $white 0%, $white 300px, transparentize($white, 1) 300px, transparentize($white, 1) 100%);
-    background-position: -300px;
-    @include transition(background-position 20ms $base-timing);
 
-    &::before {
-      content: "";
-      background: linear-gradient(to left, $base-background-color 0%, $base-background-color 300px, transparentize($white, 1) 300px, transparentize($white, 1) 100%);
-      position: absolute;
-      top: 0;
-      left: 0;
-      height: 4.8em;
-      width: 100%;
-      display: block;
-    }
+.is-canvas-view {
+  .mdl-layout__header,
+  .page-header {
+    @include grid-media($large-medium-viewport-grid) {
+      background: linear-gradient(to right, $white 0%, $white 300px, transparentize($white, 1) 300px, transparentize($white, 1) 100%);
+      background-position: -300px;
+      @include transition(background-position 20ms $base-timing);
 
-    &.is-sidebar-visible {
-      background-position: 0;
-      @include transition(background-position 150ms $base-timing);
+      &::before {
+        content: "";
+        background: linear-gradient(to left, $base-background-color 0%, $base-background-color 300px, transparentize($white, 1) 300px, transparentize($white, 1) 100%);
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 4.8em;
+        width: 100%;
+        display: block;
+      }
+
+      &.is-sidebar-visible {
+        background-position: 0;
+        @include transition(background-position 150ms $base-timing);
+      }
     }
+  }
+
+  &.disable-coordinate-navigation .mdl-layout__header.mdl-layout__header--transparent {
+    pointer-events: none;
   }
 }
 

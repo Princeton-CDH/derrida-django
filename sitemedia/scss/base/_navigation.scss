@@ -107,7 +107,10 @@
     display: none;
 
     .disable-coordinate-navigation & {
-      display: flex;
+      display: none;
+      @include grid-media($large-medium-viewport-grid) {
+        display: flex;
+      }
     }
   }
 }
