@@ -1,4 +1,5 @@
 # import datetime
+import re
 from haystack import indexes
 from derrida.books.models import Instance, Reference
 
@@ -63,6 +64,8 @@ class ReferenceIndex(indexes.SearchIndex, indexes.Indexable):
     derridawork_slug = indexes.CharField(model_attr='derridawork__slug')
     #: Cited page in referenced work; :attr:`derrida.books.models.Reference.book_page`
     book_page = indexes.CharField(model_attr='book_page', null=True, faceted=True)
+    #: sort field for reference work page to sort page numbers correctly
+    book_page_sort = indexes.IntegerField()
     #: anchor text
     anchor_text = indexes.CharField(model_attr='anchor_text', null=True)
     #: ids for corresponding intervention
@@ -126,3 +129,50 @@ class ReferenceIndex(indexes.SearchIndex, indexes.Indexable):
         if reference.instance.collected_in:
             return reference.instance.collected_in.slug
         return reference.instance.slug
+
+    def prepare_book_page_sort(self, reference):
+        '''Handle integer values and sort in page references'''
+        # if empty immediately return 0 for no sort
+        if not reference.book_page:
+            return 0
+        book_page = reference.book_page
+        # strip back references to derridawork citation, i.e. (256a)
+        book_page = re.sub(r'\(.*\)', '', book_page)
+        print(book_page)
+        # split on '-' if it exists
+        book_page = book_page.split('-')[0]
+        # strip p and s and upper
+        book_page = book_page.strip('ps').upper()
+        # check for a roman numeral
+        if not re.search(r'[^MDCLXVI]+', book_page):
+            roman_nums = {
+                'M': 1000, 'D': 500, 'C': 100,
+                'L': 50, 'X': 10, 'V': 5, 'I': 1
+            }
+            value = 0
+            previous = ''
+            for char in book_page:
+                # first letter is always added
+                if not previous:
+                    value = roman_nums[char]
+                if previous:
+                    # add a smaller number
+                    if roman_nums[previous] >= roman_nums[char]:
+                        value += roman_nums[char]
+                    # if a larger follows a smaller, it will be one place value
+                    # off (i.e. 9 instead of 10, 90 instead of 100, etc.)
+                    # so we can deduct counting it previously and then subtract
+                    # it again from value of the following character
+                    if roman_nums[previous] < roman_nums[char]:
+                        value += (roman_nums[char] - roman_nums[previous]*2)
+                previous = char
+            # This results in front matter pages (up to 500) being indexed
+            # before regular pages.
+            return value - 500
+        # remove any other non-numeric characters for irregular references
+        book_page = re.sub(r'[^1-9]', '', book_page)
+        # return the characters as an integer
+        if book_page:
+            return int(book_page)
+        # if blank string, return zero (no sort)
+        return 0
