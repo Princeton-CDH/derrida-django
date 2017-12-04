@@ -1,5 +1,6 @@
-.mdl-layout__header,
-.page-header {
+
+.is-canvas-view .mdl-layout__header,
+.is-canvas-view .page-header {
   @include grid-media($large-medium-viewport-grid) {
     background: linear-gradient(to right, $white 0%, $white 300px, transparentize($white, 1) 300px, transparentize($white, 1) 100%);
     background-position: -300px;
