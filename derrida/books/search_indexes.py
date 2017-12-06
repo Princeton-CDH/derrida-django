@@ -138,7 +138,6 @@ class ReferenceIndex(indexes.SearchIndex, indexes.Indexable):
         book_page = reference.book_page
         # strip back references to derridawork citation, i.e. (256a)
         book_page = re.sub(r'\(.*\)', '', book_page)
-        print(book_page)
         # split on '-' if it exists
         book_page = book_page.split('-')[0]
         # strip p and s and upper
