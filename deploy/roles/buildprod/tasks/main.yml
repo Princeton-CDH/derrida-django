@@ -45,7 +45,7 @@
   ignore_errors: true
 - name: chgrp the CACHE folder to project user
   shell: "sudo chgrp -R {{ project_user }} {{ deploy }}/static/CACHE"
+  when: group == "qa"
   args:
     warn: False
     executable: /bin/bash
-    when: group == "qa"
