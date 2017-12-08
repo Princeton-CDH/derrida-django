@@ -2,12 +2,12 @@
 
 // Typography
 $base-font-family: "UniversLTPro-55Roman", "Helvetica", "Arial", sans-serif;
-$base-font-family--italic: "UniversLTPro-55Oblique", "Helvetica", "Arial", sans-serif;
-$base-font-family--bold: "UniversLTPro-65Bold", "Helvetica", "Arial", sans-serif;
+$base-font-family--italic: "UniversLTPro-55Oblique", "Helvetica-Oblique", "Arial", sans-serif;
+$base-font-family--bold: "UniversLTPro-65Bold", "Helvetica-Bold", "Tahoma-Bold", sans-serif;
 
 $secondary-font-family: "SabonLTPro-Roman", "Georgia", serif;
-$secondary-font-family--italic: "SabonLTPro-Italic", "Georgia", serif;
-$secondary-font-family--bold: "SabonLTPro-Bold", "Georgia", serif;
+$secondary-font-family--italic: "SabonLTPro-Italic", "Georgia-Italic", serif;
+$secondary-font-family--bold: "SabonLTPro-Bold", "Georgia-Bold", serif;
 
 @mixin primary-font-style($variant: "") {
   @if $variant == "italic" {
@@ -19,6 +19,7 @@ $secondary-font-family--bold: "SabonLTPro-Bold", "Georgia", serif;
   }
   font-weight: normal;
   font-style: normal;
+  letter-spacing: normal;
 }
 
 @mixin secondary-font-style($variant: "") {
@@ -31,6 +32,7 @@ $secondary-font-family--bold: "SabonLTPro-Bold", "Georgia", serif;
   }
   font-weight: normal;
   font-style: normal;
+  letter-spacing: normal;
 }
 
 // Base Font Size
@@ -61,7 +63,7 @@ $primary-color: $blue;
 $accent-color: $orange-red;
 
 // Font Colors
-$base-font-color: $dark-grey;
+$base-font-color: $black;
 $action-color: $primary-color;
 
 $base-border-color: $light-grey;
@@ -72,7 +74,8 @@ $base-background-color: $grey-100;
 $secondary-background-color: tint($base-border-color, 75%);
 
 // Header and Tab Colors
-$header-background-color: $white;$header-text-color: $dark-grey;
+$header-background-color: $white;
+$header-text-color: $black;
 $header-accent-color: $cdh-blue;
 $header-row-height: 64px;
 

@@ -1,5 +1,6 @@
 import json
 import re
+from unidecode import unidecode
 
 from django.db import models
 from django.contrib.contenttypes.fields import GenericRelation
@@ -15,7 +16,6 @@ from derrida.common.models import Named, Notable, DateRange
 from derrida.places.models import Place
 from derrida.people.models import Person
 from derrida.footnotes.models import Footnote
-from derrida.utils import deligature
 
 Q = models.Q
 
@@ -178,9 +178,16 @@ class Instance(Notable):
     )
     # identifying slug for use in get_absolute_url, indexed for speed
     slug = models.SlugField(max_length=255,
-                            help_text=('Editing this after a record is '
-                                       'created should be done with caution '
-                                       'as it will break the previous URL.'))
+                            unique=True,
+                            help_text=(
+                                'To auto-generate a valid slug for a new '
+                                'instance, choose a work then click '
+                                '"Save and Continue Editing" in the lower '
+                                'right. Editing slugs of previously saved '
+                                'instances should be done with caution, '
+                                'as this may break permanent links.'
+                            )
+    )
 
     #: item is extant
     is_extant = models.BooleanField(help_text='Extant in PUL JD', default=False)
@@ -276,6 +283,11 @@ class Instance(Notable):
         ordering = ['alternate_title', 'work__primary_title'] ## ??
         verbose_name = 'Derrida library work instance'
 
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = self.generate_safe_slug()
+        super(Instance, self).save(*args, **kwargs)
+
     def clean(self):
         # Don't allow both journal and collected work
         if self.journal and self.collected_in:
@@ -310,7 +322,7 @@ class Instance(Notable):
             # if still no year, use blank string
             year = ''
         # return a slug with no distinction for copies
-        return slugify('%s %s %s' % (author, deligature(title), year))
+        return slugify('%s %s %s' % (author, unidecode(title), year))
 
     def generate_safe_slug(self):
         '''Generate a verified slug with copy handling for :class:`Instance`
@@ -333,9 +345,9 @@ class Instance(Notable):
             slugs = duplicates.values_list('slug', flat=True)
             letters = []
             # clip any -[A-Z] copy suffixes and append to a list
-            for slug in slugs:
-                if re.match(r'-[A-Z]%', slug):
-                    letters += slug.split('-')[-1]
+            for duplicate in slugs:
+                if re.search(r'-[A-Z]$', duplicate):
+                    letters.append(duplicate.split('-')[-1])
             # sort and iterate letter by one
             if sorted(letters, reverse=True):
                 new_copy_letter = chr(ord(letters[0]) + 1)

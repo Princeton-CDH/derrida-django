@@ -1,0 +1,29 @@
+{% load static %}
+
+<section class="collection__item item outwork">
+  {% comment %} currently no image for outwork
+  <figure class="item__image">
+    {% if href %}
+    <a class="item__image-link" href="{% url href %}">
+    {% endif %}
+      {% if img %}
+      <img class="img" src="{% static img %}" />
+      {% else %}
+      <span class="img img--placeholder"></span>
+      {% endif %}
+    {% if href %}
+    </a>
+    {% endif %}
+  </figure>
+    {% endcomment %}
+  <div class="item__body">
+    <h3 class="item__heading"><a class="item__link" href="{% firstof outwork.get_absolute_url '/'|add:outwork.slug %}">{{ outwork.title }}</a></h3>
+    {% if outwork.author %}
+    <p class="item__author">{{ outwork.author }}</p>
+    {% endif %}
+    {% if outwork.orig_pubdate %}
+    <p class="item__date">1931</p>
+    {% endif %}
+    <p class="item__excerpt">{{ outwork.description }}</p>
+  </div>
+</section>

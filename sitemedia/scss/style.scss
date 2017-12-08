@@ -21,14 +21,28 @@ main {
   z-index: 3;
 }
 
+.mdl-layout.is-submitting {
+  &,
+  & .mdl-switch__thumb,
+  & .mdl-textfield__input {
+    cursor: wait;
+  }
+}
+
 // Home Page style
 @import "homepage";
 
 // Visaulization style
 @import "visualizations";
 
+// Outlook list/page styles
+@import "outwork-pages";
+
 // Canvas style
 @import "canvases";
+
+// Error Page style
+@import "error-pages";
 
 // Local snips for banner and overrides from release 0.8
 @import "local-snips";

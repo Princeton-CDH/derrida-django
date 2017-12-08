@@ -3,6 +3,7 @@ import json
 from dal import autocomplete
 from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
+from django.db.models import Max, Min
 from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
@@ -12,7 +13,7 @@ from django.views.generic.base import TemplateView
 from django.views.generic.edit import FormView
 from djiffy.models import Canvas
 from haystack.query import SearchQuerySet
-from haystack.inputs import Clean
+from haystack.inputs import Clean, Raw
 import requests
 
 from derrida.books.forms import ReferenceSearchForm, InstanceSearchForm, \
@@ -21,6 +22,7 @@ from derrida.books.models import Publisher, Language, Instance, Reference, \
     DerridaWork, DerridaWorkSection
 from derrida.common.utils import absolutize_url
 from derrida.interventions.models import Intervention
+from derrida.outwork.models import Outwork
 
 
 class PublisherAutocomplete(autocomplete.Select2QuerySetView):
@@ -66,7 +68,7 @@ class InstanceReferenceDetailView(InstanceDetailView):
 
         sort = self.request.GET.get('order_by', None)
         if sort == 'book_page':
-            refs = refs.order_by('book_page_exact')
+            refs = refs.order_by('book_page_sort')
             context['order_by'] = 'book_page'
         else:
             refs = refs.order_by('derridawork_page')
@@ -126,13 +128,54 @@ class InstanceListView(ListView):
                 # filter the query: facet matches any of the terms
                 sqs = sqs.filter(**{'%s__in' % solr_facet: search_opts[facet]})
 
+        # request range facets
+        # get max/min from database to specify range start & end values
+        # TODO: should probably cache max/min values so we don't have
+        # to calculate them every time
+        # NOTE: restricting to cited books currently returns null for copyright
+        # which breaks the logic here; get a larger range for now
+        # ranges = Instance.objects.filter(is_extant=True, cited_in__isnull=False) \
+        ranges = Instance.objects.filter(is_extant=True) \
+            .aggregate(work_year_max=Max('work__year'), work_year_min=Min('work__year'),
+                copyright_year_max=Max('copyright_year'), copyright_year_min=Min('copyright_year'),
+                print_year_max=Max('print_date'), print_year_min=Min('print_date'))
+        # request range facets values and optionally filter ranges
+        # on configured range facet fields
+        for range_facet in self.form.range_facets:
+            start = end = None
+            # range filter requested in search options
+            if range_facet in search_opts and search_opts[range_facet]:
+                start, end = search_opts[range_facet].split('-')
+                # could have both start and end or just one
+                # NOTE: haystack includes a range field lookup, but
+                # it converts numbers to strings, so this is easier
+                range_filter = '[%s TO %s]' % (start or '*', end or '*')
+                sqs = sqs.filter(**{range_facet: Raw(range_filter)})
+
+            # current range filter becomes start/end if specified
+            range_opts = {
+                'start': int(start) if start else ranges['%s_min' % range_facet],
+                'end': int(end) if end else ranges['%s_max' % range_facet],
+            }
+            if range_facet == 'print_year':
+                # special case: print year is a datetime but we only want year
+                if not start:
+                    range_opts['start'] = range_opts['start'].year if range_opts['start'] else None
+                if not end:
+                    range_opts['end'] = range_opts['end'].year if range_opts['end'] else None
+            # calculate gap based start and end & desired number of slices
+            # ideally, generate 15 slices; minimum gap size of 1
+            range_opts['gap'] = max(1, int((range_opts['end'] - range_opts['start']) / 15.0))
+            # request the range facet with the specified options
+            sqs = sqs.facet(range_facet, range=True, **range_opts)
+
         # sort should always be set
         if search_opts['order_by']:
             # convert sort option to corresponding solr field
             solr_sort = self.form.solr_field(search_opts['order_by'])
             sqs = sqs.order_by(solr_sort)
 
-        # save for access in context data
+        # store for retrieving facets in get context data
         self.queryset = sqs
         return sqs
 
@@ -142,7 +185,7 @@ class InstanceListView(ListView):
         # update multi-choice fields based on facets in the data
         self.form.set_choices_from_facets(facets.get('fields'))
         context.update({
-            'facets': facets,
+            'facets': facets,   # now includes ranges as facets.ranges
             'total': self.queryset.count(),
             'form': self.form
         })
@@ -288,6 +331,8 @@ class SearchView(TemplateView):
                     url = reverse('books:reference-list')
                 elif search_opts['content_type'] == 'intervention':
                     url = reverse('interventions:list')
+                elif search_opts['content_type'] == 'outwork':
+                    url = reverse('outwork:list')
 
                 url = '%s?query=%s' % (url, search_opts['query'])
                 response = HttpResponseRedirect(url)
@@ -309,6 +354,7 @@ class SearchView(TemplateView):
         instance_query = sqs.models(Instance).all()
         reference_query = sqs.models(Reference).all()
         intervention_query = sqs.models(Intervention).all()
+        outwork_query = sqs.models(Outwork).all()
 
         return {
             'query': search_opts['query'],
@@ -317,8 +363,9 @@ class SearchView(TemplateView):
             'reference_list': reference_query[:self.max_per_type],
             'reference_count': reference_query.count(),
             'intervention_list': intervention_query[:self.max_per_type],
-            'intervention_count': intervention_query.count()
-            # outwork TODO
+            'intervention_count': intervention_query.count(),
+            'outwork_list': outwork_query[:self.max_per_type],
+            'outwork_count': outwork_query.count()
         }
 
 
@@ -516,6 +563,3 @@ class CanvasImage(ProxyView):
             if not instance.allow_canvas_large_image(canvas):
                 raise Http404
             return canvas.image.info().replace('info.json', kwargs['url'].strip('/'))
-
-
-

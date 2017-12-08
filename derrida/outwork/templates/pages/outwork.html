@@ -1,0 +1,46 @@
+{% extends "pages/page.html" %}
+{# template for outwork content #}
+{% load mezzanine_tags %}
+
+{% block page-context-id %}outwork-page{% endblock %}
+
+{% block header_class %}mdl-layout__header--transparent{% endblock %}
+
+{% block metadata %}
+{{ block.super }}
+{% if page.outwork.author %}
+    <meta name="DC.Creator" content="{{ page.outwork.author }}" />
+{% endif %}
+{% if page.outwork.orig_pubdate %}
+    <meta name="DC.Date" content="{{ page.outwork.orig_pubdate|date:"c" }}" />
+{% endif %}
+{% endblock %}
+
+{# suppress description from displaying in header as lead #}
+{% block lead %}{% endblock %}
+
+{% block pageHeader %}
+<header class="page-header page-header--link">
+  <div class="container">
+    <h1 class="page-header__heading">
+      <a href="{% url 'outwork:list' %}"><span class="arrow_icon">←</span> Outwork</a>
+    </h1>
+  </div>
+</header>
+{% endblock %}
+
+{% block main %}
+{{ block.super }}
+
+{% if page.outwork.author %}
+<p class="outwork-page__author">{{ page.outwork.author }}</p>
+{% endif %}
+
+{% if page.outwork.orig_pubdate %}
+<p class="outwork-page__date">{{ page.outwork.orig_pubdate }}</p>
+{% endif %}
+
+<p class="outwork-page__lead">{{ page.description }}</p>
+
+{{ page.outwork.content|richtext_filters|safe }}
+{% endblock %}

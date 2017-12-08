@@ -1,4 +1,4 @@
-{% extends 'djiffy/base.html' %}
+{% extends 'base.html' %}
 {% load static %}
 
 {% block page-subtitle %}{{ instance.work.primary_title }}{% if instance.work.authors.count == 1 %}, {{ instance.work.authors.first.lastname }}{% endif %} {% if instance.print_year or instance.copyright_year %}({% firstof instance.print_year instance.copyright_year %}{% if instance.copy %} - {{ instance.copy }}{% endif %}){% endif %} ‖ {% endblock %}
@@ -11,7 +11,7 @@
 {% block content %}
   <header class="page-header page-header--link">
     <div class="container">
-      <h1 class="page-header__heading"><a href="{% url 'books:list' %}"><span class="arrow_icon">←</span> Derrida's Library</a></h1>
+      <h1 class="page-header__heading"><a class="page-header__link" href="{% url 'books:list' %}"><span class="arrow_icon">⟵</span> Derrida's Library</a></h1>
     </div>
   </header>
   <article class="item">

@@ -24,12 +24,26 @@
 
 {% block extrastyle %}
     <link rel="stylesheet" type="text/css" href="{% static "css/test-banner.css" %}" />
+    <style type="text/css">
+    .hidden-admin-info { display: none; }
+    </style>
 {% endblock %}
 
 {% block extrahead %}
     {{ block.super }}
-    {# Since both are in tandem, include both js files in compressor #}
     {% compress js %}
+    {# csrf adapted from mezzanine admin base site template #}
+    <script>
+    window.__csrf_token = '{{ csrf_token }}';
+    (function($) {
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                xhr.setRequestHeader('X-CSRFToken', window.__csrf_token);
+            }
+        });
+    })(grp.jQuery);
+    </script>
+    {# Since both are in tandem, include both js files in compressor #}
     <script src="{% static 'js/material.min.js' %}"></script>
     <script src="{% static 'js/local.js' %}"></script>
     {% endcompress %}

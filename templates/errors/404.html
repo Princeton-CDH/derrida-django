@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block page-context-id %}page-not-found{% endblock %}
+{% block header_class %}mdl-layout__header--transparent{% endblock %}
+
+{% block content %}
+
+<article class="error-page">
+  <div class="container">
+    <h1 class="error-page__title">No Trace</h1>
+    <p class="error-page__subtitle">404 Error</p>
+    <p>No trace of the page was found.</p>
+    <img class="error-page__image" src="{% static 'img/404_img.png' %}" />
+  </div>
+</article>
+
+{% endblock %}

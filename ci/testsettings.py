@@ -6,7 +6,7 @@
 # immediately.
 
 DEBUG = False
-
+ALLOWED_HOSTS = ["*"]
 # disable compression for tests that check javascript contents
 COMPRESS_ENABLED = False
 
@@ -29,7 +29,7 @@ DATABASES = {
 # must be defined for initial setup
 HAYSTACK_CONNECTIONS = {
     'default': {
-        'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
+        'ENGINE': 'derrida.common.solr_backend.RangeSolrEngine',
         'URL': 'http://127.0.0.1:8983/solr/test-derrida',
         'ADMIN_URL': 'http://127.0.0.1:8983/solr/admin/cores',
     }

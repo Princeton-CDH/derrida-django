@@ -1,4 +1,4 @@
-{% extends 'djiffy/base.html' %}
+{% extends 'base.html' %}
 {% load static %}
 
 {% block nav-title %} Derrida's Library {% endblock %}
@@ -12,7 +12,7 @@
 {% block content %}
 <header class="page-header page-header--condensed">
   <div class="container page-header__container">
-    <h1 class="page-header__heading">Visualization</h1>
+    <h1 class="page-header__heading"><a class="page-header__link" href="{{ request.path }}">Visualization</a></h1>
     <div class="page-header__callout">
       <p class="lead">Explore all quotations and references in Derrida’s works</p>
       <p><a class="callout__link" href="/">Export Complete List to Zotero</a></p>

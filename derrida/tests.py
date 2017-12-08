@@ -1,12 +1,5 @@
 '''Tests for utility functions for Derrida'''
-from derrida.utils import deligature
 from django.test import TestCase
-
-
-def test_deligature():
-    '''Check that deligature removes unicode Latin ligatures'''
-    ligatured = 'Œ œ Æ æ'
-    assert deligature(ligatured) == 'Oe oe Ae ae'
 
 
 class TestRobotsTxt(TestCase):

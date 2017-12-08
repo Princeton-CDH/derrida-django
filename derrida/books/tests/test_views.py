@@ -3,6 +3,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
+from django.core.management import call_command
 from django.db.models import Min
 from django.http import Http404
 from django.test import TestCase, override_settings
@@ -14,6 +15,7 @@ from haystack.models import SearchResult
 import pytest
 
 from derrida.books import views
+from derrida.books.forms import RangeWidget, RangeField
 from derrida.books.models import Instance, Reference, DerridaWorkSection
 from derrida.interventions.models import Intervention, INTERVENTION_TYPES
 
@@ -114,6 +116,16 @@ class TestInstanceViews(TestCase):
         response = self.client.get(list_view_url, {'query': 'gelb'})
         # should not be found
         assert len(response.context['object_list']) == 0
+
+        # range filter
+        response = self.client.get(list_view_url, {'work_year_0': 1950})
+        assert len(response.context['object_list']) == \
+            extant_bks.filter(work__year__gte=1950).count()
+        response = self.client.get(list_view_url, {'work_year_0': 1927,
+            'work_year_1':1950})
+        assert len(response.context['object_list']) == \
+            extant_bks.filter(work__year__lte=1950,
+                              work__year__gte=1927).count()
 
     def test_canvas_by_pagenum(self):
         # get an instance with no digital edition
@@ -344,6 +356,34 @@ class TestReferenceViews(TestCase):
         for instance in Instance.objects.all():
             instance.slug = instance.generate_safe_slug()
             instance.save()
+        # reindex with slugs
+        call_command('rebuild_index', '--noinput')
+
+    @pytest.mark.haystack
+    def test_instance_reference_detail(self):
+        # last instance has many references so ideal for this test
+        instance = Reference.objects.last().instance
+        # make a manifest and associate it so page displays
+        manif = Manifest.objects.create()
+        instance.digital_edition = manif
+        instance.save()
+        # get the detail reference view
+        instance_ref_detail_url = reverse('books:detail-references', kwargs={'slug': instance.slug})
+        response = self.client.get(instance_ref_detail_url)
+        assert response.status_code == 200
+        context_list = []
+        for reference in response.context['references']:
+            context_list.append(reference.derridawork_page)
+        # SQS sorted by derridawork_page passed to context list
+        assert context_list == [11, 11, 12, 20, 20, 20]
+        # - now use order_by
+        instance_ref_detail_url = reverse('books:detail-references', kwargs={'slug': instance.slug})
+        response = self.client.get(instance_ref_detail_url, {'order_by': 'book_page'})
+        assert response.status_code == 200
+        context_list = []
+        for reference in response.context['references']:
+            context_list.append(reference.book_page)
+        assert context_list == ['44s', '87p', '87p', '126p', '148p', '355p']
 
     @pytest.mark.haystack
     def test_reference_list(self):
@@ -680,3 +720,19 @@ class TestCanvasImageView(TestCase):
 
     # TODO: test proxyview logic in preserving headers, rewriting
     # iiif id to local url, etc
+
+def test_range_widget():
+    # range widget decompress logic
+    assert RangeWidget().decompress('') == [None, None]
+    # not sure how it actually handles missing inputs...
+    # assert RangeWidget().decompress('100-') == [100, None]
+    # assert RangeWidget().decompress('-250') == [None, 250]
+    assert RangeWidget().decompress('100-250') == [100, 250]
+
+
+def test_range_field():
+    # range widget decompress logic
+    assert RangeField().compress([]) == ''
+    assert RangeField().compress([100, None]) == '100-'
+    assert RangeField().compress([None, 250]) == '-250'
+    assert RangeField().compress([100, 250]) == '100-250'

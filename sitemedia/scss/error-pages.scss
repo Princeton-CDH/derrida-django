@@ -1,0 +1,24 @@
+.error-page {
+  padding-top: 10rem;
+  padding-bottom: 4rem;
+
+  .container {
+    max-width: 650px;
+  }
+
+  .error-page__title {
+    font-size: ems(40px, 14);
+    color: $primary-color;
+    margin-bottom: 4px;
+  }
+
+  .error-page__subtitle {
+    @include secondary-font-style("italic");
+    font-size: ems(19px, 14);
+    margin-bottom: 4rem;
+  }
+
+  .error-page__image {
+    margin-top: 3rem;
+  }
+}

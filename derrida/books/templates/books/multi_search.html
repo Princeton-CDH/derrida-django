@@ -1,4 +1,4 @@
-{% extends 'djiffy/base.html' %}
+{% extends 'base.html' %}
 {% load static humanize%}
 
 {% block page-subtitle %}Search ‖ {% endblock %}
@@ -13,7 +13,7 @@
 {% block content %}
 <header class="page-header">
   <div class="container page-header__container">
-    <h1 class="page-header__heading">Search Results</h1>
+    <h1 class="page-header__heading"><a class="page-header__link" href="{{ request.path }}">Search Results</a></h1>
   </div>
 </header>
 
@@ -27,26 +27,22 @@
     {% for book in instance_list %}
       {% url 'books:detail' book.slug as instance_url %}
       {% include 'components/books-list-item.html' with href=instance_url shorten=True %}
-      {% empty %}
-      <section class="search__no-results">
-        <p>No trace of what you were searching for was found. Try a different keyword.</p>
-      </section>
+    {% empty %}
+      {% include 'components/search-results-empty.html' %}
     {% endfor %}
   </article>
 
   <article class="collection collection--no-images">
     <header class="collection__header">
       <h2 class="collection__title">
-        <a href="{% url 'books:reference-list' %}">References {% if reference_count %}<span class="arrow_icon">→</span><span>View {{ reference_count|intcomma }} Result{{ reference_count|pluralize }}</span>{% endif %}</a>
+        <a href="{% url 'books:reference-list' %}?query={{ query }}">References {% if reference_count %}<span class="arrow_icon">→</span><span>View {{ reference_count|intcomma }} Result{{ reference_count|pluralize }}</span>{% endif %}</a>
       </h2>
     </header>
 
     {% for reference in reference_list %}
       {% include 'components/citation-list-item.html' with reference=reference %}
-      {% empty %}
-      <section class="search__no-results">
-        <p>No trace of what you were searching for was found. Try a different keyword.</p>
-      </section>
+    {% empty %}
+      {% include 'components/search-results-empty.html' %}
     {% endfor %}
   </article>
 
@@ -58,27 +54,24 @@
     </h2>
     </header>
     {% for intervention in intervention_list %}
-        {% include 'components/intervention-list-item.html' %}
+      {% include 'components/intervention-list-item.html' %}
     {% empty %}
-      <section class="search__no-results">
-        <p>No trace of what you were searching for was found. Try a different keyword.</p>
-      </section>
+      {% include 'components/search-results-empty.html' %}
     {% endfor %}
   </article>
 
   <article class="collection collection--no-images">
     <header class="collection__header">
       <h2 class="collection__title">
-        <a href="#">Outworks <span>→</span><span>View All</span></a>
+        <a href="{% url 'outwork:list' %}?query={{ query }}">Outworks {% if outwork_count %}<span class="arrow_icon">→</span>
+          <span>View {{ outwork_count|intcomma }} Result{{ outwork_count|pluralize }}</span>{% endif %}</a>
       </h2>
     </header>
-
-    {% include 'components/collection-item.html' with href='books:list' img='img/bookimg/cover1.png' itemType='outwork' %}
-
-    {% include 'components/collection-item.html' with href='books:list' img='img/bookimg/cover2.png' itemType='outwork' %}
-
-    {% include 'components/collection-item.html' with href='books:list' img='img/bookimg/cover3.png' itemType='outwork' %}
-
+    {% for outwork in outwork_list %}
+      {% include 'outwork/components/outwork-list-item.html' %}
+    {% empty %}
+      {% include 'components/search-results-empty.html' %}
+    {% endfor %}
   </article>
 </div>
 {% endblock %}

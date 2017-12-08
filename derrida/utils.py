@@ -90,16 +90,3 @@ class LoadFixtureData(object):
         if apps:
             # Cleanup monkey patch
             serializers.python.apps = original_apps
-
-
-def deligature(value):
-    '''Remove common unicode characters typographic ligatures
-    and their lowercase equivalents.'''
-    mapping = {
-        u'\u00C6': 'Ae',
-        u'\u0152': 'Oe',
-        u'\u00E6': 'ae',
-        u'\u0153': 'oe'
-    }
-
-    return value.translate(str.maketrans(mapping))

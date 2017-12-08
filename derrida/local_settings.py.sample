@@ -41,7 +41,9 @@ DATABASES = {
 # Haystack configuration for search/browse with Solr
 HAYSTACK_CONNECTIONS = {
     'default': {
-        'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
+        # NOTE: must use local solr engine for range facets
+        'ENGINE': 'derrida.common.solr_backend.RangeSolrEngine',
+        #'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
         # example multicore setup with core named derrida
         'URL': 'http://127.0.0.1:8983/solr/derrida',
         'ADMIN_URL': 'http://127.0.0.1:8983/solr/admin/cores',
@@ -51,7 +53,7 @@ HAYSTACK_CONNECTIONS = {
 # Haystack configuration for unit tests that use Solr
 HAYSTACK_TEST_CONNECTIONS = {
     'default': {
-        'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
+        'ENGINE': 'derrida.common.solr_backend.RangeSolrEngine',
         # example multicore setup with core named test-derrida
         'URL': 'http://127.0.0.1:8983/solr/test-derrida',
         'ADMIN_URL': 'http://127.0.0.1:8983/solr/admin/cores',

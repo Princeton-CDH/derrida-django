@@ -1,119 +1,32 @@
+{% comment %}
+The checkbox-selection component is used for the page filter facets used
+on the books and reference list pages. This transforms form elments into
+the .filter element for the various checkboxes and generates js for interactions.
+This component uses the following parameters to render:
+* name - the unique name for the filter element and accompanying script
+* label - the text to be displayed as the label for the filter
+* item - the form element being transformed (i.e. form.subject)
+* disabled (optional) - option to disabled a checkbox. If not provided,
+  the value on the form item will be used.
+{% endcomment %}
 {% load static %}
 <script>
   $(function() {
-    //transform list items
-    var $oldLabels = $(".filter__check-list--{{name}} label"),
-        $newLabels = $("<div/>");
-
-    $oldLabels.remove();
-    $oldLabels.each(function() {
-      var $this = $(this),
-          $countLabel = $this.children("span"),
-          count = $countLabel.text();
-      $countLabel.remove();
-
-      var labelText = $this.text().trim(),
-          $input = $this.find("input"),
-          $label = $("<label/>")
-            .addClass("mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect")
-            .append(
-              $("<input/>").attr({
-                id: $input.attr("id"),
-                name: $input.attr("name"),
-                value: $input.attr("value"),
-                checked: $input.attr("checked"),
-                type: "checkbox"
-              }).addClass("mdl-checkbox__input"))
-            .append($("<span/>").addClass("name").text(labelText))
-            .append($("<span/>").addClass("filter__count").text(count));
-
-        $newLabels.append($label);
+    window.initCheckboxSelector({
+      filterInputSelector: "#{{name}}-selection",
+      filterCheckListSelector: ".filter__check-list--{{name}}",
+      filterSelector: ".filter.filter--{{name}}",
+      filterClickEvent: "{{name}}",
+      isDisabled: {{disabled|yesno:"true,false"}}
     });
-
-    $(".filter__check-list--{{name}}").append($newLabels.html());
-
-
-    var ${{name}}Filter = $(".filter.filter--{{name}}");
-    ${{name}}Filter.hide();
-
-    var ${{name}}SelectionInput = $("#{{name}}-selection"),
-        clearSelectionInput = function() {
-          ${{name}}SelectionInput.val("");
-        };
-
-    ${{name}}Filter.find(".clear-link").on("click", function(e) {
-      e.preventDefault();
-      var $checkboxes = $(this).parents(".filter").find(".mdl-checkbox__input");
-      $checkboxes.each(function() {
-        var $checkbox = $(this);
-        $checkbox.removeProp("checked");
-        $checkbox.parent().removeClass("is-checked");
-      });
-      clearSelectionInput();
-    });
-
-    ${{name}}SelectionInput.on("focus", function() {
-        $(this).parent().addClass("is-open");
-        ${{name}}Filter.slideDown();
-      })
-      .on("blur", function(e) {
-        e.preventDefault();
-        var isOpen = $(this).parent().addClass("is-open");
-        if (! isOpen) {
-          ${{name}}Filter.slideUp();
-        }
-      });
-
-      var setSelectedOptionsValues = function(context) {
-        var $elem = $(context),
-            optionText = $elem.val(),
-            {{name}}SelectionVal = ${{name}}SelectionInput.val() ? ${{name}}SelectionInput.val().split("; ") : [];
-        if ($elem.prop("checked")) {
-          {{name}}SelectionVal.push(optionText)
-        } else {
-          {{name}}SelectionVal = $.grep({{name}}SelectionVal, function(value) {
-            return value != optionText;
-          });
-        }
-        ${{name}}SelectionInput.val({{name}}SelectionVal.join("; "));
-      }
-
-      $(".filter__check-list--{{name}} input:checked").each(function() {
-        setSelectedOptionsValues(this);
-      });
-
-      $(".filter__check-list--{{name}} input").on("change", function() {
-        setSelectedOptionsValues(this);
-      });
-
-      var closeFilter = function($openInput) {
-        ${{name}}Filter.slideUp();
-        $openInput.removeClass("is-open").removeClass("is-focused");
-      };
-
-      $("body").on("click.filter--{{name}}", function(e) {
-        var $target = $(e.target),
-            filterSelector = ".filter--{{name}}",
-            $openInput = ${{name}}Filter.prev(".is-open"),
-            isOpenText = $target.is(".is-open") || $target.parents(".is-open").length,
-            $filter = $target.is(filterSelector) ? $target : $target.parents(filterSelector).first();
-
-        if (! $filter.length && ! isOpenText && $openInput.length) {
-          closeFilter($openInput);
-        } else if ($openInput.length && ! $target.parent().next().is(filterSelector) && ! $target.parents(filterSelector).length) {
-          closeFilter($openInput);
-        } else if ($openInput.length) {
-          $openInput.addClass("is-focused");
-        }
-      });
   });
 </script>
 
 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-  <input class="mdl-textfield__input" type="text" name="{{name}}-selection" id="{{name}}-selection">
+  <input class="mdl-textfield__input" type="text" id="{{name}}-selection" readonly="readonly" />
   <label class="mdl-textfield__label" for="{{name}}-selection">{{ label }}</label>
 </div>
-<div class="filter filter--{{name}}" id="{{name}}">
+<div class="filter filter--{{name}} is-not-ready" id="{{name}}">
   <section class="filter__check-list filter__check-list--{{name}}">
     {% for item in items %}
       {{item}}

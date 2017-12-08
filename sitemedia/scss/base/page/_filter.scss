@@ -11,10 +11,28 @@
 
 .page-filter__header {
   padding: 1rem 1rem 0;
-  color: $medium-grey;
+  color: $black;
 
   p {
     font-weight: 300;
+  }
+}
+
+.page-filter__form {
+  position: relative;
+  z-index: 4;
+  transform: scaleY(0);
+  max-height: 0;
+  @include transition(transform $base-duration $base-timing, max-height $base-duration $base-timing);
+  @include transform-origin(50% 0);
+
+  .is-visible & {
+    transform: scaleY(1);
+    max-height: 65em;
+
+    @include grid-media($large-medium-viewport-grid) {
+      max-height: 45em;
+    }
   }
 }
 
@@ -26,13 +44,18 @@
 
 .page-filter__status-icon {
   height: 2em;
+  max-height: 2em;
   width: 100%;
   background: $white;
   padding: 0 0 0.5em;
-  transition: height $base-duration $base-timing;
+  position: relative;
+  z-index: 3;
+  transform: scaleY(1);
+  @include transition(transform $base-duration $base-timing, max-height $base-duration $base-timing);
+  @include transform-origin(50% 0);
 
   .svg-icon {
-    height: 100%;
+    height: 1.3em;
   }
 
   path {
@@ -40,8 +63,13 @@
   }
 
   .is-visible & {
-    height: 0;
+    transform: scaleY(0);
+    max-height: 0;
     overflow: hidden;
+
+    .svg-icon {
+      height: 0;
+    }
   }
 
   .is-active & {
@@ -74,6 +102,21 @@
   border-top-left-radius: 0;
   border-top-right-radius: 0;
   color: $blue;
+  position: relative;
+  top: -2em;
+  z-index: 1;
+
+  .page-filter:not(.is-visible) .page-filter__footer & {
+    @include transition(top $base-duration $base-timing);
+  }
+
+  .page-filter:not(.is-visible) .page-filter__footer:hover & {
+      top: 0;
+  }
+
+  .is-visible & {
+    top: -7px;
+  }
 
   &:focus {
     outline: 0;
@@ -124,14 +167,35 @@
   }
 
   &.filter__selector--condensed {
-    $selector-width: 15rem;
+    $selector-width-s: 50%;
+    $selector-width-ml: 33%;
+    $selector-width-xl: 25%;
+
     flex-grow: 1;
-    flex-basis: $selector-width;
-    max-width: $selector-width;
+    flex-basis: $selector-width-s;
+    max-width: $selector-width-s;
+    min-width: 0;
+
+    @include grid-media($large-medium-viewport-grid) {
+      min-width: 11em;
+      flex-basis: $selector-width-ml;
+      max-width: $selector-width-ml;
+    }
+
+    @include grid-media($xlarge-viewport-grid) {
+      flex-basis: $selector-width-xl;
+      max-width: $selector-width-xl;
+    }
   }
 
   .mdl-textfield {
     width: 100%;
+  }
+
+  .mdl-textfield__input {
+    font-size: 12px;
+    margin-top: 4px;
+    opacity: 0.6;
   }
 
   .mdl-textfield__label {
@@ -147,7 +211,7 @@
   padding: 1rem 1rem 0.8rem;
   max-width: 360px;
   position: absolute;
-  top: 3.4em;
+  top: 3.3em;
   z-index: 3;
 
   .mdl-checkbox__box-outline {
@@ -156,8 +220,9 @@
 
   .clear-link {
     font-size: 0.8em;
-    @include faded-link;
-    border: 0;
+    @include faded-link(transparentize($black, 0.6));
+    height: 1.75em;
+    display: inline-block;
   }
 }
 
@@ -174,7 +239,7 @@
   text-align: center;
   text-decoration: none;
   color: $base-font-color;
-  transition: color $base-duration $base-timing;
+  @include transition(color $base-duration $base-timing);
   outline: none;
 
   &:hover,
@@ -212,7 +277,7 @@
   .filter__search-field {
     border: 0;
     padding-left: 0.5rem;
-    width: 100%;
+    width: 90%;
     outline: none;
 
     &::placeholder {
@@ -236,6 +301,15 @@
     padding-right: 1.5rem;
     font-size: 0.85em;
 
+    &:hover {
+      color: $primary-color;
+    }
+
+    &:active .mdl-checkbox__box-outline,
+    &:hover .mdl-checkbox__box-outline {
+      border-color: $primary-color;
+    }
+
     .filter__selector--condensed & {
       width: 100%;
       padding-right: 0;
@@ -253,6 +327,20 @@
   .filter__count {
     opacity: 0.5;
   }
+
+  .mdl-checkbox.is-disabled,
+   .mdl-checkbox.is-disabled:hover {
+    color: $base-font-color;
+    opacity: 0.5;
+
+    .mdl-checkbox__box-outline {
+      border-color: transparentize($base-font-color, 0.5);
+    }
+  }
+}
+
+.is-not-ready {
+  display: none;
 }
 
 .filter--years {
@@ -291,7 +379,7 @@
   background-color: lighten($medium-grey, 20%);
   cursor: pointer;
   width: 100%;
-  transition: background-color $base-duration $base-timing;
+  @include transition(background-color $base-duration $base-timing);
 
   &:hover,
   &:active {
@@ -301,6 +389,29 @@
   @for $i from 1 through 10 {
     &.frequency_chart__bar--#{$i} {
       height: $i * 10%;
+    }
+  }
+
+  &.is-selected {
+    background-color: $red;
+  }
+
+  &.is-selected ~ .frequency_chart__bar:not(.is-selected) {
+    background-color: transparentize($red, 0.4);
+
+    &:hover,
+    &:active {
+      background-color: transparentize($red, 0.2);
+    }
+  }
+
+  &.is-selected ~ &.is-selected ~ &,
+  &.is-selected.is-selected--end ~ & {
+    background-color: lighten($medium-grey, 20%);
+
+    &:hover,
+    &:active {
+      background-color: $blue;
     }
   }
 }

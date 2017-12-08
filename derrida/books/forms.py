@@ -1,4 +1,6 @@
+# -*- coding: utf-8 -*-
 from django import forms
+from django.core.validators import RegexValidator
 from django.utils.safestring import mark_safe
 
 
@@ -6,13 +8,14 @@ class SearchForm(forms.Form):
     defaults = {
         'content_type': 'all',
     }
-    query = forms.CharField(label='Search Terms...', required=False)
+    query = forms.CharField(label='Search', required=False)
 
     content_type = forms.ChoiceField(choices=[
         ('all', 'All'),
         ('book', 'Books'),
         ('reference', 'References'),
         ('intervention', 'Interventions'),
+        ('outwork', 'Outwork'),
     ], required=False, initial=defaults['content_type'])
 
 
@@ -31,6 +34,51 @@ class FacetChoiceField(forms.MultipleChoiceField):
 
     def valid_value(self, value):
         return True
+
+
+class RangeWidget(forms.MultiWidget):
+    # widget separator (regular dash for now; could use en dash?)
+    sep = '-'
+    def __init__(self, *args, **kwargs):
+        widgets = [
+            forms.NumberInput(),
+            forms.NumberInput()
+        ]
+        super(RangeWidget, self).__init__(widgets, *args, **kwargs)
+
+    def decompress(self, value):
+        if value:
+            return [int(val) for val in value.split(self.sep)]
+        return [None, None]
+
+
+class RangeField(forms.MultiValueField):
+    widget = RangeWidget
+
+    def __init__(self, *args, **kwargs):
+        fields = (
+            forms.IntegerField(
+                error_messages={'invalid': 'Enter a number'},
+                validators=[
+                    RegexValidator(r'^[0-9]*$', 'Enter a valid number.'),
+                ],
+                required=False
+            ),
+            forms.IntegerField(
+                error_messages={'invalid': 'Enter a number'},
+                validators=[
+                    RegexValidator(r'^[0-9]*$', 'Enter a valid number.'),
+                ],
+                required=False
+            ),
+        )
+        kwargs['fields'] = fields
+        super(RangeField, self).__init__( #fields=fields,
+            require_all_fields=False, *args, **kwargs
+        )
+
+    def compress(self, data_list):
+        return self.widget.sep.join(['%d' % val if val else '' for val in data_list])
 
 
 class InstanceSearchForm(forms.Form):
@@ -61,20 +109,28 @@ class InstanceSearchForm(forms.Form):
         'newest': '-year'
     }
 
+    # solr facet fields
     facet_fields = ['author', 'subject', 'item_type', 'pub_place', 'language',
         'work_language', 'cited_in']
+    # input fields that wrap a solr facet
+    facet_inputs = ['author', 'subject', 'language', 'work_language',
+        'pub_place', 'cited_in']
     author = FacetChoiceField()
     subject = FacetChoiceField()
     language = FacetChoiceField('Language of Publication')
     work_language = FacetChoiceField('Original Language')
     pub_place = FacetChoiceField('Place of Publication')
-    # TODO: work_year. range facet?
+    # NOTE: skipping publication type because library is currently
+    # restricted to books only
     # item_type = FacetChoiceField(label='Publication Type')
     cited_in = FacetChoiceField()
 
-    # input fields that wrap a solr facet
-    facet_inputs = ['author', 'subject', 'language', 'work_language',
-        'pub_place', 'cited_in']
+    # range facets
+    range_facets = ['work_year', 'copyright_year', 'print_year']
+    work_year = RangeField(label='Original Publication Year',
+        required=False)
+    copyright_year = RangeField(label='Edition Year', required=False)
+    print_year = RangeField(label='Printing Year', required=False)
 
     def set_choices_from_facets(self, facets):
         # configure field choices based on facets returned from Solr

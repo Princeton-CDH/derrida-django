@@ -1,0 +1,7 @@
+{# outwork text for generic keyword search across all fields #}
+{{ object.title }}
+{{ object.author }}
+{{ object.orig_pubdate }}
+{{ object.publish_date }}
+{{ object.description }}
+{{ object.content }}

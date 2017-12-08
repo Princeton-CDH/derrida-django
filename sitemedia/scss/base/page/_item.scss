@@ -8,14 +8,13 @@
   }
 
   .item-header__image {
-    width: 100%;
     max-width: 200px;
     float: left;
     margin: 0 1em 1em 0;
+    width: 100%;
 
     @include grid-media($large-medium-viewport-grid) {
       margin: 0;
-      max-width: 100%;
       float: none;
     }
 
@@ -25,18 +24,26 @@
       display: inherit;
     }
   }
+
+  &.is-affixed .item-header__image {
+    width: auto;
+  }
 }
 
 .item-title {
   @include secondary-font-style("italic");
-  font-size: 1.6em;
+  font-size: ems(19px, 14);
   margin: 1em 0 0.25em;
 }
 
 .item-author {
-  font-size: 1.3em;
+  font-size: ems(18px, 14);
   @include secondary-font-style();
   margin-bottom: 6px;
+
+  & + .item-term__value{
+    font-size: ems(12px, 14);
+  }
 }
 
 .item-pages {
@@ -44,7 +51,13 @@
 }
 
 .item-navigation {
+  display: block;
+  padding-top: 3.5rem;
   float: left;
+
+  & + .item-license {
+    float: left;
+  }
 }
 
 .inner-wrapper-sticky {
@@ -54,6 +67,7 @@
 }
 
 .item-section {
+  min-height: 100vh;
   @include grid-column(4);
 
   @include grid-media($large-medium-viewport-grid) {
@@ -134,15 +148,25 @@
 
   .item-term__value {
     font-weight: 300;
-    @include primary-font-style("italic");
+    @include primary-font-style();
     @include grid-column(4);
+
+    &.item-term__value--title {
+      @include primary-font-style("italic");
+    }
 
     .item-term__link {
       @include faded-link();
     }
 
     .item__link {
-      border: 0;
+      border-color: transparent;
+
+      &:hover,
+      &:active,
+      &.is-hovered {
+        border-color: $primary-color;
+      }
     }
 
     &.item-term__value--aside {
@@ -156,7 +180,6 @@
       &.collection {
         @include grid-column(12);
         margin-left: - $gutter-size;
-        font-size: 0.75rem;
       }
 
       &.item-term__value--aside {
@@ -165,7 +188,6 @@
       }
     }
   }
-
 
   &.item-term--callout {
     border-top: 1px solid rgba($black, 0.2);
@@ -203,6 +225,16 @@
   }
 }
 
+.collection.item-term__value {
+  .item__heading {
+    font-size: 15px;
+  }
+
+  .item__author {
+    font-size: 14px;
+  }
+}
+
 .item-gallery__heading {
   width: 100%;
   float: left;
@@ -237,5 +269,30 @@
       @include grid-column(12);
       margin-left: 0;
     }
+  }
+}
+
+.item-license {
+  padding-top: 5em;
+  padding-bottom: 2em;
+}
+
+.item-license__img {
+  width: 160px;
+  display: block;
+}
+
+.item-license__link {
+  width: 100%;
+  display: block;
+  font-size: ems(12px, 14);
+  padding-top: ems(11px, 12);
+  text-decoration: none;
+  color: $base-font-color;
+  transition: color $base-duration $base-timing;
+
+  &:hover,
+  &:active {
+    color: $primary-color;
   }
 }
