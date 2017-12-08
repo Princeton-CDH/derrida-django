@@ -1,2 +1,0 @@
-db_name: 'derridaprod'
-backup_location: "/tmp/derrida-prod-pre-{{ shorthash.stdout }}.sql"

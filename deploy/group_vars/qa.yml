@@ -1,0 +1,24 @@
+---
+# Connection plugin to use, required
+conn: local
+# Git refspec to use, either default or passed by '-e ref=<refspec>
+gitref: '{{ ref | default("develop") }}'
+# Clone root (where deploy user clones repo)
+clone_root: "{{ home }}/repos/"
+# Install root (the dir where the repo will be set up)
+install_root: /srv/www/qa/mep-django
+# local settings in private repo
+local_settings_path: 'qa/{{ inventory_hostname }}/local_settings.py'
+# local settings in private repo
+local_settings_path: 'qa/{{ inventory_hostname }}/local_settings.py'
+# Path of the deploy directory. Generated from vars above
+deploy: '{{ install_root }}/{{ version }}-{{ repo_info.after}}'
+# Database info from deploy user environment
+db_name: "{{ lookup('env', 'DERRIDA_DB_NAME') }}"
+db_host: "{{ lookup('env', 'DB_HOST') }}"
+# project user for CACHE group ownership
+project_user: derrida
+# Database backup location
+db_backup: '/tmp/pre-{{ version }}-{{ repo_info.after }}-{{ djangoapp }}.sql'
+# Symlink for /var/www
+symlink: 'derrida-django'
