@@ -1,0 +1,11 @@
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #979797;
+      }
+    </style>
+  </defs>
+  <title>ZoomIn</title>
+  <polygon class="cls-1" points="17.6 9 11 9 11 2.4 9 2.4 9 9 2.4 9 2.4 11 9 11 9 17.6 11 17.6 11 11 17.6 11 17.6 9"/>
+</svg>
