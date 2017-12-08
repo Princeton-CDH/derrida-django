@@ -37,6 +37,10 @@
       height: 4em;
       z-index: -3;
       @include transition(background-color $search-duration $base-timing, top $search-duration $base-timing);
+
+      .background-colored--light-navy & {
+        background-color: $light-navy;
+      }
     }
 
     &.is-hidden::before {
@@ -61,12 +65,6 @@
 
   .search-form-header__form {
     height: $search-height;
-    filter: grayscale(100);
-
-    &.is-focused,
-    &:hover {
-      filter: grayscale(0);
-    }
 
     @include transition(margin-bottom $search-duration $base-timing,
       height $search-duration $base-timing,
@@ -74,6 +72,34 @@
 
     @include grid-media($xlarge-viewport-grid) {
       margin-bottom: 5em;
+    }
+
+    & > * {
+      filter: grayscale(100);
+    }
+
+    &.is-focused > *,
+    &:hover > * {
+      filter: grayscale(0);
+    }
+
+    // Never grey out the selection options
+    & > .mdl-selectfield {
+      filter: grayscale(0);
+      .selectize-input {
+        filter: grayscale(100);
+      }
+
+      .selectize-dropdown {
+        filter: grayscale(0);
+      }
+    }
+
+    &.is-focused > .mdl-selectfield,
+    &:hover > .mdl-selectfield {
+      .selectize-input {
+        filter: grayscale(0);
+      }
     }
   }
 
@@ -144,6 +170,7 @@
 
     &.is-active {
       padding-top: 22px;
+      line-height: 0;
     }
 
     .selectize-input,
@@ -167,6 +194,13 @@
 
   .selectize-input > * {
     font-size: 12px;
+    color: $grey-500;
+  }
+
+  .selectize-input > .item {
+    width: 100%;
+    z-index: 3;
+    position: relative;
   }
 
   .selectize-control.single .selectize-input.input-active {
@@ -180,15 +214,16 @@
     background-image: url("../img/icons/Expand.svg");
     background-position: center;
     background-repeat: no-repeat;
-    background-size: 50%;
+    background-size: 60%;
     width: 30px;
     height: 30px;
-    margin-top: -15px;
+    margin-top: -17px;
+    margin-right: -15px;
     line-height: 1;
   }
 
   .mdl-selectfield.is-active .selectize-control.single .selectize-input::after {
-    background-image: url("../img/icons/Collapse.svg");
+    background-image: url("../img/icons/Collapse-focus.svg");
   }
 
   .selectize-dropdown {
@@ -197,7 +232,7 @@
 
     .option {
       font-size: 0.9rem;
-      padding: 14px 10px;
+      padding: 0.5em 10px;
     }
   }
 
@@ -218,6 +253,10 @@
 .mdl-textfield.is-upgraded {
   .mdl-textfield__label {
     color: $base-font-color;
+
+    &.mdl-textfield__label--search {
+      color: $grey-500;
+    }
   }
 
   &.is-focused .mdl-textfield__label {
@@ -230,7 +269,7 @@
 
   .background-colored--dark & {
     .mdl-textfield__label {
-      color: $white;
+      color: $grey-500;
     }
 
     .mdl-textfield__input {

@@ -28,7 +28,11 @@
 
   .is-visible & {
     transform: scaleY(1);
-    max-height: 45em;
+    max-height: 65em;
+
+    @include grid-media($large-medium-viewport-grid) {
+      max-height: 45em;
+    }
   }
 }
 
@@ -163,10 +167,25 @@
   }
 
   &.filter__selector--condensed {
-    $selector-width: 15rem;
+    $selector-width-s: 50%;
+    $selector-width-ml: 33%;
+    $selector-width-xl: 25%;
+
     flex-grow: 1;
-    flex-basis: $selector-width;
-    max-width: $selector-width;
+    flex-basis: $selector-width-s;
+    max-width: $selector-width-s;
+    min-width: 0;
+
+    @include grid-media($large-medium-viewport-grid) {
+      min-width: 11em;
+      flex-basis: $selector-width-ml;
+      max-width: $selector-width-ml;
+    }
+
+    @include grid-media($xlarge-viewport-grid) {
+      flex-basis: $selector-width-xl;
+      max-width: $selector-width-xl;
+    }
   }
 
   .mdl-textfield {

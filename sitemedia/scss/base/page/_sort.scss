@@ -38,13 +38,23 @@
   .order_by__options {
     @include unstyled-list;
     display: flex;
+    flex-direction: column;
+
+    @include grid-media($large-medium-viewport-grid) {
+      flex-direction: row;
+    }
 
     label {
       cursor: pointer;
     }
 
-    li {
+    .sort-link {
       font-size: 0.9rem;
+      padding-top: 1.5em;
+
+      @include grid-media($large-medium-viewport-grid) {
+        padding-top: 0;
+      }
     }
   }
 }

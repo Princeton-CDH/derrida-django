@@ -68,7 +68,7 @@ class InstanceReferenceDetailView(InstanceDetailView):
 
         sort = self.request.GET.get('order_by', None)
         if sort == 'book_page':
-            refs = refs.order_by('book_page_exact')
+            refs = refs.order_by('book_page_sort')
             context['order_by'] = 'book_page'
         else:
             refs = refs.order_by('derridawork_page')

@@ -3,6 +3,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
+from django.core.management import call_command
 from django.db.models import Min
 from django.http import Http404
 from django.test import TestCase, override_settings
@@ -355,6 +356,34 @@ class TestReferenceViews(TestCase):
         for instance in Instance.objects.all():
             instance.slug = instance.generate_safe_slug()
             instance.save()
+        # reindex with slugs
+        call_command('rebuild_index', '--noinput')
+
+    @pytest.mark.haystack
+    def test_instance_reference_detail(self):
+        # last instance has many references so ideal for this test
+        instance = Reference.objects.last().instance
+        # make a manifest and associate it so page displays
+        manif = Manifest.objects.create()
+        instance.digital_edition = manif
+        instance.save()
+        # get the detail reference view
+        instance_ref_detail_url = reverse('books:detail-references', kwargs={'slug': instance.slug})
+        response = self.client.get(instance_ref_detail_url)
+        assert response.status_code == 200
+        context_list = []
+        for reference in response.context['references']:
+            context_list.append(reference.derridawork_page)
+        # SQS sorted by derridawork_page passed to context list
+        assert context_list == [11, 11, 12, 20, 20, 20]
+        # - now use order_by
+        instance_ref_detail_url = reverse('books:detail-references', kwargs={'slug': instance.slug})
+        response = self.client.get(instance_ref_detail_url, {'order_by': 'book_page'})
+        assert response.status_code == 200
+        context_list = []
+        for reference in response.context['references']:
+            context_list.append(reference.book_page)
+        assert context_list == ['44s', '87p', '87p', '126p', '148p', '355p']
 
     @pytest.mark.haystack
     def test_reference_list(self):

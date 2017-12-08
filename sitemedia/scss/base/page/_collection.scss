@@ -180,7 +180,8 @@
 .item__link {
   @include faded-link();
   color: inherit;
-  line-height: 1.4;
+  line-height: 1.5;
+  padding-bottom: 1.3px;
 }
 
 .item__secondary-link {
@@ -197,10 +198,11 @@
 
 .item__author {
   font-size: ems(14px, 14);
+  @include secondary-font-style();
+
   @include grid-media($xlarge-viewport-grid) {
     font-size: ems(18px, 14);
   }
-  @include secondary-font-style();
 }
 
 .item__date,
@@ -210,6 +212,10 @@
   font-size: ems(12px, 14);
   line-height: 1;
   margin-bottom: 1.2em;
+}
+
+.item__date {
+  @include primary-font-style();
 }
 
 .item-gallery {

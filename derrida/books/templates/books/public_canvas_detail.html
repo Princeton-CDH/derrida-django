@@ -31,6 +31,8 @@
 
 <script>
   $(function () {
+    $("body").addClass("is-canvas-view");
+
     function htmlDecode(input) {
       var doc = new DOMParser().parseFromString(input, "text/html");
       return doc.documentElement.textContent;
@@ -99,22 +101,23 @@
 
     drawZones();
 
-    $(".gallery-image-view__nav .mdl-switch__label").on("click", function(e) {
+    $(".gallery-image-view__nav .mdl-layout__tab").on("click", function(e) {
       var $this = $(this),
-          $input = $this.find(".mdl-switch__input"),
-          $switch = $this.find(".mdl-switch"),
-          $sibling = $this.siblings().first().find(".mdl-switch"),
-          $siblingInput = $sibling.find("input");
-          value = $switch.hasClass("is-checked") ? $siblingInput.val() : $input.val();
+          value = $this.data("value");
+
+      $this.siblings(".is-active").removeClass("is-active");
+      $this.addClass("is-active");
 
       function toggleViews() {
         var $annotationSwitch = $("#annotations-switch"),
             $zoomSwitch = $("#zoom-switch"),
-            $annotationCards = $(".annotation-cards");
+            $annotationCards = $(".annotation-cards"),
+            $container = $(".gallery-image-view");
         if (value === "annotations") {
           $annotationSection.removeClass("is-hidden");
           $annotationCards.removeClass("is-hidden");
           $deepZoom.addClass("is-hidden");
+          $container.removeClass("is-background-darken");
 
           $zoomSwitch.removeClass("is-checked");
           $annotationSwitch.addClass("is-checked");
@@ -123,6 +126,7 @@
           $annotationSection.addClass("is-hidden");
           $annotationCards.addClass("is-hidden");
           $deepZoom.removeClass("is-hidden");
+          $container.addClass("is-background-darken");
 
           $annotationSwitch.removeClass("is-checked");
           $zoomSwitch.addClass("is-checked");
@@ -135,18 +139,28 @@
     });
 
     var $toggle = $(".page-header__toggle"),
-        $sideBar = $(".gallery-image-view__header");
+        $sideBar = $(".gallery-image-view__header"),
+        $pageHeaders = $(".mdl-layout__header, .page-header"),
+        toggleSideBarFn = function($context) {
+          var $this = $context;
+          if ($this.hasClass("is-active")) {
+            $sideBar.addClass("is-hidden");
+            $this.removeClass("is-active");
+            $pageHeaders.removeClass("is-sidebar-visible");
+          } else {
+            $sideBar.removeClass("is-hidden");
+            $this.addClass("is-active");
+            $pageHeaders.addClass("is-sidebar-visible");
+          }
+        }
     $toggle.on("click", function(e) {
       e.preventDefault();
-      var $this = $(this);
-      if ($this.hasClass("is-active")) {
-        $sideBar.addClass("is-hidden");
-        $this.removeClass("is-active");
-      } else {
-        $sideBar.removeClass("is-hidden");
-        $this.addClass("is-active");
-      }
+      toggleSideBarFn($(this));
     });
+
+    // The sidebar is hidden by default.
+    // Invoke the toggle function to show on load.
+    toggleSideBarFn($toggle);
 
     function selectAnnotationCard($card) {
       var $this = $card,
@@ -213,27 +227,18 @@
 {% block content %}
   <header class="page-header page-header--link">
     <div class="container">
-      <a class="page-header__toggle is-active"><img class="icon" src="{% static 'img/icons/Expand.svg' %}" /></a>
+      <a class="page-header__toggle"><img class="icon" src="{% static 'img/icons/Expand.svg' %}" /></a>
       <h1 class="page-header__heading"><a class="page-header__link" href="{% url 'books:detail-gallery' instance.slug %}"><span class="arrow_icon">⟵</span> Book Image Gallery</a></h1>
 
-      <nav class="gallery-image-view__nav">
-        <label class="mdl-switch__label mdl-switch__label--right">Display Annotations
-          <span class="mdl-switch mdl-switch--right mdl-js-switch" id="annotations-switch">
-            <input type="checkbox" name="view" value="annotations" checked="checked" class="mdl-switch__input" />
-          </span>
-        </label>
-
-        <label class="mdl-switch__label mdl-switch__label--right">Turn on Deep Zoom
-          <span class="mdl-switch mdl-switch--right mdl-js-switch" id="zoom-switch">
-            <input type="checkbox" name="view" value="zoom" class="mdl-switch__input" />
-          </span>
-        </label>
+      <nav class="gallery-image-view__nav mdl-tabs">
+        <a class="mdl-layout__tab is-active" href="#annotations" data-value="annotations">Display Annotation</a>
+        <a class="mdl-layout__tab" href="#zoom" data-value="zoom">Deep Zoom</a>
       </nav>
     </div>
   </header>
 
   <article class="gallery-image-view">
-    <header class="gallery-image-view__header">
+    <header class="gallery-image-view__header is-hidden">
       {# brief title information (copied from book-header) #}
       {% with book=instance %}
       <h1 class="item-title">{{ book.work.primary_title }}</h1>

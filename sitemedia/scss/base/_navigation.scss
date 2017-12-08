@@ -107,7 +107,10 @@
     display: none;
 
     .disable-coordinate-navigation & {
-      display: flex;
+      display: none;
+      @include grid-media($large-medium-viewport-grid) {
+        display: flex;
+      }
     }
   }
 }
@@ -408,15 +411,6 @@
       width: 100%;
       height: 100%;
     }
-  }
-}
-
-.mdl-layout.is-upgraded .gallery-image-view__nav .mdl-layout__tab {
-  height: 40px;
-
-  &.is-active::after {
-    background-color: $primary-color;
-    height: 2px;
   }
 }
 
