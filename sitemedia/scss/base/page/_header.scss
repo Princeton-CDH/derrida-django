@@ -49,15 +49,13 @@
 }
 
 .page-header__container {
-  min-height: 300px;
+  min-height: 320px;
   display: flex;
   align-items: center;
   flex-direction: column;
   position: relative;
 
   @media screen and (min-height: 500px) {
-    min-height: 50vh;
-
     .page-header--condensed & {
       min-height: 16rem;
     }
