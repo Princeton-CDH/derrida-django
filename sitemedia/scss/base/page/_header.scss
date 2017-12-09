@@ -1,6 +1,6 @@
 .page-header {
-  background-position: center;
-  background-size: contain;
+  background-position: center bottom;
+  background-size: auto 100%;
   background-repeat: no-repeat;
   @include transition(margin-top 0.5s ease);
 
