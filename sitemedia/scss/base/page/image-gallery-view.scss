@@ -182,13 +182,18 @@ a.gallery-image-view__list-item {
   opacity: 0.8;
 }
 
-.gallery-image-view__header,
 .gallery-image-view__container {
-  width: 100%;
+  margin: auto;
+
+  .is-background-darken & {
+    margin: 0;
+    width: 100%;
+  }
 }
 
 .gallery-image-view__header {
   background: $white;
+  width: 100%;
   padding: 0 ems(20px);
   opacity: 1;
   @include transition( opacity $base-duration $base-timing,
@@ -210,13 +215,18 @@ a.gallery-image-view__list-item {
 
 $deep-zoom-height: 600px;
 $deep-zoom-width: 500px;
-$max-component-height: 78vh;
+$max-component-height: 100vh;
 $component-padding: 4rem;
 
 .gallery-image-view__container {
   display: flex;
   position: relative;
   padding: $component-padding $gutter-size $component-padding 0;
+
+  .is-background-darken & {
+    padding-top: 0;
+    padding-right: 0;
+  }
 
   .deep-zoom-component {
     position: relative;
@@ -225,8 +235,11 @@ $component-padding: 4rem;
     padding-left: $gutter-size;
     overflow: scroll;
     text-align: center;
-    top: -#{$component-padding};
     padding-top: $component-padding;
+
+    .is-background-darken & {
+      min-height: 100vh;
+    }
 
     &.is-hidden {
       width: $deep-zoom-width;
@@ -238,6 +251,10 @@ $component-padding: 4rem;
       width: 100%;
       top: 0;
       left: 0;
+
+      .is-background-darken & {
+        height: 100%;
+      }
     }
   }
 
@@ -521,5 +538,33 @@ $component-padding: 4rem;
 
   .gallery-image-view__container .deep-zoom-component #deep-zoom {
     height: 100%;
+  }
+}
+
+.deepzoom__controls {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  z-index: 11;
+  float: right;
+  right: 10px;
+  top: -2rem;
+}
+
+.deepzoom__control .svg {
+  cursor: pointer;
+  display: block;
+  height: 35px;
+  margin-bottom: 20px;
+  opacity: 0.4;
+  transition: opacity $base-duration $base-timing;
+
+  &:hover {
+    opacity: 0.8;
+  }
+
+  rect,
+  polygon {
+    fill: $white;
   }
 }
