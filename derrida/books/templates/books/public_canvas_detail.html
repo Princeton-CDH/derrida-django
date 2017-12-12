@@ -19,6 +19,10 @@
         id: "deep-zoom",
         prefixUrl: "{% static 'js/openseadragon/images/' %}",
         tileSources: "{% url 'books:canvas-image' instance.slug canvas.short_id 'info' %}",
+        zoomInButton: "zoom-in",
+        zoomOutButton: "zoom-out",
+        homeButton: "home",
+        toolbar: "deepzoom-toolbar",
     });
 
     viewer.setFullScreen = function( fullPage ) {
@@ -326,6 +330,32 @@
       {% endcomment %}
 
       <section class="deep-zoom-component is-hidden">
+        {# deep zoom controls #}
+        <div id="deepzoom-toolbar" class="deepzoom__controls">
+          <div title="Zoom in" class="deepzoom__control" id="zoom-in" style="position: relative">
+            <svg class="svg" id="zoom-in-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+              <title>ZoomIn</title>
+              <polygon points="17.6 9 11 9 11 2.4 9 2.4 9 9 2.4 9 2.4 11 9 11 9 17.6 11 17.6 11 11 17.6 11 17.6 9" />
+            </svg>
+          </div>
+          <div title="Zoom out" class="deepzoom__control" id="zoom-out" style="position: relative">
+            <svg class="svg" id="zoom-out-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+              <title>ZoomOut</title>
+              <rect x="2.4" y="9" width="15.2" height="2" />
+            </svg>
+          </div>
+          <div title="Home" class="deepzoom__control" id="home" style="position: relative">
+            <svg class="svg" id="fit-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+              <title>Fit</title>
+              <g>
+                <polygon class="cls-1" points="5.1 8 3.1 8 3.1 3 8.1 3 8.1 5 5.1 5 5.1 8" />
+                <polygon class="cls-1" points="16.9 8 14.9 8 14.9 5 11.9 5 11.9 3 16.9 3 16.9 8" />
+                <polygon class="cls-1" points="16.9 17 11.9 17 11.9 15 14.9 15 14.9 12 16.9 12 16.9 17" />
+                <polygon class="cls-1" points="8.1 17 3.1 17 3.1 12 5.1 12 5.1 15 8.1 15 8.1 17" />
+              </g>
+            </svg>
+          </div>
+        </div>
         {# deep zoom #}
         <div id="deep-zoom"></div>
       </section>
