@@ -8,5 +8,6 @@
 {% block coordinate-nav-classes %}coordinate-navigation--background-light-navy{% endblock %}
 
 {% block main %}{{ block.super }}
-  {{page.richtextpage.content|richtext_filters|format_for_home|safe}}
+  {# temporarily remove format_for_home tag  until error 500 is resolved #}
+  {{page.richtextpage.content|richtext_filters|safe}}
 {% endblock %}
