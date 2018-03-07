@@ -167,6 +167,7 @@
       &.is-hovered {
         border-color: $primary-color;
       }
+
     }
 
     &.item-term__value--aside {
@@ -296,3 +297,9 @@
     color: $primary-color;
   }
 }
+
+/* turn off italics for non title word in item link */
+.item__link--non_title {
+    @include primary-font-style();
+}
+

@@ -108,6 +108,9 @@ class ReferenceIndex(indexes.SearchIndex, indexes.Indexable):
     instance_copy = indexes.CharField(model_attr='instance__copy', null=True)
     #: boolean indicating if instance has digital edition
     instance_digital_edition = indexes.FacetBooleanField(model_attr='instance__digital_edition')
+    #: instance collection title, for references to book sections
+    instance_collection_title = indexes.CharField(model_attr='instance__collected_in__display_title',
+        null=True)
 
     def get_model(self):
         return Reference

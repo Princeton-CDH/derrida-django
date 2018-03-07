@@ -27,7 +27,12 @@ views) and db model (ajax request via reference histogram).
     {% with instance=reference.instance %}
     <a class="text-badge text-badge--blue text-badge--link" href="{% url 'books:reference-list' %}?reference_type={{ reference.reference_type }}">{{ reference.reference_type }}</a>
       <h3 class="item__heading">
-        <a class="item__link" href="{% firstof instance_url reference.instance_url %}">{% firstof reference.instance_title instance.display_title %}</a>
+        <a class="item__link" href="{% firstof instance_url reference.instance_url %}">{% firstof reference.instance_title instance.display_title %}
+          {# collected work title for book section - solr version, database version #}
+        {% if reference.instance_collection_title or reference.instance.collected_in %}
+           <span class="item__link--non_title">in</span> {% firstof reference.instance_collection_title reference.instance.collected_in.display_title %}
+          {%endif %}
+        </a>
       </h3>
 
       <p class="item__author">
