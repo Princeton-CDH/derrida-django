@@ -12,7 +12,6 @@ def fix_collectedwork_references(apps, schema_editor):
     for instance in Instance.objects.filter(collected_set__isnull=False) \
                                     .filter(reference__isnull=False) \
                                     .distinct():
-        print(instance.work.primary_title)
         # collect start and end pages for book sections
         sections = []
         for bksection in instance.collected_set.filter(start_page__isnull=False) \
@@ -28,9 +27,9 @@ def fix_collectedwork_references(apps, schema_editor):
         for ref in instance.reference_set.exclude(book_page__exact=''):
             # handle page range or single page
             if '-' in ref.book_page:
-                start, end = [int(page) for page in ref.book_page.split('-')]
+                start, end = [int(page.rstrip('ps')) for page in ref.book_page.split('-')]
             else:
-                start = end = int(ref.book_page)
+                start = end = int(ref.book_page.rstrip('ps'))
             # find the section this page or page range belongs to
             for section_start, section_end, booksection in sections:
                 if start >= section_start and end <= section_end:
