@@ -39,28 +39,14 @@ class TestReferenceIndex(TestCase):
         assert slug == debat.slug
 
     def test_prepare_book_page_sort(self):
-
         refindex = self.refindex
-        # get all references by pk
-        references = Reference.objects.all().order_by('pk')
-        expected_book_pages = [
-            0, 0, 0, 0, 62, 171, 0, 87, 87, 44, 126, 148, 355, -495, 23, 256,
-            0, 38, 43, 0
-        ]
-        i = 0
-        # check that each one's page number is convered to an integer
-        # as expected
-        for reference in references:
-            integered = refindex.prepare_book_page_sort(reference)
-            assert expected_book_pages[i] == integered
-            i += 1
-        # check a few variant patterns
-        reference = Reference.objects.first()
-        # page includes back reference
-        reference.book_page = '(452a)47p'
-        # should be just 47
-        assert refindex.prepare_book_page_sort(reference) == 47
-        # page is a chapter or something we simply can't guess at
-        reference.book_page = '___(chapter VI)'
-        # should return  0 since there's no way to sort definitively
-        assert refindex.prepare_book_page_sort(reference) == 0
+
+        # sample reference book pages values with expected sort value
+        page_values = [('', 0), ('62p', 62), ('44s', 44), ('v', -495),
+            ('38', 38), ('(452a)47p', 47), ('22-23', 22), ('L', -450),
+            ('___(chapter VI)', 0)]
+
+        for input_val, expected_val in page_values:
+            ref = Reference(book_page=input_val)
+            assert refindex.prepare_book_page_sort(ref) == expected_val
+
