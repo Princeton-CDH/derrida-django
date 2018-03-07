@@ -276,6 +276,7 @@
 
   .filter__search-field {
     border: 0;
+    overflow: auto;
     padding-left: 0.5rem;
     width: 90%;
     outline: none;
