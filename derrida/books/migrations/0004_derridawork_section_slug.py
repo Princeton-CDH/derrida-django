@@ -14,6 +14,23 @@ def derridawork_slugs(apps, schema_editor):
         work.save()
 
 
+def truncate_to_int(apps, schema_editor):
+    '''
+    Make derridawork_pages safe for migration to convert to int by removing
+    page ranges.
+    '''
+    Reference = apps.get_model('books', 'Reference')
+    for ref in Reference.objects.all():
+        try:
+            # see if it can be made into an int and therefore is safe for the
+            # AlterField statement
+            int(ref.derridawork_page)
+        except ValueError:
+            # if not choose the leftmost page of the reference and save
+            ref.derridawork_page = ref.derridawork_page.split('-')[0]
+            ref.save()
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -37,6 +54,10 @@ class Migration(migrations.Migration):
             name='slug',
             field=models.SlugField(default='', help_text='slug for use in URLs (changing after creation will break URLs)'),
             preserve_default=False,
+        ),
+        migrations.RunPython(
+            code=truncate_to_int,
+            reverse_code=migrations.RunPython.noop,
         ),
         migrations.AlterField(
             model_name='reference',
