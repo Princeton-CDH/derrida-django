@@ -73,6 +73,13 @@ class InterventionIndex(indexes.SearchIndex, indexes.Indexable):
     def get_model(self):
         return Intervention
 
+    def index_queryset(self, using=None):
+        # exclude any interventions on canvases that are not associated
+        # with a work instance (work instance data is needed to be meaningful)
+        qs = super(InterventionIndex, self).index_queryset(using)
+        return qs.exclude(canvas__manifest__instance__isnull=True)
+
+
     def prepare_annotation_author(self, item):
         if item.author:
             return item.author.firstname_last
