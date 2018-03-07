@@ -740,6 +740,12 @@ class Reference(models.Model):
             return self.instance.collected_in.slug
         return self.instance.slug
 
+    @property
+    def instance_url(self):
+        '''absolute url for the work instance where this reference
+        is displayed; uses :attr:`instance_slug`'''
+        return reverse('books:detail', args=[self.instance_slug])
+
     @staticmethod
     def instance_ids_with_digital_editions():
         '''Used as a convenience method to provide a readonly field in the

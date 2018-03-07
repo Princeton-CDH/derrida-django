@@ -159,6 +159,28 @@ class TestReference(TestCase):
         # should return the slug for the collection
         assert ref.instance_slug == la_vie_collected.slug
 
+    def test_get_instance_url(self):
+        # create a reference
+        ref = Reference.objects.create(
+            instance=self.la_vie,
+            derridawork=self.dg,
+            derridawork_page='110',
+            derridawork_pageloc='a',
+            book_page='10s',
+            reference_type=self.quotation
+        )
+        # not a book section (none in test set are)
+        # should return the slug of its instance
+        assert ref.instance_url == self.la_vie.get_absolute_url()
+
+        # make work into a book section as a 'collected in'
+        la_vie_collected = Instance.objects.create(work=self.la_vie.work,
+            slug='la-vie-collected')
+        self.la_vie.collected_in = la_vie_collected
+        self.la_vie.save()
+        # should return the slug for the collection
+        assert ref.instance_url == la_vie_collected.get_absolute_url()
+
 
 class TestReferenceQuerySet(TestCase):
     fixtures = ['test_references.json']

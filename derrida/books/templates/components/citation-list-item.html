@@ -7,7 +7,7 @@ views) and db model (ajax request via reference histogram).
 {% load static markdownify %}
 <section class="collection__item reference">
   {# instance url for solr reference #}
-  {% url 'books:detail' reference.instance_slug as instance_url %}
+  {% url 'books:detail' slug=reference.instance_slug as instance_url %}
   <figure class="item__image">
     {% if reference.instance_digital_edition  or reference.instance.digital_edition %}
       {# thumbnail for reference - solr version #}
@@ -15,7 +15,6 @@ views) and db model (ajax request via reference histogram).
       {# thumbnail for reference - database version #}
       {% url 'books:canvas-by-page' slug=reference.instance.slug page_num=reference.book_page|slugify as thumbnail_img %}
 
-      {% url 'books:detail' slug=reference.instance_slug as solr_instance_url %}
       <a class="item__image-link" href="{% firstof instance_url reference.instance.get_absolute_url %}">
         <img class="img" src="{% firstof solr_thumbnail_img thumbnail_img %}" />
       </a>
@@ -28,7 +27,7 @@ views) and db model (ajax request via reference histogram).
     {% with instance=reference.instance %}
     <a class="text-badge text-badge--blue text-badge--link" href="{% url 'books:reference-list' %}?reference_type={{ reference.reference_type }}">{{ reference.reference_type }}</a>
       <h3 class="item__heading">
-        <a class="item__link" href="{% firstof instance_url instance.get_absolute_url %}">{% firstof reference.instance_title instance.display_title %}</a>
+        <a class="item__link" href="{% firstof instance_url reference.instance_url %}">{% firstof reference.instance_title instance.display_title %}</a>
       </h3>
 
       <p class="item__author">
