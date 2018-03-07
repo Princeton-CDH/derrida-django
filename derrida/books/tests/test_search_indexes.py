@@ -21,7 +21,7 @@ class TestReferenceIndex(TestCase):
         # sample reference book pages values with expected sort value
         page_values = [('', 0), ('62p', 62), ('44s', 44), ('v', -495),
             ('38', 38), ('(452a)47p', 47), ('22-23', 22), ('L', -450),
-            ('___(chapter VI)', 0)]
+            ('___(chapter VI)', 0), ('10-11', 10), ('105-111', 105)]
 
         for input_val, expected_val in page_values:
             ref = Reference(book_page=input_val)

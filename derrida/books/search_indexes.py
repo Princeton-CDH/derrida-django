@@ -1,7 +1,6 @@
-# import datetime
-import re
 from haystack import indexes
 from derrida.books.models import Instance, Reference
+import roman
 
 
 # Solr index needs to support:
@@ -97,7 +96,7 @@ class ReferenceIndex(indexes.SearchIndex, indexes.Indexable):
         faceted=True, null=True)
     #: copyright year of associated instance; :attr:`derrida.books.models.Instance.copyright_year`
     instance_copyright_year = indexes.DecimalField(model_attr='instance__copyright_year', null=True)
-    #: print year of associated instance; :attr:`derrida.books.models.Instance.print_year`
+    #: print year of associated instance; :attr:`derrida.books.models.Instance.r_year`
     instance_print_year = indexes.DecimalField(model_attr='instance__print_year', null=True)
     #: is instance extant in PU collection?; :attr:`derrida.books.models.Instance.is_extant`
     instance_is_extant = indexes.FacetBooleanField(model_attr='instance__is_extant')
@@ -126,43 +125,27 @@ class ReferenceIndex(indexes.SearchIndex, indexes.Indexable):
         # if empty immediately return 0 for no sort
         if not reference.book_page:
             return 0
-        book_page = reference.book_page
-        # strip back references to derridawork citation, i.e. (256a)
-        book_page = re.sub(r'\(.*\)', '', book_page)
-        # split on '-' if it exists
+        book_page = reference.book_page.lower()
+        # ignore any back references to derridawork citation, e.g. (256a)
+        book_page = book_page.split(')')[-1]
+        # split on '-' if it exists; just get first page of page range
         book_page = book_page.split('-')[0]
-        # strip p and s and upper
-        book_page = book_page.strip('ps').upper()
-        # check for a roman numeral
-        if not re.search(r'[^MDCLXVI]+', book_page):
-            roman_nums = {
-                'M': 1000, 'D': 500, 'C': 100,
-                'L': 50, 'X': 10, 'V': 5, 'I': 1
-            }
-            value = 0
-            previous = ''
-            for char in book_page:
-                # first letter is always added
-                if not previous:
-                    value = roman_nums[char]
-                if previous:
-                    # add a smaller number
-                    if roman_nums[previous] >= roman_nums[char]:
-                        value += roman_nums[char]
-                    # if a larger follows a smaller, it will be one place value
-                    # off (i.e. 9 instead of 10, 90 instead of 100, etc.)
-                    # so we can deduct counting it previously and then subtract
-                    # it again from value of the following character
-                    if roman_nums[previous] < roman_nums[char]:
-                        value += (roman_nums[char] - roman_nums[previous]*2)
-                previous = char
-            # This results in front matter pages (up to 500) being indexed
-            # before regular pages.
-            return value - 500
-        # remove any other non-numeric characters for irregular references
-        book_page = re.sub(r'[^1-9]', '', book_page)
-        # return the characters as an integer
-        if book_page:
+        # strip any trailing p or s
+        book_page = book_page.strip('ps')
+
+        # try converting to integer - should work in most cases
+        try:
             return int(book_page)
-        # if blank string, return zero (no sort)
+        except ValueError:
+            pass
+
+        # if that fails, check for a roman numeral
+        try:
+            # return a negative number so front matter pages (up to 500)
+            # will sort before pages with regular numbers.
+            return roman.fromRoman(book_page.upper()) - 500
+        except roman.InvalidRomanNumeralError:
+            pass
+
+        # if no conversion succeeded, return zero
         return 0

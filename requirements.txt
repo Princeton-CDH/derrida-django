@@ -29,3 +29,4 @@ pillow<4.2
 git+https://github.com/stephenmcd/mezzanine.git@397409d#egg=mezzanine
 django-fullurl
 django-apptemplates
+roman
