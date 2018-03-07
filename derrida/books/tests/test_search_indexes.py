@@ -15,29 +15,6 @@ class TestReferenceIndex(TestCase):
 
         self.refindex = ReferenceIndex()
 
-    def test_prepare_instance_slug(self):
-
-        # get a ReferenceIndex object
-        refindex = self.refindex
-        # get a reference
-        reference = Reference.objects.first()
-        # not a book section (none in test set are)
-        # should return the slug of its instance
-        slug = refindex.prepare_instance_slug(reference)
-        assert slug == reference.instance.slug
-
-        # create a work as a 'collected in'
-        ecrit = Instance.objects.get(slug__icontains='lecriture-et-la')
-        debat = Instance.objects.get(slug__icontains='le-debat-sur')
-        # make ecrit a 'section' of debat
-        ecrit.collected_in = debat
-        ecrit.save()
-        # get a reference from ecrit
-        reference = Reference.objects.filter(instance=ecrit).first()
-        # should return the slug for debat not ecrit
-        slug = refindex.prepare_instance_slug(reference)
-        assert slug == debat.slug
-
     def test_prepare_book_page_sort(self):
         refindex = self.refindex
 

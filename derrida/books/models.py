@@ -730,6 +730,16 @@ class Reference(models.Model):
     anchor_text_snippet.short_description = 'Anchor Text'
     anchor_text.admin_order_field = 'anchor_text'
 
+    @property
+    def instance_slug(self):
+        '''Slug for the work instance used to display this reference.
+        For a reference to a book section, returns the slug
+        for the book that collects it.
+        '''
+        if self.instance.collected_in:
+            return self.instance.collected_in.slug
+        return self.instance.slug
+
     @staticmethod
     def instance_ids_with_digital_editions():
         '''Used as a convenience method to provide a readonly field in the

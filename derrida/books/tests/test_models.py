@@ -83,7 +83,7 @@ class TestDerridaSection(TestCase):
 
 
 class TestReference(TestCase):
-    fixtures = ['sample_work_data.json']
+    fixtures = ['sample_work_data']
 
     def setUp(self):
         self.manif = Manifest.objects.create()
@@ -136,6 +136,28 @@ class TestReference(TestCase):
         self.la_vie.save()
         data = Reference.instance_ids_with_digital_editions()
         assert json.loads(data) == [self.la_vie.pk]
+
+    def test_instance_slug(self):
+        # create a reference
+        ref = Reference.objects.create(
+            instance=self.la_vie,
+            derridawork=self.dg,
+            derridawork_page='110',
+            derridawork_pageloc='a',
+            book_page='10s',
+            reference_type=self.quotation
+        )
+        # not a book section (none in test set are)
+        # should return the slug of its instance
+        assert ref.instance_slug == self.la_vie.slug
+
+        # make work into a book section as a 'collected in'
+        la_vie_collected = Instance.objects.create(work=self.la_vie.work,
+            slug='la-vie-collected')
+        self.la_vie.collected_in = la_vie_collected
+        self.la_vie.save()
+        # should return the slug for the collection
+        assert ref.instance_slug == la_vie_collected.slug
 
 
 class TestReferenceQuerySet(TestCase):
