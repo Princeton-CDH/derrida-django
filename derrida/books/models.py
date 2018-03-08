@@ -186,7 +186,8 @@ class Instance(Notable):
                                 'right. Editing slugs of previously saved '
                                 'instances should be done with caution, '
                                 'as this may break permanent links.'
-                            )
+                            ),
+                            blank=True
     )
 
     #: item is extant
