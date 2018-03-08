@@ -1,6 +1,6 @@
 import json
 import re
-from unidecode import unidecode
+import string
 
 from django.db import models
 from django.contrib.contenttypes.fields import GenericRelation
@@ -11,6 +11,7 @@ from django.utils.safestring import mark_safe
 from django.utils.text import slugify
 from djiffy.models import Canvas, Manifest
 from sortedm2m.fields import SortedManyToManyField
+from unidecode import unidecode
 
 from derrida.common.models import Named, Notable, DateRange
 from derrida.places.models import Place
@@ -296,8 +297,9 @@ class Instance(Notable):
             raise ValidationError('Cannot belong to both a journal and a collection')
 
     def __str__(self):
-        return '%s (%s)' % (self.display_title(),
-            self.copyright_year or 'n.d.')
+        return '%s (%s%s)' % (self.display_title(),
+            self.copyright_year or 'n.d.',
+            ' %s' % self.copy if self.copy else '')
 
     def get_absolute_url(self):
         return reverse('books:detail', kwargs={'slug': self.slug})
@@ -331,29 +333,49 @@ class Instance(Notable):
         :rtype str: String in the format `lastname-title-of-work-year-copy`
         '''
 
-        # base slug
-        slug = self.generate_base_slug()
+        # base slug, without any copy letter
+        base_slug = self.generate_base_slug()
+        if self.copy:
+            slug = '-'.join([base_slug, self.copy])
+        else:
+            slug = base_slug
+
         # check for any copies with the same base slug
         duplicates = Instance.objects.filter(
-            slug__icontains=slug).order_by('-slug')
+            slug__icontains=base_slug).order_by('-slug')
+        # exclude current record if it has already been saved
+        if self.pk:
+            duplicates = duplicates.exclude(pk=self.pk)
         # any new copies should start with 'B' since 'A' is implicit in already
         # saved slug for original
         new_copy_letter = 'B'
         # check for duplicates
         if duplicates.exists():
-            # get their slugs as a flat list
+            # get the list of matching slugs
             slugs = duplicates.values_list('slug', flat=True)
-            letters = []
-            # clip any -[A-Z] copy suffixes and append to a list
-            for duplicate in slugs:
-                if re.search(r'-[A-Z]$', duplicate):
-                    letters.append(duplicate.split('-')[-1])
-            # sort and iterate letter by one
-            if sorted(letters, reverse=True):
-                new_copy_letter = chr(ord(letters[0]) + 1)
-            slug = ('%s-%s' % (slug, new_copy_letter))
-            # also store in the copy field
-            self.copy = new_copy_letter
+            # if slug with specified copy is already unique, use that without
+            # further processing
+            if not slug in slugs:
+                return slug
+
+            # otherwise, calculate the appropriate copy letter to use
+
+            # collect copy suffixes from the slugs
+            # (trailing single uppercase letters only)
+            letters = [ltr for slug in slugs
+                       for ltr in slug.rsplit('-', 1)[1]
+                       if len(ltr) == 1 and ltr in string.ascii_uppercase]
+
+            # if existing copies letters are found, increment from the
+            # highest one (already sorted properly from queryset return)
+            if letters:
+                next_copy = chr(ord(letters[0]) + 1)
+            else:
+                # otherwise, default next copy is B (first is assumed to be A)
+                next_copy = 'B'
+            slug = '-'.join([base_slug, next_copy])
+            # also store the new copy letter as instance copy
+            self.copy = next_copy
 
         return slug
 

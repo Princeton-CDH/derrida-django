@@ -290,25 +290,34 @@ class TestInstance(TestCase):
         assert inst.generate_base_slug() == 'joyce-a-portrait-of-the-artist-as-a-young-man-1950'
 
     def test_generate_safe_slug(self):
-
-        # la vie should appear in the list and see itself so suggest -B
+        # should ignore itself when checking for duplicates
         la_vie = Instance.objects.get(work__short_title__contains="La vie")
-        assert la_vie.generate_safe_slug() == la_vie.generate_base_slug() + '-B'
-        # save the -B copy
-        la_vie.pk = None
-        la_vie.slug = la_vie.generate_safe_slug()
-        la_vie.save()
-        # now pull in the original copy and run again, should produce a slug
-        # with -C as its suffix
-        la_vie = Instance.objects.get(slug=la_vie.generate_base_slug())
-        la_vie.generate_safe_slug() == la_vie.generate_base_slug() + '-C'
-        # get the original again, and see if a duplicate will produce the -C ending
-        la_vie = Instance.objects.filter(work__short_title__contains="La vie").order_by('slug')[0]
-        la_vie.pk = None
-        la_vie.slug = ''
-        la_vie.save()
-        la_vie.refresh_from_db()
-        assert la_vie.slug == la_vie.generate_base_slug() + '-C'
+        assert la_vie.generate_safe_slug() == la_vie.generate_base_slug()
+
+        # new instance of the same edition, copy field not set, no other copies
+        la_vie2 = Instance(work=la_vie.work, copyright_year=la_vie.copyright_year)
+        assert la_vie2.generate_safe_slug() == '%s-B' % la_vie.generate_base_slug()
+        # should also set copy value
+        assert la_vie2.copy == 'B'
+
+        # new instance of the same edition, with copy field set
+        la_vie2 = Instance(work=la_vie.work, copyright_year=la_vie.copyright_year,
+            copy='C')
+        # should use copy field as set if it is unique
+        assert la_vie2.generate_safe_slug() == \
+            '%s-%s' % (la_vie.generate_base_slug(), la_vie2.copy)
+        la_vie2.save()
+
+        # create additional copy to test against multiple
+        la_vie4 = Instance.objects.create(work=la_vie.work,
+            copyright_year=la_vie.copyright_year, copy='D')
+        # creating a new instance of the same edition with copy field unset
+        la_vie3 = Instance(work=la_vie.work, copyright_year=la_vie.copyright_year)
+        # should increment letter from the last copy letter encountered
+        assert la_vie3.generate_safe_slug() == '%s-E' % la_vie.generate_base_slug()
+        # should also set copy value
+        assert la_vie3.copy == 'E'
+
 
     def test_save(self):
         # on save, if empty slug, should set one with generate safe slug
