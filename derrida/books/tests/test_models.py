@@ -9,12 +9,12 @@ import pytest
 import json
 
 from derrida.places.models import Place
-# Common models between projects and associated new types
 from derrida.books.models import Publisher, OwningInstitution, \
     Journal, DerridaWork, DerridaWorkSection, Reference, \
     ReferenceType, Work, Instance, InstanceCatalogue, WorkLanguage, \
     InstanceLanguage, Language, WorkSubject, Subject
 from derrida.interventions.models import Intervention
+from derrida.people.models import Person
 
 
 class TestOwningInstitution(TestCase):
@@ -261,9 +261,33 @@ class TestInstance(TestCase):
         assert '%s (n.d.)' % (la_vie.display_title(), )
 
     def test_generate_base_slug(self):
-        la_vie = Instance.objects.get(work__short_title__contains="La vie")
-        # La vie's slug is set in the test fixture as a reference
-        assert la_vie.generate_base_slug() == la_vie.slug
+        work = Work.objects.create(primary_title='Ulysses')
+        inst = Instance(work=work)
+        # short title, no author or year
+        assert inst.generate_base_slug() == 'ulysses'
+
+        # single-name author
+        joyce = Person.objects.create(authorized_name='Joyce')
+        work.authors.add(joyce)
+        assert inst.generate_base_slug() == 'joyce-ulysses'
+        # comma-delimited author name
+        joyce.authorized_name = 'Joyce, James'
+        joyce.save()
+        assert inst.generate_base_slug() == 'joyce-ulysses'
+
+        # work year - used if no instance copyright year
+        work.year = 1922
+        work.save()
+        assert inst.generate_base_slug() == 'joyce-ulysses-1922'
+        # copyright year used when available
+        inst.copyright_year = 1950
+        assert inst.generate_base_slug() == 'joyce-ulysses-1950'
+
+        # long titles truncated to ten words
+        work.primary_title = 'A portrait of the artist as a young man: ' + \
+            ' the strange story of Stephen Dedalus'
+        work.save()
+        assert inst.generate_base_slug() == 'joyce-a-portrait-of-the-artist-as-a-young-man-1950'
 
     def test_generate_safe_slug(self):
 

@@ -302,8 +302,11 @@ class Instance(Notable):
         return reverse('books:detail', kwargs={'slug': self.slug})
 
     def generate_base_slug(self):
-        '''Generate slug for :class:`Instance` object.
-           :rtype str: String in the format ``lastname-title-of-work-year``
+        '''Generate a slug based on first author, work title, and year.
+        Not guaranteed to be unique if there are multiple copies of
+        the same instance/edition of a work.
+
+        :rtype str: String in the format ``lastname-title-of-work-year``
         '''
         # get the first author, if there is one
         author = self.work.authors.first()
@@ -313,28 +316,23 @@ class Instance(Notable):
         else:
             # otherwise, set it to an empty string
             author = ''
-        title = self.work.primary_title
-        year = self.copyright_year
-        # if no instance copyright_year,
-        if not year:
-            # try the work year,
-            year = self.work.year
-        if not year:
-            # if still no year, use blank string
-            year = ''
-        # return a slug with no distinction for copies
+        # truncate the title to first several words of the title
+        title = ' '.join(self.work.primary_title.split()[:9])
+        # use copyright year if available, with fallback to work year if
+        year = self.copyright_year or self.work.year or ''
+        # # return a slug (not unique for multiple copies of same instance)
         return slugify('%s %s %s' % (author, unidecode(title), year))
 
     def generate_safe_slug(self):
-        '''Generate a verified slug with copy handling for :class:`Instance`
-           object.
-           :rtype str: String in the format
-           ``lastname-title-of-work-year-letter``
+        '''Generate a unique slug.  Checks for duplicates and calculates
+        an appropriate copy letter if needed.
+
+        :rtype str: String in the format ``lastname-title-of-work-year-copy``
         '''
 
         # base slug
         slug = self.generate_base_slug()
-        # get any copies that use the base slug
+        # check for any copies with the same base slug
         duplicates = Instance.objects.filter(
             slug__icontains=slug).order_by('-slug')
         # any new copies should start with 'B' since 'A' is implicit in already
