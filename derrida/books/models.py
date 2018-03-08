@@ -324,7 +324,7 @@ class Instance(Notable):
         # use copyright year if available, with fallback to work year if
         year = self.copyright_year or self.work.year or ''
         # # return a slug (not unique for multiple copies of same instance)
-        return slugify('%s %s %s' % (author, unidecode(title), year))
+        return slugify('%s %s %s' % (unidecode(author), unidecode(title), year))
 
     def generate_safe_slug(self):
         '''Generate a unique slug.  Checks for duplicates and calculates

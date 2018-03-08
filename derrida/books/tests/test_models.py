@@ -289,6 +289,16 @@ class TestInstance(TestCase):
         work.save()
         assert inst.generate_base_slug() == 'joyce-a-portrait-of-the-artist-as-a-young-man-1950'
 
+        # should handle unicode in titles
+        emil_wk = Work.objects.create(primary_title="Émile ou de l'éducation")
+        emil = Instance(work=emil_wk)
+        assert emil.generate_base_slug() == 'emile-ou-de-leducation'
+        # handle unicode in author names
+        zizek = Person.objects.create(authorized_name='Žižek')
+        emil_wk.authors.add(zizek)
+        assert emil.generate_base_slug() == 'zizek-emile-ou-de-leducation'
+
+
     def test_generate_safe_slug(self):
         # should ignore itself when checking for duplicates
         la_vie = Instance.objects.get(work__short_title__contains="La vie")
