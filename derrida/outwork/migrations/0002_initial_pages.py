@@ -44,7 +44,9 @@ NAV_PAGES = OrderedDict([
          'description': 'Browse Derrida’s personal copies of the books referenced in his published works. Only books extant in the Library of Jacques Derrida collection, held at the Princeton University Library’s Department of Rare Books and Special Collections, are displayed below.'}),
      ('references', {'title': 'Reference List',
          'description': 'Explore the quotations and references in Derrida’s works.'}),
-    ('references/histogram/de-la-grammatologie', {'title': 'Visualization'}),
+    ('references/histogram/de-la-grammatologie', {'title': 'Visualization',
+        'description': 'Explore all quotations and references in Derrida’s works.',
+        'meta_title': 'References by Section ‖ Visualization'}),
     ('outwork', {'title': 'Outwork'})
 ])
 
@@ -59,7 +61,10 @@ FOOTER_PAGES = OrderedDict([
 
 OTHER_PAGES = OrderedDict([
     ('interventions', {'title': 'Interventions',
-        'description': 'Explore the traces of Derrida’s reading.'})
+        'description': 'Explore the traces of Derrida’s reading.'}),
+    ('references/histogram', {'title': 'Visualization by Author',
+        'description': 'Explore all quotations and references in Derrida’s works.',
+        'meta_title': 'References by Author ‖ Visualization'})
 ])
 
 
@@ -71,6 +76,7 @@ def create_pages(apps, schema_editor):
 
     def create_page(slug, info, index, menus=''):
         RichTextPage.objects.create(slug=slug, title=info.title,
+            _meta_title=info.get('meta_title', ''),
             titles=info.title, created=now, updated=now,
             description=info.get('description', ''),
             gen_description=not info.get('description', ''),
