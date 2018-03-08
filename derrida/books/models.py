@@ -283,6 +283,7 @@ class Instance(Notable):
     class Meta:
         ordering = ['alternate_title', 'work__primary_title'] ## ??
         verbose_name = 'Derrida library work instance'
+        unique_together = (("work", "copyright_year", "copy"),)
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -327,7 +328,7 @@ class Instance(Notable):
         '''Generate a unique slug.  Checks for duplicates and calculates
         an appropriate copy letter if needed.
 
-        :rtype str: String in the format ``lastname-title-of-work-year-copy``
+        :rtype str: String in the format `lastname-title-of-work-year-copy`
         '''
 
         # base slug
@@ -351,6 +352,8 @@ class Instance(Notable):
             if sorted(letters, reverse=True):
                 new_copy_letter = chr(ord(letters[0]) + 1)
             slug = ('%s-%s' % (slug, new_copy_letter))
+            # also store in the copy field
+            self.copy = new_copy_letter
 
         return slug
 

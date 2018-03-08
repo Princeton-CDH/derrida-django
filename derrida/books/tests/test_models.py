@@ -547,15 +547,16 @@ class TestInstance(TestCase):
         assert not la_vie.allow_canvas_large_image(page)
 
     def test_related_instances(self):
-
         # get la_vie and clone it
         la_vie = Instance.objects.filter(work__primary_title__icontains='la vie').first()
         la_vie.digital_edition = mfst = Manifest.objects.create(short_id='m1')
+        la_vie.copy = 'B'
         la_vie.save()
         pk = la_vie.pk
         la_vie.pk = None
         la_vie.digital_edition = mfst = Manifest.objects.create(short_id='m2')
         la_vie.slug = 'a-completely-different-slug'
+        la_vie.copy = 'C'
         la_vie.save()
         # refresh the object so it has its pk and related objects
         la_vie.refresh_from_db()
