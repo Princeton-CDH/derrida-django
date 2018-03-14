@@ -169,6 +169,25 @@
         {% include 'components/form/year-selection.html' with name='print_year' label=form.print_year.label items=form.print_year ranges=facets.ranges.print_year %}
       </div>
       {% endif %}
+
+      {% if form.instance_work_year %}
+      <div class="filter__selector filter__selector--condensed">
+        {% include 'components/form/year-selection.html' with name='instance_work_year' label=form.instance_work_year.label items=form.instance_work_year ranges=facets.ranges.instance_work_year %}
+      </div>
+      {% endif %}
+
+      {% if form.instance_copyright_year %}
+      <div class="filter__selector filter__selector--condensed">
+        {% include 'components/form/year-selection.html' with name='instance_copyright_year' label=form.instance_copyright_year.label items=form.instance_copyright_year ranges=facets.ranges.instance_copyright_year %}
+      </div>
+      {% endif %}
+
+      {% if form.instance_print_year %}
+      <div class="filter__selector filter__selector--condensed">
+        {% include 'components/form/year-selection.html' with name='instance_print_year' label=form.instance_print_year.label items=form.instance_print_year ranges=facets.ranges.instance_print_year %}
+      </div>
+      {% endif %}
+
     </section>
 
     {# We need to update the components after being rendered in each of the checkbox-selection #}

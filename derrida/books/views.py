@@ -239,6 +239,53 @@ class ReferenceListView(ListView):
                 solr_facet = self.form.solr_field(facet)
                 # filter the query: facet matches any of the terms
                 sqs = sqs.filter(**{'%s__in' % solr_facet: search_opts[facet]})
+        # request range facets for References, adapated from logic
+        # above for Instances
+        # get max/min from database to specify range start & end values
+        # TODO: should probably cache max/min values so we don't have
+        # to calculate them every time
+        # NOTE: restricting to cited books currently returns null for copyright
+        # which breaks the logic here; get a larger range for now
+        # ranges = Instance.objects.filter(is_extant=True, cited_in__isnull=False) \
+        ranges = Reference.objects.filter(instance__is_extant=True) \
+            .aggregate(
+                instance_work_year_max=Max('instance__work__year'),
+                instance_work_year_min=Min('instance__work__year'),
+                instance_copyright_year_max=Max('instance__copyright_year'),
+                instance_copyright_year_min=Min('instance__copyright_year'),
+                instance_print_year_max=Max('instance__print_date'),
+                instance_print_year_min=Min('instance__print_date'),
+            )
+        # request range facets values and optionally filter ranges
+        # on configured range facet fields
+        for range_facet in self.form.range_facets:
+            start = end = None
+            # range filter requested in search options
+            if range_facet in search_opts and search_opts[range_facet]:
+                start, end = search_opts[range_facet].split('-')
+                # could have both start and end or just one
+                # NOTE: haystack includes a range field lookup, but
+                # it converts numbers to strings, so this is easier
+                range_filter = '[%s TO %s]' % (start or '*', end or '*')
+                sqs = sqs.filter(**{range_facet: Raw(range_filter)})
+
+            # current range filter becomes start/end if specified
+            range_opts = {
+                'start': int(start) if start else ranges['%s_min' % range_facet],
+                'end': int(end) if end else ranges['%s_max' % range_facet],
+            }
+            if range_facet == 'instance_print_year':
+                # special case: print year is a datetime but we only want year
+                if not start:
+                    range_opts['start'] = range_opts['start'].year if range_opts['start'] else None
+                if not end:
+                    range_opts['end'] = range_opts['end'].year if range_opts['end'] else None
+            # calculate gap based start and end & desired number of slices
+            # ideally, generate 15 slices; minimum gap size of 1
+            range_opts['gap'] = max(1, int((range_opts['end'] - range_opts['start']) / 15.0))
+            # request the range facet with the specified options
+            sqs = sqs.facet(range_facet, range=True, **range_opts)
+
 
         # sort should always be set
         if search_opts['order_by']:
