@@ -1,4 +1,5 @@
 import json
+import datetime
 
 from dal import autocomplete
 from django.contrib import messages
@@ -139,6 +140,12 @@ class InstanceListView(ListView):
             .aggregate(work_year_max=Max('work__year'), work_year_min=Min('work__year'),
                 copyright_year_max=Max('copyright_year'), copyright_year_min=Min('copyright_year'),
                 print_year_max=Max('print_date'), print_year_min=Min('print_date'))
+
+        # pre-process datetime.date instances to get just year as an integer
+        for field, value in ranges.items():
+            if isinstance(value, datetime.date):
+                ranges[field] = value.year
+
         # request range facets values and optionally filter ranges
         # on configured range facet fields
         for range_facet in self.form.range_facets:
@@ -157,12 +164,6 @@ class InstanceListView(ListView):
                 'start': int(start) if start else ranges['%s_min' % range_facet],
                 'end': int(end) if end else ranges['%s_max' % range_facet],
             }
-            if range_facet == 'print_year':
-                # special case: print year is a datetime but we only want year
-                if not start:
-                    range_opts['start'] = range_opts['start'].year if range_opts['start'] else None
-                if not end:
-                    range_opts['end'] = range_opts['end'].year if range_opts['end'] else None
             # calculate gap based start and end & desired number of slices
             # ideally, generate 15 slices; minimum gap size of 1
             range_opts['gap'] = max(1, int((range_opts['end'] - range_opts['start']) / 15.0))
@@ -256,6 +257,11 @@ class ReferenceListView(ListView):
                 instance_print_year_max=Max('instance__print_date'),
                 instance_print_year_min=Min('instance__print_date'),
             )
+        # pre-process datetime.date instances to get just year as an integer
+        for field, value in ranges.items():
+            if isinstance(value, datetime.date):
+                ranges[field] = value.year
+
         # request range facets values and optionally filter ranges
         # on configured range facet fields
         for range_facet in self.form.range_facets:
@@ -274,12 +280,6 @@ class ReferenceListView(ListView):
                 'start': int(start) if start else ranges['%s_min' % range_facet],
                 'end': int(end) if end else ranges['%s_max' % range_facet],
             }
-            if range_facet == 'instance_print_year':
-                # special case: print year is a datetime but we only want year
-                if not start:
-                    range_opts['start'] = range_opts['start'].year if range_opts['start'] else None
-                if not end:
-                    range_opts['end'] = range_opts['end'].year if range_opts['end'] else None
             # calculate gap based start and end & desired number of slices
             # ideally, generate 15 slices; minimum gap size of 1
             range_opts['gap'] = max(1, int((range_opts['end'] - range_opts['start']) / 15.0))
