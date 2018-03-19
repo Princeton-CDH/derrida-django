@@ -24,9 +24,9 @@ Django web application for the `Derrida's Margins Project
 
 `Current release documentation <https://princeton-cdh.github.io/derrida-django/>`_.
 
-This repo uses `git-flow <https://github.com/nvie/gitflow>`_ conventions; master
+This repository uses `git-flow <https://github.com/nvie/gitflow>`_ conventions; master
 contains the most recent release, and work in progress will be on the develop branch.
-Pull requests shoudl be made against develop.
+Pull requests should be made against develop.
 
 
 Development instructions
