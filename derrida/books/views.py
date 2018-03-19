@@ -4,10 +4,12 @@ import datetime
 from dal import autocomplete
 from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
+from django.core.cache import cache
 from django.db.models import Max, Min
 from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views.generic import DetailView, ListView, View
 from django.views.generic.base import TemplateView
@@ -243,25 +245,30 @@ class ReferenceListView(ListView):
         # request range facets for References, adapated from logic
         # above for Instances
         # get max/min from database to specify range start & end values
-        # TODO: should probably cache max/min values so we don't have
-        # to calculate them every time
-        # NOTE: restricting to cited books currently returns null for copyright
-        # which breaks the logic here; get a larger range for now
-        # ranges = Instance.objects.filter(is_extant=True, cited_in__isnull=False) \
-        ranges = Reference.objects.filter(instance__is_extant=True) \
-            .aggregate(
-                instance_work_year_max=Max('instance__work__year'),
-                instance_work_year_min=Min('instance__work__year'),
-                instance_copyright_year_max=Max('instance__copyright_year'),
-                instance_copyright_year_min=Min('instance__copyright_year'),
-                instance_print_year_max=Max('instance__print_date'),
-                instance_print_year_min=Min('instance__print_date'),
-            )
-        # pre-process datetime.date instances to get just year as an integer
-        for field, value in ranges.items():
-            if isinstance(value, datetime.date):
-                ranges[field] = value.year
 
+        # set the aggregate queries for this particular query and their
+        # kwarg names as a dictionary
+        aggregate_queries = {
+            'instance_work_year_max': Max('instance__work__year'),
+            'instance_work_year_min': Min('instance__work__year'),
+            'instance_copyright_year_max': Max('instance__copyright_year'),
+            'instance_copyright_year_min': Min('instance__copyright_year'),
+            'instance_print_year_max': Max('instance__print_date'),
+            'instance_print_year_min': Min('instance__print_date'),
+        }
+        # check for a namespaced _ranges variable in Django cache
+        # return None if not found by default
+        ranges = cache.get('reference_ranges')
+        if not ranges:
+            ranges = Reference.objects.filter(instance__is_extant=True) \
+                .aggregate(**aggregate_queries)
+            # pre-process datetime.date instances to get just
+            # year as an integer
+            for field, value in ranges.items():
+                if isinstance(value, datetime.date):
+                    ranges[field] = value.year
+            cache.set('reference_ranges', ranges)
+            
         # request range facets values and optionally filter ranges
         # on configured range facet fields
         for range_facet in self.form.range_facets:
@@ -285,7 +292,6 @@ class ReferenceListView(ListView):
             range_opts['gap'] = max(1, int((range_opts['end'] - range_opts['start']) / 15.0))
             # request the range facet with the specified options
             sqs = sqs.facet(range_facet, range=True, **range_opts)
-
 
         # sort should always be set
         if search_opts['order_by']:
