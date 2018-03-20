@@ -104,7 +104,7 @@ class Command(BaseCommand):
 
     # shorthand for known URIs to be imported
     manifest_uris = {
-        'PUL': 'https://plum.princeton.edu/collections/pb5646r538/manifest'
+        'PUL': 'https://figgy.princeton.edu/collections/7081b751-abb6-4f62-9c38-ff1fda0f9d30/manifest'
     }
 
     def add_arguments(self, parser):
