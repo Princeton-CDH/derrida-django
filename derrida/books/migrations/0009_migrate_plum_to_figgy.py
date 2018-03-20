@@ -23,20 +23,19 @@ def migrate_plum_to_figgy(apps, schema_editor):
     mnf_importer = DerridaManifestImporter(update=True)
 
     # only manifests with plum.princeton urls need migration
-    for dbmanif in Manifest.objects.filter(uri__contains='plum.princeton'):
+    for db_manif in Manifest.objects.filter(uri__contains='plum.princeton'):
         # equivalent figgy uri will redirect to new canonical uuid uri
-        plum_uri = dbmanif.uri
+        plum_uri = db_manif.uri
         figgy_uri = plum_uri.replace('https://plum.princeton', 'https://figgy.princeton')
-        print(plum_uri)
         response = requests.head(figgy_uri)
         # expecting a 302 found; ignore if we got something else
         if not response.status_code == requests.codes.found:
             # error/warn?
             next
 
-        # update database manifest with new url
-        dbmanif.uri = response.headers['location']
-        print(dbmanif.uri)
+        # update database manifest with new url and short id
+        db_manif.uri = response.headers['location']
+        db_manif.short_id = IIIFPresentation.short_id(db_manif.uri)
 
         # retrieve the figgy manifest at the new url
         newmanif = IIIFPresentation.from_url(response.headers['location'])
@@ -45,25 +44,36 @@ def migrate_plum_to_figgy(apps, schema_editor):
         # based on short id
         canvas_by_id = {}
         for canvas in newmanif.sequences[0].canvases:
-            canvas_by_id[canvas.local_identifier] = canvas
+            try:
+                canvas_by_id[canvas.local_identifier] = canvas
+            except AttributeError:
+                pass
+                # 8 canvases on one manifest were corrupted;
+                # see https://github.com/pulibrary/figgy/issues/802
+                # map by sequence if local id lookup fails
 
         # loop through canvases stored in the database for this manifest
         # and update them
-        for dbcanvas in dbmanif.canvases.all():
+        for index, db_canvas in enumerate(db_manif.canvases.all()):
             # update canvas uri and save in the database
-            dbcanvas.uri = canvas_by_id[dbcanvas.short_id].id
-            dbcanvas.save()
+            try:
+                # canvas = canvas_by_id[db_canvas.short_id]
+                db_canvas.uri = canvas_by_id[db_canvas.short_id].id
+            except KeyError:
+                # if short id lookup fails, map by index
+                # canvas = newmanif.sequences[0].canvases[index]
+                db_canvas.uri = newmanif.sequences[0].canvases[index].id
 
-            # NOTE: not updating other canvas metadata, because
-            # the existing import/update script should handle that
-            # once the urls have been migrated
+            db_canvas.save()
+
+            # NOTE: not updating other canvas metadata here; use
+            # existing import/update script once urls have been migrated
 
         # save the manifest with the new figgy url
-        dbmanif.save()
+        db_manif.save()
 
-        # update manifest & canvas labels, image urls, and other metadata
-        # FIXME: temporarily disable; getting a 406 response
-        # mnf_importer.import_manifest(newmanif, newmanif.id)
+        # use standard import/update logic to update everything else
+        mnf_importer.import_manifest(newmanif, newmanif.id)
 
         # find and update all interventions associated with canvases for the
         # current digital edition
