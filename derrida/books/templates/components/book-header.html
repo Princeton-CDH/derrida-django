@@ -8,7 +8,9 @@ object for accessing properties to render.
 {% endcomment %}
 {% load static %}
 {% if book.digital_edition.thumbnail %}
-<img class="item-header__image" src="{{ book.digital_edition.thumbnail.image.thumbnail }}" />
+<img class="item-header__image"
+   src="{% url 'books:canvas-image' instance.slug book.digital_edition.thumbnail.short_id 'thumbnail' %}"
+   srcset="{% url 'books:canvas-image' instance.slug book.digital_edition.thumbnail.short_id 'thumbnail' '@2x' %} 2x" />
 {% else %}
 <span class="item-header__image img--placeholder"></span>
 {% endif %}
