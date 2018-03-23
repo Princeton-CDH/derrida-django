@@ -512,11 +512,12 @@ class CanvasImageByPageNumber(View):
 
             # if we have a canvas, redirect to thumbnail image view
             if canvas and canvas.short_id:
-                canvas_url = reverse('books:canvas-image',
-                    kwargs={'slug': self.kwargs['slug'],
-                            'short_id': canvas.short_id, 'mode': 'smthumb',
-                            'x': self.kwargs.get('x')})
-
+                url_args = {'slug': self.kwargs['slug'],
+                            'short_id': canvas.short_id, 'mode': 'smthumb'}
+                # only include @2x option when present
+                if self.kwargs.get('x', None):
+                    url_args['x'] = self.kwargs['x']
+                canvas_url = reverse('books:canvas-image', kwargs=url_args)
                 response = HttpResponseRedirect(canvas_url)
                 response.status_code = 303  # see other
                 return response
@@ -532,6 +533,17 @@ class CanvasImage(ProxyView):
     to restrict public viewable material to annotated pages,
     overview images, and insertions.'''
 
+    # Minimum width o/ height is based on requested image size.
+    # Thumbnail sizes are based on grid layout at maximum;
+    # calculations based on max column width 52.5, max gutter width 30px
+
+    # small thumbnail: 2 columns + 1 gutter = 135 (2x = 270)
+    SMALL_THUMBNAIL_WIDTH = 135
+    # large thumbnail: 3 columns + 2 gutters ~=218 (2x = 435)
+    THUMBNAIL_WIDTH = 218
+    # large image set by height for display in the browser page: 900/1800px
+    LARGE_HEIGHT = 900
+
     def get_proxy_url(self, *args, **kwargs):
         instance = get_object_or_404(Instance, slug=self.kwargs['slug'])
         canvas_id = self.kwargs.get('short_id', None)
@@ -539,7 +551,7 @@ class CanvasImage(ProxyView):
             canvas = instance.images() \
                 .filter(short_id=self.kwargs['short_id']).first()
         else:
-            canvas_ids = instance.digital_edition.thumbnail
+            canvas = instance.digital_edition.thumbnail
 
         if not canvas:
             raise Http404
@@ -565,25 +577,22 @@ class CanvasImage(ProxyView):
 
         # for specific sizes, request image info to determine available
         # preset sizes and use the closest size larger than what we need
+        # (if the server supports it and provides sizes)
         if mode in ['thumbnail', 'large', 'smthumb']:
             resp = requests.get(canvas.image.info())
-            available_sizes = resp.json()['sizes']
-
-        # Set minimum width or height based on requested image size
-        # desired thumbnail sizes are based on grid layout at maximum.
-        # calculations based on max column width 52.5, max gutter width 30px
+            available_sizes = resp.json().get('sizes', [])
 
         min_width = min_height = None
         if mode == 'smthumb':
             # small thumbnail: 2 columns + 1 gutter = 135 (2x = 270)
-            min_width = 135
+            min_width = self.SMALL_THUMBNAIL_WIDTH
         if mode == 'thumbnail':
             # large thumbnail: 3 columns + 2 gutters ~=218 (2x = 435)
-            min_width = 218
+            min_width = self.THUMBNAIL_WIDTH
         elif mode == 'large':
             # large image set by height for display in the browser
             # page: min-height: 900/1800px
-            min_height = 900
+            min_height = self.LARGE_HEIGHT
 
         # if 2x is requested, double minimum size
         if self.kwargs.get('x', None) == '@2x':
@@ -598,11 +607,10 @@ class CanvasImage(ProxyView):
             if min_height and size['height'] >= min_height:
                return canvas.image.size(**size)
 
-        # if for some reason we didn't find a match, use largest available
-        # (shouldn't happen, but maybe possible on large 2x?)
-        if mode == 'large':
-            return canvas.image.size(**available_sizes[-1])
+        # if no match was found or sizes are not available, use exact size
+        if min_width:
+            return canvas.image.size(width=min_width)
+        elif min_height:
+            return canvas.image.size(height=min_height)
 
-        # NOTE: should we have fall-back logic to return minimum size for mode
-        # for IIIF servers that do not provide existing sizes?
 
