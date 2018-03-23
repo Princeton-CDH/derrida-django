@@ -711,7 +711,7 @@ class TestCanvasImageView(TestCase):
         canvasimgview.kwargs = {'slug': item.slug, 'short_id': cover.short_id}
         imgurl = canvasimgview.get_proxy_url(mode='smthumb')
         mockrequests.get.assert_called_with(str(cover.image.info()))
-        mockrequests.get.return_value.json.assert_called()
+        mockrequests.get.return_value.json.assert_called_with()
         # smallest size larger than small thumbnail width 135 is 138x225
         assert str(imgurl) == str(cover.image.size(width=138, height=225))
         imgurl = canvasimgview.get_proxy_url(mode='thumbnail')
