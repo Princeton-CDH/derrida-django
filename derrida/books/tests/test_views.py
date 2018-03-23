@@ -766,7 +766,7 @@ class TestCanvasImageView(TestCase):
             mockrequests.reset_mock()
             canvasimgview.kwargs['short_id'] = p24.short_id
             canvasimgview.get_proxy_url(mode='large')
-            assert not mockrequests.get.called
+        assert not mockrequests.get.called
 
         # test fall-back logic when info sizes are unavailable
         canvasimgview.kwargs = {'slug': item.slug, 'short_id': cover.short_id}
