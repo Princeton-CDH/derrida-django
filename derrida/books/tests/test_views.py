@@ -401,7 +401,6 @@ class TestReferenceViews(TestCase):
         assert response.context['total'] == 20
         self.assertContains(response, '20 Results',
             msg_prefix='total number of results displayed')
-
         # reference details that should be present in the template
         ref = Reference.objects.first()
         # spot check template (tested more thoroughly in reference detail below)
@@ -469,6 +468,51 @@ class TestReferenceViews(TestCase):
         # filter by corresponding annotation
         response = self.client.get(reference_list_url, {'corresponding_intervention': 'on'})
         assert len(response.context['object_list']) == 1
+
+        # range filter
+        # - work year
+        response = self.client.get(reference_list_url,
+                                   {'instance_work_year_0': 1950})
+        # use total as a proxy of count() and to avoid pagination issues
+        assert response.context['total'] == \
+            Reference.objects.filter(instance__work__year__gte=1950).count()
+        response = self.client.get(reference_list_url,
+            {'instance_work_year_0': 1927, 'instance_work_year_1': 1950})
+        assert response.context['total'] == \
+            Reference.objects.filter(instance__work__year__lte=1950,
+                                     instance__work__year__gte=1927).count()
+        # - copyright year
+        response = self.client.get(reference_list_url,
+                                   {'instance_copyright_year_0': 1950})
+        # use total as a proxy of count() and to avoid pagination issues
+        assert response.context['total'] == \
+            Reference.objects.filter(instance__copyright_year__gte=1950).count()
+        response = self.client.get(reference_list_url,
+            {'instance_copyright_year_0': 1927,
+             'instance_copyright_year_1': 1950})
+        assert response.context['total'] == \
+            Reference.objects.filter(instance__copyright_year__lte=1950,
+                                     instance__copyright_year__gte=1927).count()
+        # - print year
+        response = self.client.get(reference_list_url,
+                                   {'instance_print_year_0': 1950})
+        # use total as a proxy of count() and to avoid pagination issues
+        # pass date as ISO string since these are date fields but we're
+        # only checking very coarsely by year, don't need to check date known
+        # flags
+        assert response.context['total'] == \
+            Reference.objects.filter(
+                instance__print_date__gte='1950-01-01'
+            ).count()
+        response = self.client.get(
+            reference_list_url,
+            {'instance_print_year_0': 1927, 'instance_print_year_1': 1950}
+        )
+        assert response.context['total'] == \
+            Reference.objects.filter(
+                instance__print_date__lte='1950-12-31',
+                instance__print_date__gte='1927-01-01'
+            ).count()
 
     def test_reference_detail(self):
         ref = Reference.objects.exclude(book_page='').first()
