@@ -3,6 +3,13 @@
 Deploy and Upgrade notes
 ========================
 
+
+0.9
+---
+
+* Migration from Plum to Figgy requires that a new auth token be added
+  to local settings for loading restricted IIIF Manifests.
+
 0.8 Interventions Phase I
 -------------------------
 
