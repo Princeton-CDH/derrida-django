@@ -38,7 +38,7 @@ class DerridaManifestImporter(ManifestImporter):
     def canvas_short_id(self, canvas):
         '''Override default short id logic, because that would result in
         a uuid for PUL figgy content; instead, generate a slug based on the
-        image label.  Canvas modele requires short id + manifest unique
+        image label.  Canvas model requires short id + manifest unique
         together, but that won't be a problem with project image
         label naming conventions.'''
         return slugify(canvas.label)

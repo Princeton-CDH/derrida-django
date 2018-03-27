@@ -57,11 +57,9 @@ def migrate_plum_to_figgy(apps, schema_editor):
         for index, db_canvas in enumerate(db_manif.canvases.all()):
             # update canvas uri and save in the database
             try:
-                # canvas = canvas_by_id[db_canvas.short_id]
                 db_canvas.uri = canvas_by_id[db_canvas.short_id].id
             except KeyError:
                 # if short id lookup fails, map by index
-                # canvas = newmanif.sequences[0].canvases[index]
                 db_canvas.uri = newmanif.sequences[0].canvases[index].id
 
             db_canvas.save()
