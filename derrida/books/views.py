@@ -133,12 +133,9 @@ class InstanceListView(ListView):
 
         # request range facets
         # get max/min from database to specify range start & end values
-        # TODO: should probably cache max/min values so we don't have
-        # to calculate them every time
         # NOTE: restricting to cited books currently returns null for copyright
         # which breaks the logic here; get a larger range for now
         # ranges = Instance.objects.filter(is_extant=True, cited_in__isnull=False) \
-
         # set the aggregate queries for this particular query and their
         # kwarg names as a dictionary
         aggregate_queries = {
