@@ -203,6 +203,19 @@
   @include grid-media($xlarge-viewport-grid) {
     font-size: ems(18px, 14);
   }
+  a {
+    @include faded-link();
+    border-bottom-width: 0;
+    color: inherit;
+    font-weight: inherit;
+    text-decoration: inherit;
+    &:hover,
+    &:active,
+    &.is-hovered {
+      border-bottom-width: 3px;
+    }
+  }
+
 }
 
 .item__date,
