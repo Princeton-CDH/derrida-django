@@ -457,13 +457,14 @@ $component-padding: 4rem;
   }
 
   .item__language,
-  .item__excerpt {
+  .item__excerpt, h3 {
     font-size: 12px;
     line-height: 1.17;
   }
 
-  .item__language {
+  .item__language, h3 {
     margin-bottom: 3px;
+    @include primary-font-style("bold");
   }
 }
 
