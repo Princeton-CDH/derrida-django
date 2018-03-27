@@ -162,12 +162,12 @@
 .gallery-image-view__list-item {
   font-size: 12px;
   width: 100%;
-  display: inline-block;
+  display: inline;
 }
 
 a.gallery-image-view__list-item {
   color: $base-font-color;
-  padding-left: 1.5em;
+  padding-left: 0.833em;
   text-decoration: none;
   transition: color $base-duration $base-timing;
 
@@ -176,6 +176,27 @@ a.gallery-image-view__list-item {
     color: $primary-color;
   }
 }
+
+.gallery-image-view__overview {
+  .gallery-image-view__list-item {
+
+    padding-left: 0;
+
+    &::after {
+      content: '\2022';
+      display: inline-block;
+      width: 14px;
+      text-align: center;
+      }
+
+    &:last-child::after {
+      display: none;
+    }
+  }
+
+}
+
+
 
 .gallery-image-view__list-end {
   border-color: $medium-grey;

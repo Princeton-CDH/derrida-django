@@ -276,11 +276,13 @@
       {# overview images #}
       {% if instance.overview_images %}
         <h3 class="gallery-image-view__list-title--bold">Overview Images</h3>
+        <div class="gallery-image-view__overview">
         {% for ov_canvas in instance.overview_images %}
           <a class="gallery-image-view__list-item" href="{% url 'books:canvas-detail' instance.slug ov_canvas.short_id %}">
             {{ ov_canvas.label }}
           </a>
         {% endfor %}
+        </div>
         <hr class="gallery-image-view__list-end" />
       {% endif %}
 
