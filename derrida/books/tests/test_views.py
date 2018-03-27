@@ -122,29 +122,31 @@ class TestInstanceViews(TestCase):
 
         # range filter
         # - work year
-        extant_bks = Instance.objects.filter(is_extant=True)
+        extant_bks = Instance.objects.filter(is_extant=True)\
+            .filter(cited_in__isnull=False).filter(journal__isnull=True)\
+            .filter(collected_in__isnull=True)
         response = self.client.get(list_view_url,
                                    {'work_year_0': 1950})
         # use total as a proxy of count() and to avoid pagination issues
         assert response.context['total'] == \
-            extant_bks.objects.filter(work__year__gte=1950).count()
+            extant_bks.filter(work__year__gte=1950).count()
         response = self.client.get(list_view_url,
             {'work_year_0': 1927, 'work_year_1': 1950})
         assert response.context['total'] == \
-            extant_bks.objects.filter(work__year__lte=1950,
-                                     work__year__gte=1927).count()
+            extant_bks.filter(work__year__lte=1950,
+                              work__year__gte=1927).count()
         # - copyright year
         response = self.client.get(list_view_url,
                                    {'copyright_year_0': 1950})
         # use total as a proxy of count() and to avoid pagination issues
         assert response.context['total'] == \
-            extant_bks.objects.filter(copyright_year__gte=1950).count()
+            extant_bks.filter(copyright_year__gte=1950).count()
         response = self.client.get(list_view_url,
             {'copyright_year_0': 1927,
              'copyright_year_1': 1950})
         assert response.context['total'] == \
-            extant_bks.objects.filter(copyright_year__lte=1950,
-                                     copyright_year__gte=1927).count()
+            extant_bks.filter(copyright_year__lte=1950,
+                              copyright_year__gte=1927).count()
         # - print year
         response = self.client.get(list_view_url,
                                    {'print_year_0': 1950})
@@ -153,15 +155,15 @@ class TestInstanceViews(TestCase):
         # only checking very coarsely by year, don't need to check date known
         # flags
         assert response.context['total'] == \
-            extant_bks.objects.filter(
-                instance__print_date__gte='1950-01-01'
+            extant_bks.filter(
+                print_date__gte='1950-01-01'
             ).count()
         response = self.client.get(
             list_view_url,
             {'print_year_0': 1927, 'print_year_1': 1950}
         )
         assert response.context['total'] == \
-            extant_bks.objects.filter(
+            extant_bks.filter(
                 print_date__lte='1950-12-31',
                 print_date__gte='1927-01-01'
             ).count()
@@ -175,7 +177,7 @@ class TestInstanceViews(TestCase):
             'copyright_year_max': Max('copyright_year'),
             'copyright_year_min': Min('copyright_year'),
             'print_year_max': Max('print_date'),
-            'print_year_min': Min('rint_date'),
+            'print_year_min': Min('print_date'),
         }
         ranges = extant_bks.aggregate(**aggregate_queries)
         # pre-process datetime.date instances to get just
