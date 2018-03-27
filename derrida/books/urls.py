@@ -36,15 +36,15 @@ urlpatterns = [
             url(r'^gallery/$',
                 views.InstanceDetailView.as_view(template_name='books/detail/gallery.html'),
                 name='detail-gallery'),
-            url(r'^gallery/(?P<short_id>[a-z0-9]+)/$',
+            url(r'^gallery/(?P<short_id>[a-z0-9-]+)/$',
                 views.CanvasDetail.as_view(), name='canvas-detail'),
             url(r'^suppress-images/$', views.CanvasSuppress.as_view(), name='suppress-canvas'),
             # canvas image views
             url(r'^gallery/images/(?P<page_num>[0-9]{1,4})-?[0-9]*[a-z]?/$',
                 views.CanvasImageByPageNumber.as_view(), {'mode': 'by-page'}, name='canvas-by-page'),
-            url(r'^gallery/images/(?P<short_id>[a-z0-9]+)/(?P<mode>thumbnail|large|info)/$',
+            url(r'^gallery/images/(?P<short_id>[a-z0-9-]+)/(?P<mode>thumbnail|large|info)/$',
                 views.CanvasImage.as_view(), name='canvas-image'),
-            url(r'^gallery/images/(?P<short_id>[a-z0-9]+)/(?P<mode>iiif)(?P<url>.*)$',
+            url(r'^gallery/images/(?P<short_id>[a-z0-9-]+)/(?P<mode>iiif)(?P<url>.*)$',
                 views.CanvasImage.as_view()),
 
             # default thumbnail for a book
