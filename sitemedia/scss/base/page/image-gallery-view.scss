@@ -395,24 +395,18 @@ $component-padding: 4rem;
         margin-bottom: 1.5rem;
       }
 
-      span::after {
-        content: "";
-        height: 3px;
-        width: 0;
-        background-color: $orange-red;
-        position: absolute;
-        display: block;
-        @include transition(width $base-duration $base-timing);
-      }
+    }
 
-      span::before {
+    .item__body {
+
+      &::before {
         content: "";
         background-image: url("../img/derrida_red_arrow.svg");
         background-position: center;
         background-size: 150%;
         background-repeat: no-repeat;
         width: 30px;
-        height: 30px;
+        height: 100%;
         left: -30px;
         top: -5px;
         color: $orange-red;
@@ -424,15 +418,19 @@ $component-padding: 4rem;
       }
     }
 
-    &.is-selected .item__heading {
-      span::before {
+    &.is-selected .item__body {
+      // display arrow to indicated selected item
+      &::before {
         transform: scale(1);
       }
-
-      span::after {
-        width: 100%;
-      }
     }
+
+     &.is-selected .item__link {
+      // highlight permalink for selected
+        &::after {
+           width: 100%;
+        }
+      }
 
     &,
     .item__body {
@@ -454,7 +452,19 @@ $component-padding: 4rem;
     line-height: 1;
     margin-top: 3px;
     @include faded-link(transparentize($black, 0.6));
+
+    &::after {
+        content: "";
+        height: 3px;
+        width: 0;
+        background-color: $orange-red;
+        position: absolute;
+        display: block;
+        @include transition(width $base-duration $base-timing);
+    }
   }
+
+
 
   .item__language,
   .item__excerpt, h3 {
