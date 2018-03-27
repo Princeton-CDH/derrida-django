@@ -138,15 +138,29 @@ class InstanceListView(ListView):
         # NOTE: restricting to cited books currently returns null for copyright
         # which breaks the logic here; get a larger range for now
         # ranges = Instance.objects.filter(is_extant=True, cited_in__isnull=False) \
-        ranges = Instance.objects.filter(is_extant=True) \
-            .aggregate(work_year_max=Max('work__year'), work_year_min=Min('work__year'),
-                copyright_year_max=Max('copyright_year'), copyright_year_min=Min('copyright_year'),
-                print_year_max=Max('print_date'), print_year_min=Min('print_date'))
 
-        # pre-process datetime.date instances to get just year as an integer
-        for field, value in ranges.items():
-            if isinstance(value, datetime.date):
-                ranges[field] = value.year
+        # set the aggregate queries for this particular query and their
+        # kwarg names as a dictionary
+        aggregate_queries = {
+            'work_year_max': Max('work__year'),
+            'work_year_min': Min('work__year'),
+            'copyright_year_max': Max('copyright_year'),
+            'copyright_year_min': Min('copyright_year'),
+            'print_year_max': Max('print_date'),
+            'print_year_min': Min('print_date'),
+        }
+        # check for a namespaced _ranges variable in Django cache
+        # return None if not found by default
+        ranges = cache.get('instance_ranges')
+        if not ranges:
+            ranges = Instance.objects.filter(is_extant=True) \
+                .aggregate(**aggregate_queries)
+            # pre-process datetime.date instances to get just
+            # year as an integer
+            for field, value in ranges.items():
+                if isinstance(value, datetime.date):
+                    ranges[field] = value.year
+            cache.set('instance_ranges', ranges)
 
         # request range facets values and optionally filter ranges
         # on configured range facet fields
@@ -268,7 +282,7 @@ class ReferenceListView(ListView):
                 if isinstance(value, datetime.date):
                     ranges[field] = value.year
             cache.set('reference_ranges', ranges)
-            
+
         # request range facets values and optionally filter ranges
         # on configured range facet fields
         for range_facet in self.form.range_facets:
