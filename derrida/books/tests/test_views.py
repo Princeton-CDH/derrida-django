@@ -1,18 +1,21 @@
 # -*- coding: utf-8 -*-
+import datetime
+import json
+import pytest
+
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
+from django.core.cache import cache
 from django.core.management import call_command
-from django.db.models import Min
+from django.db.models import Min, Max
 from django.http import Http404
 from django.test import TestCase, override_settings
 from django.urls import reverse
 from django.utils.html import escape
 from djiffy.models import Manifest, Canvas
-import json
 from haystack.models import SearchResult
-import pytest
 
 from derrida.books import views
 from derrida.books.forms import RangeWidget, RangeField
@@ -513,6 +516,26 @@ class TestReferenceViews(TestCase):
                 instance__print_date__lte='1950-12-31',
                 instance__print_date__gte='1927-01-01'
             ).count()
+        # The aggregate values should be in the cache with values as expected
+        # - This reuses the code from the view, which is ugly, but
+        # it avoids problems with a changed fixture that would be
+        # caused by hardcoding it
+        aggregate_queries = {
+            'instance_work_year_max': Max('instance__work__year'),
+            'instance_work_year_min': Min('instance__work__year'),
+            'instance_copyright_year_max': Max('instance__copyright_year'),
+            'instance_copyright_year_min': Min('instance__copyright_year'),
+            'instance_print_year_max': Max('instance__print_date'),
+            'instance_print_year_min': Min('instance__print_date'),
+        }
+        ranges = Reference.objects.filter(instance__is_extant=True) \
+            .aggregate(**aggregate_queries)
+        # pre-process datetime.date instances to get just
+        # year as an integer
+        for field, value in ranges.items():
+            if isinstance(value, datetime.date):
+                ranges[field] = value.year
+        assert ranges == cache.get('reference_ranges', None)
 
     def test_reference_detail(self):
         ref = Reference.objects.exclude(book_page='').first()
