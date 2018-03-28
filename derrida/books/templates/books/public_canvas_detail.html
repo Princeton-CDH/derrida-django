@@ -278,9 +278,9 @@
         <h3 class="gallery-image-view__list-title--bold">Overview Images</h3>
         <div class="gallery-image-view__overview">
         {% for ov_canvas in instance.overview_images %}
-          <a class="gallery-image-view__list-item" href="{% url 'books:canvas-detail' instance.slug ov_canvas.short_id %}">
+          <span class="gallery-image-view__overview-item"><a class="gallery-image-view__list-item {% if canvas.id == ov_canvas.id %}list-item__active{% endif %}" href="{% url 'books:canvas-detail' instance.slug ov_canvas.short_id %}">
             {{ ov_canvas.label }}
-          </a>
+          </a></span>
         {% endfor %}
         </div>
         <hr class="gallery-image-view__list-end" />
@@ -289,7 +289,7 @@
       {% if instance.annotated_pages %}
         <h3 class="gallery-image-view__list-title--bold">Annotated pages</h3>
         {% for anno_canvas in instance.annotated_pages %}
-          <a class="gallery-image-view__list-item" href="{% url 'books:canvas-detail' instance.slug anno_canvas.short_id %}">
+          <a class="gallery-image-view__list-item {% if canvas.id == anno_canvas.id %}list-item__active{% endif %}" href="{% url 'books:canvas-detail' instance.slug anno_canvas.short_id %}">
             {{ anno_canvas.label }}
           </a>
         {% endfor %}
@@ -299,7 +299,7 @@
        {% if instance.insertion_images %}
          <h3 class="gallery-image-view__list-title--bold">Insertions</h3>
          {% for ins_canvas in instance.insertion_images %}
-          <a class="gallery-image-view__list-item" href="{% url 'books:canvas-detail' instance.slug ins_canvas.short_id %}">
+          <a class="gallery-image-view__list-item {% if canvas.id == ins_canvas.id %}list-item__active{% endif %}" href="{% url 'books:canvas-detail' instance.slug ins_canvas.short_id %}">
             {{ ins_canvas.label }}
           </a>
         {% endfor %}

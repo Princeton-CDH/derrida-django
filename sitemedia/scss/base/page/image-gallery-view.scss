@@ -168,7 +168,7 @@
 
 a.gallery-image-view__list-item {
   color: $base-font-color;
-  padding-left: 0.833em;
+  margin-left: 0.833em;
   text-decoration: none;
   transition: color $base-duration $base-timing;
 
@@ -176,10 +176,18 @@ a.gallery-image-view__list-item {
   &:active {
     color: $primary-color;
   }
+
+  &.list-item__active {
+    border-bottom: 3px solid #3ca1ff;
+  }
 }
 
 .gallery-image-view__overview {
-  .gallery-image-view__list-item {
+  .gallery-image-view__overview-item {
+
+      a {
+          margin-left: 0;
+      }
 
     padding-left: 0;
 
@@ -196,7 +204,6 @@ a.gallery-image-view__list-item {
   }
 
 }
-
 
 
 .gallery-image-view__list-end {
