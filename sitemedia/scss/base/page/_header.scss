@@ -15,39 +15,41 @@
     }
   }
 
+  /* TODO: mixin for banner images? with 1x/2x behavior if possible */
+
   #citations-list & {
-    background-image: url("../img/banner/citation_small_2x.png");
+    background-image: url("../img/banner/derrida-banner-reference-S@1x.png");
 
     @include grid-media($large-medium-viewport-grid) {
-      background-image: url("../img/banner/citation_medium_2x.png");
+      background-image: url("../img/banner/derrida-banner-reference-M@1x.png");
     }
 
     @include grid-media($xlarge-viewport-grid) {
-      background-image: url("../img/banner/citation_large_2x.png");
+      background-image: url("../img/banner/derrida-banner-reference-L@2x.png");
     }
   }
 
   #books-list & {
-    background-image: url("../img/banner/lib_small_2x.png");
+    background-image: url("../img/banner/derrida-banner-library-S@2x.png");
 
     @include grid-media($large-medium-viewport-grid) {
-      background-image: url("../img/banner/lib_medium_2x.png");
+      background-image: url("../img/banner/derrida-banner-library-M@2x.png");
     }
 
     @include grid-media($xlarge-viewport-grid) {
-      background-image: url("../img/banner/lib_large_2x.png");
+      background-image: url("../img/banner/derrida-banner-library-L@2x.png");
     }
   }
 
    #interventions-list & {
-    background-image: url("../img/banner/annotation_small_2x.png");
+    background-image: url("../img/banner/derrida-banner-intervention-S@2x.png");
 
     @include grid-media($large-medium-viewport-grid) {
-      background-image: url("../img/banner/annotation_medium_2x.png");
+      background-image: url("../img/banner/derrida-banner-intervention-M@2x.png");
     }
 
     @include grid-media($xlarge-viewport-grid) {
-      background-image: url("../img/banner/annotation_large_2x.png");
+      background-image: url("../img/banner/derrida-banner-intervention-L@2x.png");
     }
   }
 }
