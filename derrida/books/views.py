@@ -133,9 +133,7 @@ class InstanceListView(ListView):
 
         # request range facets
         # get max/min from database to specify range start & end values
-        # NOTE: restricting to cited books currently returns null for copyright
-        # which breaks the logic here; get a larger range for now
-        # ranges = Instance.objects.filter(is_extant=True, cited_in__isnull=False) \
+
         # set the aggregate queries for this particular query and their
         # kwarg names as a dictionary
         aggregate_queries = {
@@ -150,6 +148,9 @@ class InstanceListView(ListView):
         # return None if not found by default
         ranges = cache.get('instance_ranges')
         if not ranges:
+            # NOTE: restricting to cited books currently returns null for copyright
+            # which breaks the logic here; get a larger range for now
+            # ranges = Instance.objects.filter(is_extant=True, cited_in__isnull=False) \
             ranges = Instance.objects.filter(is_extant=True) \
                 .aggregate(**aggregate_queries)
             # pre-process datetime.date instances to get just
