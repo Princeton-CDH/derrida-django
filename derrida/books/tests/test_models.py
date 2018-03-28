@@ -609,6 +609,16 @@ class TestInstance(TestCase):
         # original la_vie should be the only related instance
         assert len(la_vie.related_instances) == 1
         assert la_vie.related_instances[0].pk == pk
+
+        # related instances for collected work should include any section authors
+        vie_collection_wk = Work.objects.create()
+        vie_collection = Instance.objects.create(work=vie_collection_wk)
+        la_vie.collected_in = vie_collection
+        la_vie.digital_edition = None
+        la_vie.save()
+        assert len(vie_collection.related_instances) == 1
+        assert vie_collection.related_instances[0].pk == pk
+
         # delete digital edition
         la_vie_old = la_vie.related_instances[0]
         la_vie_old.digital_edition = None

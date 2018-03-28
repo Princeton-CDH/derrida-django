@@ -510,11 +510,18 @@ class Instance(Notable):
 
     @property
     def related_instances(self):
-        # authors = [author.authorized_name
-                   # for author in self.work.authors.all()]
-        return Instance.objects.filter(
-            work__authors__in=self.work.authors.all()
-        ).exclude(pk=self.pk).exclude(digital_edition__isnull=True)
+        '''Find related works; for now, this means works by the
+        same author.  For a work that collects item, include
+        work by any book section authors.'''
+        authors = list(self.work.authors.all())
+        exclude = [self.pk]
+        if self.collected_set.exists():
+            for instance in self.collected_set.all():
+                authors.extend(instance.work.authors.all())
+
+        return Instance.objects.filter(work__authors__in=authors) \
+                       .exclude(pk=self.pk) \
+                       .exclude(digital_edition__isnull=True)
 
 
 class WorkSubject(Notable):
