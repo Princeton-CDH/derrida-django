@@ -113,7 +113,7 @@ class Work(Notable):
     uri = models.URLField('URI', blank=True, help_text='Linked data URI',
         default='')
     #: relation to :class:`Person` authors
-    authors = models.ManyToManyField(Person)
+    authors = models.ManyToManyField(Person, blank=True)
     #: :class:`Subject` related through :class:`WorkSubject`
     subjects = models.ManyToManyField(Subject, through='WorkSubject')
     #: :class:`Language` related through :class:`WorkLanguage`
@@ -386,7 +386,8 @@ class Instance(Notable):
 
     def is_digitized(self):
         '''boolean indicator if there is an associated digital edition'''
-        return bool(self.digital_edition)
+        return bool(self.digital_edition) or \
+            bool(self.collected_in and self.collected_in.digital_edition)
     # technically sorts on the foreign key, but that effectively filters
     # instances with/without digital additions
     is_digitized.admin_order_field = 'digital_edition'
@@ -760,15 +761,24 @@ class Reference(models.Model):
         For a reference to a book section, returns the slug
         for the book that collects it.
         '''
-        if self.instance.collected_in:
-            return self.instance.collected_in.slug
-        return self.instance.slug
+        return self.book.slug
 
     @property
     def instance_url(self):
         '''absolute url for the work instance where this reference
         is displayed; uses :attr:`instance_slug`'''
         return reverse('books:detail', args=[self.instance_slug])
+
+    @property
+    def book(self):
+        '''The "book" this reference is associated with; for a book section,
+        this is the work instance the section is collected in; for all other
+        cases, it is the work instance associated with this reference.
+        '''
+        if self.instance.collected_in:
+            return self.instance.collected_in
+        else:
+            return self.instance
 
     @staticmethod
     def instance_ids_with_digital_editions():

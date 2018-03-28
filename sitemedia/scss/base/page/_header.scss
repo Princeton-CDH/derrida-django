@@ -2,7 +2,18 @@
   background-position: center bottom;
   background-size: auto 100%;
   background-repeat: no-repeat;
+
   @include transition(margin-top 0.5s ease);
+
+  &.header-banner {
+    height: 300px;
+    @include grid-media($large-medium-viewport-grid) {
+      height: 320px;
+    }
+    @include grid-media($xlarge-viewport-grid) {
+      height: 600px;
+    }
+  }
 
   #citations-list & {
     background-image: url("../img/banner/citation_small_2x.png");
@@ -27,6 +38,18 @@
       background-image: url("../img/banner/lib_large_2x.png");
     }
   }
+
+   #interventions-list & {
+    background-image: url("../img/banner/annotation_small_2x.png");
+
+    @include grid-media($large-medium-viewport-grid) {
+      background-image: url("../img/banner/annotation_medium_2x.png");
+    }
+
+    @include grid-media($xlarge-viewport-grid) {
+      background-image: url("../img/banner/annotation_large_2x.png");
+    }
+  }
 }
 
 #manifest-list .page-header__container {
@@ -46,6 +69,7 @@
 
 .page-header__container {
   min-height: 320px;
+  height: 100%;
   display: flex;
   align-items: center;
   flex-direction: column;

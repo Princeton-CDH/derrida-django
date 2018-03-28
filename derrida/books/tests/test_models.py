@@ -181,6 +181,26 @@ class TestReference(TestCase):
         # should return the slug for the collection
         assert ref.instance_url == la_vie_collected.get_absolute_url()
 
+    def test_book(self):
+        ref = Reference.objects.create(
+            instance=self.la_vie,
+            derridawork=self.dg,
+            derridawork_page='110',
+            derridawork_pageloc='a',
+            reference_type=self.quotation
+        )
+        # not a book section (none in test set are)
+        # should return the instance
+        assert ref.book == self.la_vie
+
+        # create a book section and reassociated the reference
+        vie_part_wk = Work.objects.create()
+        vie_part = Instance.objects.create(work=vie_part_wk,
+            collected_in=self.la_vie)
+        ref.instance = vie_part
+        # book should return the collected work
+        assert ref.book == self.la_vie
+
 
 class TestReferenceQuerySet(TestCase):
     fixtures = ['test_references.json']
@@ -391,6 +411,13 @@ class TestInstance(TestCase):
 
         la_vie.digital_edition = Manifest()
         assert la_vie.is_digitized()
+
+        # book section associated with a digitized work should be
+        # considered digitized
+        vie_part_wk = Work.objects.create()
+        vie_part = Instance.objects.create(work=vie_part_wk)
+        vie_part.collected_in = la_vie
+        assert vie_part.is_digitized()
 
     def test_location(self):
         la_vie = Instance.objects.get(work__short_title__contains="La vie")
