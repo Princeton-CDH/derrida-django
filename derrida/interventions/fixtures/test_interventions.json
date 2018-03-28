@@ -273,7 +273,7 @@
         "dimensions": "",
         "copyright_year": 1958,
         "journal": null,
-        "print_date": null,
+        "print_date": "1959-01-01",
         "print_date_day_known": true,
         "print_date_month_known": true,
         "print_date_year_known": true,
@@ -294,5 +294,3 @@
     }
 }
 ]
-
-

@@ -1,18 +1,21 @@
 # -*- coding: utf-8 -*-
+import datetime
+import json
+import pytest
+
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
+from django.core.cache import cache
 from django.core.management import call_command
-from django.db.models import Min
+from django.db.models import Min, Max
 from django.http import Http404
 from django.test import TestCase, override_settings
 from django.urls import reverse
 from django.utils.html import escape
 from djiffy.models import Manifest, Canvas
-import json
 from haystack.models import SearchResult
-import pytest
 
 from derrida.books import views
 from derrida.books.forms import RangeWidget, RangeField
@@ -118,14 +121,71 @@ class TestInstanceViews(TestCase):
         assert len(response.context['object_list']) == 0
 
         # range filter
-        response = self.client.get(list_view_url, {'work_year_0': 1950})
-        assert len(response.context['object_list']) == \
+        # - work year
+        extant_bks = Instance.objects.filter(is_extant=True)\
+            .filter(cited_in__isnull=False).filter(journal__isnull=True)\
+            .filter(collected_in__isnull=True)
+        response = self.client.get(list_view_url,
+                                   {'work_year_0': 1950})
+        # use total as a proxy of count() and to avoid pagination issues
+        assert response.context['total'] == \
             extant_bks.filter(work__year__gte=1950).count()
-        response = self.client.get(list_view_url, {'work_year_0': 1927,
-            'work_year_1':1950})
-        assert len(response.context['object_list']) == \
+        response = self.client.get(list_view_url,
+            {'work_year_0': 1927, 'work_year_1': 1950})
+        assert response.context['total'] == \
             extant_bks.filter(work__year__lte=1950,
                               work__year__gte=1927).count()
+        # - copyright year
+        response = self.client.get(list_view_url,
+                                   {'copyright_year_0': 1950})
+        # use total as a proxy of count() and to avoid pagination issues
+        assert response.context['total'] == \
+            extant_bks.filter(copyright_year__gte=1950).count()
+        response = self.client.get(list_view_url,
+            {'copyright_year_0': 1927,
+             'copyright_year_1': 1950})
+        assert response.context['total'] == \
+            extant_bks.filter(copyright_year__lte=1950,
+                              copyright_year__gte=1927).count()
+        # - print year
+        response = self.client.get(list_view_url,
+                                   {'print_year_0': 1950})
+        # use total as a proxy of count() and to avoid pagination issues
+        # pass date as ISO string since these are date fields but we're
+        # only checking very coarsely by year, don't need to check date known
+        # flags
+        assert response.context['total'] == \
+            extant_bks.filter(
+                print_date__gte='1950-01-01'
+            ).count()
+        response = self.client.get(
+            list_view_url,
+            {'print_year_0': 1927, 'print_year_1': 1950}
+        )
+        assert response.context['total'] == \
+            extant_bks.filter(
+                print_date__lte='1950-12-31',
+                print_date__gte='1927-01-01'
+            ).count()
+        # The aggregate values should be in the cache with values as expected
+        # - This reuses the code from the view, which is ugly, but
+        # it avoids problems with a changed fixture that would be
+        # caused by hardcoding it
+        aggregate_queries = {
+            'work_year_max': Max('work__year'),
+            'work_year_min': Min('work__year'),
+            'copyright_year_max': Max('copyright_year'),
+            'copyright_year_min': Min('copyright_year'),
+            'print_year_max': Max('print_date'),
+            'print_year_min': Min('print_date'),
+        }
+        ranges = extant_bks.aggregate(**aggregate_queries)
+        # pre-process datetime.date instances to get just
+        # year as an integer
+        for field, value in ranges.items():
+            if isinstance(value, datetime.date):
+                ranges[field] = value.year
+        assert ranges == cache.get('instance_ranges', None)
 
     def test_canvas_by_pagenum(self):
         # get an instance with no digital edition
@@ -401,7 +461,6 @@ class TestReferenceViews(TestCase):
         assert response.context['total'] == 20
         self.assertContains(response, '20 Results',
             msg_prefix='total number of results displayed')
-
         # reference details that should be present in the template
         ref = Reference.objects.first()
         # spot check template (tested more thoroughly in reference detail below)
@@ -469,6 +528,70 @@ class TestReferenceViews(TestCase):
         # filter by corresponding annotation
         response = self.client.get(reference_list_url, {'corresponding_intervention': 'on'})
         assert len(response.context['object_list']) == 1
+
+        # range filter
+        # - work year
+        response = self.client.get(reference_list_url,
+                                   {'instance_work_year_0': 1950})
+        # use total as a proxy of count() and to avoid pagination issues
+        assert response.context['total'] == \
+            Reference.objects.filter(instance__work__year__gte=1950).count()
+        response = self.client.get(reference_list_url,
+            {'instance_work_year_0': 1927, 'instance_work_year_1': 1950})
+        assert response.context['total'] == \
+            Reference.objects.filter(instance__work__year__lte=1950,
+                                     instance__work__year__gte=1927).count()
+        # - copyright year
+        response = self.client.get(reference_list_url,
+                                   {'instance_copyright_year_0': 1950})
+        assert response.context['total'] == \
+            Reference.objects.filter(instance__copyright_year__gte=1950).count()
+        response = self.client.get(reference_list_url,
+            {'instance_copyright_year_0': 1927,
+             'instance_copyright_year_1': 1950})
+        assert response.context['total'] == \
+            Reference.objects.filter(instance__copyright_year__lte=1950,
+                                     instance__copyright_year__gte=1927).count()
+        # - print year
+        response = self.client.get(reference_list_url,
+                                   {'instance_print_year_0': 1950})
+        # use total as a proxy of count() and to avoid pagination issues
+        # pass date as ISO string since these are date fields but we're
+        # only checking very coarsely by year, don't need to check date known
+        # flags
+        assert response.context['total'] == \
+            Reference.objects.filter(
+                instance__print_date__gte='1950-01-01'
+            ).count()
+        response = self.client.get(
+            reference_list_url,
+            {'instance_print_year_0': 1927, 'instance_print_year_1': 1950}
+        )
+        assert response.context['total'] == \
+            Reference.objects.filter(
+                instance__print_date__lte='1950-12-31',
+                instance__print_date__gte='1927-01-01'
+            ).count()
+        # The aggregate values should be in the cache with values as expected
+        # - This reuses the code from the view, which is ugly, but
+        # it avoids problems with a changed fixture that would be
+        # caused by hardcoding it
+        aggregate_queries = {
+            'instance_work_year_max': Max('instance__work__year'),
+            'instance_work_year_min': Min('instance__work__year'),
+            'instance_copyright_year_max': Max('instance__copyright_year'),
+            'instance_copyright_year_min': Min('instance__copyright_year'),
+            'instance_print_year_max': Max('instance__print_date'),
+            'instance_print_year_min': Min('instance__print_date'),
+        }
+        ranges = Reference.objects.filter(instance__is_extant=True) \
+            .aggregate(**aggregate_queries)
+        # pre-process datetime.date instances to get just
+        # year as an integer
+        for field, value in ranges.items():
+            if isinstance(value, datetime.date):
+                ranges[field] = value.year
+        assert ranges == cache.get('reference_ranges', None)
 
     def test_reference_detail(self):
         ref = Reference.objects.exclude(book_page='').first()

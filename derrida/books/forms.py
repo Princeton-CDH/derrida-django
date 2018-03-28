@@ -205,6 +205,14 @@ class ReferenceSearchForm(forms.Form):
     reference_type = FacetChoiceField(label='Reference Type', required=False)
     derridawork = FacetChoiceField(label='Cited by Derrida in', required=False)
 
+    # range facets
+    range_facets = ['instance_work_year', 'instance_copyright_year',
+        'instance_print_year']
+    instance_work_year = RangeField(label='Original Publication Year',
+        required=False)
+    instance_copyright_year = RangeField(label='Edition Year', required=False)
+    instance_print_year = RangeField(label='Printing Year', required=False)
+
     def set_choices_from_facets(self, facets):
         # configure field choices based on facets returned from Solr
         # TODO: Generalize this for a sublcass of forms.Form?

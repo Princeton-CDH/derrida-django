@@ -1,12 +1,16 @@
+import datetime
 import json
 
 from dal import autocomplete
-from django.core.exceptions import PermissionDenied
 from django.contrib.auth.mixins import PermissionRequiredMixin
-from django.db.models import Q
+from django.core.cache import cache
+from django.core.exceptions import PermissionDenied
+from django.db.models import Q, Max, Min
 from django.views.generic import ListView
 from djiffy import views as djiffy_views
+from haystack.inputs import Raw
 from haystack.query import SearchQuerySet
+
 
 from derrida.books.models import Language
 from derrida.interventions.models import Intervention, Tag, get_default_intervener
@@ -155,6 +159,7 @@ class InterventionAutocomplete(LoginPermissionRequired, autocomplete.Select2Quer
             )
         return interventions
 
+
 class InterventionListView(ListView):
     # NOTE: adapted directly from derrida.books.views.InstanceListView
     # (probably could be generalized into a haystack faceted list view)
@@ -197,6 +202,54 @@ class InterventionListView(ListView):
                 # filter the query: facet matches any of the terms
                 sqs = sqs.filter(**{'%s__in' % solr_facet: search_opts[facet]})
 
+        # request range facets
+        # get max/min from database to specify range start & end values
+        # set the aggregate queries for this particular query and their
+        # kwarg names as a dictionary
+        aggregate_queries = {
+            'item_work_year_max': Max('canvas__manifest__instance__work__year'),
+            'item_work_year_min': Min('canvas__manifest__instance__work__year'),
+            'item_copyright_year_max': Max('canvas__manifest__instance__copyright_year'),
+            'item_copyright_year_min': Min('canvas__manifest__instance__copyright_year'),
+            'item_print_year_max': Max('canvas__manifest__instance__print_date'),
+            'item_print_year_min': Min('canvas__manifest__instance__print_date'),
+        }
+        # check for a namespaced _ranges variable in Django cache
+        # returns None if not found by default
+        ranges = cache.get('intervention_ranges')
+        if not ranges:
+            ranges = Intervention.objects.aggregate(**aggregate_queries)
+            # pre-process datetime.date instances to get just
+            # year as an integer
+            for field, value in ranges.items():
+                if isinstance(value, datetime.date):
+                    ranges[field] = value.year
+            cache.set('intervention_ranges', ranges)
+
+        # request range facets values and optionally filter ranges
+        # on configured range facet fields
+        for range_facet in self.form.range_facets:
+            start = end = None
+            # range filter requested in search options
+            if range_facet in search_opts and search_opts[range_facet]:
+                start, end = search_opts[range_facet].split('-')
+                # could have both start and end or just one
+                # NOTE: haystack includes a range field lookup, but
+                # it converts numbers to strings, so this is easier
+                range_filter = '[%s TO %s]' % (start or '*', end or '*')
+                sqs = sqs.filter(**{range_facet: Raw(range_filter)})
+
+            # current range filter becomes start/end if specified
+            range_opts = {
+                'start': int(start) if start else ranges['%s_min' % range_facet],
+                'end': int(end) if end else ranges['%s_max' % range_facet],
+            }
+            # calculate gap based start and end & desired number of slices
+            # ideally, generate 15 slices; minimum gap size of 1
+            range_opts['gap'] = max(1, int((range_opts['end'] - range_opts['start']) / 15.0))
+            # request the range facet with the specified options
+            sqs = sqs.facet(range_facet, range=True, **range_opts)
+
         # sort should always be set
         if search_opts['order_by']:
             # convert sort option to corresponding solr field
@@ -220,4 +273,3 @@ class InterventionListView(ListView):
             'form': self.form
         })
         return context
-

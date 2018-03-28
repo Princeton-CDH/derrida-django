@@ -95,10 +95,12 @@ class ReferenceIndex(indexes.SearchIndex, indexes.Indexable):
         faceted=True)
     instance_pub_place = indexes.MultiValueField(model_attr='book__pub_place__name',
         faceted=True, null=True)
+    #: work year of the associated instance's work; :attr:`derrida.books.models.Work.year`
+    instance_work_year = indexes.IntegerField(model_attr='instance__work__year', null=True)
     #: copyright year of associated instance; :attr:`derrida.books.models.Instance.copyright_year`
-    instance_copyright_year = indexes.DecimalField(model_attr='book__copyright_year', null=True)
+    instance_copyright_year = indexes.IntegerField(model_attr='instance__copyright_year', null=True)
     #: print year of associated instance; :attr:`derrida.books.models.Instance.r_year`
-    instance_print_year = indexes.DecimalField(model_attr='book__print_year', null=True)
+    instance_print_year = indexes.IntegerField(model_attr='instance__print_year', null=True)
     #: is instance extant in PU collection?; :attr:`derrida.books.models.Instance.is_extant`
     instance_is_extant = indexes.FacetBooleanField(model_attr='book__is_extant')
     #: is instance annotated?; :attr:`derrida.books.models.Instance.is_annotated`
