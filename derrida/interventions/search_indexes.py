@@ -26,7 +26,7 @@ class InterventionIndex(indexes.SearchIndex, indexes.Indexable):
     #: annotation anchor text
     anchor_text = indexes.CharField(model_attr='quote', null=True)
     #: annotation author
-    annotation_author = indexes.CharField(faceted=True)
+    annotation_author = indexes.CharField(faceted=True, null=True)
 
     annotation_language = indexes.CharField(model_attr='text_language',
             faceted=True, null=True)
@@ -42,12 +42,13 @@ class InterventionIndex(indexes.SearchIndex, indexes.Indexable):
     # NOTE: using generic "item" to avoid confusion woth work, work instance, etc
     item_title = indexes.CharField(model_attr='work_instance__display_title')
     item_author = indexes.MultiValueField(model_attr='work_instance__work__authors__authorized_name',
-        faceted=True)
+        faceted=True, null=True)
     #: first author to allow sorting by author
     item_sort_author = indexes.CharField(model_attr='work_instance__work__authors__authorized_name',
-        faceted=True)
+        faceted=True, null=True)
     #: author in firstname last for display
-    item_author_firstname_last = indexes.MultiValueField(model_attr='work_instance__work__authors__firstname_last')
+    item_author_firstname_last = indexes.MultiValueField(model_attr='work_instance__work__authors__firstname_last',
+        null=True)
     #: subject of annotated work
     item_subject = indexes.MultiValueField(model_attr='work_instance__work__subjects__name',
         faceted=True, null=True)
@@ -78,7 +79,6 @@ class InterventionIndex(indexes.SearchIndex, indexes.Indexable):
         # with a work instance (work instance data is needed to be meaningful)
         qs = super(InterventionIndex, self).index_queryset(using)
         return qs.exclude(canvas__manifest__instance__isnull=True)
-
 
     def prepare_annotation_author(self, item):
         if item.author:
