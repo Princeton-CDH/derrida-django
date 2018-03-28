@@ -386,7 +386,8 @@ class Instance(Notable):
 
     def is_digitized(self):
         '''boolean indicator if there is an associated digital edition'''
-        return bool(self.digital_edition)
+        return bool(self.digital_edition) or \
+            bool(self.collected_in and self.collected_in.digital_edition)
     # technically sorts on the foreign key, but that effectively filters
     # instances with/without digital additions
     is_digitized.admin_order_field = 'digital_edition'

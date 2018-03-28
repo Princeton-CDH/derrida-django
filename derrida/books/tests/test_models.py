@@ -392,6 +392,13 @@ class TestInstance(TestCase):
         la_vie.digital_edition = Manifest()
         assert la_vie.is_digitized()
 
+        # book section associated with a digitized work should be
+        # considered digitized
+        vie_part_wk = Work.objects.create()
+        vie_part = Instance.objects.create(work=vie_part_wk)
+        vie_part.collected_in = la_vie
+        assert vie_part.is_digitized()
+
     def test_location(self):
         la_vie = Instance.objects.get(work__short_title__contains="La vie")
         # location is based on first part of manifest title
