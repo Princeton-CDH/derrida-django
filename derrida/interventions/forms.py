@@ -1,7 +1,7 @@
 from django import forms
 from django.utils.safestring import mark_safe
 
-from derrida.books.forms import FacetChoiceField
+from derrida.books.forms import FacetChoiceField, RangeField
 
 
 class InterventionSearchForm(forms.Form):
@@ -39,12 +39,17 @@ class InterventionSearchForm(forms.Form):
     language = FacetChoiceField('Language of Publication')
     work_language = FacetChoiceField('Original Language')
     pub_place = FacetChoiceField('Place of Publication')
-    # print_year = FacetChoiceField('Edition Year')
-    # TODO: work_year. range facet?
     annotation_language = FacetChoiceField('Annotation Language')
     annotation_type = FacetChoiceField('Annotation Type')
     hand = FacetChoiceField('Annotation Hand')
     ink = FacetChoiceField(label='Ink')
+    # range facets
+    range_facets = ['item_work_year', 'item_copyright_year', 'item_print_year']
+    item_work_year = RangeField(label='Original Publication Year',
+        required=False)
+    item_copyright_year = RangeField(label='Edition Year', required=False)
+    item_print_year = RangeField(label='Printing Year', required=False)
+
     # TODO cited_in ?
 
     # map solr facet field to corresponding form input
@@ -57,7 +62,6 @@ class InterventionSearchForm(forms.Form):
         'item_print_year': 'print_year',
         'annotation_author': 'hand',
     }
-
 
     def set_choices_from_facets(self, facets):
         # configure field choices based on facets returned from Solr

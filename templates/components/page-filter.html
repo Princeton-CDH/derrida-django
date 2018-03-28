@@ -188,6 +188,24 @@
       </div>
       {% endif %}
 
+      {% if form.item_work_year %}
+      <div class="filter__selector filter__selector--condensed">
+        {% include 'components/form/year-selection.html' with name='item_work_year' label=form.item_work_year.label items=form.item_work_year ranges=facets.ranges.item_work_year %}
+      </div>
+      {% endif %}
+
+      {% if form.item_copyright_year %}
+      <div class="filter__selector filter__selector--condensed">
+        {% include 'components/form/year-selection.html' with name='item_copyright_year' label=form.item_copyright_year.label items=form.item_copyright_year ranges=facets.ranges.item_copyright_year %}
+      </div>
+      {% endif %}
+
+      {% if form.item_print_year %}
+      <div class="filter__selector filter__selector--condensed">
+        {% include 'components/form/year-selection.html' with name='item_print_year' label=form.item_print_year.label items=form.item_print_year ranges=facets.ranges.item_print_year %}
+      </div>
+      {% endif %}
+
     </section>
 
     {# We need to update the components after being rendered in each of the checkbox-selection #}

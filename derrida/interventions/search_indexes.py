@@ -58,7 +58,11 @@ class InterventionIndex(indexes.SearchIndex, indexes.Indexable):
     item_work_language = indexes.MultiValueField(model_attr='work_instance__work__languages__name',
         faceted=True, null=True)
     #: edition year - is this populated? fallback to other dates?
-    item_print_year = indexes.DecimalField(model_attr='work_instance__print_year', null=True)
+    item_print_year = indexes.IntegerField(model_attr='work_instance__print_year', null=True)
+    #: work publication year
+    item_work_year = indexes.IntegerField(model_attr='work_instance__work__year', null=True)
+    #: work copyright year
+    item_copyright_year = indexes.IntegerField(model_attr='work_instance__copyright_year', null=True)
     #: publication place
     item_pub_place = indexes.MultiValueField(model_attr='work_instance__pub_place__name',
         faceted=True, null=True)
@@ -78,7 +82,6 @@ class InterventionIndex(indexes.SearchIndex, indexes.Indexable):
         # with a work instance (work instance data is needed to be meaningful)
         qs = super(InterventionIndex, self).index_queryset(using)
         return qs.exclude(canvas__manifest__instance__isnull=True)
-
 
     def prepare_annotation_author(self, item):
         if item.author:
