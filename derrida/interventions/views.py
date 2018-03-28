@@ -218,9 +218,6 @@ class InterventionListView(ListView):
         # returns None if not found by default
         ranges = cache.get('intervention_ranges')
         if not ranges:
-            # NOTE: restricting to cited books currently returns null for copyright
-            # which breaks the logic here; get a larger range for now
-            # ranges = Instance.objects.filter(is_extant=True, cited_in__isnull=False) \
             ranges = Intervention.objects.aggregate(**aggregate_queries)
             # pre-process datetime.date instances to get just
             # year as an integer

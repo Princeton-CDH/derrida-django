@@ -544,7 +544,6 @@ class TestReferenceViews(TestCase):
         # - copyright year
         response = self.client.get(reference_list_url,
                                    {'instance_copyright_year_0': 1950})
-        # use total as a proxy of count() and to avoid pagination issues
         assert response.context['total'] == \
             Reference.objects.filter(instance__copyright_year__gte=1950).count()
         response = self.client.get(reference_list_url,
