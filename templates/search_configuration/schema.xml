@@ -469,13 +469,19 @@
         </analyzer>
     </fieldType>
 
-    <!-- custom string-like sort field with accent folding -->
+    <!-- custom string-like sort field that ignores accents; using text because
+         solr string field does not allow analyzers -->
     <fieldType name="string_en" class="solr.TextField" sortMissingLast="true">
        <analyzer type="index">
-            <!-- treat entire field as a single token -->.
+            <!-- treat entire field as a single token -->
             <tokenizer class="solr.KeywordTokenizerFactory"/>
-            <filter class="solr.ICUFoldingFilterFactory"/>
+            <!-- <filter class="solr.ICUFoldingFilterFactory"/> -->
+            <!-- normalization *without* case folding (preserve case for facets) -->
+           <filter class="solr.ASCIIFoldingFilterFactory" preserveOriginal="false" />
+            <filter class="solr.ICUNormalizer2FilterFactory" name="nfkc" mode="compose"/>
        </analyzer>
+       <!-- no query analyzer; only expected to be used for sorting, not
+            querying or faceting -->
     </fieldType>
 
     <!-- A text field with defaults appropriate for English, plus

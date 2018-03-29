@@ -93,6 +93,20 @@ class SolrRangeSearchBackend(SolrSearchBackend):
 
         return results
 
+    def build_schema(self, fields):
+        # haystack doesn't have any customization points for schema generation
+        # or types, and Solr won't allow tokenization/customization on
+        # the built string field; customize the generated schema here
+        # to use local 'string_en' solr field for fields ending in "_isort"
+        print(fields)
+        schema = super(SolrRangeSearchBackend, self).build_schema(fields)
+        print(schema)
+        for field_cfg in schema[1]:
+            if field_cfg['field_name'].endswith('_isort'):
+                field_cfg['type'] = 'string_en'
+
+        return schema
+
 
 class RangeSolrEngine(SolrEngine):
     # extend default solr engine to make range backend and query defaults
