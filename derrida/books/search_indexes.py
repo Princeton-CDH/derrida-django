@@ -12,13 +12,14 @@ import roman
 class InstanceIndex(indexes.SearchIndex, indexes.Indexable):
     text = indexes.CharField(document=True, use_template=True, stored=False)
     display_title = indexes.CharField(model_attr='display_title', faceted=True)
+    display_title_isort = indexes.CharField(model_attr='display_title')
     item_type = indexes.CharField(model_attr='item_type', faceted=True)
     copy = indexes.CharField(model_attr='copy', null=True)
     #: author names in lastname, first for sort/facet
     author = indexes.MultiValueField(model_attr='work__authors__authorized_name',
         faceted=True, null=True)
     #: non-multifield for first author to allow sorting by author
-    sort_author = indexes.CharField(faceted=True, null=True)
+    author_isort = indexes.CharField(null=True)
     #: author in firstname last for display
     author_firstname_last = indexes.MultiValueField(model_attr='work__authors__firstname_last',
         null=True)
@@ -46,11 +47,10 @@ class InstanceIndex(indexes.SearchIndex, indexes.Indexable):
     def get_model(self):
         return Instance
 
-    def prepare_sort_author(self, instance):
+    def prepare_author_isort(self, instance):
         first_author = instance.work.authors.first()
         if first_author:
             return first_author.authorized_name
-
 
 
 class ReferenceIndex(indexes.SearchIndex, indexes.Indexable):
@@ -81,6 +81,7 @@ class ReferenceIndex(indexes.SearchIndex, indexes.Indexable):
     #: Title of instance to which citation points; :method:`derrida.books.models.Instance.display_title`
     instance_title = indexes.CharField(model_attr='instance__display_title',
         faceted=True)
+    instance_title_isort = indexes.CharField(model_attr='instance__display_title')
     #: Instance authors for faceted filtering
     instance_author = indexes.MultiValueField(model_attr='instance__work__authors__authorized_name',
         faceted=True, null=True)
@@ -88,8 +89,8 @@ class ReferenceIndex(indexes.SearchIndex, indexes.Indexable):
     instance_author_firstname_last = indexes.MultiValueField(model_attr='instance__work__authors__firstname_last',
         null=True)
     #: non-multifield for instance first author to allow sorting by author
-    instance_sort_author = indexes.CharField(model_attr='instance__work__authors__authorized_name',
-        faceted=True, null=True)
+    instance_author_isort = indexes.CharField(model_attr='instance__work__authors__authorized_name',
+        null=True)
     #: subjects for associated instance; :attr:`derrida.books.models.Instance.subjects`
     instance_subject = indexes.MultiValueField(model_attr='instance__work__subjects__name',
         faceted=True, null=True)
@@ -123,7 +124,7 @@ class ReferenceIndex(indexes.SearchIndex, indexes.Indexable):
     def get_model(self):
         return Reference
 
-    def prepare_instance_sort_author(self, reference):
+    def prepare_instance_author_isort(self, reference):
         first_author = reference.instance.work.authors.first()
         if first_author:
             return first_author.authorized_name
