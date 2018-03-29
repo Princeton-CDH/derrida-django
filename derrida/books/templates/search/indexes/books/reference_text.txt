@@ -8,3 +8,7 @@
 {% for author in object.instance.work.authors.all %}
   {{ author.firstname_last }}{% if not forloop.last %} {% endif %}
 {% endfor %}
+{# also include collection title for book sections #}
+{% if object.instance.collected_in %}
+{{ object.instance.collected_in.display_title }}
+{% endif %}
