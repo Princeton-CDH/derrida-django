@@ -38,6 +38,17 @@ textarea {
   cursor: default;
 }
 
+// Override for page-filter textbox bottom border
+section.page-filter {
+  .mdl-textfield__input {
+    cursor: none;
+    border-bottom-color: rgba(0, 0, 0, 0.2);
+    &:focus {
+      border-bottom-color: $doger-blue;
+    }
+  }
+}
+
 // Switch
 @import "switch";
 
