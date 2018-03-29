@@ -1,5 +1,5 @@
 from haystack import indexes
-from derrida.books.models import Instance, Reference
+from derrida.books.models import Instance, Reference, DerridaWork
 import roman
 
 
@@ -36,9 +36,7 @@ class InstanceIndex(indexes.SearchIndex, indexes.Indexable):
     print_year = indexes.IntegerField(model_attr='print_year', null=True)
     #: sort/display year: print year if known; otherwise, copyright year.
     year = indexes.IntegerField(model_attr='year', null=True)
-    # FIXME: a book is cited if items it collects are cited
-    cited_in = indexes.MultiValueField(model_attr='reference_set__derridawork__short_title',
-        faceted=True, null=True)
+    cited_in = indexes.MultiValueField(faceted=True, null=True)
     is_extant = indexes.FacetBooleanField(model_attr='is_extant')
     is_annotated = indexes.FacetBooleanField(model_attr='is_annotated')
     digital_edition = indexes.FacetBooleanField(model_attr='digital_edition')
@@ -52,6 +50,16 @@ class InstanceIndex(indexes.SearchIndex, indexes.Indexable):
         if first_author:
             return first_author.authorized_name
 
+    def prepare_cited_in(self, instance):
+        # return cited work once only;
+        # cheeck for references to this instance or any book sections
+        # it collects
+        ref_ids = [ref.id for ref in instance.reference_set.all()]
+        ref_ids.extend([ref.id for bksect in instance.collected_set.all()
+                               for ref in bksect.reference_set.all()])
+        # use distinct to avoid needless repetition
+        return [dw.short_title for dw in
+                DerridaWork.objects.filter(reference__in=ref_ids).distinct()]
 
 class ReferenceIndex(indexes.SearchIndex, indexes.Indexable):
     '''Search index instance for :class:`derrida.books.models.Reference`'''
