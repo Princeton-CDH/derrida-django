@@ -448,7 +448,10 @@ class TestInterventionViews(TestCase):
             msg_prefix='canvas detail page includes local annotator styles')
         self.assertContains(response, 'interventions-plugin.js',
             msg_prefix='canvas detail page includes local intervention plugin')
+
         # check that expected autocomplete urls are present
+        # NOTE: these tests fail if compression is enabled, because the
+        # expected urls are in a javascript block
         # NOTE: currently tag autocomplete is annotation tags only
         self.assertContains(response,
             reverse('interventions:tag-autocomplete', kwargs={'mode': 'annotation'}),
