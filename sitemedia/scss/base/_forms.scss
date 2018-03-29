@@ -41,7 +41,10 @@ textarea {
 // Override for page-filter textbox bottom border
 section.page-filter {
   .mdl-textfield__input {
-    cursor: none;
+    // browser safe way to make the blinking text cursor vanish
+    cursor: default;
+    color: transparent;
+    text-shadow: 0px 0px 0px $grey-500;
     border-bottom-color: rgba(0, 0, 0, 0.2);
     &:focus {
       border-bottom-color: $doger-blue;
