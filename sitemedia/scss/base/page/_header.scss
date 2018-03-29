@@ -93,8 +93,9 @@
 
 .page-header__callout {
   color: $base-font-color;
-  background: $white;
-  padding: 1.5em 2em 0;
+  background: rgba($white, 0.85);
+  padding: 1.5em;
+  padding-bottom: 0;
   align-self: flex-start;
   position: absolute;
   bottom: 3rem;
@@ -109,14 +110,19 @@
     @include grid-column(6);
   }
 
+  .lead,
+  .help {
+    line-height: 1;
+  }
+
   .callout__link {
-    @include faded-link();
+    @include page-navigation-links();
     font-size: ems(12px, 14);
   }
 
   .lead {
-    line-height: 1.2;
     @include secondary-font-style("italic");
-    font-size: ems(15px, 14);
+    font-style: italic;
+    font-size: ems(19px, 14);
   }
 }
