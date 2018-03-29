@@ -18,8 +18,7 @@ class InstanceIndex(indexes.SearchIndex, indexes.Indexable):
     author = indexes.MultiValueField(model_attr='work__authors__authorized_name',
         faceted=True, null=True)
     #: non-multifield for first author to allow sorting by author
-    sort_author = indexes.CharField(model_attr='work__authors__authorized_name',
-        faceted=True, null=True)
+    sort_author = indexes.CharField(faceted=True, null=True)
     #: author in firstname last for display
     author_firstname_last = indexes.MultiValueField(model_attr='work__authors__firstname_last',
         null=True)
@@ -46,6 +45,12 @@ class InstanceIndex(indexes.SearchIndex, indexes.Indexable):
 
     def get_model(self):
         return Instance
+
+    def prepare_sort_author(self, instance):
+        first_author = instance.work.authors.first()
+        if first_author:
+            return first_author.authorized_name
+
 
 
 class ReferenceIndex(indexes.SearchIndex, indexes.Indexable):
