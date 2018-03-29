@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
+import datetime
 import json
 from unittest.mock import Mock, patch
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
+from django.core.cache import cache
+from django.db.models import Max, Min
 from django.test import TestCase, override_settings
 from django.urls import reverse
 from djiffy.models import Canvas, Manifest
@@ -445,7 +448,10 @@ class TestInterventionViews(TestCase):
             msg_prefix='canvas detail page includes local annotator styles')
         self.assertContains(response, 'interventions-plugin.js',
             msg_prefix='canvas detail page includes local intervention plugin')
+
         # check that expected autocomplete urls are present
+        # NOTE: these tests fail if compression is enabled, because the
+        # expected urls are in a javascript block
         # NOTE: currently tag autocomplete is annotation tags only
         self.assertContains(response,
             reverse('interventions:tag-autocomplete', kwargs={'mode': 'annotation'}),
@@ -518,6 +524,82 @@ class TestInterventionSolrViews(TestCase):
         # filter by ink
         response = self.client.get(intervention_list_url, {'ink': ['blue ink']})
         assert len(response.context['object_list']) == 1
+
+        # range filter
+        # - work year
+        response = self.client.get(intervention_list_url,
+                                   {'item_work_year_0': 1950})
+        # use total as a proxy of count() and to avoid pagination issues
+        assert response.context['total'] == \
+            Intervention.objects.filter(
+                canvas__manifest__instance__work__year__gte=1950
+            ).count()
+        response = self.client.get(intervention_list_url,
+            {'item_work_year_0': 1927, 'item_work_year_1': 1950})
+        assert response.context['total'] == \
+            Intervention.objects.filter(
+                canvas__manifest__instance__work__year__lte=1950,
+                canvas__manifest__instance__work__year__gte=1927
+            ).count()
+        # - copyright year
+        response = self.client.get(intervention_list_url,
+                                   {'item_copyright_year_0': 1950})
+        # use total as a proxy of count() and to avoid pagination issues
+        assert response.context['total'] == \
+            Intervention.objects.filter(
+                canvas__manifest__instance__copyright_year__gte=1950
+            ).count()
+        response = self.client.get(intervention_list_url,
+            {'item_copyright_year_0': 1927,
+             'item_copyright_year_1': 1950})
+        assert response.context['total'] == \
+            Intervention.objects.filter(
+                canvas__manifest__instance__copyright_year__lte=1950,
+                canvas__manifest__instance__copyright_year__gte=1927
+            ).count()
+        # - print year
+        response = self.client.get(intervention_list_url,
+                                   {'item_print_year_0': 1950})
+        # use total as a proxy of count() and to avoid pagination issues
+        # pass date as ISO string since these are date fields but we're
+        # only checking very coarsely by year, don't need to check date known
+        # flags
+        assert response.context['total'] == \
+            Intervention.objects.filter(
+                canvas__manifest__instance__print_date__gte='1950-01-01'
+            ).count()
+        response = self.client.get(
+            intervention_list_url,
+            {'item_print_year_0': 1927, 'item_print_year_1': 1950}
+        )
+        assert response.context['total'] == \
+            Intervention.objects.filter(
+                canvas__manifest__instance__print_date__lte='1950-12-31',
+                canvas__manifest__instance__print_date__gte='1927-01-01'
+            ).count()
+        # The aggregate values should be in the cache with values as expected
+        # - This reuses the code from the view, which is ugly, but
+        # it avoids problems with a changed fixture that would be
+        # caused by hardcoding it
+        aggregate_queries = {
+            'item_work_year_max': Max('canvas__manifest__instance__work__year'),
+            'item_work_year_min': Min('canvas__manifest__instance__work__year'),
+            'item_copyright_year_max': Max('canvas__manifest__instance__copyright_year'),
+            'item_copyright_year_min': Min('canvas__manifest__instance__copyright_year'),
+            'item_print_year_max': Max('canvas__manifest__instance__print_date'),
+            'item_print_year_min': Min('canvas__manifest__instance__print_date'),
+        }
+        ranges = (
+            Intervention.objects
+            .filter(canvas__manifest__instance__is_extant=True)
+            .aggregate(**aggregate_queries)
+        )
+        # pre-process datetime.date instances to get just
+        # year as an integer
+        for field, value in ranges.items():
+            if isinstance(value, datetime.date):
+                ranges[field] = value.year
+        assert ranges == cache.get('intervention_ranges', None)
 
 
 class TestExtendedCanvasAutocomplete(TestCase):

@@ -2,29 +2,54 @@
   background-position: center bottom;
   background-size: auto 100%;
   background-repeat: no-repeat;
+
   @include transition(margin-top 0.5s ease);
 
+  &.header-banner {
+    height: 300px;
+    @include grid-media($large-medium-viewport-grid) {
+      height: 320px;
+    }
+    @include grid-media($xlarge-viewport-grid) {
+      height: 600px;
+    }
+  }
+
+  /* TODO: mixin for banner images? with 1x/2x behavior if possible */
+
   #citations-list & {
-    background-image: url("../img/banner/citation_small_2x.png");
+    background-image: url("../img/banner/derrida-banner-reference-S@1x.png");
 
     @include grid-media($large-medium-viewport-grid) {
-      background-image: url("../img/banner/citation_medium_2x.png");
+      background-image: url("../img/banner/derrida-banner-reference-M@1x.png");
     }
 
     @include grid-media($xlarge-viewport-grid) {
-      background-image: url("../img/banner/citation_large_2x.png");
+      background-image: url("../img/banner/derrida-banner-reference-L@2x.png");
     }
   }
 
   #books-list & {
-    background-image: url("../img/banner/lib_small_2x.png");
+    background-image: url("../img/banner/derrida-banner-library-S@2x.png");
 
     @include grid-media($large-medium-viewport-grid) {
-      background-image: url("../img/banner/lib_medium_2x.png");
+      background-image: url("../img/banner/derrida-banner-library-M@2x.png");
     }
 
     @include grid-media($xlarge-viewport-grid) {
-      background-image: url("../img/banner/lib_large_2x.png");
+      background-image: url("../img/banner/derrida-banner-library-L@2x.png");
+    }
+  }
+
+   #interventions-list & {
+    background-image: url("../img/banner/derrida-banner-intervention-S@2x.png");
+
+    @include grid-media($large-medium-viewport-grid) {
+      background-image: url("../img/banner/derrida-banner-intervention-M@2x.png");
+    }
+
+    @include grid-media($xlarge-viewport-grid) {
+      background-image: url("../img/banner/derrida-banner-intervention-L@2x.png");
     }
   }
 }
@@ -46,6 +71,7 @@
 
 .page-header__container {
   min-height: 320px;
+  height: 100%;
   display: flex;
   align-items: center;
   flex-direction: column;

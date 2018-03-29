@@ -16,12 +16,13 @@ Example use::
 
 When a local identifier is present in manifest metadata, it will be used
 to link the cached manifest in the django database with the appropriate
-:class:`winthrop.books.models.Book`.
+:class:`derrida.books.models.Instance``.
 '''
 from collections import defaultdict
 
 from django.core.management.base import BaseCommand
 from django.core.exceptions import ObjectDoesNotExist
+from django.template.defaultfilters import slugify
 from djiffy.importer import ManifestImporter
 
 from derrida.books.models import Instance
@@ -33,6 +34,14 @@ class DerridaManifestImporter(ManifestImporter):
     with an existing :class:`winthrop.books.models.Book`'''
 
     stats = defaultdict(int)
+
+    def canvas_short_id(self, canvas):
+        '''Override default short id logic, because that would result in
+        a uuid for PUL figgy content; instead, generate a slug based on the
+        image label.  Canvas model requires short id + manifest unique
+        together, but that won't be a problem with project image
+        label naming conventions.'''
+        return slugify(canvas.label)
 
     def import_manifest(self, manifest, path):
         # parent method returns newly created db manifest
@@ -99,12 +108,12 @@ class DerridaManifestImporter(ManifestImporter):
 
 
 class Command(BaseCommand):
-    '''Import digital editions and associate with Winthrop books'''
+    '''Import digital editions and associate with Derrida work instances'''
     help = __doc__
 
     # shorthand for known URIs to be imported
     manifest_uris = {
-        'PUL': 'https://plum.princeton.edu/collections/pb5646r538/manifest'
+        'PUL': 'https://figgy.princeton.edu/collections/7081b751-abb6-4f62-9c38-ff1fda0f9d30/manifest'
     }
 
     def add_arguments(self, parser):

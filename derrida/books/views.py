@@ -1,12 +1,15 @@
 import json
+import datetime
 
 from dal import autocomplete
 from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
+from django.core.cache import cache
 from django.db.models import Max, Min
 from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views.generic import DetailView, ListView, View
 from django.views.generic.base import TemplateView
@@ -98,8 +101,13 @@ class InstanceListView(ListView):
 
         # if search parameters are specified, use them to initialize the form;
         # otherwise, use form defaults
-        self.form = self.form_class(self.request.GET or
-                                    self.form_class.defaults)
+        # - ignore page when checking for form values
+        form_opts = self.request.GET.copy()
+        try:
+            del form_opts['page']
+        except KeyError:
+            pass
+        self.form = self.form_class(form_opts or self.form_class.defaults)
 
         # request facet counts from solr
         for facet_field in self.form.facet_fields:
@@ -130,15 +138,33 @@ class InstanceListView(ListView):
 
         # request range facets
         # get max/min from database to specify range start & end values
-        # TODO: should probably cache max/min values so we don't have
-        # to calculate them every time
-        # NOTE: restricting to cited books currently returns null for copyright
-        # which breaks the logic here; get a larger range for now
-        # ranges = Instance.objects.filter(is_extant=True, cited_in__isnull=False) \
-        ranges = Instance.objects.filter(is_extant=True) \
-            .aggregate(work_year_max=Max('work__year'), work_year_min=Min('work__year'),
-                copyright_year_max=Max('copyright_year'), copyright_year_min=Min('copyright_year'),
-                print_year_max=Max('print_date'), print_year_min=Min('print_date'))
+
+        # set the aggregate queries for this particular query and their
+        # kwarg names as a dictionary
+        aggregate_queries = {
+            'work_year_max': Max('work__year'),
+            'work_year_min': Min('work__year'),
+            'copyright_year_max': Max('copyright_year'),
+            'copyright_year_min': Min('copyright_year'),
+            'print_year_max': Max('print_date'),
+            'print_year_min': Min('print_date'),
+        }
+        # check for a namespaced _ranges variable in Django cache
+        # return None if not found by default
+        ranges = cache.get('instance_ranges')
+        if not ranges:
+            # NOTE: restricting to cited books currently returns null for copyright
+            # which breaks the logic here; get a larger range for now
+            # ranges = Instance.objects.filter(is_extant=True, cited_in__isnull=False) \
+            ranges = Instance.objects.filter(is_extant=True) \
+                .aggregate(**aggregate_queries)
+            # pre-process datetime.date instances to get just
+            # year as an integer
+            for field, value in ranges.items():
+                if isinstance(value, datetime.date):
+                    ranges[field] = value.year
+            cache.set('instance_ranges', ranges)
+
         # request range facets values and optionally filter ranges
         # on configured range facet fields
         for range_facet in self.form.range_facets:
@@ -157,12 +183,6 @@ class InstanceListView(ListView):
                 'start': int(start) if start else ranges['%s_min' % range_facet],
                 'end': int(end) if end else ranges['%s_max' % range_facet],
             }
-            if range_facet == 'print_year':
-                # special case: print year is a datetime but we only want year
-                if not start:
-                    range_opts['start'] = range_opts['start'].year if range_opts['start'] else None
-                if not end:
-                    range_opts['end'] = range_opts['end'].year if range_opts['end'] else None
             # calculate gap based start and end & desired number of slices
             # ideally, generate 15 slices; minimum gap size of 1
             range_opts['gap'] = max(1, int((range_opts['end'] - range_opts['start']) / 15.0))
@@ -207,8 +227,13 @@ class ReferenceListView(ListView):
 
         # if search parameters are specified, use them to initialize the form;
         # otherwise, use form defaults
-        self.form = self.form_class(self.request.GET or \
-                self.form_class.defaults)
+        # - ignore page number when checking if options are set
+        form_opts = self.request.GET.copy()
+        try:
+            del form_opts['page']
+        except KeyError:
+            pass
+        self.form = self.form_class(form_opts or self.form_class.defaults)
         for facet_field in self.form.facet_fields:
             # sort by alpha instead of solr default of count
             sqs = sqs.facet(facet_field, sort='index')
@@ -239,6 +264,56 @@ class ReferenceListView(ListView):
                 solr_facet = self.form.solr_field(facet)
                 # filter the query: facet matches any of the terms
                 sqs = sqs.filter(**{'%s__in' % solr_facet: search_opts[facet]})
+        # request range facets for References, adapated from logic
+        # above for Instances
+        # get max/min from database to specify range start & end values
+
+        # set the aggregate queries for this particular query and their
+        # kwarg names as a dictionary
+        aggregate_queries = {
+            'instance_work_year_max': Max('instance__work__year'),
+            'instance_work_year_min': Min('instance__work__year'),
+            'instance_copyright_year_max': Max('instance__copyright_year'),
+            'instance_copyright_year_min': Min('instance__copyright_year'),
+            'instance_print_year_max': Max('instance__print_date'),
+            'instance_print_year_min': Min('instance__print_date'),
+        }
+        # check for a namespaced _ranges variable in Django cache
+        # return None if not found by default
+        ranges = cache.get('reference_ranges')
+        if not ranges:
+            ranges = Reference.objects.filter(instance__is_extant=True) \
+                .aggregate(**aggregate_queries)
+            # pre-process datetime.date instances to get just
+            # year as an integer
+            for field, value in ranges.items():
+                if isinstance(value, datetime.date):
+                    ranges[field] = value.year
+            cache.set('reference_ranges', ranges)
+
+        # request range facets values and optionally filter ranges
+        # on configured range facet fields
+        for range_facet in self.form.range_facets:
+            start = end = None
+            # range filter requested in search options
+            if range_facet in search_opts and search_opts[range_facet]:
+                start, end = search_opts[range_facet].split('-')
+                # could have both start and end or just one
+                # NOTE: haystack includes a range field lookup, but
+                # it converts numbers to strings, so this is easier
+                range_filter = '[%s TO %s]' % (start or '*', end or '*')
+                sqs = sqs.filter(**{range_facet: Raw(range_filter)})
+
+            # current range filter becomes start/end if specified
+            range_opts = {
+                'start': int(start) if start else ranges['%s_min' % range_facet],
+                'end': int(end) if end else ranges['%s_max' % range_facet],
+            }
+            # calculate gap based start and end & desired number of slices
+            # ideally, generate 15 slices; minimum gap size of 1
+            range_opts['gap'] = max(1, int((range_opts['end'] - range_opts['start']) / 15.0))
+            # request the range facet with the specified options
+            sqs = sqs.facet(range_facet, range=True, **range_opts)
 
         # sort should always be set
         if search_opts['order_by']:
@@ -319,7 +394,13 @@ class SearchView(TemplateView):
     max_per_type = 3
 
     def get(self, *args, **kwargs):
-        self.form = self.form_class(self.request.GET or self.form_class.defaults)
+        # ignore page number when checking if options are set
+        form_opts = self.request.GET.copy()
+        try:
+            del form_opts['page']
+        except KeyError:
+            pass
+        self.form = self.form_class(form_opts or self.form_class.defaults)
         # if search on a single type is requested, forward to the
         # appropriate view
         if self.form.is_valid():
@@ -423,7 +504,7 @@ class CanvasSuppress(FormView):
 
         # suppress current page or all pages
         if formdata['suppress'] == 'current':
-            canvas = Canvas.objects.get(short_id=formdata['canvas_id'])
+            canvas = instance.digital_edition.canvases.get(short_id=formdata['canvas_id'])
             instance.suppressed_images.add(canvas)
             msg = 'Canvas successfully suppressed.'
         else:

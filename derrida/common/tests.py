@@ -116,6 +116,7 @@ def test_querystring_replace():
     assert 'query=saussure' in args
     # replaces existing arg
     assert 'page=3' in args
+    assert 'page=2' not in args
 
     # handle repeating terms
     mockrequest.GET = QueryDict('language=english&language=french')

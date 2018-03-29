@@ -1,3 +1,6 @@
+# pytest caches
+.pytest_cache
+
 # Compressor related static files
 static/
 CACHE/

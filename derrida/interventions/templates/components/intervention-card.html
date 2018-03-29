@@ -11,11 +11,20 @@
       <a class="item__link" href="#annotations/{{ intervention.id }}">Permalink</a>
     </div>
 
+    {# suppress intervention author when it is Derrida, since that is nearly all of them #}
+    {% if intervention.author.firstname_last != "Jacques Derrida" %}
     <h3 class="item__heading"><span>{% firstof intervention.author.firstname_last 'Unknown' %}</span></h3>
+    {% endif %}
     {% if intervention.text_language %}
       <p class="item__language">Anchor Text: {{ intervention.text_language | default:"French" }}</p>
     {% endif %}
-    <p class="item__excerpt">{{ intervention.text }}</p>
-    <p class="item__excerpt">{{ intervention.quote }}</p>
+    {% if intervention.text %}
+    <p class="item__excerpt"><h3>Annotation:</h3>
+      {{ intervention.text }}</p>
+    {% endif %}
+    {% if intervention.quote %}
+        <p class="item__excerpt"><h3>Anchor text:</h3>
+    {{ intervention.quote }}</p>
+    {% endif %}
   </div>
 </section>

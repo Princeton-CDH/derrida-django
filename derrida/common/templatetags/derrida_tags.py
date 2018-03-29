@@ -15,7 +15,10 @@ def querystring_replace(context, **kwargs):
     # get a mutable copy of the current request
     querystring = context['request'].GET.copy()
     # update with any parameters passed in
-    querystring.update(kwargs)
+    # NOTE: needs to *set* fields rather than using update,
+    # because QueryDict update appends to field rather than replacing
+    for key, val in kwargs.items():
+        querystring[key] = val
     # return urlencoded query string
     return querystring.urlencode()
 

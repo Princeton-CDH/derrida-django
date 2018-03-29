@@ -16,12 +16,12 @@ class InstanceIndex(indexes.SearchIndex, indexes.Indexable):
     copy = indexes.CharField(model_attr='copy', null=True)
     #: author names in lastname, first for sort/facet
     author = indexes.MultiValueField(model_attr='work__authors__authorized_name',
-        faceted=True)
+        faceted=True, null=True)
     #: non-multifield for first author to allow sorting by author
-    sort_author = indexes.CharField(model_attr='work__authors__authorized_name',
-        faceted=True)
+    sort_author = indexes.CharField(faceted=True, null=True)
     #: author in firstname last for display
-    author_firstname_last = indexes.MultiValueField(model_attr='work__authors__firstname_last')
+    author_firstname_last = indexes.MultiValueField(model_attr='work__authors__firstname_last',
+        null=True)
     subject = indexes.MultiValueField(model_attr='work__subjects__name',
         faceted=True, null=True)
     language = indexes.MultiValueField(model_attr='languages__name',
@@ -45,6 +45,12 @@ class InstanceIndex(indexes.SearchIndex, indexes.Indexable):
 
     def get_model(self):
         return Instance
+
+    def prepare_sort_author(self, instance):
+        first_author = instance.work.authors.first()
+        if first_author:
+            return first_author.authorized_name
+
 
 
 class ReferenceIndex(indexes.SearchIndex, indexes.Indexable):
@@ -77,37 +83,39 @@ class ReferenceIndex(indexes.SearchIndex, indexes.Indexable):
         faceted=True)
     #: Instance authors for faceted filtering
     instance_author = indexes.MultiValueField(model_attr='instance__work__authors__authorized_name',
-        faceted=True)
+        faceted=True, null=True)
     #: Instance authors for display
-    instance_author_firstname_last = indexes.MultiValueField(model_attr='instance__work__authors__firstname_last')
+    instance_author_firstname_last = indexes.MultiValueField(model_attr='instance__work__authors__firstname_last',
+        null=True)
     #: non-multifield for instance first author to allow sorting by author
     instance_sort_author = indexes.CharField(model_attr='instance__work__authors__authorized_name',
-        faceted=True)
+        faceted=True, null=True)
     #: subjects for associated instance; :attr:`derrida.books.models.Instance.subjects`
     instance_subject = indexes.MultiValueField(model_attr='instance__work__subjects__name',
         faceted=True, null=True)
     #: languages for associated instance; :attr:`derrida.book.models.Instance.languages`
-    instance_language = indexes.MultiValueField(model_attr='instance__languages__name',
-        faceted=True, null=True)
+    instance_language = indexes.MultiValueField(faceted=True, null=True)
     #: languages for the original work; :attr:`derrida.book.models.Work.languages`
     original_language = indexes.MultiValueField(model_attr='instance__work__languages__name',
         faceted=True)
-    instance_pub_place = indexes.MultiValueField(model_attr='instance__pub_place__name',
+    instance_pub_place = indexes.MultiValueField(model_attr='book__pub_place__name',
         faceted=True, null=True)
+    #: work year of the associated instance's work; :attr:`derrida.books.models.Work.year`
+    instance_work_year = indexes.IntegerField(model_attr='instance__work__year', null=True)
     #: copyright year of associated instance; :attr:`derrida.books.models.Instance.copyright_year`
-    instance_copyright_year = indexes.DecimalField(model_attr='instance__copyright_year', null=True)
+    instance_copyright_year = indexes.IntegerField(model_attr='instance__copyright_year', null=True)
     #: print year of associated instance; :attr:`derrida.books.models.Instance.r_year`
-    instance_print_year = indexes.DecimalField(model_attr='instance__print_year', null=True)
+    instance_print_year = indexes.IntegerField(model_attr='instance__print_year', null=True)
     #: is instance extant in PU collection?; :attr:`derrida.books.models.Instance.is_extant`
-    instance_is_extant = indexes.FacetBooleanField(model_attr='instance__is_extant')
+    instance_is_extant = indexes.FacetBooleanField(model_attr='book__is_extant')
     #: is instance annotated?; :attr:`derrida.books.models.Instance.is_annotated`
-    instance_is_annotated = indexes.FacetBooleanField(model_attr='instance__is_annotated')
+    instance_is_annotated = indexes.FacetBooleanField(model_attr='book__is_annotated')
     #: instance slug, for generating urls and filtering by instance
-    instance_slug = indexes.CharField(model_attr='instance_slug')
+    instance_slug = indexes.CharField(model_attr='book__slug')
     #: instance copy, for distinguishing multiple copies of the same edition
-    instance_copy = indexes.CharField(model_attr='instance__copy', null=True)
+    instance_copy = indexes.CharField(model_attr='book__copy', null=True)
     #: boolean indicating if instance has digital edition
-    instance_digital_edition = indexes.FacetBooleanField(model_attr='instance__digital_edition')
+    instance_digital_edition = indexes.FacetBooleanField(model_attr='book__digital_edition')
     #: instance collection title, for references to book sections
     instance_collection_title = indexes.CharField(model_attr='instance__collected_in__display_title',
         null=True)
@@ -122,6 +130,16 @@ class ReferenceIndex(indexes.SearchIndex, indexes.Indexable):
 
     def prepare_corresponding_intervention(self, reference):
         return reference.interventions.count()
+
+    def prepare_instance_language(self, reference):
+        # use languages directly on this instance, if available (even if a
+        # book section or article)
+        if reference.instance.languages.exists():
+            return [lang.name for lang in reference.instance.languages.all()]
+        # if no languages directly set and part of a collected work, use
+        # collection work languages
+        if reference.instance.collected_in:
+            return [lang.name for lang in reference.instance.collected_in.languages.all()]
 
     def prepare_book_page_sort(self, reference):
         '''Handle integer values and sort in page references'''
