@@ -7,8 +7,10 @@ The template allows for the following parameters:
   referenced as "book.properties" within the template)
 * `href` - the link to the details page for the instance. Will render a span
   instead of a link if not defined
-* `shorten` -  this will hide the badge, excerpt, and citation sections
+* `shorten` -  this will hide the badge, image, excerpt, and citation sections
   of the template
+* `thumbnail_size` - determines the book image thumbnail size;
+   should be one of `thumbnail` or `smthumb`
 * ``
 {% endcomment %}
 {% load static %}
@@ -18,17 +20,20 @@ The template allows for the following parameters:
       <img class="icon--annotation" src="{% static 'img/bookmark_annotation.svg' %}" />
     </span>
   {% endif %}
+  {% if not shorten %}
   <figure class="item__image">
     {% with book.digital_edition|yesno:"a,span" as tag %}
     <{{tag}} class="img item__image__link"{% if tag == "a" %} href="{{ href }}"{% endif %}>
       {% if book.digital_edition %}
-        <img class="img" src="{% url 'books:book-thumbnail' book.slug %}" />
+        <img class="img" src="{% url 'books:book-image' book.slug thumbnail_size %}"
+            srcset="{% url 'books:book-image' book.slug thumbnail_size '@2x' %} 2x" />
       {% else %}
       <span class="img img--placeholder"></span>
       {% endif %}
     </{{tag}}>
     {% endwith %}
   </figure>
+  {% endif %}
 
   <div class="item__body">
     <a class="text-badge text-badge--blue text-badge--link" href="#">{{ book.item_type }}</a>
