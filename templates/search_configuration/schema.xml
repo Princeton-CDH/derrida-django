@@ -182,6 +182,11 @@
     <copyField source="*" dest="_text_"/>-->
 
 
+    <!-- override type: use custom string field for accent-insensitive sort on
+         any field ending in _isort -->
+    <dynamicField name="*_isort"  type="string_en" indexed="true" stored="true"/>
+
+
     <!-- Dynamic field definitions allow using convention over configuration
        for fields via the specification of patterns to match field names.
        EXAMPLE:  name="*_i" will match any field ending in _i (like myid_i, z_i)
@@ -462,6 +467,15 @@
             <filter class="solr.ICUFoldingFilterFactory"/>
             <filter class="solr.PorterStemFilterFactory"/>
         </analyzer>
+    </fieldType>
+
+    <!-- custom string-like sort field with accent folding -->
+    <fieldType name="string_en" class="solr.TextField" sortMissingLast="true">
+       <analyzer type="index">
+            <!-- treat entire field as a single token -->.
+            <tokenizer class="solr.KeywordTokenizerFactory"/>
+            <filter class="solr.ICUFoldingFilterFactory"/>
+       </analyzer>
     </fieldType>
 
     <!-- A text field with defaults appropriate for English, plus
