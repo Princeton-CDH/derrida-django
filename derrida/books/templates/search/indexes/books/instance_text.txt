@@ -4,5 +4,5 @@
 {% for author in object.work.authors.all %}
   {{ author.firstname_last }}{% if not forloop.last %} {% endif %}
 {% endfor %}
-{{ object.copyright_year }}
+{{ object.copyright_year|default:'' }}
 
