@@ -101,8 +101,13 @@ class InstanceListView(ListView):
 
         # if search parameters are specified, use them to initialize the form;
         # otherwise, use form defaults
-        self.form = self.form_class(self.request.GET or
-                                    self.form_class.defaults)
+        # - ignore page when checking for form values
+        form_opts = self.request.GET.copy()
+        try:
+            del form_opts['page']
+        except KeyError:
+            pass
+        self.form = self.form_class(form_opts or self.form_class.defaults)
 
         # request facet counts from solr
         for facet_field in self.form.facet_fields:
@@ -222,8 +227,13 @@ class ReferenceListView(ListView):
 
         # if search parameters are specified, use them to initialize the form;
         # otherwise, use form defaults
-        self.form = self.form_class(self.request.GET or \
-                self.form_class.defaults)
+        # - ignore page number when checking if options are set
+        form_opts = self.request.GET.copy()
+        try:
+            del form_opts['page']
+        except KeyError:
+            pass
+        self.form = self.form_class(form_opts or self.form_class.defaults)
         for facet_field in self.form.facet_fields:
             # sort by alpha instead of solr default of count
             sqs = sqs.facet(facet_field, sort='index')
@@ -384,7 +394,13 @@ class SearchView(TemplateView):
     max_per_type = 3
 
     def get(self, *args, **kwargs):
-        self.form = self.form_class(self.request.GET or self.form_class.defaults)
+        # ignore page number when checking if options are set
+        form_opts = self.request.GET.copy()
+        try:
+            del form_opts['page']
+        except KeyError:
+            pass
+        self.form = self.form_class(form_opts or self.form_class.defaults)
         # if search on a single type is requested, forward to the
         # appropriate view
         if self.form.is_valid():

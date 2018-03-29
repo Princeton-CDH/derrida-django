@@ -176,8 +176,13 @@ class InterventionListView(ListView):
 
         # if search parameters are specified, use them to initialize the form;
         # otherwise, use form defaults
-        self.form = self.form_class(self.request.GET or
-                                    self.form_class.defaults)
+        # - ignore page when checking for options
+        form_opts = self.request.GET.copy()
+        try:
+            del form_opts['page']
+        except KeyError:
+            pass
+        self.form = self.form_class(form_opts or self.form_class.defaults)
 
         for facet_field in self.form.facet_fields:
             # sort by alpha instead of solr default of count
