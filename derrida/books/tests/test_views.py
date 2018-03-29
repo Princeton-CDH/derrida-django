@@ -363,6 +363,12 @@ class TestInstanceViews(TestCase):
         p23 = Canvas.objects.create(manifest=item.digital_edition, order=4,
             label='p. 23', short_id='p23')
 
+        item2 = Instance.objects.filter(digital_edition__isnull=False)[1]
+        # create another canvas with the same id in a different manifest
+        # (should be ignored, should not cause an error)
+        p23_dupe = Canvas.objects.create(manifest=item2.digital_edition, order=4,
+            label='p. 23', short_id='p23')
+
         suppress_url = reverse('books:suppress-canvas', kwargs={'slug': item.slug})
         # insufficent perms
         # get redirects

@@ -488,7 +488,7 @@ class CanvasSuppress(FormView):
 
         # suppress current page or all pages
         if formdata['suppress'] == 'current':
-            canvas = Canvas.objects.get(short_id=formdata['canvas_id'])
+            canvas = instance.digital_edition.canvases.get(short_id=formdata['canvas_id'])
             instance.suppressed_images.add(canvas)
             msg = 'Canvas successfully suppressed.'
         else:
