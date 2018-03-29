@@ -1,7 +1,8 @@
 {# gallery image thumbnail - expects an instance and a canvas #}
  <figure class="item__image item__image--gallery">
     <a class="item__image-link" href="{% url 'books:canvas-detail' instance.slug canvas.short_id %}">
-      <img class="img" src="{% url 'books:canvas-image' instance.slug canvas.short_id 'thumbnail' %}" />
+      <img class="img" src="{% url 'books:canvas-image' instance.slug canvas.short_id 'smthumb' %}"
+          srcset="{% url 'books:canvas-image' instance.slug canvas.short_id 'smthumb' '@2x' %} 2x" />
     </a>
     <figcaption class="item__image-caption">
       <p>{{ canvas.label }}</p>

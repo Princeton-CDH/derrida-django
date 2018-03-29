@@ -26,7 +26,7 @@
     <article class="collection collection--condensed">
       {% for instance in object_list %}
         {% url 'books:detail' instance.slug as instance_url %}
-        {% include 'components/books-list-item.html' with href=instance_url book=instance %}
+        {% include 'components/books-list-item.html' with href=instance_url book=instance thumbnail_size='thumbnail' %}
       {% empty %}
         {% include 'components/search-results-empty.html' %}
       {% endfor %}

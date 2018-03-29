@@ -2,7 +2,8 @@
     {# an intervention should always have a canvas in current implementation #}
   <figure class="item__image">
     <a class="item__image-link" href="{% url 'books:canvas-detail' intervention.item_slug intervention.canvas_id %}">
-      <img class="img" src="{% url 'books:canvas-image' intervention.item_slug intervention.canvas_id 'thumbnail' %}" />
+      <img class="img" src="{% url 'books:canvas-image' intervention.item_slug intervention.canvas_id 'smthumb' %}"
+         srcset="{% url 'books:canvas-image' intervention.item_slug intervention.canvas_id 'smthumb' '@2x' %} 2x" />
     </a>
   </figure>
   <div class="item__body">
