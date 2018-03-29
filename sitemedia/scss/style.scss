@@ -29,6 +29,17 @@ main {
   }
 }
 
+// Override for page-filter across pages
+section.page-filter {
+  .mdl-textfield__input {
+    border-bottom-color: rgba(0, 0, 0, 0.2);
+    &:focus {
+      border-bottom-color: $doger-blue;
+    }
+  }
+}
+
+
 // Home Page style
 @import "homepage";
 
