@@ -289,10 +289,15 @@
 
 .filter__check-list {
   max-height: 8em;
-  overflow: scroll;
+  overflow: hidden;
   margin-bottom: 1rem;
   display: flex;
   flex-wrap: wrap;
+
+  &:hover {
+    overflow-y: scroll;
+    margin-right: -1em;
+  }
 
   .mdl-checkbox {
     width: 50%;
