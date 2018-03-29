@@ -586,7 +586,7 @@ class CanvasImage(ProxyView):
         if mode == 'smthumb':
             # small thumbnail: 2 columns + 1 gutter = 135 (2x = 270)
             min_width = self.SMALL_THUMBNAIL_WIDTH
-        if mode == 'thumbnail':
+        elif mode == 'thumbnail':
             # large thumbnail: 3 columns + 2 gutters ~=218 (2x = 435)
             min_width = self.THUMBNAIL_WIDTH
         elif mode == 'large':
