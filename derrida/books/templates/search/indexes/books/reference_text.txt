@@ -5,6 +5,6 @@
 {{ object.anchor_text }}
 {# pull in instance info #}
 {{ object.instance.work.display_title }}
-{% for author in object.instance.authors.all %}
+{% for author in object.instance.work.authors.all %}
   {{ author.firstname_last }}{% if not forloop.last %} {% endif %}
 {% endfor %}
