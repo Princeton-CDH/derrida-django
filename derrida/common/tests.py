@@ -13,7 +13,7 @@ from derrida.common.models import Named, Notable, DateRange
 from derrida.common.utils import absolutize_url
 from derrida.common.templatetags.derrida_tags import querystring_replace
 from derrida.common.solr_backend import RangeSolrSearchQuery, \
-    SolrRangeSearchBackend
+    SolrRangeSearchBackend, facet_sort_ignoreaccents
 
 
 class TestNamed(TestCase):
@@ -244,4 +244,25 @@ class TestSolrRangeSearchBackend(object):
         assert schema[1][2]['field_name'] == schema_info[1][2]['field_name']
         assert schema[1][2]['indexed'] == schema_info[1][2]['indexed']
         assert len(schema[1][2]) == len(schema_info[1][2])
+
+
+def test_facet_sort_ignoreaccents():
+    facets = {'fields': {
+        'derridawork': [('De la grammatologie', 1051)],
+        # sample authors as returned by Solr
+        'instance_author': [('Fenollosa, Ernest Fransisco', 1), ('Filliozat, Jean', 2),
+            ('Fink, Eugen', 1), ('Fischer-Jørgensen, Eli', 1), ('Focillon, Henri', 1),
+            ('Freud, Sigmund', 2), ('Fréret, Nicolas', 1), ('Février, James', 3)]
+    }}
+
+    sorted_facets = facet_sort_ignoreaccents(facets, 'instance_author')
+    # Février should now be second after Fenolloso
+    assert sorted_facets['fields']['instance_author'][1][0] == 'Février, James'
+    # Fréret should now be second to last, before Freud
+    assert sorted_facets['fields']['instance_author'][-2][0] == 'Fréret, Nicolas'
+
+    # missing facet should be skipped
+    facet_sort_ignoreaccents(facets, 'bogus')
+
+
 

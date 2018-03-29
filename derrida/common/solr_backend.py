@@ -7,6 +7,7 @@ patch in range facet functionalty.
 from haystack import connections
 from haystack.backends.solr_backend import SolrSearchQuery, SolrSearchBackend, \
     SolrEngine
+from unidecode import unidecode
 
 
 class RangeSolrSearchQuery(SolrSearchQuery):
@@ -110,3 +111,12 @@ class RangeSolrEngine(SolrEngine):
     # extend default solr engine to make range backend and query defaults
     backend = SolrRangeSearchBackend
     query = RangeSolrSearchQuery
+
+
+def facet_sort_ignoreaccents(facets, *fields):
+    # update alpha facet so that sorting ignores accents
+    # (can't be done in solr because then facets would display without accents)
+    for field in fields:
+        if field in facets['fields']:
+            facets['fields'][field].sort(key=lambda elem: unidecode(elem[0]))
+    return facets
