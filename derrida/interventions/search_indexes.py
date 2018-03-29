@@ -41,11 +41,12 @@ class InterventionIndex(indexes.SearchIndex, indexes.Indexable):
     annotated_page = indexes.CharField(model_attr='canvas__label', null=True)
     # NOTE: using generic "item" to avoid confusion woth work, work instance, etc
     item_title = indexes.CharField(model_attr='work_instance__display_title')
+    item_title_isort = indexes.CharField(model_attr='work_instance__display_title')
     item_author = indexes.MultiValueField(model_attr='work_instance__work__authors__authorized_name',
         faceted=True, null=True)
     #: first author to allow sorting by author
-    item_sort_author = indexes.CharField(model_attr='work_instance__work__authors__authorized_name',
-        faceted=True, null=True)
+    item_author_isort = indexes.CharField(model_attr='work_instance__work__authors__authorized_name',
+        null=True)
     #: author in firstname last for display
     item_author_firstname_last = indexes.MultiValueField(model_attr='work_instance__work__authors__firstname_last',
         null=True)

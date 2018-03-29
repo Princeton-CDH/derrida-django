@@ -11,8 +11,8 @@ from djiffy import views as djiffy_views
 from haystack.inputs import Raw
 from haystack.query import SearchQuerySet
 
-
 from derrida.books.models import Language
+from derrida.common.solr_backend import facet_sort_ignoreaccents
 from derrida.interventions.models import Intervention, Tag, get_default_intervener
 from derrida.interventions.forms import InterventionSearchForm
 from derrida.people.models import Person
@@ -269,7 +269,7 @@ class InterventionListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(InterventionListView, self).get_context_data(**kwargs)
-        facets = self.queryset.facet_counts()
+        facets = facet_sort_ignoreaccents(self.queryset.facet_counts(), 'item_author')
         # update multi-choice fields based on facets in the data
         self.form.set_choices_from_facets(facets.get('fields'))
         context.update({

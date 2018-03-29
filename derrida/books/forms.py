@@ -103,8 +103,8 @@ class InstanceSearchForm(forms.Form):
 
     #: order options and corresponding solr field
     sort_fields = {
-        'author': 'sort_author_exact',
-        'title': 'display_title_exact',
+        'author': 'author_isort',
+        'title': 'display_title_isort',
         'oldest': 'year',
         'newest': '-year'
     }
@@ -170,8 +170,8 @@ class ReferenceSearchForm(forms.Form):
     #: order options and corresponding solr field
     sort_fields = {
         'dw_page': 'derridawork_page',
-        'cited_author': 'instance_sort_author_exact',
-        'cited_title': 'instance_title_exact',
+        'cited_author': 'instance_author_isort',
+        'cited_title': 'instance_title_isort',
     }
     # fields to request facets from solr
     facet_fields = ['derridawork', 'reference_type', 'instance_author',

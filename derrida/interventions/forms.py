@@ -19,8 +19,8 @@ class InterventionSearchForm(forms.Form):
 
     #: order options and corresponding solr field
     sort_fields = {
-        'author': 'item_sort_author_exact',
-        'title': 'item_title',
+        'author': 'item_author_isort',
+        'title': 'item_title_isort',
     }
 
     # fields to request facets from solr

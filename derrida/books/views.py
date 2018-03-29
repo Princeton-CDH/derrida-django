@@ -1,4 +1,3 @@
-import json
 import datetime
 
 from dal import autocomplete
@@ -24,6 +23,7 @@ from derrida.books.forms import ReferenceSearchForm, InstanceSearchForm, \
 from derrida.books.models import Publisher, Language, Instance, Reference, \
     DerridaWork, DerridaWorkSection
 from derrida.common.utils import absolutize_url
+from derrida.common.solr_backend import facet_sort_ignoreaccents
 from derrida.interventions.models import Intervention
 from derrida.outwork.models import Outwork
 
@@ -78,6 +78,8 @@ class InstanceReferenceDetailView(InstanceDetailView):
 
         context['references'] = refs
         return context
+
+
 
 
 class InstanceListView(ListView):
@@ -201,7 +203,7 @@ class InstanceListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(InstanceListView, self).get_context_data(**kwargs)
-        facets = self.queryset.facet_counts()
+        facets = facet_sort_ignoreaccents(self.queryset.facet_counts(), 'author')
         # update multi-choice fields based on facets in the data
         self.form.set_choices_from_facets(facets.get('fields'))
         context.update({
@@ -327,7 +329,7 @@ class ReferenceListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(ReferenceListView, self).get_context_data(**kwargs)
-        facets = self.queryset.facet_counts()
+        facets = facet_sort_ignoreaccents(self.queryset.facet_counts(), 'instance_author')
         # update multi-choice fields based on facets in the data
         self.form.set_choices_from_facets(facets.get('fields'))
         context.update({
