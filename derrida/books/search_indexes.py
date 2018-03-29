@@ -12,6 +12,7 @@ import roman
 class InstanceIndex(indexes.SearchIndex, indexes.Indexable):
     text = indexes.CharField(document=True, use_template=True, stored=False)
     display_title = indexes.CharField(model_attr='display_title', faceted=True)
+    display_title_isort = indexes.CharField(model_attr='display_title')
     item_type = indexes.CharField(model_attr='item_type', faceted=True)
     copy = indexes.CharField(model_attr='copy', null=True)
     #: author names in lastname, first for sort/facet
