@@ -498,8 +498,11 @@ class TestInterventionSolrViews(TestCase):
             reverse('books:canvas-detail', args=[first_result.item_slug, first_result.canvas_id]),
             msg_prefix='annotation should link to canvas detail')
         self.assertContains(response,
-            reverse('books:canvas-image', args=[first_result.item_slug, first_result.canvas_id, 'thumbnail']),
+            reverse('books:canvas-image', args=[first_result.item_slug, first_result.canvas_id, 'smthumb']),
             msg_prefix='annotation should display local thumbnail image')
+        self.assertContains(response,
+            reverse('books:canvas-image', args=[first_result.item_slug, first_result.canvas_id, 'smthumb', '@2x']),
+            msg_prefix='annotation should display include 2x thumbnail image')
         self.assertContains(response,
             reverse('books:detail', args=[first_result.item_slug]),
             msg_prefix='should link to annotated book')

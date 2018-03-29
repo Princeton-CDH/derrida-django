@@ -13,6 +13,9 @@ addons:
 
 before_install:
   - mysql -e 'CREATE DATABASE IF NOT EXISTS test;'
+  - rvm install 2.0
+  - gem install sass
+  - npm install -g postcss-cli autoprefixer
 
 install:
   - pip install -r requirements.txt

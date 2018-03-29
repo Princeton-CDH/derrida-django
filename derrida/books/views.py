@@ -101,8 +101,13 @@ class InstanceListView(ListView):
 
         # if search parameters are specified, use them to initialize the form;
         # otherwise, use form defaults
-        self.form = self.form_class(self.request.GET or
-                                    self.form_class.defaults)
+        # - ignore page when checking for form values
+        form_opts = self.request.GET.copy()
+        try:
+            del form_opts['page']
+        except KeyError:
+            pass
+        self.form = self.form_class(form_opts or self.form_class.defaults)
 
         # request facet counts from solr
         for facet_field in self.form.facet_fields:
@@ -222,8 +227,13 @@ class ReferenceListView(ListView):
 
         # if search parameters are specified, use them to initialize the form;
         # otherwise, use form defaults
-        self.form = self.form_class(self.request.GET or \
-                self.form_class.defaults)
+        # - ignore page number when checking if options are set
+        form_opts = self.request.GET.copy()
+        try:
+            del form_opts['page']
+        except KeyError:
+            pass
+        self.form = self.form_class(form_opts or self.form_class.defaults)
         for facet_field in self.form.facet_fields:
             # sort by alpha instead of solr default of count
             sqs = sqs.facet(facet_field, sort='index')
@@ -384,7 +394,13 @@ class SearchView(TemplateView):
     max_per_type = 3
 
     def get(self, *args, **kwargs):
-        self.form = self.form_class(self.request.GET or self.form_class.defaults)
+        # ignore page number when checking if options are set
+        form_opts = self.request.GET.copy()
+        try:
+            del form_opts['page']
+        except KeyError:
+            pass
+        self.form = self.form_class(form_opts or self.form_class.defaults)
         # if search on a single type is requested, forward to the
         # appropriate view
         if self.form.is_valid():
@@ -577,10 +593,12 @@ class CanvasImageByPageNumber(View):
 
             # if we have a canvas, redirect to thumbnail image view
             if canvas and canvas.short_id:
-                canvas_url = reverse('books:canvas-image',
-                    kwargs={'slug': self.kwargs['slug'],
-                            'short_id': canvas.short_id, 'mode': 'thumbnail'})
-
+                url_args = {'slug': self.kwargs['slug'],
+                            'short_id': canvas.short_id, 'mode': 'smthumb'}
+                # only include @2x option when present
+                if self.kwargs.get('x', None):
+                    url_args['x'] = self.kwargs['x']
+                canvas_url = reverse('books:canvas-image', kwargs=url_args)
                 response = HttpResponseRedirect(canvas_url)
                 response.status_code = 303  # see other
                 return response
@@ -596,6 +614,17 @@ class CanvasImage(ProxyView):
     to restrict public viewable material to annotated pages,
     overview images, and insertions.'''
 
+    # Minimum width o/ height is based on requested image size.
+    # Thumbnail sizes are based on grid layout at maximum;
+    # calculations based on max column width 52.5, max gutter width 30px
+
+    # small thumbnail: 2 columns + 1 gutter = 135 (2x = 270)
+    SMALL_THUMBNAIL_WIDTH = 135
+    # large thumbnail: 3 columns + 2 gutters ~=218 (2x = 435)
+    THUMBNAIL_WIDTH = 218
+    # large image set by height for display in the browser page: 900/1800px
+    LARGE_HEIGHT = 900
+
     def get_proxy_url(self, *args, **kwargs):
         instance = get_object_or_404(Instance, slug=self.kwargs['slug'])
         canvas_id = self.kwargs.get('short_id', None)
@@ -608,23 +637,61 @@ class CanvasImage(ProxyView):
         if not canvas:
             raise Http404
 
-        if kwargs['mode'] == 'thumbnail':
-            return canvas.image.thumbnail()
+        mode = kwargs['mode']
 
-        if kwargs['mode'] == 'large':
+        if mode == 'info':
+            return canvas.image.info()
+        elif mode == 'iiif':
+            # also restrict iiif tiles based on large image permission
+            if not instance.allow_canvas_large_image(canvas):
+                raise Http404
+            return canvas.image.info().replace('info.json', kwargs['url'].strip('/'))
+
+        # if large image is requested, make sure it is allowed before
+        # any further processing
+        if mode == 'large':
             # only allow large images for insertions, overview images,
             # and pages with documented interventions
             # - also checks if an image has been suppressed
             if not instance.allow_canvas_large_image(canvas):
                 raise Http404
 
-            return canvas.image.size(height=850, width=850,
-                exact=True)    # exact = preserve aspect
+        # for specific sizes, request image info to determine available
+        # preset sizes and use the closest size larger than what we need
+        # (if the server supports it and provides sizes)
+        if mode in ['thumbnail', 'large', 'smthumb']:
+            resp = requests.get(canvas.image.info())
+            available_sizes = resp.json().get('sizes', [])
 
-        if kwargs['mode'] == 'info':
-            return canvas.image.info()
-        elif kwargs['mode'] == 'iiif':
-            # also restrict iiif tiles based on large image permission
-            if not instance.allow_canvas_large_image(canvas):
-                raise Http404
-            return canvas.image.info().replace('info.json', kwargs['url'].strip('/'))
+        min_width = min_height = None
+        if mode == 'smthumb':
+            # small thumbnail: 2 columns + 1 gutter = 135 (2x = 270)
+            min_width = self.SMALL_THUMBNAIL_WIDTH
+        elif mode == 'thumbnail':
+            # large thumbnail: 3 columns + 2 gutters ~=218 (2x = 435)
+            min_width = self.THUMBNAIL_WIDTH
+        elif mode == 'large':
+            # large image set by height for display in the browser
+            # page: min-height: 900/1800px
+            min_height = self.LARGE_HEIGHT
+
+        # if 2x is requested, double minimum size
+        if self.kwargs.get('x', None) == '@2x':
+            min_width = min_width * 2 if min_width else None
+            min_height = min_height * 2 if min_height else None
+
+        # iterate through available image sizes and use the nearest size
+        # larger than our minimum
+        for size in available_sizes:
+            if min_width and size['width'] >= min_width:
+               return canvas.image.size(**size)
+            if min_height and size['height'] >= min_height:
+               return canvas.image.size(**size)
+
+        # if no match was found or sizes are not available, use exact size
+        if min_width:
+            return canvas.image.size(width=min_width)
+        elif min_height:
+            return canvas.image.size(height=min_height)
+
+

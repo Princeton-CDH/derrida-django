@@ -376,7 +376,8 @@
 
       <div class="annotation-selections">
         {# large size image #}
-        <img class="gallery-image-view__img" src="{% url 'books:canvas-image' instance.slug canvas.short_id 'large' %}" />
+        <img class="gallery-image-view__img" src="{% url 'books:canvas-image' instance.slug canvas.short_id 'large' %}"
+          srcset="{% url 'books:canvas-image' instance.slug canvas.short_id 'large' '@2x' %} 2x" />
       </div>
       {% endif %}
 
@@ -395,7 +396,9 @@
       {% endif %}
 
       {# logo for IIIF provider of digitized item #}
+      {% if instance.digital_edition.logo %}
       <img class="img" src="{{ instance.digital_edition.logo }}"/>
+      {% endif %}
     </footer>
   </article>
 {% endblock %}
