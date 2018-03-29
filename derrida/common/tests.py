@@ -1,4 +1,4 @@
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 
 from django.contrib.auth import get_user_model
 from django.contrib.sites.models import Site
@@ -218,4 +218,30 @@ class TestRangeSolrEngine(object):
         for range_field in ['gap', 'end', 'start']:
             assert range_field in facets['ranges']['print_year']
         assert facets['ranges']['print_year']['max'] == 10
+
+
+class TestSolrRangeSearchBackend(object):
+
+    @patch("derrida.common.solr_backend.SolrSearchBackend.build_schema")
+    def test_build_schema(self, mocked_build_schema):
+        sqs = SearchQuerySet()
+        srsb = sqs.query.backend
+        # srsb = SolrRangeSearchBackend(connection_alias=settings.HAYSTACK_TEST_CONNECTIONSMock())
+        schema_info = ('text', [
+            {'field_name': 'text', 'type': 'text_en', 'indexed': 'true', 'stored': 'true', 'multi_valued': 'false'},
+            {'field_name': 'display_title', 'type': 'text_en', 'indexed': 'true', 'stored': 'true', 'multi_valued': 'false'},
+            {'field_name': 'author_isort', 'type': 'text_en', 'indexed': 'true', 'stored': 'true', 'multi_valued': 'false'}
+        ])
+        mocked_build_schema.return_value =  schema_info
+        field_arg = ['fields']
+        schema = srsb.build_schema(field_arg)
+        mocked_build_schema.assert_called_with(field_arg)
+        # non isort fields should be ignored
+        assert schema[1][0] == schema_info[1][0]
+        assert schema[1][1] == schema_info[1][1]
+        # isort field type changed to string_en; other properties unchanged
+        assert schema[1][2]['type'] == 'string_en'
+        assert schema[1][2]['field_name'] == schema_info[1][2]['field_name']
+        assert schema[1][2]['indexed'] == schema_info[1][2]['indexed']
+        assert len(schema[1][2]) == len(schema_info[1][2])
 
