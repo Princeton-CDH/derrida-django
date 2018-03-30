@@ -58,7 +58,7 @@
         imgW = parseFloat($img.width()),
         zones = [];
     {# image selection zones #}
-    {% for intervention in canvas.intervention_set.all %}
+    {% for intervention in canvas.intervention_set.sorted_by_page_loc %}
     {# provides x,y offset and width,height in percentages #}
       var data = "{{ intervention.extra_data.image_selection }}";
       zones.push(parseJSONFromHtml(data));
