@@ -60,6 +60,11 @@ HAYSTACK_TEST_CONNECTIONS = {
     },
 }
 
+# Use custom Haystack signal processor to index objects on save *AND*
+# update related objects as needed based on indexing
+# NOTE: this should be enabled in Production and QA
+# HAYSTACK_SIGNAL_PROCESSOR = 'derrida.books.signals.RelationSafeRTSP'
+
 
 # username for accessing GeoNames API
 GEONAMES_USERNAME = ''

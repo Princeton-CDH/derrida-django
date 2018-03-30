@@ -315,6 +315,3 @@ except ImportError:
 else:
     set_dynamic_settings(globals())
 
-# Override Haystack signal process to use one that follow relationships for
-# Work/Instance
-HAYSTACK_SIGNAL_PROCESSOR = 'derrida.books.signals.RelationSafeRTSP'
