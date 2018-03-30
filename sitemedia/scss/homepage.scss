@@ -2,18 +2,27 @@
   color: $white;
 
   .credits {
-    @include secondary-font-style();
-    font-size: 1.3em;
+    margin-top: 9em;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 2em;
   }
-
+  
   .credits__role {
-    @include secondary-font-style("italic");
+    @include primary-font-style();
+    font-size: 1em;
+    margin-bottom: .5em;
+  }
+  
+  .credits__name {
+    font-size: 1em;
+    @include secondary-font-style();
   }
 
-  .credits__name {
-    & + .credits__role {
-      margin-top: 1em;
-    }
+  .credits__group {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
   }
 
   article {
@@ -36,34 +45,25 @@
     margin-bottom: 4rem;
   }
 
-  p {
-    max-width: 40rem;
+  section p,
+  section q {
+    font-size: 1.14em;
   }
 
-  section p {
-    font-size: 1.14em;
+  .quote-cite {
+    text-align: right;
   }
 
   header,
   section {
-    @include grid-column(4);
-  }
-
-  aside {
-    @include grid-column(4);
+    @include grid-column(6);
   }
 
   @include grid-media($large-medium-viewport-grid) {
     header,
     section {
-      @include grid-column(8);
-      @include grid-shift(4);
-    }
-
-    aside {
-      @include grid-push(3);
-      @include grid-column(3);
-      @include grid-shift(-7);
+      @include grid-column(10);
+      @include grid-shift(1);
     }
   }
 }

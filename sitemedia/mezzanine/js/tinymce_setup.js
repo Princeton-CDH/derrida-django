@@ -64,7 +64,7 @@
         height: '500px',
         language: language_codes[window.__language_code] || 'en',
         plugins: [
-            "autolink lists link image charmap print preview anchor",
+            "autolink lists advlist link image charmap print preview anchor",
             "searchreplace visualblocks code fullscreen",
             "insertdatetime media contextmenu paste"
         ],
@@ -75,8 +75,8 @@
         menubar: false,
         statusbar: false,
         toolbar: ("undo redo | styleselect | bold italic | " +
-                  "bullist numlist | link image | " +
-                  "fullscreen"),
+                  "bullist numlist | credits creditsection | link image | " +
+                  "fullscreen code"),
         file_browser_callback: custom_file_browser,
         content_css: window.__tinymce_css,
         style_formats: [
@@ -84,9 +84,30 @@
           { title: 'h3', block: 'h3' },
           { title: 'p', block: 'p' },
           { title: 'footnotes', block: 'p', classes : 'footnote' },
+          { title: 'Credits (role)', block: 'li', classes: 'credits__role'},
+          { title: 'Credits (name)', block: 'li', classes: 'credits__name'}
         ],
         advlist_bullet_styles: "default",
         advlist_number_styles: "default",
+        setup: function(editor) {
+            console.log('editor', editor)
+            function insertCreditSection() {
+                editor.insertContent('<section class="credits"><ul class="credits__group"><li class="credits__role">Role</li><li class="credits__name">Name</li></ul></section>')
+            }
+            function insertCredit() {
+                editor.insertContent('<ul class="credits__group"><li class="credits__role">Role</li><li class="credits__name">Name</li></ul>');
+            }
+            editor.addButton('creditsection', {
+                text: 'Credit Section',
+                tooltip: 'Create the credits display area.',
+                onclick: insertCreditSection
+            });
+            editor.addButton('credits', {
+                text: 'Credits',
+                tooltip: 'Insert a preformatted credit with a role & name.',
+                onclick: insertCredit
+            });
+        },
         valid_elements: "*[*]"  // Don't strip anything since this is handled by bleach.
     };
 
