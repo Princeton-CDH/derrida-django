@@ -117,7 +117,7 @@ class TestInstanceViews(TestCase):
         assert len(response.context['object_list']) == 14
 
         # search for non-cited volume
-        response = self.client.get(list_view_url, {'query': 'gelb'})
+        response = self.client.get(list_view_url, {'query': 'gelb', 'is_extant': True})
         # should not be found
         assert len(response.context['object_list']) == 0
 
@@ -132,7 +132,7 @@ class TestInstanceViews(TestCase):
         assert response.context['total'] == \
             extant_bks.filter(work__year__gte=1950).count()
         response = self.client.get(list_view_url,
-            {'work_year_0': 1927, 'work_year_1': 1950})
+            {'work_year_0': 1927, 'work_year_1': 1950, 'is_extant': True})
         assert response.context['total'] == \
             extant_bks.filter(work__year__lte=1950,
                               work__year__gte=1927).count()
@@ -144,7 +144,7 @@ class TestInstanceViews(TestCase):
             extant_bks.filter(copyright_year__gte=1950).count()
         response = self.client.get(list_view_url,
             {'copyright_year_0': 1927,
-             'copyright_year_1': 1950})
+             'copyright_year_1': 1950, 'is_extant': True})
         assert response.context['total'] == \
             extant_bks.filter(copyright_year__lte=1950,
                               copyright_year__gte=1927).count()
@@ -161,7 +161,7 @@ class TestInstanceViews(TestCase):
             ).count()
         response = self.client.get(
             list_view_url,
-            {'print_year_0': 1927, 'print_year_1': 1950}
+            {'print_year_0': 1927, 'print_year_1': 1950, 'is_extant': True}
         )
         assert response.context['total'] == \
             extant_bks.filter(

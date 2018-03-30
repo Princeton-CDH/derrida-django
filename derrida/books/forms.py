@@ -84,13 +84,16 @@ class RangeField(forms.MultiValueField):
 class InstanceSearchForm(forms.Form):
     defaults = {
         'order_by': 'author',
+        'is_extant': True
         # NOTE: restricting here hides a couple of volumes;
         # is this a data error or something else?
         # 'cited_in': ['De la grammatologie']
     }
 
     query = forms.CharField(label='Search', required=False)
-    is_annotated = forms.BooleanField(label='Contains annotation',
+    is_extant = forms.BooleanField(label="Extant in Derrida's Library",
+        required=False)
+    is_annotated = forms.BooleanField(label='Contain annotation',
         required=False)
 
     order_by = forms.ChoiceField(choices=[
