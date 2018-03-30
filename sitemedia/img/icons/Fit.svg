@@ -1,16 +1,1 @@
-<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-  <defs>
-    <style>
-      .cls-1 {
-        fill: #979797;
-      }
-    </style>
-  </defs>
-  <title>Fit</title>
-  <g>
-    <polygon class="cls-1" points="5.1 8 3.1 8 3.1 3 8.1 3 8.1 5 5.1 5 5.1 8"/>
-    <polygon class="cls-1" points="16.9 8 14.9 8 14.9 5 11.9 5 11.9 3 16.9 3 16.9 8"/>
-    <polygon class="cls-1" points="16.9 17 11.9 17 11.9 15 14.9 15 14.9 12 16.9 12 16.9 17"/>
-    <polygon class="cls-1" points="8.1 17 3.1 17 3.1 12 5.1 12 5.1 15 8.1 15 8.1 17"/>
-  </g>
-</svg>
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><title>Fit</title><polygon points="6.1 3 8.1 3 8.1 8 3.1 8 3.1 6 6.1 6 6.1 3" fill="#979797"/><polygon points="11.9 3 13.9 3 13.9 6 16.9 6 16.9 8 11.9 8 11.9 3" fill="#979797"/><polygon points="11.9 12 16.9 12 16.9 14 13.9 14 13.9 17 11.9 17 11.9 12" fill="#979797"/><polygon points="3.1 12 8.1 12 8.1 17 6.1 17 6.1 14 3.1 14 3.1 12" fill="#979797"/></svg>
