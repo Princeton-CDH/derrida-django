@@ -391,7 +391,7 @@
       {% endif %}
 
       <section class="collection annotation-cards annotation-list">
-        {% for intervention in canvas.intervention_set.all %}
+        {% for intervention in canvas.intervention_set.sorted_by_page_loc %}
           {% include 'components/intervention-card.html' %}
         {% endfor %}
       </section>
