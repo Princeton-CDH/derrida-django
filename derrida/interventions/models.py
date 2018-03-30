@@ -52,6 +52,21 @@ class Tag(Named, Notable):
     objects = TagQuerySet.as_manager()
 
 
+class InterventionQuerySet(models.QuerySet):
+
+    def sorted_by_page_loc(self):
+        '''
+        Return a list of :class:`~derrida.interventions.models.Intervetion`
+        objects sorted by their y value on the page.
+        '''
+        def sort_y(item):
+            y_percent = item.extra_data['image_selection']['y'].strip('%')
+            return float(y_percent)
+
+        intervention_list = list(self)
+        return sorted(intervention_list, key=sort_y)
+
+
 class Intervention(BaseAnnotation):
 
     INTERVENTION_TYPE_CHOICES = (
@@ -84,6 +99,8 @@ class Intervention(BaseAnnotation):
     #: Associated author, instance of :class:`~derrida.people.models.Person`
     author = models.ForeignKey(Person, null=True, blank=True,
         default=get_default_intervener)
+
+    objects = InterventionQuerySet.as_manager()
 
     def __str__(self):
         """Override str to make sure that something is displayed

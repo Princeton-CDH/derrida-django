@@ -331,6 +331,36 @@ class TestIntervention(TestCase):
         assert set(note.ink) == set(['black ink', 'pencil'])
 
 
+class TestInterventionQuerySet(TestCase):
+
+    def test_sorted_by_page_loc(self):
+
+        # create three note objects
+        note1 = Intervention.objects.create()
+        note2 = Intervention.objects.create()
+        note3 = Intervention.objects.create()
+        # snippet reused from above
+        extra_data = {}
+        extra_data['image_selection'] = {
+            'x': "21.58%",
+            'y': "49.40%",
+            'h': "13.50%",
+            'w': "24.68%"
+        }
+        # save each with a different y value for their page location
+        note1.extra_data = extra_data
+        note1.save()
+        extra_data['image_selection']['y'] = '23.00%'
+        note2.extra_data = extra_data
+        note2.save()
+        extra_data['image_selection']['y'] = '91.00%'
+        note3.extra_data = extra_data
+        note3.save()
+        # method should return a list of annotations sorted by y value
+        sorted_notes = Intervention.objects.all().sorted_by_page_loc()
+        assert sorted_notes == [note2, note1, note3]
+
+
 class TestInterventionViews(TestCase):
 
     def setUp(self):
@@ -759,7 +789,6 @@ class TestInterventionAutocomplete(TestCase):
         # only note 3 should be returned
         assert len(data['results']) == 1
         assert data['results'][0]['text'] == ('test3 (P2)')
-
 
 
 class TestGetDefaultIntervener(TestCase):
