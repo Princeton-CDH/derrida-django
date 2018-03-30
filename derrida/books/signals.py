@@ -1,8 +1,13 @@
+import logging
+
 from haystack.exceptions import NotHandled
 from haystack.signals import RealtimeSignalProcessor
 
 from derrida.books.models import Instance, Work, Reference
 from derrida.interventions.models import Intervention
+
+
+logger = logging.getLogger(__name__)
 
 
 class RelationSafeRTSP(RealtimeSignalProcessor):
@@ -20,23 +25,22 @@ class RelationSafeRTSP(RealtimeSignalProcessor):
         all of the Reference and Intervention instances associated with it.
         """
 
-
         using_backends = self.connection_router.for_write(instance=instance)
         for using in using_backends:
+            uindex = self.connections[using].get_unified_index()
             try:
-                index = self.connections[using].get_unified_index().\
-                    get_index(sender)
+                logger.debug('Indexing %r' % instance)
+                index = uindex.get_index(sender)
                 index.update_object(instance, using=using)
             except NotHandled:
                 if sender == Work:
                     # if sender is Work, we need to check for Instances,
                     # References and Interventions and reindex them too.
                     instances = instance.instance_set.all()
+                    index = uindex.get_index(Instance)
                     for instance in instances:
-                        index = self.connections[using].get_unified_index()\
-                            .get_index(Instance)
+                        logger.debug('Indexing %r' % instance)
                         index.update_object(instance, using=using)
-
                         references = instance.reference_set.all()
                         interventions = Intervention.objects.filter(
                             canvas__manifest__instance=instance
@@ -45,15 +49,18 @@ class RelationSafeRTSP(RealtimeSignalProcessor):
                         index = self.connections[using].get_unified_index()\
                             .get_index(Reference)
                         for reference in references:
+                            logger.debug('Indexing %r' % reference)
                             index.update_object(reference, using=using)
                         # update interventions
                         index = self.connections[using].get_unified_index().\
                             get_index(Intervention)
                         for intervention in interventions:
+                            logger.debug('Indexing %r' % intervention)
                             index.update_object(intervention, using=using)
                 if sender == Instance:
                     index = self.connections[using].get_unified_index()\
                         .get_index(Instance)
+                    logger.debug('Indexing %r' % instance)
                     index.update_object(instance, using=using)
 
                     references = instance.reference_set.all()
@@ -64,9 +71,11 @@ class RelationSafeRTSP(RealtimeSignalProcessor):
                     index = self.connections[using].get_unified_index()\
                         .get_index(Reference)
                     for reference in references:
+                        logger.debug('Indexing %r' % reference)
                         index.update_object(reference, using=using)
                     # update interventions
                     index = self.connections[using].get_unified_index().\
                         get_index(Intervention)
                     for intervention in interventions:
+                        logger.debug('Indexing %r' % intervention)
                         index.update_object(intervention, using=using)
