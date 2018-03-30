@@ -337,9 +337,10 @@
       {% if instance.suppress_all_images or canvas_suppressed %}
       <section class="deep-zoom-component is-hidden"></section>
         <div class="annotation-selections">
-          <p>This image has been suppressed.</p>
-          {# using 404 image as placeholder for now #}
-          <img class="gallery-image-view__img" src="{% static 'img/404_img.png' %}" />
+          {# display suppressed image #}
+          <img class="gallery-image-view__img" src="{% static 'img/suppressed_page@1x.png' %}"
+            srcset="{% static 'img/suppressed_page@2x.png' %} 2x"
+            alt="This image has been suppressed due to copyright" />
         </div>
       {% else %}
 
