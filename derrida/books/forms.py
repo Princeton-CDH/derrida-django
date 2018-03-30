@@ -120,9 +120,9 @@ class InstanceSearchForm(forms.Form):
         'pub_place', 'cited_in']
     author = FacetChoiceField()
     subject = FacetChoiceField()
-    language = FacetChoiceField('Language of Publication')
-    work_language = FacetChoiceField('Original Language')
-    pub_place = FacetChoiceField('Place of Publication')
+    language = FacetChoiceField(label='Language of Publication')
+    work_language = FacetChoiceField(label='Original Language')
+    pub_place = FacetChoiceField(label='Place of Publication')
     # NOTE: skipping publication type because library is currently
     # restricted to books only
     # item_type = FacetChoiceField(label='Publication Type')
