@@ -107,3 +107,7 @@ ENV/
 # MacOS hidden files
 .DS_Store
 sitemedia/scss/.sass-cache
+
+# Proprietary fonts
+sitemedia/fonts
+!sitemedia/fonts/meltdown*

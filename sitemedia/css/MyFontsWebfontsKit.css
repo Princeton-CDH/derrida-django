@@ -46,22 +46,16 @@
 
 
 /* @import must be at top of file, otherwise CSS will not work */
-/* @import url("//hello.myfonts.net/count/345674"); disabled qa */
+/* @import url("//hello.myfonts.net/count/345674"); */
 
+@font-face {font-family: 'UniversLTPro-55Roman'; src: url('/static/fonts/UniversLTPro-55Roman.otf') format('opentype');}
 
-@font-face {font-family: 'UniversLTPro-55Roman';src: url('webfonts/345674_0_0.eot');src: url('webfonts/345674_0_0.eot?#iefix') format('embedded-opentype'),url('webfonts/345674_0_0.woff2') format('woff2'),url('webfonts/345674_0_0.woff') format('woff'),url('webfonts/345674_0_0.ttf') format('truetype');}
+@font-face {font-family: 'UniversLTPro-55Oblique'; src: url('/static/fonts/UniversLTPro-55Oblique.otf') format('opentype');}
 
+@font-face {font-family: 'UniversLTPro-65Bold'; src: url('/static/fonts/UniversLTPro-65Bold.otf') format('opentype');}
 
-@font-face {font-family: 'UniversLTPro-55Oblique';src: url('webfonts/345674_1_0.eot');src: url('webfonts/345674_1_0.eot?#iefix') format('embedded-opentype'),url('webfonts/345674_1_0.woff2') format('woff2'),url('webfonts/345674_1_0.woff') format('woff'),url('webfonts/345674_1_0.ttf') format('truetype');}
+@font-face {font-family: 'SabonLTPro-Italic'; src: url('/static/fonts/SabonLTPro-Italic.otf') format('opentype');}
 
+@font-face {font-family: 'SabonLTPro-Bold'; src: url('/static/fonts/SabonLTPro-Bold.otf') format('opentype');}
 
-@font-face {font-family: 'UniversLTPro-65Bold';src: url('webfonts/345674_2_0.eot');src: url('webfonts/345674_2_0.eot?#iefix') format('embedded-opentype'),url('webfonts/345674_2_0.woff2') format('woff2'),url('webfonts/345674_2_0.woff') format('woff'),url('webfonts/345674_2_0.ttf') format('truetype');}
-
-
-@font-face {font-family: 'SabonLTPro-Italic';src: url('webfonts/345674_3_0.eot');src: url('webfonts/345674_3_0.eot?#iefix') format('embedded-opentype'),url('webfonts/345674_3_0.woff2') format('woff2'),url('webfonts/345674_3_0.woff') format('woff'),url('webfonts/345674_3_0.ttf') format('truetype');}
-
-
-@font-face {font-family: 'SabonLTPro-Bold';src: url('webfonts/345674_4_0.eot');src: url('webfonts/345674_4_0.eot?#iefix') format('embedded-opentype'),url('webfonts/345674_4_0.woff2') format('woff2'),url('webfonts/345674_4_0.woff') format('woff'),url('webfonts/345674_4_0.ttf') format('truetype');}
-
-
-@font-face {font-family: 'SabonLTPro-Roman';src: url('webfonts/345674_5_0.eot');src: url('webfonts/345674_5_0.eot?#iefix') format('embedded-opentype'),url('webfonts/345674_5_0.woff2') format('woff2'),url('webfonts/345674_5_0.woff') format('woff'),url('webfonts/345674_5_0.ttf') format('truetype');}
+@font-face {font-family: 'SabonLTPro-Roman'; src: url('/static/fonts/SabonLTPro-Roman.otf') format('opentype');}

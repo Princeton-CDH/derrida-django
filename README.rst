@@ -48,6 +48,8 @@ Initial setup and installation:
 
    cp derrida/local_settings.py.sample derrida/local_settings.py
 
+- Download required fonts from project folder and add to `/sitemedia/fonts`
+
 - Create a database, configure in local settings, and run migrations::
 
     python manage.py migrate
