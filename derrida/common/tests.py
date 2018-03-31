@@ -172,6 +172,16 @@ class TestRangeSolrEngine(object):
         assert range_field in sqs.query.range_facets
         assert sqs.query.range_facets[range_field] == opts
 
+        # support hardend
+        opts['hardend'] = True
+        sqs = SearchQuerySet().facet(range_field, **opts)
+        assert sqs.query.range_facets[range_field] == opts
+
+        # unsupported params ignored
+        test_opts = opts.copy()
+        test_opts['foo'] = 'bar'
+        assert sqs.query.range_facets[range_field] == opts
+
     def test_build_range_facet_params(self):
         # no range facet
         sqs = SearchQuerySet()
@@ -187,6 +197,23 @@ class TestRangeSolrEngine(object):
         assert params['f.publication_date.facet.range.start'] == opts['start']
         assert params['f.publication_date.facet.range.end'] == opts['end']
         assert params['f.publication_date.facet.range.gap'] == opts['gap']
+
+        # range with hardend option true
+        opts = {'start': 1, 'end': 100, 'gap': 10, 'range': True,
+            'hardend': True}
+        sqs = SearchQuerySet().facet(range_field, **opts)
+        params = sqs.query.build_params()
+        assert params['facet.range'] == [range_field]
+        assert params['f.publication_date.facet.range.start'] == opts['start']
+        assert params['f.publication_date.facet.range.hardend'] == 'true'
+
+        # range with hardend option false
+        opts = {'start': 1, 'end': 100, 'gap': 10, 'range': True,
+            'hardend': False}
+        sqs = SearchQuerySet().facet(range_field, **opts)
+        params = sqs.query.build_params()
+        print(params)
+        assert params['f.publication_date.facet.range.hardend'] == 'false'
 
     def test_clone(self):
         # with range facet

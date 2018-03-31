@@ -189,6 +189,8 @@ class InstanceListView(ListView):
             # calculate gap based start and end & desired number of slices
             # ideally, generate 15 slices; minimum gap size of 1
             range_opts['gap'] = max(1, int((range_opts['end'] - range_opts['start']) / 15.0))
+            # restrict last range to *actual* maximum value
+            range_opts['hardend'] = True
             # request the range facet with the specified options
             sqs = sqs.facet(range_facet, range=True, **range_opts)
 
@@ -315,6 +317,8 @@ class ReferenceListView(ListView):
             # calculate gap based start and end & desired number of slices
             # ideally, generate 15 slices; minimum gap size of 1
             range_opts['gap'] = max(1, int((range_opts['end'] - range_opts['start']) / 15.0))
+            # restrict last range to *actual* maximum value
+            range_opts['hardend'] = True
             # request the range facet with the specified options
             sqs = sqs.facet(range_facet, range=True, **range_opts)
 
