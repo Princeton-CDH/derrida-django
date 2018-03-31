@@ -51,6 +51,11 @@ class RangeSolrSearchQuery(SolrSearchQuery):
                     range_kwargs['f.%s.facet.range.%s' % (field, solr_opt)] \
                          = opts[solr_opt]
 
+            # support hard end option; convert python boolean to solr bool
+            if 'hardend' in opts:
+                val = 'true' if bool(opts['hardend']) else 'false'
+                range_kwargs['f.%s.facet.range.hardend' % field] = val
+
         search_kwargs.update(range_kwargs)
         return search_kwargs
 
