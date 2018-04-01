@@ -1,5 +1,6 @@
 import logging
 
+from django.db import models
 from haystack.exceptions import NotHandled
 from haystack.signals import RealtimeSignalProcessor
 
@@ -23,8 +24,8 @@ class RelationSafeRTSP(RealtimeSignalProcessor):
 
         Custom handling makes updates to an Instance also trigger an reindex on
         all of the Reference and Intervention instances associated with it.
-        """
 
+        """
         using_backends = self.connection_router.for_write(instance=instance)
         for using in using_backends:
             uindex = self.connections[using].get_unified_index()
@@ -33,49 +34,48 @@ class RelationSafeRTSP(RealtimeSignalProcessor):
                 index = uindex.get_index(sender)
                 index.update_object(instance, using=using)
             except NotHandled:
-                if sender == Work:
-                    # if sender is Work, we need to check for Instances,
-                    # References and Interventions and reindex them too.
-                    instances = instance.instance_set.all()
-                    index = uindex.get_index(Instance)
-                    for instance in instances:
-                        logger.debug('Indexing %r' % instance)
-                        index.update_object(instance, using=using)
-                        references = instance.reference_set.all()
-                        interventions = Intervention.objects.filter(
-                            canvas__manifest__instance=instance
-                        )
-                        # update references
-                        index = self.connections[using].get_unified_index()\
-                            .get_index(Reference)
-                        for reference in references:
-                            logger.debug('Indexing %r' % reference)
-                            index.update_object(reference, using=using)
-                        # update interventions
-                        index = self.connections[using].get_unified_index().\
-                            get_index(Intervention)
-                        for intervention in interventions:
-                            logger.debug('Indexing %r' % intervention)
-                            index.update_object(intervention, using=using)
-                if sender == Instance:
-                    index = self.connections[using].get_unified_index()\
-                        .get_index(Instance)
-                    logger.debug('Indexing %r' % instance)
-                    index.update_object(instance, using=using)
+                # models without an index configured should be ignored
+                pass
 
-                    references = instance.reference_set.all()
-                    interventions = Intervention.objects.filter(
-                        canvas__manifest__instance=instance
-                    )
-                    # update references
-                    index = self.connections[using].get_unified_index()\
-                        .get_index(Reference)
-                    for reference in references:
-                        logger.debug('Indexing %r' % reference)
-                        index.update_object(reference, using=using)
-                    # update interventions
-                    index = self.connections[using].get_unified_index().\
-                        get_index(Intervention)
-                    for intervention in interventions:
-                        logger.debug('Indexing %r' % intervention)
-                        index.update_object(intervention, using=using)
+            # construct a list of additional items that need
+            # to be updated in the index; should be a tuple of
+            # model class and queryset
+            related_updates = []
+
+            if sender == Work:
+                # if sender is Work, we need to check for Instances,
+                # References and Interventions and reindex them too.
+                related_updates = [
+                    # all instances associated with current work
+                    (Instance, instance.instance_set.all()),
+                    # any reference associated with instances of this work
+                    (Reference, Reference.objects.filter(instance__work=instance)),
+                    # any intervention associated with pages on a digital
+                    # edition for an instance of this work
+                    (Intervention, Intervention.objects \
+                        .filter(canvas__manifest__instance__work=instance)),
+                ]
+
+            elif sender == Instance:
+                related_updates = [
+                    (Reference, Reference.objects.filter(instance=instance)),
+                    (Intervention, Intervention.objects \
+                        .filter(canvas__manifest__instance=instance)),
+                ]
+
+            # index any related objects based on current change
+            if related_updates:
+                # this is basically what index.update_object does,
+                # except we are skipping the should_update check
+                # (which defaults to true anyway)
+                for klass, items in related_updates:
+                    # if there are any items to index, handle them
+                    if items:
+                        # NOTE: could use klass._meta.verbose_name.title()
+                        # and verbose_name_plural here; class maybe more useful
+                        logger.debug('Indexing %d %s%s' % (items.count(), klass.__name__,
+                            '' if items.count() == 1 else 's'))
+                        index = uindex.get_index(klass)
+                        backend = index.get_backend(using)
+                        backend.update(index, items)
+

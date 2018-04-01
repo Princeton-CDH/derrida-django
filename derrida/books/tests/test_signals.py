@@ -1,6 +1,9 @@
-from unittest.mock import Mock
+from unittest import mock
 
+from django.db.models import QuerySet
 from django.test import TestCase
+from haystack.exceptions import NotHandled
+
 
 from derrida.books.models import Work, Instance, Reference
 from derrida.books.signals import RelationSafeRTSP
@@ -9,23 +12,45 @@ from derrida.books.signals import RelationSafeRTSP
 class TestRelationSafeRTSP(TestCase):
 
     def test_handle_save(self):
-        mock_backend = Mock()
-        mock_connections = {'default': mock_backend}
-        mock_connection_router = Mock()
+        mock_connection = mock.Mock()
+        mock_connections = {'default': mock_connection}
+        mock_connection_router = mock.Mock()
         mock_connection_router.for_write.return_value = ['default']
+        mock_connection.get_unified_index.return_value.get_index.side_effect = NotHandled
+        # NOTE: could init with haystack connections & router
+        # (haystack.connections, haystack.connection_router)
+        # but that makes it much harder to test what is going no
         relsafe = RelationSafeRTSP(mock_connections, mock_connection_router)
+        # relsafe = RelationSafeRTSP(haystack.connections, haystack.connection_router)
 
+        # NOTE: when signal class is imported here, setup installs it
+        # so it automatically runs on object create
         wk = Work.objects.create(short_title='Foo')
+        # work is not indexed, should raise not handled
         # work with no related objects - should not error
-        relsafe.handle_save(Work, wk)
         mock_connection_router.for_write.assert_called_with(instance=wk)
-        mock_backend.get_unified_index.assert_called_with()
-        mock_backend.get_unified_index.return_value.get_index.assert_called_with(Work)
-        search_index = mock_backend.get_unified_index.return_value.get_index.return_value
-        search_index.update_object.assert_called_with(wk, using='default')
+        mock_connection.get_unified_index.assert_called_with()
+        mock_connection.get_unified_index.return_value.get_index.assert_called_with(Work)
+        search_index = mock_connection.get_unified_index.return_value.get_index.return_value
+        search_index.update_object.assert_not_called()
 
-        # work with instance
+        # work with associated instance
         inst = Instance.objects.create(work=wk)
-        relsafe.handle_save(Instance, inst)
-        mock_backend.get_unified_index.return_value.get_index.assert_called_with(Instance)
-        search_index.update_object.assert_called_with(inst, using='default')
+        mock_connection.reset()
+        # raise not handled on first get index call (for Work), default behavior for second
+        mock_connection.get_unified_index.return_value.get_index.side_effect = [NotHandled, mock.DEFAULT]
+        # when the work is saved, instance should be reindexed
+        relsafe.handle_save(Work, wk)
+        mock_connection.get_unified_index.return_value.get_index.assert_called_with(Instance)
+        # search_index.update_object.assert_called_with(inst, using='default')
+        search_index.get_backend.assert_called_with('default')
+        update_call = search_index.get_backend.return_value.update.call_args
+        update_call_args = update_call[0]
+        assert update_call_args[0] == search_index
+        # NOTE: django has an assertQuerysetEqual test, but it fails here for some reason
+        # self.assertQuerysetEqual(update_call_args[1], wk.instance_set.all()). # list of values?
+        assert isinstance(update_call_args[1], QuerySet)
+        assert update_call_args[1].count() == 1
+        assert update_call_args[1].first() == inst
+
+
