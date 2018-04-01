@@ -56,15 +56,15 @@ class InterventionQuerySet(models.QuerySet):
 
     def sorted_by_page_loc(self):
         '''
-        Return a list of :class:`~derrida.interventions.models.Intervetion`
+        Return a list of :class:`~derrida.interventions.models.Intervention`
         objects sorted by their y value on the page.
         '''
         def sort_y(item):
-            y_percent = item.extra_data['image_selection']['y'].strip('%')
+            # assume zero if not present
+            y_percent = item.extra_data.get('image_selection', {}).get('y', '0').strip('%')
             return float(y_percent)
-
-        intervention_list = list(self)
-        return sorted(intervention_list, key=sort_y)
+        # return sorted list of current queryset based on y coord image selection
+        return sorted(self, key=sort_y)
 
 
 class Intervention(BaseAnnotation):

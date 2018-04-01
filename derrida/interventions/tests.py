@@ -360,6 +360,14 @@ class TestInterventionQuerySet(TestCase):
         sorted_notes = Intervention.objects.all().sorted_by_page_loc()
         assert sorted_notes == [note2, note1, note3]
 
+        # missing image selection y should not error
+        del note3.extra_data['image_selection']['y']
+        note3.save()
+        Intervention.objects.all().sorted_by_page_loc()
+        del note3.extra_data['image_selection']
+        note3.save()
+        Intervention.objects.all().sorted_by_page_loc()
+
 
 class TestInterventionViews(TestCase):
 
