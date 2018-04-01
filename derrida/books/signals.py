@@ -79,3 +79,19 @@ class RelationSafeRTSP(RealtimeSignalProcessor):
                         backend = index.get_backend(using)
                         backend.update(index, items)
 
+    def setup(self):
+        # default haystack behavior is to listen to all models
+        # override and only bind to models we index or that affect indexes
+        for model in Work, Instance, Reference, Intervention:
+            models.signals.post_save.connect(self.handle_save, sender=model)
+            # (we probably don't care about delete for Work, but ok to leave...)
+            models.signals.post_delete.connect(self.handle_delete, sender=model)
+
+    def teardown(self):
+        # default haystack behavior; does this work to clear model-specific
+        # senders or does it need to match the connect call?
+
+        # Naive (listen to all model saves).
+        models.signals.post_save.disconnect(self.handle_save)
+        models.signals.post_delete.disconnect(self.handle_delete)
+
