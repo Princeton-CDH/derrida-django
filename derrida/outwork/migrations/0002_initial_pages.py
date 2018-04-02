@@ -29,20 +29,44 @@ initial_homepage_content = '''
     <li class="credits__name">Alex Raiffe</li>
     </ul>
     <ul class="credits__group">
-    <li class="credits__role">Consultant</li>
+    <li class="credits__role">Technical Lead</li>
+    <li class="credits__name">Rebecca Sutton Koeser</li>
+    </ul>
+    <ul class="credits__group">
+    <li class="credits__role">Project Designer</li>
+    <li class="credits__name">Rebecca Munson</li>
+    </ul>
+    <ul class="credits__group">
+    <li class="credits__role">User Experience Designer</li>
+    <li class="credits__name">Xinyi Li</li>
+    </ul>
+    <ul class="credits__group">
+    <li class="credits__role">Web Developers</li>
+    <li class="credits__name">Benjamin Hicks</li>
+    <li class="credits__name">Kevin Glover</li>
+    <li class="credits__name">Nick Budak</li>
+    </ul>
+    <ul class="credits__group">
+    <li class="credits__role">Database Designer</li>
     <li class="credits__name">Jean Bauer</li>
     </ul>
     <ul class="credits__group">
     <li class="credits__role">Graduate Research Assistants</li>
-    <li class="credits__name"><span>Ren&eacute;e Altergott</span></li>
-    <li class="credits__name"><span>Chad C&oacute;rdova</span></li>
-    <li class="credits__name"><span>Austin Hancock</span></li>
+    <li class="credits__name">Ren&eacute;e Altergott</li>
+    <li class="credits__name">Chad C&oacute;rdova</li>
+    <li class="credits__name">Austin Hancock</li>
     <li class="credits__name">Chlo&eacute; Vettier</li>
+    </ul>
+    <ul class="credits__group">
+    <li class="credits__role">Undergraduate Research Assistants</li>
+    <li class="credits__name">Jin Chow</li>
+    <li class="credits__name">Elise Freeman</li>
     </ul>
     <ul class="credits__group">
     <li class="credits__role">Advisors</li>
     <li class="credits__name">Avital Ronell</li>
     <li class="credits__name">Eduardo Cadava</li>
+    <li class="credits__name">Geoffrey Bennington</li>
     </ul>
 </section>
 '''
