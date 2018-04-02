@@ -135,9 +135,11 @@
 
           $annotationSwitch.removeClass("is-checked");
           $zoomSwitch.addClass("is-checked");
+
         } else {
           return false;
         }
+        toggleSideBarFn($toggle); // put the sidebar away by default when switching to deep zoom
       }
 
       setTimeout(toggleViews, 100);
