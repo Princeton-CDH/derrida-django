@@ -90,12 +90,12 @@
     left: 5px;
     padding: 0 10px;
     z-index: 100;
-    @include transition(left $base-duration $base-timing);
+    // @include transition(left $base-duration $base-timing);
 
     .icon {
       width: 1.5em;
-      transform: rotateZ(-90deg);
-      @include transition(transform $base-duration $base-timing);
+      // transform: rotateZ(-180deg);
+      // @include transition(transform $base-duration $base-timing);
       display: none;
 
       @include grid-media($large-medium-viewport-grid) {

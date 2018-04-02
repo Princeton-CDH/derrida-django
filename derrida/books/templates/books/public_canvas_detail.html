@@ -146,6 +146,7 @@
     });
 
     var $toggle = $(".page-header__toggle"),
+        $toggleIcon = $toggle.find('img'),
         $sideBar = $(".gallery-image-view__header"),
         $pageHeaders = $(".mdl-layout__header, .page-header"),
         toggleSideBarFn = function($context) {
@@ -154,10 +155,12 @@
             $sideBar.addClass("is-hidden");
             $this.removeClass("is-active");
             $pageHeaders.removeClass("is-sidebar-visible");
+            $toggleIcon.attr("src", "{% static 'img/icons/Menu.svg' %}")
           } else {
             $sideBar.removeClass("is-hidden");
             $this.addClass("is-active");
             $pageHeaders.addClass("is-sidebar-visible");
+            $toggleIcon.attr("src", "{% static 'img/icons/Expand.svg' %}")
           }
         }
     $toggle.on("click", function(e) {
