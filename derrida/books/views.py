@@ -636,9 +636,10 @@ class CanvasImage(ProxyView):
     def get_proxy_url(self, *args, **kwargs):
         instance = get_object_or_404(Instance, slug=self.kwargs['slug'])
         canvas_id = self.kwargs.get('short_id', None)
-        if canvas_id:
+        if canvas_id and canvas_id != 'default':
             canvas = instance.images() \
                 .filter(short_id=self.kwargs['short_id']).first()
+        # if not found or default requested, use designated thumbnail
         else:
             canvas = instance.digital_edition.thumbnail
 
