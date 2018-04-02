@@ -19,12 +19,12 @@
       <p class="item__language">Anchor Text: {{ intervention.text_language | default:"French" }}</p>
     {% endif %}
     {% if intervention.text %}
-    <p class="item__excerpt"><h3>Annotation:</h3>
-      {{ intervention.text }}</p>
+      <h3>Annotation:</h3>
+      <p class="item__excerpt">{{ intervention.text }}</p>
     {% endif %}
     {% if intervention.quote %}
-        <p class="item__excerpt"><h3>Anchor text:</h3>
-    {{ intervention.quote }}</p>
+      <h3>Anchor text:</h3>
+      <p class="item__excerpt">{{ intervention.quote }}</p>
     {% endif %}
   </div>
 </section>

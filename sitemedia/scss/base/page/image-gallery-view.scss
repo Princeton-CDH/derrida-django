@@ -72,7 +72,7 @@
 
     @include grid-media($xlarge-viewport-grid) {
       max-width: 700px;
-      margin-left: 300px;
+      // margin-left: 300px;
     }
   }
 
@@ -250,7 +250,8 @@ $max-component-height: calc(100vh - 160px);
 $component-padding: 4rem;
 
 .gallery-image-view__container {
-  width: 100%;
+  // width: 100%;
+  flex: 1;
   display: flex;
   position: relative;
   padding: $component-padding $gutter-size 0 0;
@@ -262,7 +263,8 @@ $component-padding: 4rem;
 
   .deep-zoom-component {
     position: relative;
-    width: 100%;
+    flex: 1;
+    // width: 100%;
     min-height: $max-component-height;
     padding-left: $gutter-size;
     overflow: scroll;
@@ -274,7 +276,7 @@ $component-padding: 4rem;
     }
 
     &.is-hidden {
-      width: $deep-zoom-width;
+      // width: $deep-zoom-width;
     }
 
     #deep-zoom {
@@ -344,7 +346,7 @@ $component-padding: 4rem;
 }
 
 .gallery-image-view__img {
-  max-height: $deep-zoom-height;
+  max-height: 70vh;
   max-width: $deep-zoom-width;
 }
 
@@ -390,11 +392,12 @@ $component-padding: 4rem;
 }
 
 .collection.annotation-cards {
-  $offset: 40px;
-  width: calc(40% + #{$offset});
+  // $offset: 40px;
+  // width: calc(40% + #{$offset});
+  flex: 1;
   flex-direction: column;
   flex-wrap: nowrap;
-  max-height: $max-component-height;
+  max-height: calc(100vh - 260px); // shorter than max-component-height to allow space for rights info @bottom right
   overflow: scroll;
   position: relative;
 
@@ -402,7 +405,7 @@ $component-padding: 4rem;
     left: 30px;
     position: relative;
     flex-basis: 1em;
-    max-width: 270px;
+    max-width: 320px;
     padding: 1.5rem 0 0.8rem;
     background-color: transparent;
     border: 1px solid transparent;
@@ -511,7 +514,7 @@ $component-padding: 4rem;
 }
 
 .annotation-selections {
-  height: 100%;
+  height: $max-component-height;
   display: block;
   position: absolute;
   width: 100%;
