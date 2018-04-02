@@ -260,14 +260,28 @@
   }
 }
 
-.citation-list {
+#citations-list {
   .collection .collection__item {
-    @include grid-column(4);
-    margin-left: 0;
+    // @include grid-column(4);
+    // margin-left: 0;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    grid-template-areas: "body body body body image image";
+    grid-gap: 30px;
 
     @include grid-media($large-medium-viewport-grid) {
-      @include grid-column(12);
-      margin-left: 0;
+      // @include grid-column(12);
+      // margin-left: 0;
+    }
+
+    .item__image {
+      grid-area: image;
+      width: 100%;
+    }
+
+    .item__body {
+      grid-area: body;
+      width: 100%;
     }
   }
 }
