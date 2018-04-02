@@ -192,7 +192,7 @@ a.gallery-image-view__list-item {
     padding-left: 0;
 
     &::after {
-      content: '\2022';
+      content: '\00B7';
       display: inline-block;
       width: 14px;
       text-align: center;
