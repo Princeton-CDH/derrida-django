@@ -18,10 +18,10 @@
   /* TODO: mixin for banner images? with 1x/2x behavior if possible */
 
   #citations-list & {
-    background-image: url("../img/banner/derrida-banner-reference-S@1x.png");
+    background-image: url("../img/banner/derrida-banner-reference-S@2x.png");
 
-    @include grid-media($large-medium-viewport-grid) {
-      background-image: url("../img/banner/derrida-banner-reference-M@1x.png");
+    @include grid-media($large-medium-viewport-grid)
+      background-image: url("../img/banner/derrida-banner-reference-M@2x.png");
     }
 
     @include grid-media($xlarge-viewport-grid) {
