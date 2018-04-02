@@ -26,6 +26,12 @@ class RelationSafeRTSP(RealtimeSignalProcessor):
         all of the Reference and Intervention instances associated with it.
 
         """
+
+        # NOTE: could refine this logic to take advantage of
+        # information in kwargs, including created flag and
+        # update fields
+        # https://docs.djangoproject.com/en/2.0/ref/signals/#post-save
+
         using_backends = self.connection_router.for_write(instance=instance)
         for using in using_backends:
             uindex = self.connections[using].get_unified_index()
