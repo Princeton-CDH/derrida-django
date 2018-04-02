@@ -11,32 +11,41 @@ from django.utils import timezone
 from mezzanine.core.models import CONTENT_STATUS_PUBLISHED
 
 
-initial_homepage_content = '''    <section>
-      <p>“Derrida’s Margins” aims to create a website and online research tool for annotations from the Library of Jacques Derrida, housed at Princeton University Library. Jacques Derrida is one of the major figures of twentieth-century thought, and his library – which bears the traces of decades of close reading--represents a major intellectual archive. This phase focuses on annotations related to Derrida’s landmark 1967 work De la grammatologie (Of Grammatology). It was in Of Grammatology that Derrida first articulated a new style of critical reading, which would become the foundation of the philosophy of “deconstruction.”</p>
-      <p>Our online research tool will enable scholars to study the development of this philosophy in an unprecedented way by providing comprehensive digital access to the material annotations, marginalia, bookmarks, and other notes from Derrida’s library that correspond to each quotation and citation in Of Grammatology. We begin by identifying all quotations and references in Of Grammatology; we then locate these references in Derrida’s copies the works, transcribing all marginal annotations and other markings, and limiting ourselves to the parts of those works that are explicitly referenced. Digital images and transcriptions of these annotated pages will form the basis of the website, allowing users to go “behind the scenes” of Derrida’s reading practices. This corpus will also serve as a pilot data set for future work, allowing us to establish protocols, workflow, and a relational database model.</p>
-    </section>
-
-    <aside>
-      <dl class="credits">
-        <dt class="credits__role">Project Director</dt>
-        <dd class="credits__name">Katie Chenoweth</dd>
-
-        <dt class="credits__role">Project Manager</dt>
-        <dd class="credits__name">Alex Raiffe</dd>
-
-        <dt class="credits__role">Consultant</dt>
-        <dd class="credits__name">Jean Bauer</dd>
-
-        <dt class="credits__role">Graduate Research Assistant</dt>
-        <dd class="credits__name">Chloé Vettier</dd>
-        <dd class="credits__name">Chad Cordova</dd>
-
-        <dt class="credits__role">Advisor</dt>
-        <dd class="credits__name">Avital Ronell</dd>
-        <dd class="credits__name">Eduardo Cadava</dd>
-      </dl>
-    </aside>
-  </article>'''
+initial_homepage_content = '''
+<section>
+    <q>And yet did we not know that... only in the book, coming back to it unceasingly, drawing all our resources from it, could we indefinitely designate the writing beyond the book?</q>
+    <p class="quote-cite">Jacques Derrida, <i>Writing and Difference</i></p>
+    <p>“Derrida’s Margins” unpacks the library contained within each of Derrida’s published works, starting with the landmark 1967 text <i>De la grammatologie</i>. Additional texts will be added as the project continues.</p>
+    <p>This scholarly tool enables researchers to approach the development of deconstruction in an unprecedented way by exploring the relationship between Derrida’s thought and his reading practices.  Users may browse or search: Derrida’s personal copies of books that are referenced in <i>De la grammatologie</i>; the nearly one thousand <strong>references</strong> (quotations, citations, footnotes, or epigraphs) found in the pages of <i>De la grammatologie</i>; and the <strong>interventions</strong> Derrida made in his books (annotations, marginalia, bookmarks, tipped-in pages, notes, etc.) that correspond to each reference. The website also provides data <strong>visualizations</strong> of Derrida’s references.
+    <p>The Library of Jacques Derrida is housed in Princeton University Library’s Rare Books and Special Collections.</p>
+</section>
+<section class="credits">
+    <ul class="credits__group">
+    <li class="credits__role">Project Director</li>
+    <li class="credits__name">Katie Chenoweth</li>
+    </ul>
+    <ul class="credits__group">
+    <li class="credits__role">Project Manager</li>
+    <li class="credits__name">Alex Raiffe</li>
+    </ul>
+    <ul class="credits__group">
+    <li class="credits__role">Consultant</li>
+    <li class="credits__name">Jean Bauer</li>
+    </ul>
+    <ul class="credits__group">
+    <li class="credits__role">Graduate Research Assistants</li>
+    <li class="credits__name"><span>Ren&eacute;e Altergott</span></li>
+    <li class="credits__name"><span>Chad C&oacute;rdova</span></li>
+    <li class="credits__name"><span>Austin Hancock</span></li>
+    <li class="credits__name">Chlo&eacute; Vettier</li>
+    </ul>
+    <ul class="credits__group">
+    <li class="credits__role">Advisors</li>
+    <li class="credits__name">Avital Ronell</li>
+    <li class="credits__name">Eduardo Cadava</li>
+    </ul>
+</section>
+'''
 
 #: primary nav (also in footer)
 NAV_PAGES = OrderedDict([

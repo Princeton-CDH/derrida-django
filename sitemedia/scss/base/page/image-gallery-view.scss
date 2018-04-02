@@ -26,7 +26,7 @@
   }
 
   &.disable-coordinate-navigation .mdl-layout__header.mdl-layout__header--transparent {
-    pointer-events: none;
+    // pointer-events: none;
   }
 }
 
@@ -223,6 +223,8 @@ a.gallery-image-view__list-item {
 .gallery-image-view__header {
   background: $white;
   width: 100%;
+  height: calc(100vh - 106px);
+  overflow-y: scroll;
   padding: 0 ems(20px);
   opacity: 1;
   @include transition( opacity $base-duration $base-timing,
@@ -244,13 +246,14 @@ a.gallery-image-view__list-item {
 
 $deep-zoom-height: 600px;
 $deep-zoom-width: 500px;
-$max-component-height: 100vh;
+$max-component-height: calc(100vh - 160px);
 $component-padding: 4rem;
 
 .gallery-image-view__container {
+  width: 100%;
   display: flex;
   position: relative;
-  padding: $component-padding $gutter-size $component-padding 0;
+  padding: $component-padding $gutter-size 0 0;
 
   .is-background-darken & {
     padding-top: 0;

@@ -42,7 +42,7 @@ urlpatterns = [
             # canvas image views
             url(r'^gallery/images/(?P<page_num>[0-9vix]{1,4})-?[0-9]*[a-z]?(?P<x>@2x)?/$',
                 views.CanvasImageByPageNumber.as_view(), {'mode': 'by-page'}, name='canvas-by-page'),
-            url(r'^gallery/images/(?P<short_id>[a-z0-9-]+)/(?P<mode>smthumb|thumbnail|large|info)(?P<x>@2x)?/$',
+            url(r'^gallery/images/(?P<short_id>[a-z0-9-]+|default)/(?P<mode>smthumb|thumbnail|large|info)(?P<x>@2x)?/$',
                 views.CanvasImage.as_view(), name='canvas-image'),
             url(r'^gallery/images/(?P<short_id>[a-z0-9-]+)/(?P<mode>iiif)(?P<url>.*)$',
                 views.CanvasImage.as_view()),

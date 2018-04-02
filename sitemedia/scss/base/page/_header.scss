@@ -122,7 +122,6 @@
 
   .lead {
     @include secondary-font-style("italic");
-    font-style: italic;
     font-size: ems(19px, 14);
   }
 }

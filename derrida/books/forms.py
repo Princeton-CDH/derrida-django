@@ -84,13 +84,16 @@ class RangeField(forms.MultiValueField):
 class InstanceSearchForm(forms.Form):
     defaults = {
         'order_by': 'author',
+        'is_extant': True
         # NOTE: restricting here hides a couple of volumes;
         # is this a data error or something else?
         # 'cited_in': ['De la grammatologie']
     }
 
     query = forms.CharField(label='Search', required=False)
-    is_annotated = forms.BooleanField(label='Contains annotation',
+    is_extant = forms.BooleanField(label="Extant in Derrida's Library",
+        required=False)
+    is_annotated = forms.BooleanField(label='Contain annotation',
         required=False)
 
     order_by = forms.ChoiceField(choices=[
@@ -117,9 +120,9 @@ class InstanceSearchForm(forms.Form):
         'pub_place', 'cited_in']
     author = FacetChoiceField()
     subject = FacetChoiceField()
-    language = FacetChoiceField('Language of Publication')
-    work_language = FacetChoiceField('Original Language')
-    pub_place = FacetChoiceField('Place of Publication')
+    language = FacetChoiceField(label='Language of Publication')
+    work_language = FacetChoiceField(label='Original Language')
+    pub_place = FacetChoiceField(label='Place of Publication')
     # NOTE: skipping publication type because library is currently
     # restricted to books only
     # item_type = FacetChoiceField(label='Publication Type')

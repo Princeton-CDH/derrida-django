@@ -97,9 +97,8 @@ class InstanceListView(ListView):
 
     def get_queryset(self):
         sqs = SearchQuerySet().models(self.model)
-        # restrict to extant books that are cited
-        sqs = sqs.filter(is_extant=True, item_type_exact='Book',
-                         cited_in='*')
+        # restrict to cited books
+        sqs = sqs.filter(item_type_exact='Book', cited_in='*')
         # Note: using item_type_exact to avoid matching book section
 
         # if search parameters are specified, use them to initialize the form;
@@ -131,6 +130,8 @@ class InstanceListView(ListView):
         # no is extant filter for library; already restricted to extant items
         if search_opts.get('is_annotated', None):
             sqs = sqs.filter(is_annotated=search_opts['is_annotated'])
+        if search_opts.get('is_extant', None):
+            sqs = sqs.filter(is_extant=search_opts['is_extant'])
 
         for facet in self.form.facet_inputs:
             # check if a value is set for this facet
@@ -635,9 +636,10 @@ class CanvasImage(ProxyView):
     def get_proxy_url(self, *args, **kwargs):
         instance = get_object_or_404(Instance, slug=self.kwargs['slug'])
         canvas_id = self.kwargs.get('short_id', None)
-        if canvas_id:
+        if canvas_id and canvas_id != 'default':
             canvas = instance.images() \
                 .filter(short_id=self.kwargs['short_id']).first()
+        # if not found or default requested, use designated thumbnail
         else:
             canvas = instance.digital_edition.thumbnail
 
