@@ -212,7 +212,6 @@ class TestRangeSolrEngine(object):
             'hardend': False}
         sqs = SearchQuerySet().facet(range_field, **opts)
         params = sqs.query.build_params()
-        print(params)
         assert params['f.publication_date.facet.range.hardend'] == 'false'
 
     def test_clone(self):
