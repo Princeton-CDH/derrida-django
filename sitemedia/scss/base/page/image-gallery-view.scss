@@ -334,7 +334,8 @@ $component-padding: 4rem;
       opacity: 0;
     }
 
-    .mdl-layout.is-upgraded &.is-active {
+    .mdl-layout.is-upgraded &.is-active,
+    &:hover {
       border-color: $primary-color;
       color: $primary-color;
     }
