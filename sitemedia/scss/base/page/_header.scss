@@ -20,7 +20,7 @@
   #citations-list & {
     background-image: url("../img/banner/derrida-banner-reference-S@2x.png");
 
-    @include grid-media($large-medium-viewport-grid)
+    @include grid-media($large-medium-viewport-grid) {
       background-image: url("../img/banner/derrida-banner-reference-M@2x.png");
     }
 
