@@ -36,12 +36,12 @@ class InterventionSearchForm(forms.Form):
 
     author = FacetChoiceField()
     subject = FacetChoiceField()
-    language = FacetChoiceField('Language of Publication')
-    work_language = FacetChoiceField('Original Language')
-    pub_place = FacetChoiceField('Place of Publication')
-    annotation_language = FacetChoiceField('Annotation Language')
-    annotation_type = FacetChoiceField('Annotation Type')
-    hand = FacetChoiceField('Annotation Hand')
+    language = FacetChoiceField(label='Language of Publication')
+    work_language = FacetChoiceField(label='Original Language')
+    pub_place = FacetChoiceField(label='Place of Publication')
+    annotation_language = FacetChoiceField(label='Annotation Language')
+    annotation_type = FacetChoiceField(label='Annotation Type')
+    hand = FacetChoiceField(label='Annotation Hand')
     ink = FacetChoiceField(label='Ink')
     # range facets
     range_facets = ['item_work_year', 'item_copyright_year', 'item_print_year']
