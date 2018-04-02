@@ -4,10 +4,14 @@
 {{ object.derridawork.full_citation }}
 {{ object.anchor_text }}
 {# include all variant titles for the work and this particular instance #}
-{{ object.alternate_title|default:'' }}
-{{ object.work.short_title }}
-{{ object.work.primaryshort_title }}
-{{ object.instance.work.display_title }}
+{% with instance=object.instance %}
+{# alternate instance title (e.g. translated name) #}
+{{ instance.alternate_title|default:'' }}
+{{ instance.work.primary_title }}
+{# include short title only if different from primary #}
+{% if instance.work.short_title != instance.work.primary_title %}
+  {{ object.instance.work.short_title }}
+{% endif %}
 {% for author in object.instance.work.authors.all %}
   {{ author.firstname_last }}{% if not forloop.last %} {% endif %}
 {% endfor %}
@@ -15,3 +19,4 @@
 {% if object.instance.collected_in %}
 {{ object.instance.collected_in.display_title }}
 {% endif %}
+{% endwith %}
