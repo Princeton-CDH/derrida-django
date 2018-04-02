@@ -85,6 +85,8 @@ class ReferenceIndex(indexes.SearchIndex, indexes.Indexable):
     interventions = indexes.MultiValueField(model_attr='interventions__id')
     #: has corresponding intervention
     corresponding_intervention = indexes.FacetBooleanField()
+    #: canvas id for detail page view, if view available for book page
+    page_canvas_id = indexes.CharField(null=True)
     # - related instance and work info
     #: Title of instance to which citation points; :method:`derrida.books.models.Instance.display_title`
     instance_title = indexes.CharField(model_attr='instance__display_title',
@@ -138,7 +140,11 @@ class ReferenceIndex(indexes.SearchIndex, indexes.Indexable):
             return first_author.authorized_name
 
     def prepare_corresponding_intervention(self, reference):
-        return reference.interventions.count()
+        return bool(reference.interventions.count())
+
+    def prepare_page_canvas_id(self, reference):
+        if reference.interventions.exists():
+            return reference.interventions.first().canvas.short_id
 
     def prepare_instance_language(self, reference):
         # use languages directly on this instance, if available (even if a

@@ -12,13 +12,23 @@ views) and db model (ajax request via reference histogram).
     {% if reference.instance_digital_edition or reference.instance.digital_edition %}
       {# get instance slug from solr result or database model #}
       {% firstof reference.instance_slug reference.instance.slug as instance_slug %}
-      {# not all references have a book page; needs something so url doesn't fail, should display cover #}
-      {% firstof reference.book_page '1' as book_page %}
+      {# get detail page canvas id from solr or associated intervention #}
+      {% firstof reference.page_canvas_id reference.interventions.first.canvas.short_id as page_slug %}
 
-      <a class="item__image-link" href="{% firstof instance_url reference.instance.get_absolute_url %}">
-        <img class="img" src="{% url 'books:canvas-by-page' slug=instance_slug page_num=book_page|slugify %}"
-           srcset="{% url 'books:canvas-by-page' slug=instance_slug page_num=book_page|slugify x='@2x' %} 2x" />
+      {# if page view is available, display page thumbnail and link to canvas detail view #}
+      {% if page_slug %}
+      <a class="item__image-link" href="{% url 'books:canvas-detail' instance_slug page_slug  %}">
+        <img class="img" src="{% url 'books:canvas-image' slug=instance_slug short_id=page_slug mode='smthumb'%}"
+           srcset="{% url 'books:canvas-image' slug=instance_slug short_id=page_slug mode='smthumb' x='@2x' %} 2x" />
       </a>
+      {% else %}
+      {# if page view is not available, display cover thumbnail and link to gallery #}
+      <a class="item__image-link" href="{% url 'books:detail-gallery' instance_slug %}">
+        {# cheat: non-existent page number will display manifest thumbnail; FIXME: add direct support for this #}
+        <img class="img" src="{% url 'books:canvas-by-page' slug=instance_slug page_num='0' %}"
+           srcset="{% url 'books:canvas-by-page' slug=instance_slug page_num='0' x='@2x' %} 2x" />
+      </a>
+      {% endif %}
     {% else %}
         <span class="img img--placeholder"></span>
     {% endif %}
