@@ -280,6 +280,26 @@
       background-repeat: no-repeat;
       align-self: flex-end;
       margin: 0;
+
+      /* use hover style to indicate content not available */
+      &::after {
+        font-size: 2rem;
+        line-height: 1;
+        text-align: center;
+        display: inline-block;
+        padding-top: 25%;
+        color: $white;
+        opacity: 0;
+        @include transition(opacity 0.3s $base-timing);
+        content: "Not available";
+      }
+
+      &:hover {
+        &::after {
+          opacity: 1;
+        }
+
+      }
     }
 
     .collection--condensed & {
