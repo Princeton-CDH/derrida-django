@@ -22,8 +22,8 @@ views) and db model (ajax request via reference histogram).
            srcset="{% url 'books:canvas-image' slug=instance_slug short_id=page_slug mode='smthumb' x='@2x' %} 2x" />
       </a>
       {% else %}
-      {# if page view is not available, display cover thumbnail and link to gallery #}
-      <a class="item__image-link item__image-gallery-link" href="{% url 'books:detail-gallery' instance_slug %}">
+      {# if page view is not available, display cover thumbnail and link to book bibliography page #}
+      <a class="item__image-link item__image-overview" href="{% url 'books:detail' instance_slug %}">
         <img class="img" src="{% url 'books:canvas-image' slug=instance_slug short_id='default' mode='smthumb' %}"
            srcset="{% url 'books:canvas-image' slug=instance_slug short_id='default' mode='smthumb' x='@2x' %} 2x" />
       </a>

@@ -375,7 +375,7 @@
     @include transition(opacity 0.3s $base-timing);
   }
 
-  &.item__image-gallery-link {
+  &.item__image-overview {
     // disable magnifying glass for images that gallery instead of detail page
       &::after {
         background-image: none;
