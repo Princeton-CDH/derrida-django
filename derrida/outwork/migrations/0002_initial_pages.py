@@ -77,11 +77,11 @@ NAV_PAGES = OrderedDict([
          'description': 'Browse Derrida’s personal copies of the books referenced in his published works.'}),
      ('references', {'title': 'Reference List',
          'description': 'Explore the quotations and references in Derrida’s works.'}),
+    ('interventions', {'title': 'Interventions',
+        'description': 'Explore the traces of Derrida’s reading.'}),
     ('references/histogram/de-la-grammatologie', {'title': 'Visualization',
         'description': 'Explore all quotations and references in Derrida’s works.',
         'meta_title': 'References by Section ‖ Visualization'}),
-    ('interventions', {'title': 'Interventions',
-        'description': 'Explore the traces of Derrida’s reading.'}),
 ])
 
 #: footer nav
