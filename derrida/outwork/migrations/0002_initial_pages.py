@@ -56,7 +56,8 @@ NAV_PAGES = OrderedDict([
     ('references/histogram/de-la-grammatologie', {'title': 'Visualization',
         'description': 'Explore all quotations and references in Derrida’s works.',
         'meta_title': 'References by Section ‖ Visualization'}),
-    ('outwork', {'title': 'Outwork'})
+    ('interventions', {'title': 'Interventions',
+        'description': 'Explore the traces of Derrida’s reading.'}),
 ])
 
 #: footer nav
@@ -64,13 +65,12 @@ FOOTER_PAGES = OrderedDict([
     ('/', {'title': 'Derrida\'s Margins',
         'description': 'An online research tool for Derrida’s annotations that provides a behind-the-scenes look at his reading practices and the philosophy of deconstruction',
         'content': initial_homepage_content}),
+    ('outwork', {'title': 'Outwork'}),
     ('cite', {'title': 'How to Cite'}),
     ('contact', {'title': 'Contact'}),
 ])
 
 OTHER_PAGES = OrderedDict([
-    ('interventions', {'title': 'Interventions',
-        'description': 'Explore the traces of Derrida’s reading.'}),
     ('references/histogram', {'title': 'Visualization by Author',
         'description': 'Explore all quotations and references in Derrida’s works.',
         'meta_title': 'References by Author ‖ Visualization'})
