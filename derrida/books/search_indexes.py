@@ -144,7 +144,10 @@ class ReferenceIndex(indexes.SearchIndex, indexes.Indexable):
 
     def prepare_page_canvas_id(self, reference):
         if reference.interventions.exists():
-            return reference.interventions.first().canvas.short_id
+            # don't error on intervention without canvas
+            # (probably only exists in test data)
+            if reference.interventions.first().canvas:
+                return reference.interventions.first().canvas.short_id
 
     def prepare_instance_language(self, reference):
         # use languages directly on this instance, if available (even if a
