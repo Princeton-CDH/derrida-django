@@ -10,7 +10,7 @@ from derrida.interventions.models import Intervention
 
 
 class TestRelationSafeRTSP(TestCase):
-    fixtures = ['test_references.json']
+    fixtures = ['test_references', 'test_interventions']
 
     def test_handle_save(self):
         mock_connection = mock.Mock()
@@ -39,8 +39,7 @@ class TestRelationSafeRTSP(TestCase):
 
         # load instance with multiple references from reference fixture
         inst = Instance.objects.get(pk=2)
-        # save the work this instance is associated with
-        mock_connection.reset()
+        mock_connection.reset_mock()
         # raise not handled on first get index call (for Work), default behavior for rest
         mock_connection.get_unified_index.return_value.get_index.side_effect = [
             NotHandled, mock.DEFAULT, mock.DEFAULT, mock.DEFAULT]
@@ -69,5 +68,63 @@ class TestRelationSafeRTSP(TestCase):
         assert ref_update_call_args[1].count() == inst.reference_set.count()
         assert ref_update_call_args[1].first() == inst.reference_set.first()
 
+        ## save on the instance should also reindex references
+        mock_connection.reset_mock()
+        # none of the items should throw a not handled error
+        mock_connection.get_unified_index.return_value.get_index.side_effect = [mock.DEFAULT, mock.DEFAULT]
+        relsafe.handle_save(Instance, inst)
+        mock_connection.get_unified_index.return_value.get_index.assert_any_call(Instance)
+        mock_connection.get_unified_index.return_value.get_index.assert_any_call(Reference)
+        search_index.get_backend.assert_called_with('default')
+        search_index.update_object.assert_called_with(inst, using='default')
+         # last call is reference update
+        ref_update_call = search_index.get_backend.return_value.update.call_args
+        ref_update_call_args = ref_update_call[0]
+        assert ref_update_call_args[0] == search_index
+        assert isinstance(ref_update_call_args[1], QuerySet)
+        assert ref_update_call_args[1].count() == inst.reference_set.count()
+        assert ref_update_call_args[1].first() == inst.reference_set.first()
 
+        # load instance with associated interventions from second fixture
+        inst = Instance.objects.get(pk=141)
+        mock_connection.reset_mock()
+        # raise not handled on first get index call (for Work), default behavior for rest
+        mock_connection.get_unified_index.return_value.get_index.side_effect = [
+            NotHandled, mock.DEFAULT, mock.DEFAULT, mock.DEFAULT]
+        relsafe.handle_save(Work, inst.work)
+        mock_connection.get_unified_index.return_value.get_index.assert_any_call(Instance)
+        mock_connection.get_unified_index.return_value.get_index.assert_any_call(Intervention)
+        # second to last call is instance update (no references)
+        instance_update_call = search_index.get_backend.return_value.update.call_args_list[-2]
+        instance_update_call_args = instance_update_call[0]
+        assert instance_update_call_args[0] == search_index
+        assert instance_update_call_args[1].first() == inst
+
+        # last call is intervention update
+        intvtn_update_call = search_index.get_backend.return_value.update.call_args
+        intvtn_update_call_args = intvtn_update_call[0]
+        assert intvtn_update_call_args[0] == search_index
+        assert isinstance(intvtn_update_call_args[1], QuerySet)
+        inst_interventions = Intervention.objects.filter(canvas__manifest__instance=inst)
+        assert intvtn_update_call_args[1].count() == inst_interventions.count()
+        assert intvtn_update_call_args[1].first() == inst_interventions.first()
+        assert intvtn_update_call_args[1].last() == inst_interventions.last()
+
+        ## save on the instance should also reindex interventions
+        mock_connection.reset_mock()
+        # none of the items should throw a not handled error
+        mock_connection.get_unified_index.return_value.get_index.side_effect = [mock.DEFAULT, mock.DEFAULT]
+        relsafe.handle_save(Instance, inst)
+        mock_connection.get_unified_index.return_value.get_index.assert_any_call(Instance)
+        mock_connection.get_unified_index.return_value.get_index.assert_any_call(Intervention)
+        search_index.get_backend.assert_called_with('default')
+        search_index.update_object.assert_called_with(inst, using='default')
+        # last call is intervention update
+        intvtn_update_call = search_index.get_backend.return_value.update.call_args
+        intvtn_update_call_args = intvtn_update_call[0]
+        assert intvtn_update_call_args[0] == search_index
+        assert isinstance(intvtn_update_call_args[1], QuerySet)
+        inst_interventions = Intervention.objects.filter(canvas__manifest__instance=inst)
+        assert intvtn_update_call_args[1].count() == inst_interventions.count()
+        assert intvtn_update_call_args[1].first() == inst_interventions.first()
 
