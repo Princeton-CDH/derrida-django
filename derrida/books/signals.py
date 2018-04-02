@@ -5,6 +5,7 @@ from haystack.exceptions import NotHandled
 from haystack.signals import RealtimeSignalProcessor
 
 from derrida.books.models import Instance, Work, Reference
+from derrida.outwork.models import Outwork
 from derrida.interventions.models import Intervention
 
 
@@ -88,7 +89,7 @@ class RelationSafeRTSP(RealtimeSignalProcessor):
     def setup(self):
         # default haystack behavior is to listen to all models
         # override and only bind to models we index or that affect indexes
-        for model in Work, Instance, Reference, Intervention:
+        for model in Work, Instance, Reference, Intervention, Outwork:
             models.signals.post_save.connect(self.handle_save, sender=model)
             # (we probably don't care about delete for Work, but ok to leave...)
             models.signals.post_delete.connect(self.handle_delete, sender=model)
