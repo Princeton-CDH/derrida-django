@@ -348,6 +348,13 @@
     @include transition(opacity 0.3s $base-timing);
   }
 
+  &.item__image-gallery-link {
+    // disable magnifying glass for images that gallery instead of detail page
+      &::after {
+        background-image: none;
+      }
+    }
+
   &:hover {
     background-color: $primary-color;
 
