@@ -74,10 +74,11 @@ $base-background-color: $grey-100;
 $secondary-background-color: tint($base-border-color, 75%);
 
 // Header and Tab Colors
-$header-background-color: $white;
+$header-background-color: $white;
+
 $header-text-color: $black;
 $header-accent-color: $cdh-blue;
-$header-row-height: 64px;
+$header-row-height: 54px;
 
 // Focus
 $focus-outline-color: rgba($action-color, 0.4);
