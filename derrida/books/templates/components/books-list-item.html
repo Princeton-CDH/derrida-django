@@ -28,7 +28,8 @@ The template allows for the following parameters:
         <img class="img" src="{% url 'books:book-image' book.slug thumbnail_size %}"
             srcset="{% url 'books:book-image' book.slug thumbnail_size '@2x' %} 2x" />
       {% else %}
-      <span class="img img--placeholder"></span>
+        <img class="img img--placeholder" src="{% static 'img/cover_notinPUL.png' thumbnail_size %}"
+          srcset="{% static 'img/cover_notinPUL.png' book.slug thumbnail_size '@2x' %} 2x" />
       {% endif %}
     </{{tag}}>
     {% endwith %}

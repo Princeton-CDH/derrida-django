@@ -264,6 +264,7 @@
     float: none;
   }
 
+
   .img {
     position: relative;
     width: auto;
@@ -272,7 +273,7 @@
 
     &.img--placeholder {
       height: 200px;
-      width: 150px;
+      width: 140px;
       max-width: 100%;
       background: $light-grey;
       background-image: url("../img/cover_notinPUL.png");
@@ -280,6 +281,12 @@
       background-repeat: no-repeat;
       align-self: flex-end;
       margin: 0;
+
+      #books-list & {
+        height: 100%;
+        max-height: 280px;
+        width: 225px;
+      }
 
       /* use hover style to indicate content not available */
       &::after {
@@ -389,6 +396,31 @@
   }
 }
 
+// recreate hover style for placeholders on library page, which have to be scalable
+span.item__image__link {
+  &::after {
+    font-size: 2em;
+    line-height: 1;
+    text-align: center;
+    display: inline-block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 2em 10%;
+    color: $white;
+    opacity: 0;
+    @include transition(opacity 0.3s $base-timing);
+    content: "Not available";
+  }
+
+  &:hover {
+    &::after {
+      opacity: 1;
+    }
+
+  }
+}
+
 .item__image-caption {
   color: $base-font-color;
   font-style: normal;
@@ -454,5 +486,7 @@
 
   #books-list & {
     display: block;
+
+
   }
 }
