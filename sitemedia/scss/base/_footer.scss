@@ -2,7 +2,7 @@
 
 .mdl-mega-footer {
   background-color: $white;
-  color: $dark-grey;
+  color: $base-font-color;
   padding: 4rem 0 1rem;
   margin-top: 100px;
 
@@ -39,7 +39,7 @@
 
 .mdl-mega-footer--heading,
 .mdl-mega-footer__heading {
-  color: $dark-grey;
+  color: $base-font-color;
   text-decoration: none;
   margin-bottom: 0;
   font-size: 0.9em;
