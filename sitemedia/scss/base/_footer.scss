@@ -9,6 +9,12 @@
   .mdl-logo {
     color: inherit;
   }
+
+  .background-colored--dark & {
+    border-width: 0 4rem 0;
+    border-color: $light-navy;
+    border-style: solid;
+  }
 }
 
 .mdl-mega-footer__bottom-section {
