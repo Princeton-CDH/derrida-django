@@ -112,7 +112,7 @@
 
   .lead,
   .help {
-    line-height: 1;
+    line-height: 1.2;
   }
 
   .callout__link {
@@ -123,5 +123,9 @@
   .lead {
     @include secondary-font-style("italic");
     font-size: ems(19px, 14);
+  }
+
+  #interventions-list & {
+    bottom: 6rem; // move up on interventions to avoid text in bg image
   }
 }
