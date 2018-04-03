@@ -93,6 +93,7 @@
   text-decoration: none;
   padding: 0.5em 2em;
   text-align: center;
+  border: 1px solid transparent;
   border-bottom: 1px solid $primary-color;
   background: darken($light-grey, 10%);
   height: 2.6em;
@@ -101,6 +102,10 @@
 
   &:active {
     outline: none;
+  }
+
+  &:hover {
+    color: $primary-color;
   }
 
   &.item-nav__link--active {
