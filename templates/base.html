@@ -27,11 +27,12 @@ by default; use page_rdf_type to override with a webpage subclass.
 {{ page.description }}
 {% endmetablock %}{% endblock %}">
 {# html metadata #}
+    {% firstof page_meta_image 'mstile-150x150.png' as preview_image %}
     {# open graph metadata #}
     <meta property="og:title" content="{{ page.meta_title }}" />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="{{ request.build_absolute_uri }}" />
-    <meta property="og:image" content="{% fullstatic 'mstile-150x150.png' %}" />
+    <meta property="og:image" content="{% fullstatic preview_image %}" />
     <meta property="og:description" content="{{ page.description }}"/>
     <meta property="og:site_name" content="Derrida's Margins"/>
     {# twitter card #}
@@ -39,7 +40,7 @@ by default; use page_rdf_type to override with a webpage subclass.
     <meta name="twitter:domain" content="{{ request.get_host }}" />
     <meta name="twitter:title" content="{{ page.meta_title }}"/>
     <meta name="twitter:description" content="{{ page.description }}" />
-    <meta name="twitter:image" content="{% fullstatic 'mstile-150x150.png' %}" />
+    <meta name="twitter:image" content="{% fullstatic preview_image %}" />
     <meta name="twitter:url" content="{{ request.build_absolute_uri }}" />
 
     {% block metadata %}{% endblock %}

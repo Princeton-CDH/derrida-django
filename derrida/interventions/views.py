@@ -277,6 +277,8 @@ class InterventionListView(ListView):
         context.update({
             'facets': facets,
             'total': self.queryset.count(),
-            'form': self.form
+            'form': self.form,
+            # specify preview image for metadata
+            'page_meta_image': 'img/banner/derrida-banner-intervention-S@2x.png'
         })
         return context
