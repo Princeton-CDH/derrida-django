@@ -77,7 +77,7 @@ by default; use page_rdf_type to override with a webpage subclass.
           {% endblock %}
           {% block admin-navlink %} {# adding block to allow override/disable #}
             {% if user.is_staff %}
-              <a class="mdl-navigation__link admin-link" href="{% block admin-url %}{% url 'admin:index' %}{% endblock %}"><span>Admin</span></a>
+              <a class="mdl-navigation__link admin-link" href="{% block admin-url %}{% url 'admin:index' %}{% endblock %}"><span class="navigation-title">Admin</span></a>
             {% endif %}
           {% endblock %}
           {% block navbar-extra %}{% include 'snippets/test_banner.html' %}{% endblock %}

@@ -15,7 +15,7 @@
         position: absolute;
         top: 0;
         left: 0;
-        height: 4.8em;
+        // height: 4.8em; // was blocking links in the header...
         width: 100%;
         display: block;
       }
@@ -74,11 +74,11 @@
 
     @include grid-media($large-medium-viewport-grid) {
       flex-direction: row;
-      align-items: center;
+      justify-content: center;
     }
 
     @include grid-media($xlarge-viewport-grid) {
-      max-width: 700px;
+      // max-width: 700px;
       // margin-left: 300px;
     }
   }
@@ -93,6 +93,7 @@
   }
 
   .page-header__toggle {
+    cursor: pointer;
     position: absolute;
     left: 5px;
     padding: 0 10px;
@@ -316,7 +317,7 @@ $component-padding: 4rem;
   width: 220px;
 
   @include grid-media($large-medium-viewport-grid) {
-    width: 50%;
+    // width: 50%;
   }
 
   .mdl-layout__tab {

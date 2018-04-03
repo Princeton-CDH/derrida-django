@@ -238,7 +238,7 @@
   <header class="page-header page-header--link">
     <div class="container">
       <a class="page-header__toggle"><img class="icon" src="{% static 'img/icons/Expand.svg' %}" /></a>
-      <h1 class="page-header__heading"><a class="page-header__link" href="{% url 'books:detail-gallery' instance.slug %}"><span class="arrow_icon">⟵</span> Book Image Gallery</a></h1>
+      <a class="page-header__link" href="{% url 'books:detail-gallery' instance.slug %}"><h1 class="page-header__heading"><span class="arrow_icon">⟵</span> Book Image Gallery</h1></a>
 
       {# no deep zoom if image is suppressed #}
       {% if not instance.suppress_all_images and not canvas_suppressed %}
