@@ -1,35 +1,31 @@
 language: python
-
 python:
-  - "3.5"
-
+- '3.5'
 env:
   global:
-    - SOLR_VERSION=6.6.0
-    - SOLR_CORE=test-derrida
-
+  - SOLR_VERSION=6.6.0
+  - SOLR_CORE=test-derrida
 addons:
-  - mariadb: "5.5"
-
+- mariadb: '5.5'
 before_install:
-  - mysql -e 'CREATE DATABASE IF NOT EXISTS test;'
-  - rvm install 2.0
-  - gem install sass
-  - npm install -g postcss-cli autoprefixer
-
+- mysql -e 'CREATE DATABASE IF NOT EXISTS test;'
+- rvm install 2.0
+- gem install sass
+- npm install -g postcss-cli autoprefixer
 install:
-  - pip install -r requirements.txt
-  - pip install -r dev-requirements.txt
-  - pip install codecov
-  - cp ci/testsettings.py derrida/local_settings.py
-  - python -c "import uuid; print('SECRET_KEY = \'%s\'' % uuid.uuid4())" >> derrida/local_settings.py
-
+- pip install -r requirements.txt
+- pip install -r dev-requirements.txt
+- pip install codecov
+- cp ci/testsettings.py derrida/local_settings.py
+- python -c "import uuid; print('SECRET_KEY = \'%s\'' % uuid.uuid4())" >> derrida/local_settings.py
 before_script:
-  - SOLR_VERSION=$SOLR_VERSION SOLR_CORE=$SOLR_CORE bash ci/config_solr.sh
-  - python manage.py build_solr_schema --configure-directory=solr-$SOLR_VERSION/server/solr/$SOLR_CORE/conf --reload-core $SOLR_CORE
-
+- SOLR_VERSION=$SOLR_VERSION SOLR_CORE=$SOLR_CORE bash ci/config_solr.sh
+- python manage.py build_solr_schema --configure-directory=solr-$SOLR_VERSION/server/solr/$SOLR_CORE/conf
+  --reload-core $SOLR_CORE
 script:
-  - py.test --cov=derrida
-
+- py.test --cov=derrida
 after_success:
-  - codecov
+- codecov
+notifications:
+  slack:
+    secure: LZuwY3QZyvQ3d21j6PCQgkGzwngQvC1ID/iUB4s55FnhwUnJGXuD9pe/x8RksoMzxoqvOMLg01klFgS3JQE8/Y1oqBNsNx2L53lfTFFZZgkEP5j86ofl2SaBZ0E2Oc++PTXzrRB2/mAgoUv+8U665Cez1DRmVck6MFgeq6j0n5VSy7L8KPovkxiKso0+YCGX0lUkoaDCbXlKM/d0hCi/blysGK/njXjUf+4hXS0bWW5tYTa6weVx01mMuclaGUnfAdC7nT3Q4gPAD6ywGRcmJTEtZX/ohE1Bae3hG6jIBpNBJ1+yDpioYjHBFAFQtB/xmjLPfisQ5sLCi2lpzABcjQLz6VProCM0PCkPCnQmpK1/1SVgWdjDpqxmdBbPnPdQIuO5tYnYRJHvRSmwF00n8bSAzmCwqTlZKFa0K9f/b3lkAKiMYDHrDdORjIiezjTNtQzx93ytMM7/gv49AY7WTNiw+7UU0k4FWwjWywoN+du2HsItpTzS+4p9acz1QLOtqLsC5PGZKYWG2B4RHxPluiX+Npoz+55fFxPxoknsxrXs0IWuTxu9Hxr2/u1bsTeH/e/1vsP7bJCZVEjmlPEtwlLarNIq3yL4w23/JNU1VQUQWjMJ9I6fif3Iw8kcjjwHWE2/8DJPq3cqJoh2jfb71CJ6hY3lDQEG9qlqZyYJGrY=
