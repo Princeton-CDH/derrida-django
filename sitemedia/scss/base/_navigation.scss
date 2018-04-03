@@ -195,12 +195,13 @@
     .background-colored--dark & {
       .mdl-navigation__link {
         color: $white;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
       }
     }
 
     .mdl-navigation__link {
       @include secondary-font-style("bold");
-      -webkit-font-smoothing: antialiased;
       opacity: 1;
       padding: 0;
       font-size: 20px;

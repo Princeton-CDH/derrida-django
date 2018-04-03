@@ -19,6 +19,11 @@ h6 {
   .dashboard & {
     @include primary-font-style();
   }
+
+  .background-colored--dark & { // smooth when on a dark background
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
 }
 
 h1 {
@@ -90,4 +95,9 @@ hr {
 
 .arrow_icon {
   font-family: "Cambria", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Geneva, Verdana, sans-serif;
+}
+
+#homepage { // almost all text on homepage is white on dark
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
