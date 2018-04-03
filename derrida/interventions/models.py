@@ -1,5 +1,5 @@
 from attrdict import AttrDict
-from annotator_store.models import BaseAnnotation
+from annotator_store.models import BaseAnnotation, AnnotationQuerySet
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from djiffy.models import Canvas
@@ -52,7 +52,7 @@ class Tag(Named, Notable):
     objects = TagQuerySet.as_manager()
 
 
-class InterventionQuerySet(models.QuerySet):
+class InterventionQuerySet(AnnotationQuerySet):
 
     def sorted_by_page_loc(self):
         '''
