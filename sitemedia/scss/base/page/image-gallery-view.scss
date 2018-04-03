@@ -2,6 +2,8 @@
 .is-canvas-view {
   .mdl-layout__header,
   .page-header {
+    min-height: 54px; // override material design 64px
+
     @include grid-media($large-medium-viewport-grid) {
       background: linear-gradient(to right, $white 0%, $white 300px, transparentize($white, 1) 300px, transparentize($white, 1) 100%);
       background-position: -300px;
@@ -30,10 +32,15 @@
   }
 }
 
+.mdl-layout.is-canvas-view {
+  overflow-y: hidden; // don't scroll main area on canvas view
+}
+
 
 #book-image-gallery {
   .page-header--link {
     position: relative;
+    min-height: 44px; // override mdl default 64px
 
     @include grid-media($large-medium-viewport-grid) {
       padding: 0.5rem 6rem;
@@ -223,7 +230,7 @@ a.gallery-image-view__list-item {
 .gallery-image-view__header {
   background: $white;
   width: 100%;
-  height: calc(100vh - 106px);
+  height: calc(100vh - 96px);
   overflow-y: scroll;
   padding: 0 ems(20px);
   opacity: 1;
@@ -347,7 +354,7 @@ $component-padding: 4rem;
 }
 
 .gallery-image-view__img {
-  max-height: 70vh;
+  max-height: $max-component-height;
   max-width: $deep-zoom-width;
 }
 
@@ -380,6 +387,7 @@ $component-padding: 4rem;
   }
 
   .is-sidebar-visible ~ .gallery-image-view & {
+    width: calc(100% - 300px);
     background-position: 0;
     @include transition(background-position 150ms $base-timing);
   }
