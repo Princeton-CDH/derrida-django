@@ -32,7 +32,7 @@ function annotatorImageSelect(options) {
           $(".tmp-img-selection").remove();
         });
       // escape key exits editor, so should also clear temporary selection
-      $('.annotator-editor textarea').on('keydown', function(e) {
+      $('.annotator-editor textarea').on('keydown', function(event) {
         if (event.which === 27) {  // escape
           $(".tmp-img-selection").remove();
         }
