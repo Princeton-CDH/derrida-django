@@ -174,11 +174,13 @@ class InterventionListView(ListView):
     def get_queryset(self):
         sqs = SearchQuerySet().models(self.model)
 
-        # initialize form with search parameters and form defaults
-        form_opts = self.form_class.defaults.copy()
-        # any options specified in request should override defaults
-        form_opts.update(self.request.GET)
-        self.form = self.form_class(form_opts or self.form_class.defaults)
+        # initialize form with user search parameters and form defaults
+        # preserve as QueryDict to get smart single item/list behavior
+        form_opts = self.request.GET.copy()
+        # don't override any options that are set
+        form_opts.update({k:v for k,v in self.form_class.defaults.items()
+                          if not form_opts.get(k, None)})
+        self.form = self.form_class(form_opts)
 
         for facet_field in self.form.facet_fields:
             # sort by alpha instead of solr default of count

@@ -77,7 +77,7 @@ class TestInstanceViews(TestCase):
         assert response.context['total'] == extant_bks.count()
         # facets should be set
         assert response.context['facets']
-        self.assertContains(response, '19 Results',
+        self.assertContains(response, '%d Results' % extant_bks.count(),
             msg_prefix='total number of results displayed')
         assert isinstance(response.context['object_list'][0], SearchResult)
         assert response.context['object_list'][0].model == Instance
@@ -301,7 +301,8 @@ class TestInstanceViews(TestCase):
         # includes brief list of locations cited by Derrida
         for ref in item.reference_set.all():
             self.assertContains(response,
-                'p.%s %s' % (ref.derridawork_page, ref.derridawork_pageloc))
+                'p.%s' % ref.derridawork_page)  # no longer includes page location
+                # 'p.%s %s' % (ref.derridawork_page, ref.derridawork_pageloc))
         # iiif logo and license should be present somewhere
         self.assertContains(response, item.digital_edition.logo)
         self.assertContains(response, item.digital_edition.license)
