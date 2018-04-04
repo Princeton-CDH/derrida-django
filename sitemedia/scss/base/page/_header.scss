@@ -51,10 +51,6 @@
     }
   }
 
-
-
-  /* TODO: mixin for banner images? with 1x/2x behavior if possible */
-
   #citations-list & {
     @include banner-image("derrida-banner-reference");
   }
