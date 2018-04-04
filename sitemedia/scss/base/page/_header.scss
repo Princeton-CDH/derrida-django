@@ -1,3 +1,39 @@
+
+/**
+  Mixin for to sett header banner images in three sizes with 1x and 2x variants.
+  Assumes images are in ../img/banner ; variants should be named
+  with base filename plus  -[SML]@[12]x.png
+*/
+@mixin banner-image($filename) {
+  $base_path: "../img/banner/" + $filename + "-";
+
+  // small viewport 1x and 2x
+  background-image: url($base_path + "S@1x.png");
+  @media (-webkit-min-device-pixel-ratio: 2),
+         (min-resolution: 192dpi) {
+    background-image: url($base_path + "S@2x.png");
+  }
+
+  // medium 1x and 2x
+  @include grid-media($large-medium-viewport-grid) {
+    background-image: url($base_path + "M@1x.png");
+    @media (-webkit-min-device-pixel-ratio: 2),
+         (min-resolution: 192dpi) {
+      background-image: url($base_path + "M@2x.png");
+    }
+  }
+
+  // large 1x and 2x
+  @include grid-media($xlarge-viewport-grid) {
+    background-image: url($base_path + "L@1x.png");
+    @media (-webkit-min-device-pixel-ratio: 2),
+         (min-resolution: 192dpi) {
+      background-image: url($base_path + "L@2x.png");
+    }
+  }
+}
+
+
 .page-header {
   background-position: center bottom;
   background-size: auto 100%;
@@ -15,42 +51,20 @@
     }
   }
 
+
+
   /* TODO: mixin for banner images? with 1x/2x behavior if possible */
 
   #citations-list & {
-    background-image: url("../img/banner/derrida-banner-reference-S@2x.png");
-
-    @include grid-media($large-medium-viewport-grid) {
-      background-image: url("../img/banner/derrida-banner-reference-M@2x.png");
-    }
-
-    @include grid-media($xlarge-viewport-grid) {
-      background-image: url("../img/banner/derrida-banner-reference-L@2x.png");
-    }
+    @include banner-image("derrida-banner-reference");
   }
 
   #books-list & {
-    background-image: url("../img/banner/derrida-banner-library-S@2x.png");
-
-    @include grid-media($large-medium-viewport-grid) {
-      background-image: url("../img/banner/derrida-banner-library-M@2x.png");
-    }
-
-    @include grid-media($xlarge-viewport-grid) {
-      background-image: url("../img/banner/derrida-banner-library-L@2x.png");
-    }
+    @include banner-image("derrida-banner-library");
   }
 
    #interventions-list & {
-    background-image: url("../img/banner/derrida-banner-intervention-S@2x.png");
-
-    @include grid-media($large-medium-viewport-grid) {
-      background-image: url("../img/banner/derrida-banner-intervention-M@2x.png");
-    }
-
-    @include grid-media($xlarge-viewport-grid) {
-      background-image: url("../img/banner/derrida-banner-intervention-L@2x.png");
-    }
+    @include banner-image("derrida-banner-intervention");
   }
 }
 
