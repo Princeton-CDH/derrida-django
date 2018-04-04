@@ -26,6 +26,8 @@ urlpatterns = [
 
     # home page managed via mezzanine, but needs a named url
     url(r'^$', mezzanine.pages.views.page, {"slug": "/"}, name="home"),
+    # alternate homepage named url needed for djiffy templates
+    url(r'^$', mezzanine.pages.views.page, {"slug": "/"}, name="site-index"),
 
     # placeholders for new design
     url(r'^citations/$', RedirectView.as_view(pattern_name='admin:index'), name='citations-list'),
