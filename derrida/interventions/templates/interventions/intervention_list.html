@@ -24,6 +24,9 @@
   {# NOTE: author first letters available via solr facet, but may need some processing in the view for display #}
 
   <div class="container">
+    <div class="loading-spinner">
+      <img src="{% static 'img/loading.gif' %}" />
+    </div>
     <article class="collection">
        {% for intervention in object_list %}
           {% include 'components/intervention-list-item.html' %}

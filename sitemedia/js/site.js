@@ -23,6 +23,19 @@ $(function() {
     $(".page-filter__form").submit();
   }
 
+  /**
+   * Scrub empty values from form fields - don't need to submit them because
+   * solr has defaults
+   */
+  $(".page-filter__form").submit(function () {
+    $(this)
+        .find('input[name]')
+        .filter(function () {
+            return !this.value;
+        })
+        .prop('name', '');
+  });
+
   function initPageFilter() {
     var $pageFilter = $(".page-filter");
     if ($pageFilter.length) {
@@ -56,7 +69,7 @@ $(function() {
 
       var $filterForm = $(".page-filter__form");
       $filterForm.on("change", "input[type='checkbox']", function() {
-        submitFilterForm();
+        // submitFilterForm();
       });
 
     checkForActiveFilters();

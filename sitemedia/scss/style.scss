@@ -27,6 +27,38 @@ main {
   & .mdl-textfield__input {
     cursor: wait;
   }
+
+  #books-list,
+  #citations-list,
+  #interventions-list {
+    .page-sort .container {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+    .collection,
+    .pagination {
+      display: none;
+    }
+  }
+
+
+  .loading-spinner {
+    display: block;
+  }
+}
+
+.loading-spinner {
+  opacity: 1;
+  width: 100%;
+  display: none;
+  position: relative;
+
+  img {
+    display: block;
+    position: relative;
+    margin: auto;
+    z-index: 3;
+  }
 }
 
 

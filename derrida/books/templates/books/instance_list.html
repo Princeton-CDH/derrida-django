@@ -24,6 +24,9 @@
   {% include "components/page-sort.html" with number=count orderBy=orderBy %}
 
   <div class="container">
+    <div class="loading-spinner">
+      <img src="{% static 'img/loading.gif' %}" />
+    </div>
     <article class="collection collection--condensed">
       {% for instance in object_list %}
         {% url 'books:detail' instance.slug as instance_url %}
