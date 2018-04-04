@@ -2,7 +2,7 @@ $(function() {
 
   // Clear the text inputs initially so that they are set properly
   // based on the checked boxes when users hit back/forward in the browser
-  $('.mdl-textfield__input').val('');
+  $('.mdl-textfield__input:not([name=query])').val(''); // but don't clear the header search bar...let it persist
 
   function initNavigationButton() {
     var $drawerButton = $("<div/>").addClass("mdl-layout__drawer-button").addClass("active"),

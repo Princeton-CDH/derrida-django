@@ -127,8 +127,8 @@
   margin: auto;
 
   .mdl-button--search {
-    border-bottom: 1px solid $primary-color;
-    border-radius: 0;
+    // border-bottom: 1px solid $primary-color;
+    // border-radius: 0;
     margin-bottom: 4px;
     min-width: 0;
     width: 30px;
@@ -176,7 +176,7 @@
     .selectize-input,
     .selectize-input.has-options,
     .selectize-input.has-items {
-      padding-bottom: 0.6rem;
+      padding-bottom: 0.65rem;
       margin-top: -0.4rem;
       color: $base-font-color;
       border-bottom-color: $primary-color;
