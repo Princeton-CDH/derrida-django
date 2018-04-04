@@ -62,6 +62,14 @@
    #interventions-list & {
     @include banner-image("derrida-banner-intervention");
   }
+
+  #homepage & {
+    width: 100%;
+    margin: 0;
+    left: 0;
+    @include banner-image("derrida-banner-home");
+  }
+
 }
 
 #manifest-list .page-header__container {

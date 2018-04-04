@@ -7,7 +7,17 @@
 {% block page-context-id %}homepage{% endblock %}
 {% block coordinate-nav-classes %}coordinate-navigation--background-light-navy{% endblock %}
 
-{% block main %}{{ block.super }}
-  {# temporarily remove format_for_home tag  until error 500 is resolved #}
+{% block main %}
+
+  {{ block.super }}
   {{page.richtextpage.content|richtext_filters|safe}}
+{% endblock %}
+
+
+{% block header_class %}mdl-layout__header--transparent{% endblock %}
+
+{% block content %}
+{# include page header for banner image #}
+  <header class="page-header header-banner"></header>
+  {{ block.super }}
 {% endblock %}
