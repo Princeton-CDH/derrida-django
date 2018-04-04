@@ -177,9 +177,13 @@ class InterventionListView(ListView):
         # initialize form with user search parameters and form defaults
         # preserve as QueryDict to get smart single item/list behavior
         form_opts = self.request.GET.copy()
-        # don't override any options that are set
-        form_opts.update({k:v for k,v in self.form_class.defaults.items()
-                          if not form_opts.get(k, None)})
+        # set default values
+        for key, val in self.form_class.defaults.items():
+            # set as list to avoid nested lists
+            if isinstance(val, list):
+                form_opts.setlistdefault(key, val)
+            else:
+                form_opts.setdefault(key, val)
         self.form = self.form_class(form_opts)
 
         for facet_field in self.form.facet_fields:
