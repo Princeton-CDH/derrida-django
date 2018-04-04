@@ -174,14 +174,10 @@ class InterventionListView(ListView):
     def get_queryset(self):
         sqs = SearchQuerySet().models(self.model)
 
-        # if search parameters are specified, use them to initialize the form;
-        # otherwise, use form defaults
-        # - ignore page when checking for options
-        form_opts = self.request.GET.copy()
-        try:
-            del form_opts['page']
-        except KeyError:
-            pass
+        # initialize form with search parameters and form defaults
+        form_opts = self.form_class.defaults.copy()
+        # any options specified in request should override defaults
+        form_opts.update(self.request.GET)
         self.form = self.form_class(form_opts or self.form_class.defaults)
 
         for facet_field in self.form.facet_fields:

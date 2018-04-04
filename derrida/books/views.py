@@ -101,15 +101,11 @@ class InstanceListView(ListView):
         sqs = sqs.filter(item_type_exact='Book', cited_in='*')
         # Note: using item_type_exact to avoid matching book section
 
-        # if search parameters are specified, use them to initialize the form;
-        # otherwise, use form defaults
-        # - ignore page when checking for form values
-        form_opts = self.request.GET.copy()
-        try:
-            del form_opts['page']
-        except KeyError:
-            pass
-        self.form = self.form_class(form_opts or self.form_class.defaults)
+        # initialize form with search parameters and form defaults
+        form_opts = self.form_class.defaults.copy()
+        # any options specified in request should override defaults
+        form_opts.update(self.request.GET)
+        self.form = self.form_class(form_opts)
 
         # request facet counts from solr
         for facet_field in self.form.facet_fields:
@@ -233,15 +229,12 @@ class ReferenceListView(ListView):
     def get_queryset(self):
         sqs = SearchQuerySet().models(self.model)
 
-        # if search parameters are specified, use them to initialize the form;
-        # otherwise, use form defaults
-        # - ignore page number when checking if options are set
-        form_opts = self.request.GET.copy()
-        try:
-            del form_opts['page']
-        except KeyError:
-            pass
+         # initialize form with search parameters and form defaults
+        form_opts = self.form_class.defaults.copy()
+        # any options specified in request should override defaults
+        form_opts.update(self.request.GET)
         self.form = self.form_class(form_opts or self.form_class.defaults)
+
         for facet_field in self.form.facet_fields:
             # sort by alpha instead of solr default of count
             sqs = sqs.facet(facet_field, sort='index')
