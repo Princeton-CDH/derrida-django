@@ -332,7 +332,7 @@
   right: 0;
   background-color: transparent;
   @include transition(background-color 0.3s $base-timing);
-  position: absolute;
+  // position: absolute;
   width: auto;
   display: inline-table;
 
