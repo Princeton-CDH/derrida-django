@@ -51,6 +51,21 @@ section.page-filter {
       border-bottom-color: $doger-blue;
     }
   }
+
+  .mdl-textfield {
+    .expand-icon {
+      position: absolute;
+      transition: all 0.5s ease;
+      top: 0;
+      right: 0;
+      height: 20px;
+    }
+    &.is-open {
+      .expand-icon {
+        transform: rotate(0.5turn)
+      }
+    }
+  }
 }
 
 // Switch
