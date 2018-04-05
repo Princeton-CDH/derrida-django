@@ -200,6 +200,7 @@
 
   .mdl-textfield {
     width: 100%;
+    padding: 15px 0;
   }
 
   .mdl-textfield__input {
@@ -219,9 +220,9 @@
   background-color: $white;
   border: 1px solid $primary-color;
   padding: 1rem 1rem 0.8rem;
-  max-width: 360px;
+  max-width: 95%;
   position: absolute;
-  top: 3.3em;
+  top: 3em;
   z-index: 3;
 
   .mdl-checkbox__box-outline {
@@ -233,6 +234,19 @@
     @include faded-link(transparentize($black, 0.6));
     height: 1.75em;
     display: inline-block;
+  }
+
+  .filter__selector--condensed & {
+    max-width: 90%;
+  }
+
+  &#cited_in {
+    width: 100%;
+  }
+
+  &#derridawork {
+    width: 100%;
+    max-width: 90%;
   }
 }
 
@@ -360,7 +374,7 @@
 }
 
 .filter--years {
-  max-width: 200px;
+  max-width: 90%;
 
   .filter__search {
     padding: 0;
