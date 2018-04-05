@@ -14,8 +14,13 @@
     }
   }
 
+  
   &.mdl-layout__header--transparent {
-    background-color: transparent;
+    background-color: $header-background-color; // have to override MDL selector to get white with this class
+
+    @include grid-media($xlarge-viewport-grid) { // only transparent on XL
+      background-color: transparent;
+    }
   }
 
   &,
