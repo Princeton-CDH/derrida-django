@@ -126,7 +126,7 @@
   }
 
   @include grid-media($xlarge-viewport-grid) {
-    @include grid-column(6);
+    @include grid-column(7);
   }
 
   .lead,
