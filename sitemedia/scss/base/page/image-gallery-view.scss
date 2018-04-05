@@ -315,6 +315,7 @@ $component-padding: 4rem;
   display: flex;
   top: 0;
   width: 220px;
+  margin-left: auto;
 
   @include grid-media($large-medium-viewport-grid) {
     // width: 50%;

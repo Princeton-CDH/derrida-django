@@ -85,6 +85,7 @@
 .page-header__link {
   text-decoration: none;
   font-weight: inherit;
+  margin-left: auto;
 }
 
 .page-header__container {
@@ -144,6 +145,10 @@
   }
 
   #interventions-list & {
-    bottom: 6rem; // move up on interventions to avoid text in bg image
+    bottom: 8rem; // move up on interventions to avoid text in bg image
+
+    @include grid-media($large-medium-viewport-grid) {
+      bottom: 13rem; 
+    }
   }
 }
