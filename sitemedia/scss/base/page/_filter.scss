@@ -15,6 +15,16 @@
 
   p {
     font-weight: 300;
+
+    &::after {
+      // this is stupid, but a quick fix because the form doesn't know which page it is, and this text needs to change
+      #citations-list & {
+        content: "Only display cited books:"
+      }
+      #books-list & {
+        content: "Only display books:"
+      }
+    }
   }
 }
 

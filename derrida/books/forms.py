@@ -93,7 +93,7 @@ class InstanceSearchForm(forms.Form):
     query = forms.CharField(label='Search', required=False)
     is_extant = forms.BooleanField(label="Extant in Derrida's Library",
         required=False)
-    is_annotated = forms.BooleanField(label='Contain annotation',
+    is_annotated = forms.BooleanField(label='Containing annotations',
         required=False)
 
     order_by = forms.ChoiceField(choices=[
@@ -195,9 +195,9 @@ class ReferenceSearchForm(forms.Form):
 
     is_extant = forms.BooleanField(label="Extant in Derrida's Library",
         required=False)
-    is_annotated = forms.BooleanField(label='Contains annotation',
+    is_annotated = forms.BooleanField(label='Containing annotations',
         required=False)
-    corresponding_intervention = forms.BooleanField(label='Contains corresponding annotation',
+    corresponding_intervention = forms.BooleanField(label='With corresponding annotation',
         required=False)
     author = FacetChoiceField(label='Author')
     subject = FacetChoiceField(label='Subject')
