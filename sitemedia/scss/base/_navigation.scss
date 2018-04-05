@@ -53,10 +53,12 @@
   outline: none;
 
   .navigation-title {
-    // margin: 0 10px;
-    padding: .25em .5em;
     position: relative;
     line-height: 1;
+
+    @include grid-media($xlarge-viewport-grid) {
+      padding: .25em .5em;
+    }
 
     &::after {
       content: "";
