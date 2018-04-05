@@ -21,9 +21,10 @@
   display: inline-block;
   line-height: 1;
   font-size: 0.8rem;
-  padding: 0.2rem 0.6rem;
+  padding: 0.4rem 0.6rem 0.2rem;
   text-decoration: none;
   text-transform: uppercase;
+  margin-bottom: 0.2rem; // prevent awkward stacking on M
 }
 
 .text-badge--blue {
