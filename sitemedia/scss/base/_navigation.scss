@@ -61,10 +61,6 @@
     position: relative;
     line-height: 1;
 
-    @include grid-media($xlarge-viewport-grid) {
-      padding: .25em .5em;
-    }
-
     &::after {
       content: "";
       display: block;
@@ -103,6 +99,7 @@
 .coordinate-navigation--background-light-navy {
   .navigation-title {
     background: $light-navy;
+    padding: 0.25em .5em;
   }
 }
 
@@ -225,12 +222,11 @@
       &:nth-child(3),
       &:nth-child(4) {
         right: 0;
-        transform: rotateZ(90deg) translate(6rem, -4rem);
+        transform: rotateZ(90deg) translate(7rem, -4rem);
       }
 
       &:nth-child(4) {
-        transform: rotateZ(90deg) translate(9.5rem, -4rem);
-        // padding-left: 1.3em;
+        transform: rotateZ(90deg) translate(12rem, -4rem);
       }
 
       &:nth-child(1),
