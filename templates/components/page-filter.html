@@ -33,8 +33,7 @@
     <header class="page-filter__header">
       <p class="toggle-text"></p>
     </header>
-    <section class="filter__section">
-
+    <section class="filter__section filter__section--toggles">
 
       {% if 'is_extant' in form.fields %}
       <div class="filter__selector"> {# is_extant #}
@@ -45,7 +44,7 @@
         </label>
       </div>
       {% endif %}
-
+  
       {% if 'is_annotated' in form.fields %}
       <div class="filter__selector">  {# is_annotated #}
         <label class="mdl-switch__label mdl-switch__label--right" for="is-annotation">{{ form.is_annotated.label }}
@@ -55,7 +54,7 @@
         </label>
       </div>
       {% endif %}
-
+  
       {# FIXME: reusing id because otherwise javascript doesn't fire, but not sure where set #}
       {% if 'corresponding_intervention' in form.fields %}
       <div class="filter__selector">
@@ -66,6 +65,9 @@
         </label>
       </div>
       {% endif %}
+    </section>
+
+    <section class="filter__section">
 
       {% if 'author' in form.fields %}
       <div class="filter__selector">

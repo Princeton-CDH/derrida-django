@@ -163,6 +163,10 @@
   .mdl-button {
     align-self: center;
   }
+
+  &.filter__section--toggles {
+    display: block;
+  }
 }
 
 .filter__selector {
@@ -213,6 +217,10 @@
     font-size: 12px;
     top: 4px;
     visibility: visible;
+  }
+
+  .filter__section--toggles & {
+    display: inline-block;
   }
 }
 
