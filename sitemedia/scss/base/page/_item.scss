@@ -288,6 +288,17 @@
   }
 }
 
+#books-list {
+  .collection .collection__item.book {
+    width: 100%;
+
+    .item__image .img {
+      width: 100%;
+      max-height: none;
+    }
+  }
+}
+
 #books-detail {
   .collection .collection__item {
     display: grid;
