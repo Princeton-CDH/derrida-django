@@ -3,7 +3,7 @@
 <section class="container">
   <form class="search-form-header__form" action="{% url 'search' %}">
     <label class="mdl-button mdl-button--search mdl-js-button mdl-button--icon mdl-textfield__label--disabled" for="{{ search_form.query.id }}">
-      <img class="img" src="{% static "img/icons/Search.svg" %}" />
+      <img class="img" src="{% static "img/icons/Search.svg" %}" alt="Search"/>
     </label>
     <div class="mdl-textfield mdl-js-textfield">
       {% render_field search_form.query class+='mdl-textfield__input' %}
