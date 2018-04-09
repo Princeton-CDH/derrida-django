@@ -10,6 +10,16 @@ Deploy and Upgrade notes
 * Migration from Plum to Figgy requires that a new auth token be added
   to local settings under **DJIFFY_AUTH_TOKENS** for loading restricted
   IIIF Manifests.
+* Solr XML configuration associated files (``schema.xml`` and ``solrconfig.xml``)
+  will need to be generated and deployed to production Solr server.
+* After Solr configurations are in place, you will need to run ``python
+  manage.py rebuild_index -i`` to update the index with items from the Derrida
+  database.
+* Production ``local_settings.py`` should have updated settings to use the
+  extended signal processor for Haystack managed models::
+
+      HAYSTACK_SIGNAL_PROCESSOR = 'derrida.books.signals.RelationSafeRTSP'
+
 
 0.8 Interventions Phase I
 -------------------------
