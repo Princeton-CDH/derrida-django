@@ -137,7 +137,9 @@ class InstanceListView(ListView):
 
         for facet in self.form.facet_inputs:
             # check if a value is set for this facet
-            if facet in search_opts and search_opts[facet]:
+            # NOTE: check if facet is set *and* if first value is non-empty,
+            # because a list with an empty string [''] evaluates as true
+            if facet in search_opts and search_opts[facet] and search_opts[facet][0]:
                 solr_facet = self.form.solr_field(facet)
                 # filter the query: facet matches any of the terms
                 sqs = sqs.filter(**{'%s__in' % solr_facet: search_opts[facet]})
@@ -274,7 +276,7 @@ class ReferenceListView(ListView):
         # look over form fields that map to facets
         for facet in self.form.facet_inputs:
             # check if a value is set for this facet
-            if facet in search_opts and search_opts[facet]:
+            if facet in search_opts and search_opts[facet] and search_opts[facet][0]:
                 solr_facet = self.form.solr_field(facet)
                 # filter the query: facet matches any of the terms
                 sqs = sqs.filter(**{'%s__in' % solr_facet: search_opts[facet]})

@@ -204,7 +204,7 @@ class InterventionListView(ListView):
 
         for facet in self.form.facet_inputs:
             # check if a value is set for this facet
-            if facet in search_opts and search_opts[facet]:
+            if facet in search_opts and search_opts[facet] and search_opts[facet][0]:
                 solr_facet = self.form.solr_field(facet)
                 # filter the query: facet matches any of the terms
                 sqs = sqs.filter(**{'%s__in' % solr_facet: search_opts[facet]})
