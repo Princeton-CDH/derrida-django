@@ -289,14 +289,39 @@
 }
 
 #books-detail {
-
   .collection .collection__item {
-    @include grid-column(4);
-    margin-left: 0;
+    display: grid;
+    
+    &.reference { // references tab
+      width: 100%;
+      grid-template-columns: repeat(9, 1fr);
+      grid-gap: 30px;
+      grid-template-areas: "body body body body body body body image image";
 
-    @include grid-media($large-medium-viewport-grid) {
-      @include grid-column(12);
-      margin-left: 0;
+      .item__image {
+        grid-area: image;
+        width: 100%;
+      }
+    
+      .item__body {
+        grid-area: body;
+        width: 100%;
+      }
+    }
+    &.book { // related books (bibliography tab)
+      grid-template-rows: 200px 1fr;
+      grid-template-areas: "image"
+                           "body";
+
+      .item__image {
+        grid-area: image;
+        width: 100%;
+      }
+    
+      .item__body {
+        grid-area: body;
+        width: 100%;
+      }
     }
   }
 }
