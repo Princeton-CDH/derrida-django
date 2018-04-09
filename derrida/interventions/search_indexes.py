@@ -13,7 +13,7 @@ from derrida.interventions.models import Intervention
 #   number of annotations (?)
 
 class InterventionIndex(indexes.SearchIndex, indexes.Indexable):
-    text = indexes.CharField(document=True, use_template=True, stored=True)
+    text = indexes.CharField(document=True, use_template=True, stored=False)
     ### annotation details
 
     #: annotation or insertion (all annotation for now)
