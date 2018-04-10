@@ -88,7 +88,7 @@ class ReferenceIndex(indexes.SearchIndex, indexes.Indexable):
     #: canvas id for detail page view, if view available for book page
     page_canvas_id = indexes.CharField(null=True)
     # - related instance and work info
-    #: Title of instance to which citation points; :method:`derrida.books.models.Instance.display_title`
+    #: Title of instance to which citation points; :meth:`derrida.books.models.Instance.display_title`
     instance_title = indexes.CharField(model_attr='instance__display_title',
         faceted=True)
     instance_title_isort = indexes.CharField(model_attr='instance__display_title')
