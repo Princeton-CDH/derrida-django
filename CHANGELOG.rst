@@ -3,6 +3,57 @@
 CHANGELOG
 =========
 
+0.9 (Library works and references)
+----------------------------------
+
+Library works
+~~~~~~~~~~~~~
+
+* As a record editor, I want to mark a copy of edition in order to differentiate when two exact copies were in Derrida's library.
+* As a user, I want to view a paginated list of books in Derrida's library that are cited in Derrida's works so that I can engage with the materials he referenced in his writing.
+* As a user, I want to filter the list of books cited in Derrida's works so that I can narrow the list based on my interests.
+* As a user, I want to see an indication of which library books in the list are annotated so I can easily identify books with annotations.
+* As a user, I want to change how the list of books is sorted so that I can browse the list in different ways.
+* As a user looking at a single book in the library, I want to see a list of other copies and editions of the same work so that I can see all the versions Derrida cited.
+* As a user looking at a single book in the library, I want to see a gallery of images for that book so that I see what it looks like and see sample annotated pages.
+* As a user, I want to optionally select one content type so that I can restrict my search to a single set of materials on the site.
+* As a user, I want to search across library works, references, interventions, and essays so that I can find content that interests me across types of material.
+* As an admin I need a way to take down book or page images so that I can comply quickly with any requests from copyright holders.
+* As an admin, I want to edit content pages so that I can manage and update site content without developer assistance.
+* As a user I want to see a larger view of book images with any captured annotations so that I can see images in more detail.
+* As a user, I want to be able to search on French terms with or without accents so that I can easily find items with French text.
+* As an admin, I want to edit descriptions for dynamic list pages so that I can update wording without developer intervention.
+* As an admin, I want to manage pages in site navigation so I can update order and labels without developer intervention.
+* As an admin, I want to create and edit outwork content so that I can post essays and other content on the site.
+* As a user, I want to see the bibliographic details for a single book in Derrida's library so I can see what edition it is and where to get it.
+
+References and interventions
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+* As a record editor, I want to document page ranges for chapters in Derrida's works so that references on the site can be filtered and displayed by chapter.
+* As a user, I want to view a paginated list of references in Derrida's works so that I can see the extent and range of references he made to materials in his library
+* As a user, I want to see a visualization of references by chapter in Derrida's work so that I can get a sense of how references are distributed through the work.
+* As a user, I want to see a visualization of references by author of referenced work so that I can get a sense of distribution by cited author.
+* As a user looking at a single book, I want to see the references to that work so I can get a sense of how Derrida used it.
+* As a user, I want to filter the list of references so that I can narrow the results based on my interests.
+* As a user, I want to change how the list of references is sorted so that I can browse the list in different ways.
+* As a user searching across all site materials, I want to access all results for a single kind of item so that I can see more results.
+* As a user searching library works or references, I want to use the same filters and sort options as when I browse so that I can narrow my search results.
+* As a user, I want to filter intervention search results so that I can narrow the results by aspects of the annotation or annotated work.
+* As a user looking at a single book, I want the option to sort references by page order in Derrida work or referenced book so that I can see them in either order.
+* As a user, I should only see large images of annotated pages, overview images, and insertions because the material is still under copyright.
+* As a user, I want to search across interventions so I can see the kinds of marks and other interventions made in Derrida's Library.
+* As a user, I want to filter intervention search results so that I can narrow the results by aspects of the annotation or annotated work.
+* As a user, I want the option to sort interventions by author or title of annotated work so I can look at them in different ways.
+* As a user I want to visualize and filter years by range so I can get an idea of the distribution and filter items by ranges of years.
+* As a user, I want a way to link directly to a specific annotation so that I can cite or share that annotation.
+
+Other improvements
+~~~~~~~~~~~~~~~~~~
+* Migrate IIIF canvas urls from plum to figgy (Princeton University Library IIIF service)
+* Migrate books to reassociate collection references with book section by chapter
+* Serve IIIF images based on nearest pre-generated size from IIIF server
+
 0.8.1
 -----
 Maintenance release to provide needed migration
