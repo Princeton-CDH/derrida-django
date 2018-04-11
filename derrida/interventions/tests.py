@@ -17,7 +17,9 @@ import pytest
 
 from derrida.books.models import Instance, Language
 from derrida.people.models import Person
-from .models import Tag, INTERVENTION_TYPES, Intervention, get_default_intervener
+from derrida.interventions.models import Tag, INTERVENTION_TYPES, \
+    Intervention, get_default_intervener
+from derrida.interventions.search_indexes import InterventionIndex
 
 
 class TestTagQuerySet(TestCase):
@@ -857,3 +859,9 @@ class TestInterventionSearchIndex(TestCase):
         assert note.quote in text
         assert str(note.quote_language) in text
         assert str(note.author) in text
+
+    def test_prepare_annotation_author(self):
+        inter_index = InterventionIndex()
+        note = Intervention.objects.create(uri=self.canvas.uri, canvas=self.canvas)
+        assert inter_index.prepare_annotation_author(note) == \
+            note.author.firstname_last
