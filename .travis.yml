@@ -23,7 +23,7 @@ install:
 - python -c "import uuid; print('SECRET_KEY = \'%s\'' % uuid.uuid4())" >> derrida/local_settings.py
 before_script:
 - SOLR_VERSION=$SOLR_VERSION SOLR_CORE=$SOLR_CORE bash ci/config_solr.sh
-- python manage.py build_solr_schema --configure-directory=solr-$SOLR_VERSION/server/solr/$SOLR_CORE/conf
+- python manage.py build_solr_schema --configure-directory=downloads/solr-$SOLR_VERSION/server/solr/$SOLR_CORE/conf
   --reload-core $SOLR_CORE
 before_cache:
 - rm -rf downloads/solr-${SOLR_VERSION}/
