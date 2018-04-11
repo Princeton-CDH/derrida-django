@@ -860,6 +860,19 @@ class TestInterventionSearchIndex(TestCase):
         assert str(note.quote_language) in text
         assert str(note.author) in text
 
+    def test_index_querysets(self):
+        inter_index = InterventionIndex()
+        note = Intervention.objects.create(uri=self.canvas.uri, canvas=self.canvas)
+        qs = inter_index.index_queryset(note)
+        # note has an Instance so it should be returned
+        assert qs.count() == 1
+        assert qs[0] == note
+        self.instance.digital_edition = None
+        self.instance.save()
+        # now note does not have an Instance and so should not be returned
+        qs = inter_index.index_queryset(note)
+        assert not qs.exists()
+
     def test_prepare_annotation_author(self):
         inter_index = InterventionIndex()
         note = Intervention.objects.create(uri=self.canvas.uri, canvas=self.canvas)
