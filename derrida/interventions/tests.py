@@ -8,6 +8,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
 from django.core.cache import cache
 from django.db.models import Max, Min
+from django.template.loader import get_template
 from django.test import TestCase, override_settings
 from django.urls import reverse
 from djiffy.models import Canvas, Manifest
@@ -816,3 +817,43 @@ class TestGetDefaultIntervener(TestCase):
         self.derrida.delete()
         derrida = get_default_intervener()
         assert not derrida
+
+
+class TestInterventionSearchIndex(TestCase):
+    fixtures = ['sample_work_data']
+
+    def setUp(self):
+        self.manif = Manifest.objects.create(short_id='bk123', label='Foobar')
+        self.canvas = Canvas.objects.create(
+            label='P1',
+            short_id='pg1',
+            order=0,
+            manifest=self.manif,
+            uri='http://so.me/iiif/id')
+        self.instance = Instance.objects.get(work__short_title__contains="La vie")
+        self.instance.digital_edition = self.manif
+        self.instance.save()
+
+    def test_text_template(self):
+        note = Intervention.objects.create(uri=self.canvas.uri, canvas=self.canvas)
+        doodle = Tag.objects.create(name='doodle')
+        nice_doodle = Tag.objects.create(name='nice doodle')
+
+        tpl = get_template('search/indexes/interventions/intervention_text.txt')
+        text = tpl.render({'object': note})
+        # only author is set for template
+        assert str(note.author) in text
+        # set values that are reflected in template
+        note.tags.set([doodle, nice_doodle])
+        note.text = 'Un griffoner'
+        note.text_translation = 'A scribble'
+        note.quote = 'Some anchor text'
+        note.quote_language = Language.objects.get(name='French')
+        text = tpl.render({'object': note})
+        assert 'doodle' in text
+        assert 'nice doodle' in text
+        assert note.text in text
+        assert note.text_translation in text
+        assert note.quote in text
+        assert str(note.quote_language) in text
+        assert str(note.author) in text
