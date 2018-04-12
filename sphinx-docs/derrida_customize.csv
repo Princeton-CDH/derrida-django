@@ -29,9 +29,10 @@ module|footnotes|#342140|footnotes_footnote
 module|people|#BFA778|people_person
 module|places|#422E14|places_place
 module|interventions|#C70039|interventions_intervention
+module|outwork|#003791|outwork_outwork
 module|djiffy|#0EE1D1|djiffy_manifest
 module|annotatorstore|#6E5E8F|annotator_store_annotation
-
+module|mezzanine|#1b3f26|pages_page
 
 #This next line lets you license your diagram under the copyright(or copyleft) of your choice
 #The license will display in the bottom left corner
@@ -58,6 +59,7 @@ books_instance_pub_place|bibliography|
 books_instancecatalogue|bibliography|
 books_instancecreator|bibliography|
 books_instancelanguage|bibliography|
+books_instance_suppressed_images|bibliography|
 books_journal|bibliography|
 books_language|bibliography|
 books_subject|bibliography|
@@ -66,19 +68,31 @@ books_personbook|people|
 books_personbookrelationshiptype|people|
 books_publisher|bibliography|
 books_work|bibliography|
+books_derridaworksection|bibliography|
 books_work_authors|bibliography|
 books_worklanguage|bibliography|
 books_worksubject|bibliography|
 books_derridawork|citation|
 books_reference|citation|
 books_referencetype|citation|
+books_reference_canvases|citation|
+books_reference_interventions|citation|
 django_admin_log|django|
 django_cas_ng_proxygrantingticket|django|
 django_site|django|
 django_cas_ng_sessionticket|django|
+django_comment_flags|django|
 django_content_type|django|
 django_migrations|django|
 django_session|django|
+django_redirect|django|
+django_comments|django|
+conf_setting|django|
+core_sitepermission_sites|django|
+core_sitepermission|django|
+generic_rating|django|
+generic_keyword|django|
+generic_assignedkeyword|django|
 djiffy_canvas|djiffy|
 djiffy_manifest|djiffy|
 footnotes_bibliography|footnotes|
@@ -92,3 +106,9 @@ people_relationship|people|
 people_relationshiptype|people|
 people_residence|places|
 places_place|places|
+pages_link|mezzanine|
+pages_page|mezzanine|
+pages_richtextpage|mezzanine|
+generic_threadedcomment|mezzanine|
+outwork_outwork|outwork|
+
