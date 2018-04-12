@@ -12,7 +12,7 @@ unidecode
 pucas>=0.5
 # unreleased py3 piffle currently needs to be required explicitly
 git+https://github.com/Princeton-CDH/piffle.git@feature/python3-compatibility#egg=piffle
-git+https://github.com/Princeton-CDH/djiffy.git@0.4#egg=djiffy
+git+https://github.com/Princeton-CDH/djiffy.git@0.3#egg=djiffy
 annotator_store>=0.6
 viapy
 #django-haystack
