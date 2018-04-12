@@ -843,6 +843,8 @@ class TestInterventionSearchIndex(TestCase):
 
         tpl = get_template('search/indexes/interventions/intervention_text.txt')
         text = tpl.render({'object': note})
+        # no empty values should generate the string "None"
+        assert 'None' not in text
         # only author is set for template
         assert str(note.author) in text
         # set values that are reflected in template
