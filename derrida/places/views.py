@@ -19,7 +19,7 @@ class GeonamesLookup(autocomplete.Select2ListView):
     Currently restricted to staff only.'''
 
     def get(self, request, *args, **kwargs):
-        """"Return option list json response."""
+        """Return option list json response."""
         geo_api = GeoNamesAPI()
         results = geo_api.search(self.q, max_rows=50)
         return JsonResponse({
@@ -35,6 +35,7 @@ class GeonamesLookup(autocomplete.Select2ListView):
         })
 
     def get_label(self, item):
+        '''Display country name as part of label for context.'''
         # display country for context, if available
         if 'countryName' in item:
             return '''%(name)s, %(countryName)s''' % item

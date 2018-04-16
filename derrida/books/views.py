@@ -414,6 +414,9 @@ class SearchView(TemplateView):
     max_per_type = 3
 
     def get(self, *args, **kwargs):
+        '''
+        Process form for :class:`SearchView`.
+        '''
         # ignore page number when checking if options are set
         form_opts = self.request.GET.copy()
         try:
@@ -443,6 +446,7 @@ class SearchView(TemplateView):
         return super(SearchView, self).get(*args, **kwargs)
 
     def get_context_data(self, **kwargs):
+        '''Retrieve Solr queries for :class:`SearchView` context.'''
         search_opts = self.form.cleaned_data
         sqs = SearchQuerySet().filter()
 
@@ -475,6 +479,10 @@ class CanvasDetail(DetailView):
     template_name = 'books/public_canvas_detail.html'
 
     def get_object(self, queryset=None):
+        '''
+        Limit canvas detail view to those with
+        :class:`derrida.interventions.models.Intervention` objects associated.
+        '''
         self.instance = get_object_or_404(Instance, slug=self.kwargs['slug'])
         canvas = self.instance.images() \
             .filter(short_id=self.kwargs['short_id']).first()
@@ -487,6 +495,9 @@ class CanvasDetail(DetailView):
             raise Http404
 
     def get_context_data(self, *args, **kwargs):
+        '''
+        Set extra context for :class:`CanvasDetail` view.
+        '''
         context = super(CanvasDetail, self).get_context_data(*args, **kwargs)
         context.update({
             'instance': self.instance,
@@ -511,6 +522,10 @@ class CanvasSuppress(FormView):
         return super(CanvasSuppress, self).dispatch(*args, **kwargs)
 
     def get(self, *args, **kwargs):
+        '''
+        Return 303 for suppressed canvas and redirect to detail view
+        for :class:`derria.books.models.Instance`.
+        '''
         # no get display; redirect to book detail
         response = HttpResponseRedirect(reverse('books:detail',
             kwargs={'slug': self.kwargs['slug']}))
@@ -518,6 +533,7 @@ class CanvasSuppress(FormView):
         return response
 
     def form_valid(self, form):
+        '''Custom form validation for canvas surpress form.'''
         # process valid POSTed form data
         formdata = form.cleaned_data
         instance = get_object_or_404(Instance, slug=self.kwargs['slug'])
@@ -546,6 +562,10 @@ class ProxyView(View):
     # adapted from the Readux codebase (readux.books.views)
 
     def get(self, request, *args, **kwargs):
+        '''
+        Set headers for image requests to :class:`ProxyView`. Ensures
+        HTTP cache headers are set.
+        '''
         url = self.get_proxy_url(*args, **kwargs)
         # use headers to allow browsers to cache downloaded copies
         headers = {}
@@ -586,6 +606,9 @@ class ProxyView(View):
         return local_response
 
     def head(self, request, *args, **kwargs):
+        '''
+        Proxy HTTP headers for image.
+        '''
         url = self.get_proxy_url(*args, **kwargs)
         remote_response = requests.head(url)
         response = HttpResponse()
@@ -602,6 +625,7 @@ class CanvasImageByPageNumber(View):
     the thumbnail for the Item if there is one.  404 if not found or
     the Instance has no digital edition associated.'''
     def get(self, request, *args, **kwargs):
+        '''Return a canvas looked up by page number on GET request.'''
         self.instance = get_object_or_404(Instance, slug=self.kwargs['slug'])
         # look up canvas for requested page number in this item
         page = 'p. %s' % self.kwargs['page_num']

@@ -318,6 +318,7 @@ class Instance(Notable):
             ' %s' % self.copy if self.copy else '')
 
     def get_absolute_url(self):
+        '''URL for this :class:`Instance` on the website.'''
         return reverse('books:detail', kwargs={'slug': self.slug})
 
     def generate_base_slug(self):

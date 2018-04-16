@@ -60,8 +60,10 @@ class RangeSolrSearchQuery(SolrSearchQuery):
         return search_kwargs
 
     def post_process_facets(self, results):
-        # extend post processing logic to include facet range data
-        # in returned facets
+        '''
+        Extend post processing logic to include facet range data in returned
+        facets.
+        '''
         facets = super(RangeSolrSearchQuery, self).post_process_facets(results)
         if 'facet_ranges' in results:
             # copy facet range data into existing facet data
@@ -119,6 +121,7 @@ class RangeSolrEngine(SolrEngine):
 
 
 def facet_sort_ignoreaccents(facets, *fields):
+    '''Update alpha facet so that sorting ignores accents.'''
     # update alpha facet so that sorting ignores accents
     # (can't be done in solr because then facets would display without accents)
     for field in fields:

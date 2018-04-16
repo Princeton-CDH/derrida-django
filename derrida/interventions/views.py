@@ -48,6 +48,7 @@ class LoginPermissionRequired(PermissionRequiredMixin):
     # user is not authenticated; otherwise redirect to login page normally
     # adapted from https://github.com/brack3t/django-braces/issues/88
     def handle_no_permission(self):
+        '''Redirect to login url or raise 403.'''
         if self.request and self.request.user.is_authenticated():
             raise PermissionDenied
         return super(LoginPermissionRequired, self).handle_no_permission()

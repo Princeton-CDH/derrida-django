@@ -147,6 +147,7 @@ class Intervention(BaseAnnotation):
         super(Intervention, self).save()
 
     def is_verbal(self):
+        '''Return whether a :class:`Intervention` has a verbal component.'''
         return bool(self.text)
     # Sorts on the binary of whether an intervention does or does not
     # have text
@@ -154,9 +155,11 @@ class Intervention(BaseAnnotation):
     is_verbal.admin_order_field = 'text'
 
     def is_annotation(self):
+        '''Return whether :class:`Intervention` object is an annotation.'''
         return self.intervention_type == INTERVENTION_TYPES.ANNOTATION
 
     def is_insertion(self):
+        '''Return whether :class:`Intervention` object is an insersetion.'''
         return self.intervention_type == INTERVENTION_TYPES.INSERTION
 
     @property
@@ -200,6 +203,10 @@ class Intervention(BaseAnnotation):
     img_info_to_iiif = {'w': 'width', 'h': 'height', 'x': 'x', 'y': 'y'}
 
     def iiif_image_selection(self):
+        '''
+        Generate a IIIF image selection for a :class:`Intervention` if it
+        image selection information is present and a canvas is associated.
+        '''
         # if image selection information is present in annotation
         # and canvas is associated, generated a IIIF image for the
         # selected portion of the canvas
@@ -214,6 +221,9 @@ class Intervention(BaseAnnotation):
             return self.canvas.image.region(percent=True, **img_selection)
 
     def admin_thumbnail(self):
+        '''
+        Provide an admin thumbnail image of associated IIIF image selection.
+        '''
         img_selection = self.iiif_image_selection()
         # if image selection is available, display small thumbnail
         if img_selection:
