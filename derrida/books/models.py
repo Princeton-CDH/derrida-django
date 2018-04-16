@@ -92,7 +92,7 @@ class OwningInstitution(Named, Notable, InstanceCount):
 
 
 class Journal(Named, Notable):
-    '''List of associated journals for use with "book" objects'''
+    '''List of associated journals for items published as journal articles'''
     pass
 
 
@@ -678,7 +678,7 @@ class DerridaWorkSection(models.Model):
 
 
 class ReferenceType(Named, Notable):
-    '''Type of reference, i.e. citation, quotation, foonotes, epigraph, etc.'''
+    '''Type of reference, i.e. citation, quotation, footnotes, epigraph, etc.'''
     pass
 
 
