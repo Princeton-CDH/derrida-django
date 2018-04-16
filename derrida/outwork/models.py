@@ -26,5 +26,5 @@ class Outwork(Page, RichText):
         return '/'.join(['outwork', str(year), slug])
 
     def is_published(self):
+        '''Return whether the :class:`Outwork` is published.'''
         return self.status == CONTENT_STATUS_PUBLISHED
-

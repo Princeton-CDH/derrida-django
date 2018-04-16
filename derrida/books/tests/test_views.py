@@ -2,7 +2,7 @@
 import datetime
 import json
 import pytest
-from unittest.mock import patch
+from unittest.mock import call, Mock, patch
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -22,7 +22,7 @@ from derrida.books import views
 from derrida.books.forms import RangeWidget, RangeField
 from derrida.books.models import Instance, Reference, DerridaWorkSection
 from derrida.interventions.models import Intervention, INTERVENTION_TYPES
-
+from derrida.outwork.models import Outwork
 
 #: override_settings and use test haystack connection
 USE_TEST_HAYSTACK = override_settings(
@@ -940,3 +940,127 @@ def test_range_field():
     assert RangeField().compress([100, None]) == '100-'
     assert RangeField().compress([None, 250]) == '-250'
     assert RangeField().compress([100, 250]) == '100-250'
+
+
+@USE_TEST_HAYSTACK
+class TestSearchView(TestCase):
+
+    @pytest.mark.haystack
+    def test_get(self):
+        search_view = reverse('books:search')
+        # no querystring, should return 200
+        response = self.client.get(search_view)
+        assert response.status_code == 200
+        self.assertContains(response, 'Search Results')
+        # handles 'all'
+        response = self.client.get(search_view,
+            {'content_type': 'all', 'query': 'foo'})
+        assert response.status_code == 200
+        self.assertContains(response, 'Search Results')
+        # handles all of the search_opts for different content types
+        # with redirects
+        opt_url_map = {
+            'book': reverse('books:list'),
+            'reference': reverse('books:reference-list'),
+            'intervention': reverse('interventions:list'),
+            'outwork': reverse('outwork:list')
+        }
+        for key, value in opt_url_map.items():
+            response = self.client.get(search_view,
+                {'content_type': key, 'query': 'foo'})
+            assert response.status_code == 303
+            assert response.url == '%s?query=foo' % value
+
+    @patch('derrida.books.views.SearchQuerySet')
+    def test_get_context_data(self, mock_sqs):
+        # Mock SQS to avoid calls to Solr in this case
+        # and large fixtures
+        view = views.SearchView()
+        # mock form info
+        view.form = Mock()
+        view.form.cleaned_data = {'query': ''}
+
+        # mock search querysets and give values to __getitem__ and count
+        # to pass values to context dictionary to check
+        sqs = mock_sqs().filter().models().all()
+        fake_obj = Mock()
+        sqs.__getitem__.return_value = [fake_obj]
+        sqs.count.return_value = 50
+
+        context = view.get_context_data()
+
+        # querysets are called with models selected
+        assert mock_sqs().filter().models.call_args_list == [
+            call(),  # the initial call in creating the mock
+            call(Instance),
+            call(Reference),
+            call(Intervention),
+            call(Outwork),
+        ]
+        # filter only called once and not chained, since no query string
+        assert mock_sqs().filter.called
+        # slice called for each __list item in the dictionary below
+        # called with view setting for max per type
+        assert sqs.__getitem__.call_count == 4
+        sqs.__getitem__.\
+            assert_called_with(slice(None, view.max_per_type, None))
+
+        # check dict that:
+        # - count method was called in each instance
+        # - returned querysets had __getitem__ called and set its value
+        # - empty query was passed in
+        assert context == {
+            'query': '',
+            'instance_list': [fake_obj],
+            'instance_count': 50,
+            'reference_list': [fake_obj],
+            'reference_count': 50,
+            'intervention_list': [fake_obj],
+            'intervention_count': 50,
+            'outwork_list': [fake_obj],
+            'outwork_count': 50
+        }
+
+        # now with a query
+        # only difference is that filter should be chained
+        view.form.cleaned_data = {'query': 'foo'}
+        sqs = mock_sqs().filter().filter().models().all()
+        fake_obj = Mock()
+        sqs.__getitem__.return_value = [fake_obj]
+        sqs.count.return_value = 50
+
+        context = view.get_context_data()
+
+        # filter().filter called and called with the query string
+        assert mock_sqs().filter().filter.called
+        mock_sqs().filter().filter.assert_called_with(text='foo')
+
+        # querysets are called with models selected
+        assert mock_sqs().filter().filter().models.call_args_list == [
+            call(),  # the initial call in creating the mock
+            call(Instance),
+            call(Reference),
+            call(Intervention),
+            call(Outwork),
+        ]
+        # slice called for each __list item in the dictionary below
+        # called with view setting for max per type
+        assert sqs.__getitem__.call_count == 4
+        sqs.__getitem__.\
+            assert_called_with(slice(None, view.max_per_type, None))
+
+        # check dict that:
+        # - count method was called in each instance
+        # - returned querysets had __getitem__ called and set its value
+        # - empty query was passed in
+        assert context == {
+            'query': 'foo',
+            'instance_list': [fake_obj],
+            'instance_count': 50,
+            'reference_list': [fake_obj],
+            'reference_count': 50,
+            'intervention_list': [fake_obj],
+            'intervention_count': 50,
+            'outwork_list': [fake_obj],
+            'outwork_count': 50
+        }

@@ -48,6 +48,7 @@ class LoginPermissionRequired(PermissionRequiredMixin):
     # user is not authenticated; otherwise redirect to login page normally
     # adapted from https://github.com/brack3t/django-braces/issues/88
     def handle_no_permission(self):
+        '''Redirect to login url or raise 403.'''
         if self.request and self.request.user.is_authenticated():
             raise PermissionDenied
         return super(LoginPermissionRequired, self).handle_no_permission()
@@ -96,7 +97,7 @@ class CanvasAutocomplete(LoginPermissionRequired, djiffy_views.CanvasAutocomplet
     :class:`dal.autocomplete.Select2QuerySetView` allows a ``forward``
     parameter that passes JSON object as a string after as a query string
     named ``forward``.
-    :method:`dal.autocomplete.Select2QuerySetView.forwarded.get()` can
+    :meth:`dal.autocomplete.Select2QuerySetView.forwarded.get()` can
     access those variables easily.
 
     The autocomplete looks for an instance primary key passed with the key
@@ -131,7 +132,7 @@ class InterventionAutocomplete(LoginPermissionRequired, autocomplete.Select2Quer
     :class:`dal.autocomplete.Select2QuerySetView` allows a ``forward``
     parameter that passes JSON object as a string after as a querystring
     named ``forward``.
-    :method:`dal.autocomplete.Select2QuerySetView.forwarded.get()` can
+    :meth:`dal.autocomplete.Select2QuerySetView.forwarded.get()` can
     access those variables easily.
 
     The autocomplete looks for an instance primary key passed with the key

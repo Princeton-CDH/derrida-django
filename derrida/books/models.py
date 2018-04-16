@@ -30,6 +30,10 @@ class WorkCount(models.Model):
         abstract = True
 
     def work_count(self):
+        '''
+        Return number of associated :class:`derrida.books.models.Works` for
+        a given object as an HTML snippet for the Django admin.
+        '''
         base_url = reverse('admin:books_work_changelist')
         return mark_safe('<a href="%s?%ss__id__exact=%s">%s</a>' % (
                             base_url,
@@ -50,6 +54,10 @@ class InstanceCount(models.Model):
         abstract = True
 
     def instance_count(self):
+        '''
+        Return a count of associated :class:`derrida.books.models.Instance` for
+        object as an HTML snippet for the Django admin.
+        '''
         base_url = reverse('admin:books_instance_changelist')
         return mark_safe('<a href="%s?%ss__id__exact=%s">%s</a>' % (
                             base_url,
@@ -92,7 +100,7 @@ class OwningInstitution(Named, Notable, InstanceCount):
 
 
 class Journal(Named, Notable):
-    '''List of associated journals for use with "book" objects'''
+    '''List of associated journals for items published as journal articles'''
     pass
 
 
@@ -134,6 +142,10 @@ class Work(Notable):
     author_names.admin_order_field = 'authors__authorized_name'
 
     def instance_count(self):
+        '''
+        Return count of :class:`derrida.book.models.Instance` associated with
+        :class:`Work` formatted as an HTML snippet for the Django admin.
+        '''
         base_url = reverse('admin:books_instance_changelist')
         return mark_safe('<a href="%s?%ss__id__exact=%s">%s</a>' % (
                             base_url,
@@ -150,6 +162,10 @@ class InstanceQuerySet(models.QuerySet):
     edition'''
 
     def with_digital_eds(self):
+        '''
+        Return :class:`derrida.books.models.Instance` queryset filtered by
+        having a digital edition.
+        '''
         return self.exclude(digital_edition__isnull=True)
 
 
@@ -302,6 +318,7 @@ class Instance(Notable):
             ' %s' % self.copy if self.copy else '')
 
     def get_absolute_url(self):
+        '''URL for this :class:`Instance` on the website.'''
         return reverse('books:detail', kwargs={'slug': self.slug})
 
     def generate_base_slug(self):
@@ -678,7 +695,7 @@ class DerridaWorkSection(models.Model):
 
 
 class ReferenceType(Named, Notable):
-    '''Type of reference, i.e. citation, quotation, foonotes, epigraph, etc.'''
+    '''Type of reference, i.e. citation, quotation, footnotes, epigraph, etc.'''
     pass
 
 

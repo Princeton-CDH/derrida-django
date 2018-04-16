@@ -1,0 +1,346 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>derrida.books.search_indexes &#8212; Derrida 0.9-0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for derrida.books.search_indexes</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">haystack</span> <span class="k">import</span> <span class="n">indexes</span>
+<span class="kn">from</span> <span class="nn">derrida.books.models</span> <span class="k">import</span> <span class="n">Instance</span><span class="p">,</span> <span class="n">Reference</span><span class="p">,</span> <span class="n">DerridaWork</span>
+<span class="kn">import</span> <span class="nn">roman</span>
+
+
+<span class="c1"># Solr index needs to support:</span>
+<span class="c1"># Browse/search library books cited in DG</span>
+<span class="c1"># - Display thumbnail, title, author, year and copy</span>
+<span class="c1"># - Filter by date range, cited/not</span>
+<span class="c1"># - Sort by author, publication date</span>
+
+<div class="viewcode-block" id="InstanceIndex"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.search_indexes.InstanceIndex">[docs]</a><span class="k">class</span> <span class="nc">InstanceIndex</span><span class="p">(</span><span class="n">indexes</span><span class="o">.</span><span class="n">SearchIndex</span><span class="p">,</span> <span class="n">indexes</span><span class="o">.</span><span class="n">Indexable</span><span class="p">):</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">document</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">use_template</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">stored</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="c1">#: display title of book; :class:`derrida.books.models.Instance.display_title`</span>
+    <span class="n">display_title</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">model_attr</span><span class="o">=</span><span class="s1">&#39;display_title&#39;</span><span class="p">,</span> <span class="n">faceted</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1">#: sortable field for display title</span>
+    <span class="n">display_title_isort</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">model_attr</span><span class="o">=</span><span class="s1">&#39;display_title&#39;</span><span class="p">)</span>
+    <span class="c1">#: item type; :class:`derrida.books.models.Instance.item_type`</span>
+    <span class="n">item_type</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">model_attr</span><span class="o">=</span><span class="s1">&#39;item_type&#39;</span><span class="p">,</span> <span class="n">faceted</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1">#: copy letter, if any; :class:`derrida.books.models.Instance.copy`</span>
+    <span class="n">copy</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">model_attr</span><span class="o">=</span><span class="s1">&#39;copy&#39;</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1">#: author names in lastname, first for sort/facet; :class:`derrida.books.models.Work.authors`</span>
+    <span class="n">author</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">MultiValueField</span><span class="p">(</span><span class="n">model_attr</span><span class="o">=</span><span class="s1">&#39;work__authors__authorized_name&#39;</span><span class="p">,</span>
+        <span class="n">faceted</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1">#: non-multifield for first author to allow sorting by author</span>
+    <span class="n">author_isort</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1">#: author in firstname last for display; :class:`derrida.books.models.Work.authors`</span>
+    <span class="n">author_firstname_last</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">MultiValueField</span><span class="p">(</span><span class="n">model_attr</span><span class="o">=</span><span class="s1">&#39;work__authors__firstname_last&#39;</span><span class="p">,</span>
+        <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1">#: subjects associated with Instance; :class:`derrida.books.models.Work.subjects`</span>
+    <span class="n">subject</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">MultiValueField</span><span class="p">(</span><span class="n">model_attr</span><span class="o">=</span><span class="s1">&#39;work__subjects__name&#39;</span><span class="p">,</span>
+        <span class="n">faceted</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1">#: languages associated with Instance; :class:`derrida.books.models.Instance.languages`</span>
+    <span class="n">language</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">MultiValueField</span><span class="p">(</span><span class="n">model_attr</span><span class="o">=</span><span class="s1">&#39;languages__name&#39;</span><span class="p">,</span>
+        <span class="n">faceted</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1">#: place of publication; :class:`derrida.books.models.Instance.pub_place`</span>
+    <span class="n">pub_place</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">MultiValueField</span><span class="p">(</span><span class="n">model_attr</span><span class="o">=</span><span class="s1">&#39;pub_place__name&#39;</span><span class="p">,</span>
+        <span class="n">faceted</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1">#: original work languages; :class:`derrida.books.models.Work.languages`</span>
+    <span class="n">work_language</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">MultiValueField</span><span class="p">(</span><span class="n">model_attr</span><span class="o">=</span><span class="s1">&#39;work__languages__name&#39;</span><span class="p">,</span>
+        <span class="n">faceted</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1">#: original work year; :class:`derrida.books.models.Work.year`</span>
+    <span class="n">work_year</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">IntegerField</span><span class="p">(</span><span class="n">model_attr</span><span class="o">=</span><span class="s1">&#39;work__year&#39;</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1">#: copyright year of Instance; :class:`derrida.books.models.Instance.copyright_year`</span>
+    <span class="n">copyright_year</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">IntegerField</span><span class="p">(</span><span class="n">model_attr</span><span class="o">=</span><span class="s1">&#39;copyright_year&#39;</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1">#: print year of Instance; :class:`derrida.books.models.Instance.print_year`</span>
+    <span class="n">print_year</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">IntegerField</span><span class="p">(</span><span class="n">model_attr</span><span class="o">=</span><span class="s1">&#39;print_year&#39;</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1">#: sort/display year: print year if known; otherwise, copyright year.</span>
+    <span class="n">year</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">IntegerField</span><span class="p">(</span><span class="n">model_attr</span><span class="o">=</span><span class="s1">&#39;year&#39;</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1">#: gives work of Derrida (DerridaWork) in which this Instance is cited</span>
+    <span class="n">cited_in</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">MultiValueField</span><span class="p">(</span><span class="n">faceted</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1">#: whether the Instance is extant; :class:`derrida.books.models.Instance.is_extant`</span>
+    <span class="n">is_extant</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">FacetBooleanField</span><span class="p">(</span><span class="n">model_attr</span><span class="o">=</span><span class="s1">&#39;is_extant&#39;</span><span class="p">)</span>
+    <span class="c1">#: whether the Instance has annotations by Derrida; :class:`derrida.books.models.Instance.is_annotated`</span>
+    <span class="n">is_annotated</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">FacetBooleanField</span><span class="p">(</span><span class="n">model_attr</span><span class="o">=</span><span class="s1">&#39;is_annotated&#39;</span><span class="p">)</span>
+    <span class="c1">#: whether the Instance is digitized; :class:`derrida.books.models.Instance.digital_edition`</span>
+    <span class="n">digital_edition</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">FacetBooleanField</span><span class="p">(</span><span class="n">model_attr</span><span class="o">=</span><span class="s1">&#39;digital_edition&#39;</span><span class="p">)</span>
+    <span class="c1">#: the instance&#39;s url slug; :class:`derrida.books.models.Instance.slug`</span>
+    <span class="n">slug</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">model_attr</span><span class="o">=</span><span class="s1">&#39;slug&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="InstanceIndex.get_model"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.search_indexes.InstanceIndex.get_model">[docs]</a>    <span class="k">def</span> <span class="nf">get_model</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Instance</span></div>
+
+<div class="viewcode-block" id="InstanceIndex.prepare_author_isort"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.search_indexes.InstanceIndex.prepare_author_isort">[docs]</a>    <span class="k">def</span> <span class="nf">prepare_author_isort</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Return first author for author sort field.&#39;&#39;&#39;</span>
+        <span class="n">first_author</span> <span class="o">=</span> <span class="n">instance</span><span class="o">.</span><span class="n">work</span><span class="o">.</span><span class="n">authors</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">first_author</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">first_author</span><span class="o">.</span><span class="n">authorized_name</span></div>
+
+<div class="viewcode-block" id="InstanceIndex.prepare_cited_in"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.search_indexes.InstanceIndex.prepare_cited_in">[docs]</a>    <span class="k">def</span> <span class="nf">prepare_cited_in</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Return Derridaworks in which this instance is cited.&#39;&#39;&#39;</span>
+        <span class="c1"># return cited work once only;</span>
+        <span class="c1"># cheeck for references to this instance or any book sections</span>
+        <span class="c1"># it collects</span>
+        <span class="n">ref_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">ref</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">ref</span> <span class="ow">in</span> <span class="n">instance</span><span class="o">.</span><span class="n">reference_set</span><span class="o">.</span><span class="n">all</span><span class="p">()]</span>
+        <span class="n">ref_ids</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">ref</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">bksect</span> <span class="ow">in</span> <span class="n">instance</span><span class="o">.</span><span class="n">collected_set</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+                               <span class="k">for</span> <span class="n">ref</span> <span class="ow">in</span> <span class="n">bksect</span><span class="o">.</span><span class="n">reference_set</span><span class="o">.</span><span class="n">all</span><span class="p">()])</span>
+        <span class="c1"># use distinct to avoid needless repetition</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">dw</span><span class="o">.</span><span class="n">short_title</span> <span class="k">for</span> <span class="n">dw</span> <span class="ow">in</span>
+                <span class="n">DerridaWork</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">reference__in</span><span class="o">=</span><span class="n">ref_ids</span><span class="p">)</span><span class="o">.</span><span class="n">distinct</span><span class="p">()]</span></div></div>
+
+
+<div class="viewcode-block" id="ReferenceIndex"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.search_indexes.ReferenceIndex">[docs]</a><span class="k">class</span> <span class="nc">ReferenceIndex</span><span class="p">(</span><span class="n">indexes</span><span class="o">.</span><span class="n">SearchIndex</span><span class="p">,</span> <span class="n">indexes</span><span class="o">.</span><span class="n">Indexable</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Search index instance for :class:`derrida.books.models.Reference`&#39;&#39;&#39;</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">document</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">use_template</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">stored</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="c1">#: Short title for search form from :class:`~derrida.books.models.DerridaWork`</span>
+    <span class="n">derridawork</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">model_attr</span><span class="o">=</span><span class="s1">&#39;derridawork__short_title&#39;</span><span class="p">,</span> <span class="n">faceted</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1">#: Name value for the :class:`~derrida.books.models.ReferenceType` of citation</span>
+    <span class="n">reference_type</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">model_attr</span><span class="o">=</span><span class="s1">&#39;reference_type__name&#39;</span><span class="p">,</span>
+        <span class="n">faceted</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1">#: Page in derrida work; :attr:`derrida.books.models.Reference.derridawork_page`</span>
+    <span class="n">derridawork_page</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">IntegerField</span><span class="p">(</span><span class="n">model_attr</span><span class="o">=</span><span class="s1">&#39;derridawork_page&#39;</span><span class="p">)</span>
+    <span class="c1">#: Page location in derrida work; :attr:`derrida.books.models.Reference.derridawork_pageloc`</span>
+    <span class="n">derridawork_pageloc</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">model_attr</span><span class="o">=</span><span class="s1">&#39;derridawork_pageloc&#39;</span><span class="p">)</span>
+    <span class="c1">#: derrida work slug in derrida work; :attr:`derrida.books.models.DerridaWork.slug`</span>
+    <span class="n">derridawork_slug</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">model_attr</span><span class="o">=</span><span class="s1">&#39;derridawork__slug&#39;</span><span class="p">)</span>
+    <span class="c1">#: Cited page in referenced work; :attr:`derrida.books.models.Reference.book_page`</span>
+    <span class="n">book_page</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">model_attr</span><span class="o">=</span><span class="s1">&#39;book_page&#39;</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">faceted</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1">#: sort field for reference work page to sort page numbers correctly</span>
+    <span class="n">book_page_sort</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">IntegerField</span><span class="p">()</span>
+    <span class="c1">#: anchor text</span>
+    <span class="n">anchor_text</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">model_attr</span><span class="o">=</span><span class="s1">&#39;anchor_text&#39;</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1">#: ids for corresponding intervention</span>
+    <span class="n">interventions</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">MultiValueField</span><span class="p">(</span><span class="n">model_attr</span><span class="o">=</span><span class="s1">&#39;interventions__id&#39;</span><span class="p">)</span>
+    <span class="c1">#: has corresponding intervention</span>
+    <span class="n">corresponding_intervention</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">FacetBooleanField</span><span class="p">()</span>
+    <span class="c1">#: canvas id for detail page view, if view available for book page</span>
+    <span class="n">page_canvas_id</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1"># - related instance and work info</span>
+    <span class="c1">#: Title of instance to which citation points; :meth:`derrida.books.models.Instance.display_title`</span>
+    <span class="n">instance_title</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">model_attr</span><span class="o">=</span><span class="s1">&#39;instance__display_title&#39;</span><span class="p">,</span>
+        <span class="n">faceted</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">instance_title_isort</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">model_attr</span><span class="o">=</span><span class="s1">&#39;instance__display_title&#39;</span><span class="p">)</span>
+    <span class="c1">#: Instance authors for faceted filtering</span>
+    <span class="n">instance_author</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">MultiValueField</span><span class="p">(</span><span class="n">model_attr</span><span class="o">=</span><span class="s1">&#39;instance__work__authors__authorized_name&#39;</span><span class="p">,</span>
+        <span class="n">faceted</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1">#: Instance authors for display</span>
+    <span class="n">instance_author_firstname_last</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">MultiValueField</span><span class="p">(</span><span class="n">model_attr</span><span class="o">=</span><span class="s1">&#39;instance__work__authors__firstname_last&#39;</span><span class="p">,</span>
+        <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1">#: non-multifield for instance first author to allow sorting by author</span>
+    <span class="n">instance_author_isort</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">model_attr</span><span class="o">=</span><span class="s1">&#39;instance__work__authors__authorized_name&#39;</span><span class="p">,</span>
+        <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1">#: subjects for associated instance; :attr:`derrida.books.models.Instance.subjects`</span>
+    <span class="n">instance_subject</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">MultiValueField</span><span class="p">(</span><span class="n">model_attr</span><span class="o">=</span><span class="s1">&#39;instance__work__subjects__name&#39;</span><span class="p">,</span>
+        <span class="n">faceted</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1">#: languages for associated instance; :attr:`derrida.book.models.Instance.languages`</span>
+    <span class="n">instance_language</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">MultiValueField</span><span class="p">(</span><span class="n">faceted</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1">#: languages for the original work; :attr:`derrida.book.models.Work.languages`</span>
+    <span class="n">original_language</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">MultiValueField</span><span class="p">(</span><span class="n">model_attr</span><span class="o">=</span><span class="s1">&#39;instance__work__languages__name&#39;</span><span class="p">,</span>
+        <span class="n">faceted</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">instance_pub_place</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">MultiValueField</span><span class="p">(</span><span class="n">model_attr</span><span class="o">=</span><span class="s1">&#39;book__pub_place__name&#39;</span><span class="p">,</span>
+        <span class="n">faceted</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1">#: work year of the associated instance&#39;s work; :attr:`derrida.books.models.Work.year`</span>
+    <span class="n">instance_work_year</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">IntegerField</span><span class="p">(</span><span class="n">model_attr</span><span class="o">=</span><span class="s1">&#39;instance__work__year&#39;</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1">#: copyright year of associated instance; :attr:`derrida.books.models.Instance.copyright_year`</span>
+    <span class="n">instance_copyright_year</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">IntegerField</span><span class="p">(</span><span class="n">model_attr</span><span class="o">=</span><span class="s1">&#39;instance__copyright_year&#39;</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1">#: print year of associated instance; :attr:`derrida.books.models.Instance.r_year`</span>
+    <span class="n">instance_print_year</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">IntegerField</span><span class="p">(</span><span class="n">model_attr</span><span class="o">=</span><span class="s1">&#39;instance__print_year&#39;</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1">#: is instance extant in PU collection?; :attr:`derrida.books.models.Instance.is_extant`</span>
+    <span class="n">instance_is_extant</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">FacetBooleanField</span><span class="p">(</span><span class="n">model_attr</span><span class="o">=</span><span class="s1">&#39;book__is_extant&#39;</span><span class="p">)</span>
+    <span class="c1">#: is instance annotated?; :attr:`derrida.books.models.Instance.is_annotated`</span>
+    <span class="n">instance_is_annotated</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">FacetBooleanField</span><span class="p">(</span><span class="n">model_attr</span><span class="o">=</span><span class="s1">&#39;book__is_annotated&#39;</span><span class="p">)</span>
+    <span class="c1">#: instance slug, for generating urls and filtering by instance</span>
+    <span class="n">instance_slug</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">model_attr</span><span class="o">=</span><span class="s1">&#39;book__slug&#39;</span><span class="p">)</span>
+    <span class="c1">#: instance copy, for distinguishing multiple copies of the same edition</span>
+    <span class="n">instance_copy</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">model_attr</span><span class="o">=</span><span class="s1">&#39;book__copy&#39;</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1">#: boolean indicating if instance has digital edition</span>
+    <span class="n">instance_digital_edition</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">FacetBooleanField</span><span class="p">(</span><span class="n">model_attr</span><span class="o">=</span><span class="s1">&#39;book__digital_edition&#39;</span><span class="p">)</span>
+    <span class="c1">#: instance collection title, for references to book sections</span>
+    <span class="n">instance_collection_title</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">model_attr</span><span class="o">=</span><span class="s1">&#39;instance__collected_in__display_title&#39;</span><span class="p">,</span>
+        <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ReferenceIndex.get_model"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.search_indexes.ReferenceIndex.get_model">[docs]</a>    <span class="k">def</span> <span class="nf">get_model</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Reference</span></div>
+
+<div class="viewcode-block" id="ReferenceIndex.prepare_instance_author_isort"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.search_indexes.ReferenceIndex.prepare_instance_author_isort">[docs]</a>    <span class="k">def</span> <span class="nf">prepare_instance_author_isort</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reference</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Return first author for author sort field.&#39;&#39;&#39;</span>
+        <span class="n">first_author</span> <span class="o">=</span> <span class="n">reference</span><span class="o">.</span><span class="n">instance</span><span class="o">.</span><span class="n">work</span><span class="o">.</span><span class="n">authors</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">first_author</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">first_author</span><span class="o">.</span><span class="n">authorized_name</span></div>
+
+<div class="viewcode-block" id="ReferenceIndex.prepare_corresponding_intervention"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.search_indexes.ReferenceIndex.prepare_corresponding_intervention">[docs]</a>    <span class="k">def</span> <span class="nf">prepare_corresponding_intervention</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reference</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Return whether :class:`derrida.books.models.Reference` has a</span>
+<span class="sd">        corresponding :class:`derrida.interventions.models.Intervention`.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">reference</span><span class="o">.</span><span class="n">interventions</span><span class="o">.</span><span class="n">count</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="ReferenceIndex.prepare_page_canvas_id"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.search_indexes.ReferenceIndex.prepare_page_canvas_id">[docs]</a>    <span class="k">def</span> <span class="nf">prepare_page_canvas_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reference</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Return canvas short_id for first associated</span>
+<span class="sd">        :class:`derrida.interventions.models.Intervention`.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="n">reference</span><span class="o">.</span><span class="n">interventions</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="c1"># don&#39;t error on intervention without canvas</span>
+            <span class="c1"># (probably only exists in test data)</span>
+            <span class="k">if</span> <span class="n">reference</span><span class="o">.</span><span class="n">interventions</span><span class="o">.</span><span class="n">first</span><span class="p">()</span><span class="o">.</span><span class="n">canvas</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">reference</span><span class="o">.</span><span class="n">interventions</span><span class="o">.</span><span class="n">first</span><span class="p">()</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">short_id</span></div>
+
+<div class="viewcode-block" id="ReferenceIndex.prepare_instance_language"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.search_indexes.ReferenceIndex.prepare_instance_language">[docs]</a>    <span class="k">def</span> <span class="nf">prepare_instance_language</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reference</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Return language of :class:`derrida.books.models.Reference`&#39;s associated</span>
+<span class="sd">        :class:`derrida.books.models.Instannce`.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="c1"># use languages directly on this instance, if available (even if a</span>
+        <span class="c1"># book section or article)</span>
+        <span class="k">if</span> <span class="n">reference</span><span class="o">.</span><span class="n">instance</span><span class="o">.</span><span class="n">languages</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">lang</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">lang</span> <span class="ow">in</span> <span class="n">reference</span><span class="o">.</span><span class="n">instance</span><span class="o">.</span><span class="n">languages</span><span class="o">.</span><span class="n">all</span><span class="p">()]</span>
+        <span class="c1"># if no languages directly set and part of a collected work, use</span>
+        <span class="c1"># collection work languages</span>
+        <span class="k">if</span> <span class="n">reference</span><span class="o">.</span><span class="n">instance</span><span class="o">.</span><span class="n">collected_in</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">lang</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">lang</span> <span class="ow">in</span> <span class="n">reference</span><span class="o">.</span><span class="n">instance</span><span class="o">.</span><span class="n">collected_in</span><span class="o">.</span><span class="n">languages</span><span class="o">.</span><span class="n">all</span><span class="p">()]</span></div>
+
+<div class="viewcode-block" id="ReferenceIndex.prepare_book_page_sort"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.search_indexes.ReferenceIndex.prepare_book_page_sort">[docs]</a>    <span class="k">def</span> <span class="nf">prepare_book_page_sort</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reference</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Handle integer values and sort in page references, as well as Roman</span>
+<span class="sd">        numerals from introductions.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="c1"># if empty immediately return 0 for no sort</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">reference</span><span class="o">.</span><span class="n">book_page</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+        <span class="n">book_page</span> <span class="o">=</span> <span class="n">reference</span><span class="o">.</span><span class="n">book_page</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="c1"># ignore any back references to derridawork citation, e.g. (256a)</span>
+        <span class="n">book_page</span> <span class="o">=</span> <span class="n">book_page</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;)&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="c1"># split on &#39;-&#39; if it exists; just get first page of page range</span>
+        <span class="n">book_page</span> <span class="o">=</span> <span class="n">book_page</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="c1"># strip any trailing p or s</span>
+        <span class="n">book_page</span> <span class="o">=</span> <span class="n">book_page</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;ps&#39;</span><span class="p">)</span>
+
+        <span class="c1"># try converting to integer - should work in most cases</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">book_page</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="c1"># if that fails, check for a roman numeral</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># return a negative number so front matter pages (up to 500)</span>
+            <span class="c1"># will sort before pages with regular numbers.</span>
+            <span class="k">return</span> <span class="n">roman</span><span class="o">.</span><span class="n">fromRoman</span><span class="p">(</span><span class="n">book_page</span><span class="o">.</span><span class="n">upper</span><span class="p">())</span> <span class="o">-</span> <span class="mi">500</span>
+        <span class="k">except</span> <span class="n">roman</span><span class="o">.</span><span class="n">InvalidRomanNumeralError</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="c1"># if no conversion succeeded, return zero</span>
+        <span class="k">return</span> <span class="mi">0</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">Derrida</a></h1>
+
+
+
+<p class="blurb">Django web application for "Derrida's Margins" CDH project</p>
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=Princeton-CDH&repo=derrida-django&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+    
+
+<p>
+<a href="https://travis-ci.org/Princeton-CDH/derrida-django">
+    <img
+        alt="https://secure.travis-ci.org/Princeton-CDH/derrida-django.svg?branch=master"
+        src="https://secure.travis-ci.org/Princeton-CDH/derrida-django.svg?branch=master"
+    />
+</a>
+</p>
+
+
+
+
+    
+
+<p>
+<a href="https://codecov.io/github/Princeton-CDH/derrida-django">
+    <img
+    alt="https://codecov.io/github/Princeton-CDH/derrida-django/coverage.svg?branch=master"
+    src="https://codecov.io/github/Princeton-CDH/derrida-django/coverage.svg?branch=master"
+    />
+</a>
+</p>
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../architecture.html">Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../codedocs.html">Code Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Change Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../deploynotes.html">Deploy and Upgrade notes</a></li>
+</ul>
+
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, CDH @ Princeton & Trustees of Princeton University.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
