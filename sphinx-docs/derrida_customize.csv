@@ -53,30 +53,30 @@ auth_user|django|
 auth_user_groups|django|
 auth_user_user_permissions|django|
 books_creatortype|bibliography|
-books_instance|bibliography|
-books_instance_cited_in|bibliography|
+books_instance|bibliography|A particular instance or copy of an item in Derrida's library; could be a book section associated with another instance
+books_instance_cited_in|bibliography|Derrida works that cite this edition or instance
 books_instance_pub_place|bibliography|
-books_instancecatalogue|bibliography|
+books_instancecatalogue|bibliography|Catalog information to describe where the item is held
 books_instancecreator|bibliography|
-books_instancelanguage|bibliography|
-books_instance_suppressed_images|bibliography|
-books_journal|bibliography|
-books_language|bibliography|
-books_subject|bibliography|
-books_owninginstitution|bibliography|
-books_personbook|people|
-books_personbookrelationshiptype|people|
+books_instancelanguage|bibliography|Language of a particular instance, if different from a work (i.e. translation language)
+books_instance_suppressed_images|bibliography|Page images to be suppressed, to comply with copyright owner take-down request
+books_journal|bibliography|Journals, for association with items published as journal articles
+books_language|bibliography|Language that a book is written in or a language included in a book
+books_subject|bibliography|Subject categories for books
+books_owninginstitution|bibliography|Institution that owns the physical copy of the item
+books_personbook|people|Interactions or connections between books and people other than annotation.
+books_personbookrelationshiptype|people|Type of non-annotation relationship assocating a person with a book.
 books_publisher|bibliography|
-books_work|bibliography|
-books_derridaworksection|bibliography|
-books_work_authors|bibliography|
-books_worklanguage|bibliography|
-books_worksubject|bibliography|
-books_derridawork|citation|
-books_reference|citation|
-books_referencetype|citation|
-books_reference_canvases|citation|
-books_reference_interventions|citation|
+books_work|bibliography|Generic work information that applies to all instances of an item in Derrida's library
+books_work_authors|bibliography|Authors of a work
+books_worklanguage|bibliography|Language of a work
+books_worksubject|bibliography|Subjects of a work
+books_derridawork|citation|A work authored by Derrida (i.e. Of Grammatology)
+books_reference|citation|A reference in a work by Derrida
+books_referencetype|citation|Type of reference, i.e. citation, quotation, footnotes, epigraph, etc.
+books_derridaworksection|citation|Sections or chapters of a Derrida work; used to view references by section of the work
+books_reference_canvases|citation|Associated digitized pages
+books_reference_interventions|citation|Corresponding intervention
 django_admin_log|django|
 django_cas_ng_proxygrantingticket|django|
 django_site|django|

@@ -46,7 +46,7 @@ Initial setup and installation:
 
 -  Copy sample local settings and configure for your environment::
 
-   cp derrida/local_settings.py.sample derrida/local_settings.py
+     cp derrida/local_settings.py.sample derrida/local_settings.py
 
 - Download required fonts from project folder and add to `/sitemedia/fonts`
 
@@ -56,8 +56,8 @@ Initial setup and installation:
 
 - Create a Solr core, configure it, and index content::
 
-  python manage.py build_solr_schema --configure-directory=/path/to/solr/derrida/conf --reload-core derrida
-  python manage.py rebuild_index --noinput
+    python manage.py build_solr_schema --configure-directory=/path/to/solr/derrida/conf --reload-core derrida
+    python manage.py rebuild_index --noinput
 
 
 Unit Tests
