@@ -30,6 +30,10 @@ class WorkCount(models.Model):
         abstract = True
 
     def work_count(self):
+        '''
+        Return number of associated :class:`derrida.books.models.Works` for
+        a given object as an HTML snippet for the Django admin.
+        '''
         base_url = reverse('admin:books_work_changelist')
         return mark_safe('<a href="%s?%ss__id__exact=%s">%s</a>' % (
                             base_url,
@@ -50,6 +54,10 @@ class InstanceCount(models.Model):
         abstract = True
 
     def instance_count(self):
+        '''
+        Return a count of associated :class:`derrida.books.models.Instance` for
+        object as an HTML snippet for the Django admin.
+        '''
         base_url = reverse('admin:books_instance_changelist')
         return mark_safe('<a href="%s?%ss__id__exact=%s">%s</a>' % (
                             base_url,
@@ -134,6 +142,10 @@ class Work(Notable):
     author_names.admin_order_field = 'authors__authorized_name'
 
     def instance_count(self):
+        '''
+        Return count of :class:`derrida.book.models.Instance` associated with
+        :class:`Work` formatted as an HTML snippet for the Django admin.
+        '''
         base_url = reverse('admin:books_instance_changelist')
         return mark_safe('<a href="%s?%ss__id__exact=%s">%s</a>' % (
                             base_url,
@@ -150,6 +162,10 @@ class InstanceQuerySet(models.QuerySet):
     edition'''
 
     def with_digital_eds(self):
+        '''
+        Return :class:`derrida.books.models.Instance` queryset filtered by
+        having a digital edition.
+        '''
         return self.exclude(digital_edition__isnull=True)
 
 

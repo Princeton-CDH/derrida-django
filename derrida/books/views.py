@@ -646,6 +646,9 @@ class CanvasImage(ProxyView):
     LARGE_HEIGHT = 900
 
     def get_proxy_url(self, *args, **kwargs):
+        '''
+        Return a proxy url for client browsers to access IIIF images from.
+        '''
         instance = get_object_or_404(Instance, slug=self.kwargs['slug'])
         canvas_id = self.kwargs.get('short_id', None)
         if canvas_id and canvas_id != 'default':
@@ -714,5 +717,3 @@ class CanvasImage(ProxyView):
             return canvas.image.size(width=min_width)
         elif min_height:
             return canvas.image.size(height=min_height)
-
-
