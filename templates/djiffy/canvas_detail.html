@@ -1,5 +1,7 @@
 {% extends 'djiffy/canvas_detail.html' %}
 
+{% block page-context-id %}canvas-detail{% endblock %}
+
 {% block javascript %}
     {{ block.super }}
     {# enable annotation functionality only if user has appropriate permissions #}

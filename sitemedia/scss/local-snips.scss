@@ -1,0 +1,27 @@
+#sw-version {
+  color: #efefef;
+  padding: 10px 0;
+  margin-left: 200px;
+  font-style: small;
+}
+
+// Style for admin fields that need to be created at the
+// ModelAdmin level, and so can't be given the HiddenInput
+// Widget
+.hidden-admin-info {
+  display: none;
+}
+
+
+/* minimal styles django messages; currently shown to admin users only */
+.messages {
+    width: 80%;
+    margin: auto;
+    p {
+        padding: 10px;
+    }
+    .success {
+        background-color: rgba(141, 226, 141, 0.38);
+    }
+
+}

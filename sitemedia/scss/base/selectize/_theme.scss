@@ -1,0 +1,161 @@
+$selectize-color-item: #1da7ee;
+$selectize-color-item-text: #fff;
+$selectize-color-item-active-text: #fff;
+$selectize-color-item-border: #0073bb;
+$selectize-color-item-active: #92c836;
+$selectize-color-item-active-border: #00578d;
+$selectize-width-item-border: 1px;
+$selectize-caret-margin: 0 1px;
+$selectize-padding-x: 4px;
+$selectize-padding-dropdown-item-y: 5px;
+$selectize-color-dropdown-border-top: #eee;
+
+.selectize-control {
+  height: 2.2em;
+}
+
+.selectize-dropdown {
+  .optgroup-header {
+    padding-top: 5px;
+    font-weight: bold;
+    font-size: 0.85em;
+  }
+
+  .optgroup {
+    border-top: 1px solid $selectize-color-dropdown-border-top;
+
+    &:first-child {
+      border-top: 0 none;
+    }
+  }
+}
+
+.mdl-selectfield {
+  position: relative;
+  font-size: $input-text-font-size;
+  display: inline-block;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 1.3em 0 0.2em;
+}
+
+.selectize-control.single .selectize-input.input-active input {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+// Styling for the select element.
+.selectize-input {
+  display: block;
+  width: 100%;
+  padding: $input-text-padding 0;
+  margin: 0;
+  color: inherit;
+  background: $input-text-background-color;
+  font-size: $input-text-font-size;
+  text-align: left;
+  border: 0;
+  border-bottom: 1px solid $input-text-bottom-border-color;
+  border-radius: 0;
+  box-shadow: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+
+  &.full {
+    background: none
+  }
+
+  &.has-items {
+    $padding-x: $selectize-padding-x - 3px;
+    padding-left: $padding-x;
+    padding-right: $padding-x;
+  }
+
+  &.disabled [data-value] {
+    color: $input-text-disabled-color;
+    text-shadow: none;
+    background: none;
+
+    &,
+    .remove {
+      border-color: $medium-grey;
+    }
+
+    .remove {
+      background: none;
+    }
+  }
+
+  &.input-active,
+  &.focus {
+    box-shadow: none;
+    outline: none;
+  }
+}
+
+// Styling for the label / floating label.
+.mdl-selectfield__label {
+  bottom: 0;
+  color: $input-text-label-color;
+  font-size: $input-text-font-size;
+  left: 0;
+  right: 0;
+  pointer-events: none;
+  position: absolute;
+  display: block;
+  top: ($input-text-padding + $input-text-vertical-spacing);
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-align: left;
+
+  // Floating Label
+  .mdl-selectfield--floating-label & {
+    @include material-animation-default();
+  }
+
+  .mdl-selectfield.is-dirty  &::after {
+    bottom: -2px;
+  }
+
+  .mdl-selectfield--floating-label.is-dirty &,
+  .mdl-selectfield--floating-label.is-active & {
+    color: $medium-grey;
+    font-size: $input-text-floating-label-fontsize;
+    top: $input-text-vertical-spacing - ($input-text-floating-label-fontsize + $input-text-padding);
+    visibility: visible;
+  }
+
+  &::after {
+    background-color: $input-text-highlight-color;
+    bottom: $input-text-vertical-spacing;
+    content: "";
+    height: 2px;
+    left: 45%;
+    position: absolute;
+    @include material-animation-default();
+    visibility: hidden;
+    width: 10px;
+  }
+
+  .mdl-selectfield.is-active &::after {
+    left: 0;
+    visibility: visible;
+    width: 100%;
+  }
+}
+
+.mdl-js-selectfield.mdl-selectfield--floating-label.is-active {
+  border-bottom: 2px solid;
+  color: $light-grey;
+  padding: 20px 0 0;
+  margin-bottom: 10px;
+
+  &.is-dirty {
+    color: $medium-grey;
+  }
+}

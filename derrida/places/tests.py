@@ -5,6 +5,7 @@ from django.test import TestCase, override_settings
 from django.urls import reverse
 import json
 
+from .admin import GeonamesLookupWidget
 from .models import Place
 from .geonames import GeoNamesAPI
 from .views import GeonamesLookup
@@ -120,3 +121,23 @@ class TestPlaceViews(TestCase):
         del item['countryName']
         # and just name, if no country is available
         assert geo_lookup.get_label(item) == 'New York City'
+
+
+class TestGeonamesLookupWidget(TestCase):
+
+    def test_render(self):
+        widget = GeonamesLookupWidget()
+        # no value set - should not error
+        rendered = widget.render('place', None, {'id': 'place'})
+        assert '<p><a id="geonames_uri" target="_blank" href=""></a></p>' \
+            in rendered
+        # uri value set - should be included in generated link
+        uri = 'http://sws.geonames.org/2759794/'
+        rendered = widget.render('place', uri, {'id': 'place'})
+        assert '<a id="geonames_uri" target="_blank" href="%(uri)s">%(uri)s</a>' \
+            % {'uri': uri} in rendered
+        # value should be set as an option to preserve existing
+        # value when the form is submitted
+        assert '<option value="%(uri)s" selected>%(uri)s</option' % \
+            {'uri': uri} in rendered
+

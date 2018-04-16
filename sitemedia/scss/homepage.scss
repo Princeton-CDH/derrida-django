@@ -1,0 +1,69 @@
+#homepage {
+  color: $white;
+
+  .credits {
+    margin-top: 9em;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 2em;
+  }
+  
+  .credits__role {
+    @include primary-font-style();
+    font-size: 1em;
+    margin-bottom: .5em;
+  }
+  
+  .credits__name {
+    font-size: 1em;
+    @include secondary-font-style();
+  }
+
+  .credits__group {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  article {
+    display: inline-block;
+    margin-bottom: 5rem;
+    margin-right: $gutter-size;
+    margin-top: 5rem;
+    @include transition(margin-top 0.5s ease);
+
+    @include grid-media($xlarge-viewport-grid) {
+      margin-top: 8rem;
+    }
+  }
+
+  h1 {
+    margin-bottom: 4rem;
+  }
+
+  .lead {
+    margin-bottom: 4rem;
+  }
+
+  section p,
+  section q {
+    font-size: 1.14em;
+  }
+
+  .quote-cite {
+    text-align: right;
+  }
+
+  header,
+  section {
+    @include grid-column(6);
+  }
+
+  @include grid-media($large-medium-viewport-grid) {
+    header,
+    section {
+      @include grid-column(10);
+      @include grid-shift(1);
+    }
+  }
+}

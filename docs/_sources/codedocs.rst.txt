@@ -14,6 +14,16 @@ Models
 .. automodule:: derrida.common.models
     :members:
 
+Solr Backend
+^^^^^^^^^^^^
+.. automodule:: derrida.common.solr_backend
+    :members:
+
+Utils
+^^^^^
+.. automodule:: derrida.common.utils
+    :members:
+
 Places
 -------
 .. automodule:: derrida.places
@@ -49,6 +59,15 @@ Views
 .. automodule:: derrida.books.views
     :members:
 
+Search Indexes
+^^^^^^^^^^^^^^
+.. automodule:: derrida.books.search_indexes
+    :members:
+
+Signals
+^^^^^^^
+.. automodule:: derrida.books.signals
+    :members:
 
 People
 ------
@@ -63,11 +82,6 @@ Models
 Views
 ^^^^^
 .. automodule:: derrida.people.views
-    :members:
-
-VIAF
-^^^^^
-.. automodule:: derrida.people.viaf
     :members:
 
 Footnotes
@@ -88,4 +102,32 @@ Interventions
 Models
 ^^^^^^
 .. automodule:: derrida.interventions.models
+    :members:
+
+Views
+^^^^^
+.. automodule:: derrida.interventions.views
+    :members:
+
+Search Indexes
+^^^^^^^^^^^^^^
+.. automodule:: derrida.interventions.search_indexes
+    :members:
+
+Outwork
+-------
+
+Models
+^^^^^^
+.. automodule:: derrida.outwork.models
+    :members:
+
+Views
+^^^^^
+.. automodule:: derrida.outwork.views
+    :members:
+
+Search Indexes
+^^^^^^^^^^^^^^
+.. automodule:: derrida.outwork.search_indexes
     :members:

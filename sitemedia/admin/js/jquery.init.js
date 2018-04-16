@@ -5,6 +5,9 @@
 var django = django || {};
 
 var jQuery = jQuery || django.jQuery;
+if (!django.jQuery) {
+    django.jQuery = jQuery;
+}
 var $ = jQuery;
 
 var yl = yl || {};

@@ -1,0 +1,43 @@
+@import "neat/neat";
+
+$gutter-size: 2.9411764705882%;
+
+// Override default grid settings
+$neat-grid: (
+  columns: 4,
+  gutter: $gutter-size
+);
+
+$medium-breakpoint: 650px;
+$xl-breakpoint: 1080px;
+
+// Medium and large viewport
+$large-medium-viewport-grid: (
+  columns: 12,
+  gutter: $gutter-size,
+  media: $medium-breakpoint
+);
+
+// XL viewport
+$xlarge-viewport-grid: (
+  columns: 12,
+  gutter: $gutter-size,
+  media: $xl-breakpoint
+);
+
+html, body {
+  max-width: 100vw;
+}
+
+body {
+  margin: 0 auto;
+}
+
+.container,
+.grid-container {
+  @include grid-container;
+  width: 100%;
+  max-width: 1020px;
+  min-width: 320px;
+  margin: auto;
+}

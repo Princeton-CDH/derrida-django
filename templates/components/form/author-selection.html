@@ -1,0 +1,27 @@
+{% load static %}
+
+<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+  <input class="mdl-textfield__input" type="text" id="author-selection" readonly="readonly" />
+  <img class="expand-icon" src="{% static 'img/icons/Expand.svg' %}">
+  <label class="mdl-textfield__label" for="author-selection">Author</label>
+</div>
+<div class="filter filter--author is-not-ready" id="authors">
+  <header class="filter__search">
+    <label class="mdl-button mdl-js-button mdl-button--icon" for="filter__search-term">
+      <img src="{% static "img/icons/Search.svg" %}" />
+    </label>
+    <input class="filter__search-field filter__search-field--authors" id="filter__search-term" placeholder="Search" />
+  </header>
+
+  <nav class="filter__nav"></nav>
+
+  <section class="filter__check-list filter__check-list--authors">
+    {% for author in authors %}
+      {{author}}
+    {% endfor %}
+  </section>
+
+  <footer class="filter__footer">
+    <a class="clear-link" href="#">Clear Selection</a>
+  </footer>
+</div>

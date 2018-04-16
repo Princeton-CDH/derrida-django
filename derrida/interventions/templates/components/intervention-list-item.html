@@ -1,0 +1,29 @@
+<section class="collection__item item annotation">
+    {# an intervention should always have a canvas in current implementation #}
+  <figure class="item__image">
+    <a class="item__image-link" href="{% url 'books:canvas-detail' intervention.item_slug intervention.canvas_id %}">
+      <img class="img" src="{% url 'books:canvas-image' intervention.item_slug intervention.canvas_id 'smthumb' %}"
+         srcset="{% url 'books:canvas-image' intervention.item_slug intervention.canvas_id 'smthumb' '@2x' %} 2x" />
+    </a>
+  </figure>
+  <div class="item__body">
+    {% for annotype in intervention.annotation_type %}
+    {% if annotype != 'nonverbal annotation' and anontype != 'verbal annotation' %}
+    <a class="text-badge text-badge--red text-badge--link" href="{% url 'interventions:list' %}?annotation_type={{ annotype }}">{{ annotype }}</a>
+    {% endif %}
+    {% endfor %}
+    <h3 class="item__heading"><a class="item__link" href="{% url 'books:detail' intervention.item_slug %}">{{ intervention.item_title }}</a></h3>
+    {% if intervention.item_author_firstname_last %}
+    <p class="item__author">{{ intervention.item_author_firstname_last|join:"; " }}</p>
+    {% endif %}
+    {% if intervention.item_print_year %}
+    <p class="item__date">{{ intervention.item_print_year }}{% if intervention.item_copy %} - {{ intervention.item_copy }}{% endif %}</p></p>
+    {% endif %}
+    <p class="item__location">{{ intervention.annotated_page }}</p> {# NOTE: canvas labels still to be updated #}
+    {# which for excerpt? both? #}
+    <p class="item__excerpt">{{ intervention.anchor_text|default:'' }}</p>
+    <p class="item__excerpt">{{ intervention.annotation_text|default:'' }}</p>
+     {# TODO - corresponding citation logic #}
+    {# <p class="item__citation">Cited in De la grammatologie  p. 401</p> #}
+  </div>
+</section>

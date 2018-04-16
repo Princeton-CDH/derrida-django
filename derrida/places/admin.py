@@ -13,6 +13,10 @@ class GeonamesLookupWidget(autocomplete.Select2):
     # (inspired by )
 
     def render(self, name, value, attrs=None):
+        # select2 filters based on existing choices (non-existent here),
+        # so when a value is set, add it to the list of choices
+        if value:
+            self.choices = [(value, value)]
         widget = super(GeonamesLookupWidget, self).render(name, value, attrs)
         return mark_safe((u'<div id="geonames_map"></div>' +
             u'%s<p><a id="geonames_uri" target="_blank" href="%s">%s</a></p>') % \

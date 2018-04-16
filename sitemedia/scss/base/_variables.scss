@@ -1,0 +1,109 @@
+@import "colors";
+
+// Typography
+$base-font-family: "UniversLTPro-55Roman", "Helvetica", "Arial", sans-serif;
+$base-font-family--italic: "UniversLTPro-55Oblique", "Helvetica-Oblique", "Arial", sans-serif;
+$base-font-family--bold: "UniversLTPro-65Bold", "Helvetica-Bold", "Tahoma-Bold", sans-serif;
+
+$secondary-font-family: "SabonLTPro-Roman", "Georgia", serif;
+$secondary-font-family--italic: "SabonLTPro-Italic", "Georgia-Italic", serif;
+$secondary-font-family--bold: "SabonLTPro-Bold", "Georgia-Bold", serif;
+
+@mixin primary-font-style($variant: "") {
+  @if $variant == "italic" {
+    font-family: $base-font-family--italic;
+  } @else if $variant == "bold" {
+    font-family: $base-font-family--bold;
+  } @else {
+    font-family: $base-font-family;
+  }
+  font-weight: normal;
+  font-style: normal;
+  letter-spacing: normal;
+}
+
+@mixin secondary-font-style($variant: "") {
+  @if $variant == "italic" {
+    font-family: $secondary-font-family--italic;
+  } @else if $variant == "bold" {
+    font-family: $secondary-font-family--bold;
+  } @else {
+    font-family: $secondary-font-family;
+  }
+  font-weight: normal;
+  font-style: normal;
+  letter-spacing: normal;
+}
+
+// Base Font Size
+$base-font-size: 14px;
+
+// Font Weights
+$base-font-weight: 400;
+$heading-font-weight: 300;
+
+// Line height
+$base-line-height: 1.5;
+$heading-line-height: 1.2;
+
+// Other Sizes
+$base-border-radius: 3px;
+$base-spacing: 1.5em;
+$small-spacing: $base-spacing / 2;
+$base-z-index: 0;
+
+// Colors
+$blue: $doger-blue;
+$dark-grey: $grey-800;
+$medium-grey: $grey-500;
+$light-grey: $grey-200;
+$error-red: $red-a100;
+
+$primary-color: $blue;
+$accent-color: $orange-red;
+
+// Font Colors
+$base-font-color: $black;
+$action-color: $primary-color;
+
+$base-border-color: $light-grey;
+$base-border: 1px solid $base-border-color;
+
+// Background Colors
+$base-background-color: $grey-100;
+$secondary-background-color: tint($base-border-color, 75%);
+
+// Header and Tab Colors
+$header-background-color: $white;
+
+$header-text-color: $black;
+$header-accent-color: $cdh-blue;
+$header-row-height: 54px;
+
+// Focus
+$focus-outline-color: rgba($action-color, 0.4);
+$focus-outline-width: 3px;
+$focus-outline: $focus-outline-width solid $focus-outline-color;
+$focus-outline-offset: 2px;
+
+// Animations
+$base-duration: 150ms;
+$base-timing: ease;
+
+// Text Fields
+$input-text-background-color: transparent;
+$input-text-label-color: rgba($black, 0.26);
+$input-text-bottom-border-color: rgba($black, 0.1);
+$input-text-highlight-color: $primary-color;
+$input-text-disabled-color: $input-text-bottom-border-color;
+$input-text-disabled-text-color: $input-text-label-color;
+$input-text-error-color: $error-red;
+
+$input-text-font-size: 1em;
+$input-text-width: 100%;
+$input-text-padding: ems(4px);
+$input-text-vertical-spacing: 1.1em;
+
+$input-text-button-size: ems(32px);
+$input-text-floating-label-fontsize: 0.8em;
+$input-text-expandable-icon-top: 1em;

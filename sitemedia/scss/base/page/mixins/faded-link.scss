@@ -1,0 +1,14 @@
+@mixin faded-link($color: $base-font-color, $inital-border-color: $color) {
+  color: $color;
+  font-weight: inherit;
+  text-decoration: none;
+  border-bottom: 3px solid lighten($inital-border-color, 60%);
+  @include transition(border-color $base-duration $base-timing);
+
+  &:hover,
+  &:active,
+  &.is-hovered {
+    color: $color;
+    border-color: $primary-color;
+  }
+}

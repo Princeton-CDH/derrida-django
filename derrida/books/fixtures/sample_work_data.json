@@ -109,7 +109,8 @@
     "end_page": null,
     "collected_in": null,
     "pub_place": [],
-    "cited_in": []
+    "cited_in": [],
+    "slug": "levi-strauss-la-vie-familiale-et-sociale-des-indiens-nambikwara-1948"
   }
 },
 {
@@ -159,16 +160,6 @@
     "name": "Translator",
     "notes": "",
     "uri": null
-  }
-},
-{
-  "model": "books.derridawork",
-  "pk": 1,
-  "fields": {
-    "notes": "",
-    "short_title": "De la grammatologie",
-    "full_citation": "Placeholder citation",
-    "is_primary": false
   }
 },
 {

@@ -2,12 +2,13 @@ from dal import autocomplete, forward
 from django import forms
 from django.contrib import admin
 from djiffy.admin import ManifestSelectWidget
+from grappelli.forms import GrappelliSortableHiddenMixin
 
 from derrida.common.admin import NamedNotableAdmin
 from derrida.footnotes.admin import FootnoteInline
 from .models import Subject, Language, Publisher, OwningInstitution, \
-    CreatorType, PersonBook, PersonBookRelationshipType, \
-    DerridaWork, Reference, ReferenceType, Journal
+    CreatorType, PersonBook, DerridaWork, Reference, ReferenceType, \
+    Journal, DerridaWorkSection
 # refactored models
 from .models import Work, Instance, WorkSubject, WorkLanguage, \
     InstanceLanguage, InstanceCatalogue, InstanceCreator
@@ -132,7 +133,7 @@ class ReferenceInline(admin.StackedInline):
     form = ReferenceModelForm
     extra = 1
     classes = ('grp-collapse grp-open',)
-    readonly_fields = ('get_autocomplete_instances', )
+    readonly_fields = ('instance_ids_with_digital_editions', )
     fieldsets = (
         ('Citation Information', {
                 'fields': (
@@ -167,8 +168,8 @@ class ReferenceAdmin(admin.ModelAdmin):
         'instance', 'book_page', 'reference_type', 'anchor_text_snippet']
     list_filter = ['derridawork', 'reference_type']
     search_fields = ['anchor_text']
+    readonly_fields = ('instance_ids_with_digital_editions', )
     # *almost* the same as ReferenceInline.fieldsets (adds instance)
-    readonly_fields = ('get_autocomplete_instances', )
     fieldsets = (
         ('Citation Information', {
                 'fields': (
@@ -196,7 +197,7 @@ class ReferenceAdmin(admin.ModelAdmin):
         # NOTE: This field is a callable, so it can't be included in the
         # ModelForm so as to be given a HiddenInput
         ('Hidden Info', {
-            'fields': ('get_autocomplete_instances', ),
+            'fields': ('instance_ids_with_digital_editions', ),
             'classes': ('hidden-admin-info', ),
         })
     )
@@ -212,10 +213,26 @@ class PersonBookAdmin(admin.ModelAdmin):
     inlines = [FootnoteInline]
 
 
+class DerridaWorkSectionInline(GrappelliSortableHiddenMixin, CollapsibleTabularInline):
+    model = DerridaWorkSection
+    extra = 1
+    fieldsets = (
+        (None, {
+            'fields': ('order', 'name', 'start_page', 'end_page'),
+            'description': 'Sections with pages unset will be treated as headers.'
+        }),
+    )
+    sortable_field_name = "order"
+
+
 class DerridaWorkAdmin(admin.ModelAdmin):
     '''Creating a custom admin with inlines for Derrida Work to ease associating
     a specific book edition with it'''
-    fields = ('short_title', 'full_citation', 'is_primary', 'notes')
+    fields = ('short_title', 'slug', 'full_citation', 'is_primary',
+              'notes')
+    list_display = ('short_title', 'slug', 'is_primary', 'has_notes')
+    prepopulated_fields = {"slug": ("short_title",)}
+    inlines = [DerridaWorkSectionInline]
 
 
 ### refactored work/instance model admin
@@ -319,9 +336,15 @@ class InstanceAdminForm(forms.ModelForm):
             'pub_place': autocomplete.ModelSelect2Multiple(
                 url='places:autocomplete',
                 attrs={'data-placeholder': 'Start typing location to search...'}),
-           'digital_edition': ManifestSelectWidget
-        }
+            'digital_edition': ManifestSelectWidget,
+            'suppressed_images': autocomplete.ModelSelect2Multiple(
+                url='djiffy:canvas-autocomplete',
+                attrs={'data-placeholder': 'Search by page label...'},
+                # NOTE: restricted to canvases associated with current instance
+                forward=[forward.Field('digital_edition', 'manifest')],
+            )
 
+        }
 
 class InstanceAdmin(admin.ModelAdmin):
     form = InstanceAdminForm
@@ -332,14 +355,16 @@ class InstanceAdmin(admin.ModelAdmin):
         'is_digitized', 'is_translation', 'has_notes')
     # NOTE: fields are specified here so that notes input will be displayed last
     fields = ('work', 'alternate_title', 'journal', 'publisher',
-        'pub_place', 'copyright_year', 'print_date',
+        'pub_place', 'slug', ('copyright_year', 'copy'), 'print_date',
         ('print_date_year_known', 'print_date_month_known',
          'print_date_day_known'),
         ('is_extant', 'is_translation'),
         'cited_in',
         ('is_annotated', 'has_insertions', 'has_dedication'),
         'uri', 'dimensions', ('start_page', 'end_page'),
-        'collected_in', 'digital_edition', 'notes')
+        'collected_in', 'digital_edition', 'notes',
+        'suppress_all_images', 'suppressed_images',
+    )
     search_fields = ('alternate_title', 'work__primary_title',
         'work__authors__authorized_name', 'instancecatalogue__call_number',
         'notes', 'publisher__name', 'uri')

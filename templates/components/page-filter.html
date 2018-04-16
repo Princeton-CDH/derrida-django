@@ -1,0 +1,230 @@
+{% load static widget_tweaks %}
+{% if form.query %}
+<script>
+  $(function() {
+    var $searchFormHeader = $(".search-form-header");
+    if ($searchFormHeader.length && $searchFormHeader.find(".mdl-textfield__input").val().length) {
+      $(".search-form-header").removeClass("is-hidden");
+    }
+
+    if (window.selectizedFields) {
+      var searchFormSelectize = $.grep(window.selectizedFields, function(selectize){
+        return "id_content_type-selectized" === window.selectizedFields[0].$control_input[0].id;
+      });
+
+      if (searchFormSelectize.length) {
+        searchFormSelectize = searchFormSelectize[0];
+        var path = window.location.pathname;
+        if (path.indexOf("library") > 0) {
+          searchFormSelectize.setValue("book");
+        } else if (path.indexOf("references") > 0) {
+          searchFormSelectize.setValue("reference");
+        } else if (path.indexOf("interventions") > 0) {
+          searchFormSelectize.setValue("intervention");
+        }
+      }
+    }
+  });
+</script>
+{% endif %}
+<section class="page-filter {% if not hide_filter %}is-visible{% endif %}">
+<form class="page-filter__form">
+  <div class="container">
+    <header class="page-filter__header">
+      <p class="toggle-text"></p>
+    </header>
+    <section class="filter__section filter__section--toggles">
+
+      {% if 'is_extant' in form.fields %}
+      <div class="filter__selector"> {# is_extant #}
+        <label class="mdl-switch__label mdl-switch__label--right" for="is-extant">{{ form.is_extant.label }}
+          <span class="mdl-switch mdl-switch--right mdl-js-switch">
+            {% render_field form.is_extant class="mdl-switch__input" id="is-extant" %}
+          </span>
+        </label>
+      </div>
+      {% endif %}
+  
+      {% if 'is_annotated' in form.fields %}
+      <div class="filter__selector">  {# is_annotated #}
+        <label class="mdl-switch__label mdl-switch__label--right" for="is-annotation">{{ form.is_annotated.label }}
+          <span class="mdl-switch mdl-switch--right mdl-js-switch">
+            {% render_field form.is_annotated class="mdl-switch__input" id="is-annotation" %}
+          </span>
+        </label>
+      </div>
+      {% endif %}
+  
+      {# FIXME: reusing id because otherwise javascript doesn't fire, but not sure where set #}
+      {% if 'corresponding_intervention' in form.fields %}
+      <div class="filter__selector">
+        <label class="mdl-switch__label mdl-switch__label--right" for="corresponding_intervention">{{ form.corresponding_intervention.label }}
+          <span class="mdl-switch mdl-switch--right mdl-js-switch">
+            {% render_field form.corresponding_intervention class="mdl-switch__input" id="corresponding_intervention" %}
+          </span>
+        </label>
+      </div>
+      {% endif %}
+    </section>
+
+    <section class="filter__section">
+
+      {% if 'author' in form.fields %}
+      <div class="filter__selector">
+        {% include 'components/form/author-selection.html' with authors=form.author %}
+      </div>
+      {% endif %}
+
+      {% if 'subject' in form.fields %}
+      <div class="filter__selector">
+        {% include 'components/form/checkbox-selection.html' with name='subject' label=form.subject.label items=form.subject %}
+      </div>
+      {% endif %}
+
+      {% if 'derridawork' in form.fields %}
+      <div class="filter__selector filter__selector--condensed">
+        {% include 'components/form/checkbox-selection.html' with disabled='disabled' name='derridawork' label=form.derridawork.label items=form.derridawork %}
+      </div>
+      {% endif %}
+
+      {% if 'language' in form.fields %}
+      <div class="filter__selector filter__selector--condensed">
+        {% include 'components/form/checkbox-selection.html' with name='language' label=form.language.label items=form.language %}
+      </div>
+      {% endif %}
+
+      {% if 'work_language' in form.fields %}
+      <div class="filter__selector filter__selector--condensed">
+        {% include 'components/form/checkbox-selection.html' with name='work_language' label=form.work_language.label items=form.work_language %}
+      </div>
+      {% endif %}
+
+      {% if 'original_language' in form.fields %}
+      <div class="filter__selector filter__selector--condensed">
+        {% include 'components/form/checkbox-selection.html' with name='original_language' label=form.original_language.label items=form.original_language %}
+      </div>
+      {% endif %}
+
+      {% if 'pub_place' in form.fields %}
+      <div class="filter__selector filter__selector--condensed">
+        {% include 'components/form/checkbox-selection.html' with name='pub_place' label=form.pub_place.label items=form.pub_place %}
+      </div>
+      {% endif %}
+
+      {% if 'annotation_language' in form.fields %}
+      <div class="filter__selector filter__selector--condensed">
+        {% include 'components/form/checkbox-selection.html' with name='annotation_language' label=form.annotation_language.label items=form.annotation_language %}
+      </div>
+      {% endif %}
+
+      {% if 'annotation_type' in form.fields %}
+      <div class="filter__selector filter__selector--condensed">
+        {% include 'components/form/checkbox-selection.html' with name='annotation_type' label=form.annotation_type.label items=form.annotation_type %}
+      </div>
+      {% endif %}
+
+      {% if 'hand' in form.fields %}
+      <div class="filter__selector filter__selector--condensed">
+        {% include 'components/form/checkbox-selection.html' with name='hand' label=form.hand.label items=form.hand %}
+      </div>
+      {% endif %}
+
+      {% if 'ink' in form.fields %}
+      <div class="filter__selector filter__selector--condensed">
+        {% include 'components/form/checkbox-selection.html' with name='ink' label=form.ink.label items=form.ink %}
+      </div>
+      {% endif %}
+
+      {% if 'item_type' in form.fields %}
+      <div class="filter__selector filter__selector--condensed">
+        {% include 'components/form/checkbox-selection.html' with name='publication_type' label=form.item_type.label items=form.item_type %}
+      </div>
+      {% endif %}
+
+      {% if 'reference_type' in form.fields %}
+      <div class="filter__selector filter__selector--condensed">
+        {% include 'components/form/checkbox-selection.html' with name='reference_type' label=form.reference_type.label items=form.reference_type %}
+      </div>
+      {% endif %}
+
+      {% if 'cited_in' in form.fields %}
+      <div class="filter__selector filter__selector--condensed">
+        {% include 'components/form/checkbox-selection.html' with name='cited_in' label=form.cited_in.label items=form.cited_in %}
+      </div>
+      {% endif %}
+
+      {% if form.work_year %}
+      <div class="filter__selector filter__selector--condensed">
+        {% include 'components/form/year-selection.html' with name='work_year' label=form.work_year.label items=form.work_year ranges=facets.ranges.work_year %}
+      </div>
+      {% endif %}
+
+      {% if form.copyright_year %}
+      <div class="filter__selector filter__selector--condensed">
+        {% include 'components/form/year-selection.html' with name='copyright_year' label=form.copyright_year.label items=form.copyright_year ranges=facets.ranges.copyright_year %}
+      </div>
+      {% endif %}
+
+      {% if form.print_year %}
+      <div class="filter__selector filter__selector--condensed">
+        {% include 'components/form/year-selection.html' with name='print_year' label=form.print_year.label items=form.print_year ranges=facets.ranges.print_year %}
+      </div>
+      {% endif %}
+
+      {% if form.instance_work_year %}
+      <div class="filter__selector filter__selector--condensed">
+        {% include 'components/form/year-selection.html' with name='instance_work_year' label=form.instance_work_year.label items=form.instance_work_year ranges=facets.ranges.instance_work_year %}
+      </div>
+      {% endif %}
+
+      {% if form.instance_copyright_year %}
+      <div class="filter__selector filter__selector--condensed">
+        {% include 'components/form/year-selection.html' with name='instance_copyright_year' label=form.instance_copyright_year.label items=form.instance_copyright_year ranges=facets.ranges.instance_copyright_year %}
+      </div>
+      {% endif %}
+
+      {% if form.instance_print_year %}
+      <div class="filter__selector filter__selector--condensed">
+        {% include 'components/form/year-selection.html' with name='instance_print_year' label=form.instance_print_year.label items=form.instance_print_year ranges=facets.ranges.instance_print_year %}
+      </div>
+      {% endif %}
+
+      {% if form.item_work_year %}
+      <div class="filter__selector filter__selector--condensed">
+        {% include 'components/form/year-selection.html' with name='item_work_year' label=form.item_work_year.label items=form.item_work_year ranges=facets.ranges.item_work_year %}
+      </div>
+      {% endif %}
+
+      {% if form.item_copyright_year %}
+      <div class="filter__selector filter__selector--condensed">
+        {% include 'components/form/year-selection.html' with name='item_copyright_year' label=form.item_copyright_year.label items=form.item_copyright_year ranges=facets.ranges.item_copyright_year %}
+      </div>
+      {% endif %}
+
+      {% if form.item_print_year %}
+      <div class="filter__selector filter__selector--condensed">
+        {% include 'components/form/year-selection.html' with name='item_print_year' label=form.item_print_year.label items=form.item_print_year ranges=facets.ranges.item_print_year %}
+      </div>
+      {% endif %}
+
+    </section>
+
+    {# We need to update the components after being rendered in each of the checkbox-selection #}
+    <script>
+      $(function() {
+        componentHandler.upgradeDom();
+      });
+    </script>
+  </div>
+  <div class="hidden">{{form.order_by}}</div>
+  </form>
+  <footer class="page-filter__footer">
+    <div class="page-filter__status-icon">
+      <svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M8.48,3.25a2,2,0,0,0-3.55,0H2.4v2H5a2,2,0,0,0,3.34,0H17.6v-2Z" fill="#979797"/><path d="M13.4,8.25a2,2,0,0,0-1.51.7H2.4v2h9.13a2,2,0,0,0,3.73,0H17.6V9H14.91A2,2,0,0,0,13.4,8.25Z" fill="#979797"/><path d="M6.8,13.85a2,2,0,0,0-1.59.8H2.4v2H5a2,2,0,0,0,3.66,0h9v-2H8.39A2,2,0,0,0,6.8,13.85Z" fill="#979797"/></svg>
+    </div>
+    <button class="toggle-button">
+      <i class="md-icon material-icons md-icon--hide">keyboard_arrow_down</i>
+      <i class="md-icon material-icons md-icon--show">keyboard_arrow_up</i>
+    </button>
+  </footer>
+</section>

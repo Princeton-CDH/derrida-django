@@ -1,0 +1,40 @@
+{% extends 'books/instance_detail.html' %}
+{% load static humanize %}
+
+{% block page-subtitle %}{{ block.super }} References ‖ {% endblock %}
+
+{% block content %}
+  <header class="page-header page-header--link">
+    <div class="container">
+      <h1 class="page-header__heading"><a class="page-header__link" href="{% url 'books:list' %}"><span class="arrow_icon">⟵</span> Derrida's Library</a></h1>
+    </div>
+  </header>
+  <div class="container citation-list">
+    <article class="collection">
+      <header class="item-header" id="book-header">
+        {% include "components/book-header.html" with book=instance %}
+      </header>
+      <section class="item-section">
+        {% include "components/navigation-tabs.html" with book=instance is_references=True %}
+
+        <section class="page-sort">
+          <div class="container">
+          <header class="page-sort__header">
+            <p class="sort-label sort-label--diminished ">{{ references.count|intcomma }} Result{{ references.count|pluralize }}</p>
+          </header>
+          <header class="page-sort__header">
+            <p class="sort-label">Sort By</p>
+            <a class="sort-link {% if order_by != 'book_page' %}sort-link--active{% endif %}"
+              href="?order_by=dw_page">Page order in Derrida work</a>
+            <a class="sort-link {% if order_by == 'book_page' %}sort-link--active{% endif %}"
+              href="?order_by=book_page">Page order in this work</a>
+          </header>
+        </section>
+
+        {% for reference in references %}
+          {% include 'components/citation-list-item.html' %}
+        {% endfor %}
+      </section>
+    </article>
+  </div>
+{% endblock %}

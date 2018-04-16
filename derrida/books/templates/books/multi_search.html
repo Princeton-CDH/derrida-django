@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load static humanize%}
+
+{% block page-subtitle %}Search ‖ {% endblock %}
+{% block nav-title %} Derrida's Library {% endblock %}
+
+{% block header_class %}mdl-layout__header--transparent{% endblock %}
+
+{% block page-context-id %}search-results{% endblock %}
+
+{% block search-form-classes %}{% endblock %}
+
+{% block content %}
+<header class="page-header">
+  <div class="container page-header__container">
+    <h1 class="page-header__heading"><a class="page-header__link" href="{{ request.path }}">Search Results</a></h1>
+  </div>
+</header>
+
+<div class="container">
+  <article class="collection collection--no-images">
+    <header class="collection__header">
+      <h2 class="collection__title">
+        <a href="{% url 'books:list' %}?query={{ query }}">Library Books {% if instance_count %}<span class="arrow_icon">→</span><span>View {{ instance_count|intcomma }} Result{{ instance_count|pluralize }}</span>{% endif %}</a>
+      </h2>
+    </header>
+    {% for book in instance_list %}
+      {% url 'books:detail' book.slug as instance_url %}
+      {% include 'components/books-list-item.html' with href=instance_url shorten=True %}
+    {% empty %}
+      {% include 'components/search-results-empty.html' %}
+    {% endfor %}
+  </article>
+
+  <article class="collection collection--no-images">
+    <header class="collection__header">
+      <h2 class="collection__title">
+        <a href="{% url 'books:reference-list' %}?query={{ query }}">References {% if reference_count %}<span class="arrow_icon">→</span><span>View {{ reference_count|intcomma }} Result{{ reference_count|pluralize }}</span>{% endif %}</a>
+      </h2>
+    </header>
+
+    {% for reference in reference_list %}
+      {% include 'components/citation-list-item.html' with reference=reference %}
+    {% empty %}
+      {% include 'components/search-results-empty.html' %}
+    {% endfor %}
+  </article>
+
+  <article class="collection collection--no-images">
+    <header class="collection__header">
+      <h2 class="collection__title">
+      <a href="{% url 'interventions:list' %}?query={{ query }}">Interventions {% if intervention_count %}<span class="arrow_icon">→</span>
+        <span>View {{ intervention_count|intcomma }} Result{{ intervention_count|pluralize }}</span>{% endif %}</a>
+    </h2>
+    </header>
+    {% for intervention in intervention_list %}
+      {% include 'components/intervention-list-item.html' %}
+    {% empty %}
+      {% include 'components/search-results-empty.html' %}
+    {% endfor %}
+  </article>
+
+  <article class="collection collection--no-images">
+    <header class="collection__header">
+      <h2 class="collection__title">
+        <a href="{% url 'outwork:list' %}?query={{ query }}">Outworks {% if outwork_count %}<span class="arrow_icon">→</span>
+          <span>View {{ outwork_count|intcomma }} Result{{ outwork_count|pluralize }}</span>{% endif %}</a>
+      </h2>
+    </header>
+    {% for outwork in outwork_list %}
+      {% include 'outwork/components/outwork-list-item.html' %}
+    {% empty %}
+      {% include 'components/search-results-empty.html' %}
+    {% endfor %}
+  </article>
+</div>
+{% endblock %}

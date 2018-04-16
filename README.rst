@@ -24,22 +24,9 @@ Django web application for the `Derrida's Margins Project
 
 `Current release documentation <https://princeton-cdh.github.io/derrida-django/>`_.
 
-This repo uses `git-flow <https://github.com/nvie/gitflow>`_ conventions; master
+This repository uses `git-flow <https://github.com/nvie/gitflow>`_ conventions; master
 contains the most recent release, and work in progress will be on the develop branch.
-Pull requests shoudl be made against develop.
-
-Current development status
---------------------------
-
-.. image:: https://badge.waffle.io/Princeton-CDH/winthrop-django.svg?label=development+in+progress&title=In+Progress
-   :target: http://waffle.io/Princeton-CDH/derrida-django
-   :alt: In Progress
-.. image:: https://badge.waffle.io/Princeton-CDH/winthrop-django.svg?label=development+complete&title=Development+Complete
-   :target: http://waffle.io/Princeton-CDH/derrida-django
-   :alt: Development Complete
-.. image:: https://badge.waffle.io/Princeton-CDH/winthrop-django.svg?label=awaiting+testing&title=Awaiting+Testing
-   :target: http://waffle.io/Princeton-CDH/derrida-django
-   :alt: Awaiting Testing
+Pull requests should be made against develop.
 
 
 Development instructions
@@ -47,30 +34,50 @@ Development instructions
 
 Initial setup and installation:
 
--  recommended: create and activate a python 3.5 virtualenv
-   ``virtualenv derrida -p python3.5`` ``source derrida/bin/activate``
+-  **recommended:** create and activate a python 3.5 virtualenv::
 
--  pip install required python dependencies
-   ``pip install -r requirements.txt``
-   ``pip install -r dev-requirements.txt``
+     virtualenv derrida -p python3.5
+     source derrida/bin/activate
 
--  copy sample local settings and configure for your environment
-   ``cp derrida/local_settings.py.sample derrida/local_settings.py``
+-  Use pip to install required python dependencies::
+
+     pip install -r requirements.txt
+     pip install -r dev-requirements.txt
+
+-  Copy sample local settings and configure for your environment::
+
+     cp derrida/local_settings.py.sample derrida/local_settings.py
+
+- Download required fonts from project folder and add to `/sitemedia/fonts`
+
+- Create a database, configure in local settings, and run migrations::
+
+    python manage.py migrate
+
+- Create a Solr core, configure it, and index content::
+
+    python manage.py build_solr_schema --configure-directory=/path/to/solr/derrida/conf --reload-core derrida
+    python manage.py rebuild_index --noinput
 
 
 Unit Tests
 ~~~~~~~~~~
 
-Unit tests are written with `py.test <http://doc.pytest.org/>`__ but use
+Unit tests are written with `py.test <http://doc.pytest.org/>`_ but use
 Django fixture loading and convenience testing methods when that makes
 things easier. To run them, first install development requirements::
 
     pip install -r dev-requirements.txt
 
+Configure a Solr core for testing and update with the built solr schema
+using the same build_solr_schema manage command as for development, above.
+(The test Solr core will be cleared and reindexed for tests of functionality
+that require Solr.)  Any new unit tests that require Solr should use Django
+`override_settings` to use the test connection.
+
 Run tests using py.test::
 
     py.test
-
 
 Documentation
 ~~~~~~~~~~~~~

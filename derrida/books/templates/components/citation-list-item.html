@@ -1,0 +1,89 @@
+{% comment %}
+This template is used to display references on multi-item search, reference
+list/search page, book references tab, and via ajax on reference histogram.
+Currently supports both display for both solr search result (all search/list
+views) and db model (ajax request via reference histogram).
+{% endcomment %}
+{% load static markdownify %}
+<section class="collection__item reference">
+  {# instance url for solr reference #}
+  {% url 'books:detail' slug=reference.instance_slug as instance_url %}
+  {% firstof reference.instance_digital_edition reference.instance.digital_edition as has_digital_edition %}
+  <figure class="item__image">
+    {% if has_digital_edition %}
+      {# get instance slug from solr result or database model #}
+      {% firstof reference.instance_slug reference.instance.slug as instance_slug %}
+      {# get detail page canvas id from solr or associated intervention #}
+      {% firstof reference.page_canvas_id reference.interventions.first.canvas.short_id as page_slug %}
+
+      {# if page view is available, display page thumbnail and link to canvas detail view #}
+      {% if page_slug %}
+      <a class="item__image-link" href="{% url 'books:canvas-detail' instance_slug page_slug  %}">
+        <img class="img" src="{% url 'books:canvas-image' slug=instance_slug short_id=page_slug mode='smthumb'%}"
+           srcset="{% url 'books:canvas-image' slug=instance_slug short_id=page_slug mode='smthumb' x='@2x' %} 2x" />
+      </a>
+      {% else %}
+      {# if page view is not available, display cover thumbnail and link to book bibliography page #}
+      <a class="item__image-link item__image-overview" href="{% url 'books:detail' instance_slug %}">
+        <img class="img" src="{% url 'books:canvas-image' slug=instance_slug short_id='default' mode='smthumb' %}"
+           srcset="{% url 'books:canvas-image' slug=instance_slug short_id='default' mode='smthumb' x='@2x' %} 2x" />
+      </a>
+      {% endif %}
+    {% else %}
+        <span class="img img--placeholder"></span>
+    {% endif %}
+  </figure>
+
+  <div class="item__body">
+    {% with instance=reference.instance %}
+    <a class="text-badge text-badge--blue text-badge--link" href="{% url 'books:reference-list' %}?reference_type={{ reference.reference_type }}">{{ reference.reference_type }}</a>
+      <h3 class="item__heading">
+        {% with has_digital_edition|yesno:"a,span" as tag %}
+        <{{ tag }} class="item__link" href="{% firstof instance_url reference.instance_url %}">{% firstof reference.instance_title instance.display_title %}
+          {# collected work title for book section - solr version, database version #}
+        {% if reference.instance_collection_title or reference.instance.collected_in %}
+           <span class="item__link--non_title">in</span> {% firstof reference.instance_collection_title reference.instance.collected_in.display_title %}
+          {%endif %}
+        </{{ tag }}>
+        {% endwith %}
+      </h3>
+
+      <p class="item__author">
+        {# solr #}
+        {% url 'books:list' as library_url %}
+        {% if reference.instance_author_firstname_last %}  {# errors in tests if value is None #}
+        {% for author in reference.instance_author_firstname_last %}
+            {% if forloop.first %}<a href="{{ library_url }}?author={{ reference.instance_author.0 }}">{% endif %}
+            {{ author }}{% if forloop.first %}</a>{% endif %}{% if not forloop.last %}; {% endif %}
+        {% endfor %}
+        {% endif %}
+        {# database #}
+        {% if instance.work %}
+        {% for author in instance.work.authors.all %}
+          <a href="{{ library_url }}?author={{ author }}">{{ author.firstname_last }}</a>{% if not forloop.last %}; {% endif %}
+        {% endfor %}
+        {% endif %}
+      </p>
+
+      {# solr #}
+      {% if reference.instance_copyright_year %}
+        <p class="item__date">{{ reference.instance_copyright_year }}{% if reference.instance_copy %} - {{ reference.instance_copy }}{% endif %}</p>
+      {% endif %}
+      {# db model #}
+      {% if instance.copyright_year %}
+        <p class="item__date">{{ instance.copyright_year }}{% if instance.copy %} - {{ instance.copy }}{% endif %}</p>
+      {% endif %}
+
+      {% if reference.book_page %}
+        <p class="item__location">p{% if '-' in reference.book_page %}p{% endif %}. {{ reference.book_page }}</p>
+      {% endif %}
+
+      <p class="item__excerpt">{{ reference.anchor_text|default:''|markdownify }}</p>
+
+      <p class="item__citation">
+        Cited in <em>{{ reference.derridawork }}</em> p.{{ reference.derridawork_page }}
+      </p>
+
+    {% endwith %}
+  </div>
+</section>

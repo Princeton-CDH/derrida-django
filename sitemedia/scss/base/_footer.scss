@@ -1,0 +1,148 @@
+// Footer Styles
+
+.mdl-mega-footer {
+  background-color: $white;
+  color: $base-font-color;
+  padding: 4rem 0 1rem;
+  margin-top: 100px;
+
+  .mdl-logo {
+    color: inherit;
+  }
+
+}
+
+.mdl-mega-footer__bottom-section {
+  p {
+    opacity: 0.6;
+    font-size: 0.9rem;
+    margin: 0;
+  }
+}
+
+.mdl-mega-footer__logos {
+  align-self: flex-end;
+
+  .logo + .logo {
+    padding-left: 2rem;
+  }
+}
+
+.mdl-mega-footer__legal {
+  padding-top: 2rem;
+}
+
+.mdl-mega-footer--heading,
+.mdl-mega-footer__heading {
+  color: $base-font-color;
+  text-decoration: none;
+  margin-bottom: 0;
+  font-size: 0.9em;
+
+  &:hover,
+  &:active {
+    color: $primary-color;
+  }
+}
+
+.mdl-mega-footer__middle-section,
+.mdl-mega-footer__bottom-section {
+  width: 100%;
+  padding: 0 $gutter-size;
+}
+
+.mdl-mega-footer__middle-section {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.mdl-mega-footer-section {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.mdl-mega-footer__branding-section {
+  padding-top: 2em;
+
+  @media screen and (min-width: 760px) {
+    padding-left: 7em;
+  }
+
+  @media screen and (min-width: 1024px) {
+    padding-top: 0;
+  }
+}
+
+// Dropdown sections
+.mdl-mega-footer--drop-down-section,
+.mdl-mega-footer__drop-down-section {
+  display: flex;
+  order: 1;
+  width: 100%;
+  border-bottom: 1px solid $grey-250;
+  flex-direction: column;
+}
+
+.mdl-mega-footer__drop-down-section--multiple-topics {
+  order: 2;
+  margin-top: 16px;
+  flex-wrap: wrap;
+  border-bottom: 0;
+  flex-direction: row;
+
+  @media screen and (min-width: 760px) {
+    margin-top: 0;
+  }
+
+  .mdl-mega-footer--heading,
+  .mdl-mega-footer__heading {
+    width: auto;
+  }
+}
+
+@media screen and (min-width: 760px) {
+  .mdl-mega-footer--drop-down-section,
+  .mdl-mega-footer__drop-down-section {
+    display: block;
+    width: 20%;
+    border-bottom: 0;
+  }
+
+  .mdl-mega-footer--heading,
+  .mdl-mega-footer__heading {
+    & + & {
+      margin-top: 0.5em;
+    }
+  }
+
+  .mdl-mega-footer--drop-down-section:nth-child(3),
+  .mdl-mega-footer__drop-down-section:nth-child(3),
+  .mdl-mega-footer--drop-down-section:nth-child(4),
+  .mdl-mega-footer__drop-down-section:nth-child(4) {
+    clear: none;
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .mdl-mega-footer--drop-down-section,
+  .mdl-mega-footer--drop-down-section:nth-child(3),
+  .mdl-mega-footer--drop-down-section:nth-child(4),
+  .mdl-mega-footer__drop-down-section,
+  .mdl-mega-footer__drop-down-section:nth-child(3),
+  .mdl-mega-footer__drop-down-section:nth-child(4) {
+    width: 15%;
+  }
+}
+
+@media screen and (min-width: 1200px) {
+  .mdl-mega-footer--drop-down-section,
+  .mdl-mega-footer--drop-down-section:nth-child(3),
+  .mdl-mega-footer--drop-down-section:nth-child(4),
+  .mdl-mega-footer__drop-down-section,
+  .mdl-mega-footer__drop-down-section:nth-child(3),
+  .mdl-mega-footer__drop-down-section:nth-child(4) {
+    width: 15%;
+  }
+}

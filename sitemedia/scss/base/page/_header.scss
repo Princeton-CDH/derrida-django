@@ -1,0 +1,154 @@
+
+/**
+  Mixin for to sett header banner images in three sizes with 1x and 2x variants.
+  Assumes images are in ../img/banner ; variants should be named
+  with base filename plus  -[SML]@[12]x.png
+*/
+@mixin banner-image($filename) {
+  $base_path: "../img/banner/" + $filename + "-";
+
+  // small viewport 1x and 2x
+  background-image: url($base_path + "S@1x.png");
+  @media (-webkit-min-device-pixel-ratio: 2),
+         (min-resolution: 192dpi) {
+    background-image: url($base_path + "S@2x.png");
+  }
+
+  // medium 1x and 2x
+  @include grid-media($large-medium-viewport-grid) {
+    background-image: url($base_path + "M@1x.png");
+    @media (-webkit-min-device-pixel-ratio: 2),
+         (min-resolution: 192dpi) {
+      background-image: url($base_path + "M@2x.png");
+    }
+  }
+
+  // large 1x and 2x
+  @include grid-media($xlarge-viewport-grid) {
+    background-image: url($base_path + "L@1x.png");
+    @media (-webkit-min-device-pixel-ratio: 2),
+         (min-resolution: 192dpi) {
+      background-image: url($base_path + "L@2x.png");
+    }
+  }
+}
+
+
+.page-header {
+  background-position: center bottom;
+  background-size: auto 100%;
+  background-repeat: no-repeat;
+
+  @include transition(margin-top 0.5s ease);
+
+  &.header-banner {
+    height: 300px;
+    @include grid-media($large-medium-viewport-grid) {
+      height: 320px;
+    }
+    @include grid-media($xlarge-viewport-grid) {
+      height: 600px;
+    }
+  }
+
+  #citations-list & {
+    @include banner-image("derrida-banner-reference");
+  }
+
+  #books-list & {
+    @include banner-image("derrida-banner-library");
+  }
+
+   #interventions-list & {
+    @include banner-image("derrida-banner-intervention");
+  }
+
+  #homepage & {
+    width: 100%;
+    margin: 0;
+    left: 0;
+    @include banner-image("derrida-banner-home");
+  }
+
+}
+
+#manifest-list .page-header__container {
+  min-height: 10rem;
+}
+
+.page-header--link {
+  text-align: center;
+  background: none;
+  padding-bottom: 3em;
+}
+
+.page-header__link {
+  text-decoration: none;
+  font-weight: inherit;
+  margin-left: auto;
+}
+
+.page-header__container {
+  min-height: 320px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  position: relative;
+
+  @media screen and (min-height: 500px) {
+    .page-header--condensed & {
+      min-height: 16rem;
+    }
+  }
+}
+
+.page-header__heading {
+  font-size: ems(20px, 14);
+  margin-top: 1rem;
+  color: $blue;
+  @include secondary-font-style("bold");
+}
+
+.page-header__callout {
+  color: $base-font-color;
+  background: rgba($white, 0.85);
+  padding: 1.5em;
+  padding-bottom: 0;
+  align-self: flex-start;
+  position: absolute;
+  bottom: 3rem;
+  @include grid-column(3);
+
+  @include grid-media($large-medium-viewport-grid) {
+    @include grid-column(7);
+    margin-left: 6rem;
+  }
+
+  @include grid-media($xlarge-viewport-grid) {
+    @include grid-column(7);
+  }
+
+  .lead,
+  .help {
+    line-height: 1.2;
+  }
+
+  .callout__link {
+    @include page-navigation-links();
+    font-size: ems(12px, 14);
+  }
+
+  .lead {
+    @include secondary-font-style("italic");
+    font-size: ems(19px, 14);
+  }
+
+  #interventions-list & {
+    bottom: 8rem; // move up on interventions to avoid text in bg image
+
+    @include grid-media($large-medium-viewport-grid) {
+      bottom: 13rem; 
+    }
+  }
+}

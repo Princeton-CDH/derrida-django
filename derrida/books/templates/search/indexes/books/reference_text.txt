@@ -1,0 +1,22 @@
+{#  text for generic search across text and non #}
+{# brief citation to grab useful info about the DerridaWork #}
+{{ object.derridawork.short_title }}
+{{ object.derridawork.full_citation }}
+{{ object.anchor_text }}
+{# include all variant titles for the work and this particular instance #}
+{% with instance=object.instance %}
+{# alternate instance title (e.g. translated name) #}
+{{ instance.alternate_title|default:'' }}
+{{ instance.work.primary_title }}
+{# include short title only if different from primary #}
+{% if instance.work.short_title != instance.work.primary_title %}
+  {{ object.instance.work.short_title }}
+{% endif %}
+{% for author in object.instance.work.authors.all %}
+  {{ author.firstname_last }}{% if not forloop.last %} {% endif %}
+{% endfor %}
+{# also include collection title for book sections #}
+{% if object.instance.collected_in %}
+{{ object.instance.collected_in.display_title }}
+{% endif %}
+{% endwith %}

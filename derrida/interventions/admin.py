@@ -69,9 +69,14 @@ class InterventionAdmin(AnnotationAdmin):
     form = InterventionAdminForm
     filter_horizontal = ('tags', )
     list_display = ('admin_thumbnail', 'intervention_type', 'is_verbal',
-     'text_preview', 'canvas')
+     'text_preview', 'canvas', 'tag_list', 'author')
     # NOTE: 'quote' == anchor text, and should be editable
     readonly_fields = ('uri', 'extra_data')
+
+    def tag_list(self, obj):
+        return ', '.join([o.name for o in obj.tags.all()])
+    tag_list.short_description = 'Tags'
+
 
 
 class TagAdmin(admin.ModelAdmin):

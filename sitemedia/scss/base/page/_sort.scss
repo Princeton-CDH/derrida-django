@@ -1,0 +1,61 @@
+.page-sort {
+  color: $base-font-color;
+  padding-bottom: 2rem;
+  font-size: 0.9em;
+}
+
+.page-sort__header {
+  display: flex;
+  align-items: baseline;
+  padding: 0 $gutter-size 0.5rem;
+
+  .sort-label,
+  .sort-link {
+    padding-top: 3px; // fix letters being cut off?
+    margin-right: 1em;
+  }
+
+  .sort-label {
+    @include primary-font-style("bold");
+
+    &.sort-label--diminished {
+      @include primary-font-style();
+      color: $medium-grey;
+    }
+  }
+
+  .sort-link {
+    @include page-navigation-links();
+  }
+
+  .sort-link--danger {
+    &:hover,
+    &:active {
+      color: $error-red;
+      border-color: $error-red;
+    }
+  }
+
+  .order_by__options {
+    @include unstyled-list;
+    display: flex;
+    flex-direction: column;
+
+    @include grid-media($large-medium-viewport-grid) {
+      flex-direction: row;
+    }
+
+    label {
+      cursor: pointer;
+    }
+
+    .sort-link {
+      font-size: 0.9rem;
+      padding-top: 1.5em;
+
+      @include grid-media($large-medium-viewport-grid) {
+        padding-top: 0;
+      }
+    }
+  }
+}

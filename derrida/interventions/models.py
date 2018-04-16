@@ -1,5 +1,5 @@
 from attrdict import AttrDict
-from annotator_store.models import BaseAnnotation
+from annotator_store.models import BaseAnnotation, AnnotationQuerySet
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from djiffy.models import Canvas
@@ -25,9 +25,8 @@ def get_default_intervener():
         return None
 
 
-
 class TagQuerySet(models.QuerySet):
-    '''Custom :class:`~django.db.models.QuerySet` for :class`Tag` to
+    '''Custom :class:`~django.db.models.QuerySet` for :class:`Tag` to
     make it easy to find tags that apply to a particular kind of
     Intervention.'''
 
@@ -51,6 +50,21 @@ class Tag(Named, Notable):
         help_text='Type or types of interventions this tag is applicable to.')
 
     objects = TagQuerySet.as_manager()
+
+
+class InterventionQuerySet(AnnotationQuerySet):
+
+    def sorted_by_page_loc(self):
+        '''
+        Return a list of :class:`~derrida.interventions.models.Intervention`
+        objects sorted by their y value on the page.
+        '''
+        def sort_y(item):
+            # assume zero if not present
+            y_percent = item.extra_data.get('image_selection', {}).get('y', '0').strip('%')
+            return float(y_percent)
+        # return sorted list of current queryset based on y coord image selection
+        return sorted(self, key=sort_y)
 
 
 class Intervention(BaseAnnotation):
@@ -85,6 +99,8 @@ class Intervention(BaseAnnotation):
     #: Associated author, instance of :class:`~derrida.people.models.Person`
     author = models.ForeignKey(Person, null=True, blank=True,
         default=get_default_intervener)
+
+    objects = InterventionQuerySet.as_manager()
 
     def __str__(self):
         """Override str to make sure that something is displayed
@@ -131,6 +147,7 @@ class Intervention(BaseAnnotation):
         super(Intervention, self).save()
 
     def is_verbal(self):
+        '''Return whether a :class:`Intervention` has a verbal component.'''
         return bool(self.text)
     # Sorts on the binary of whether an intervention does or does not
     # have text
@@ -138,10 +155,47 @@ class Intervention(BaseAnnotation):
     is_verbal.admin_order_field = 'text'
 
     def is_annotation(self):
-        return self.intervention_type == TYPES.ANNOTATION
+        '''Return whether :class:`Intervention` object is an annotation.'''
+        return self.intervention_type == INTERVENTION_TYPES.ANNOTATION
 
     def is_insertion(self):
-        return self.intervention_type == TYPES.INSERTION
+        '''Return whether :class:`Intervention` object is an insersetion.'''
+        return self.intervention_type == INTERVENTION_TYPES.INSERTION
+
+    @property
+    def digital_edition(self):
+        '''digital edition this annotation is associated, via
+        :class:`djiffy.models.Canvas`'''
+        return self.canvas.manifest
+
+    @property
+    def work_instance(self):
+        '''Annotated library work :class:`derrida.books.models.Instance`,
+        via associated :attr:`digital_edition`.'''
+        if self.canvas:
+            return self.canvas.manifest.instance
+
+    @property
+    def annotation_type(self):
+        '''List of annotation types. Generated from tags, excluding ink
+        and pencil tags, uncertain and illegible tags, and with the
+        addition of verbal or nonverbal  annotation.'''
+        # FIXME: should we restrict to known types to prevent new
+        # tags from being treated as annotation types?
+        tags = [tag.name for tag in self.tags.all() if not any(
+                 ['ink' in tag.name, 'pencil' in tag.name, 'uncertain' in tag.name,
+                  'illegible' in tag.name])]
+        if self.is_verbal():
+            tags.append('verbal annotation')
+        else:
+            tags.append('nonverbal annotation')
+        return tags
+
+    @property
+    def ink(self):
+        '''pen ink color or pencil, from tags'''
+        return [tag.name for tag in self.tags.all() if any(
+                 ['ink' in tag.name, 'pencil' in tag.name])]
 
     # NOTE: iiif_image_selection and admin_thumbnail borrowed
     # directly from cdh winthrop annotation code
@@ -149,6 +203,10 @@ class Intervention(BaseAnnotation):
     img_info_to_iiif = {'w': 'width', 'h': 'height', 'x': 'x', 'y': 'y'}
 
     def iiif_image_selection(self):
+        '''
+        Generate a IIIF image selection for a :class:`Intervention` if it
+        image selection information is present and a canvas is associated.
+        '''
         # if image selection information is present in annotation
         # and canvas is associated, generated a IIIF image for the
         # selected portion of the canvas
@@ -163,6 +221,9 @@ class Intervention(BaseAnnotation):
             return self.canvas.image.region(percent=True, **img_selection)
 
     def admin_thumbnail(self):
+        '''
+        Provide an admin thumbnail image of associated IIIF image selection.
+        '''
         img_selection = self.iiif_image_selection()
         # if image selection is available, display small thumbnail
         if img_selection:

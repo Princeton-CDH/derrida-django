@@ -1,0 +1,30 @@
+{% comment %}
+The book-header template is used to display the heading for the books detail
+view. The book-header is used on each tab view for the details view.
+The header displays the books cover image, title, author(s),
+copyright year, start pages, and edition information.
+The template has one parameter `book`, which acts as the primary
+object for accessing properties to render.
+{% endcomment %}
+{% load static %}
+{% if book.digital_edition.thumbnail %}
+<img class="item-header__image"
+   src="{% url 'books:canvas-image' instance.slug book.digital_edition.thumbnail.short_id 'thumbnail' %}"
+   srcset="{% url 'books:canvas-image' instance.slug book.digital_edition.thumbnail.short_id 'thumbnail' '@2x' %} 2x" />
+{% else %}
+<span class="item-header__image img--placeholder"></span>
+{% endif %}
+<h1 class="item-title">{{ book.display_title }}</h1>
+<p class="item-author">
+  {% for author in book.work.authors.all %}
+    {{ author.firstname_last }}{% if not forloop.last %}; {% endif %}
+  {% endfor %}
+</p>
+<p class="item-term__value">{{ book.copyright_year }}{% if book.copy %} - {{ book.copy }}{% endif %}</p>
+{% if book.start_page %}
+<p class="item-pages">{{book.start_page}}</p>
+{% endif %}
+
+{% if hideLicense != True %}
+  {% include "components/book-license.html" %}
+{% endif %}

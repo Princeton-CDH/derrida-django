@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block page-context-id %}internal-server-error{% endblock %}
+{% block header_class %}mdl-layout__header--transparent{% endblock %}
+
+{% block content %}
+
+<article class="error-page">
+  <div class="container">
+    <h1 class="error-page__title">A crack in the program.</h1>
+    <p class="error-page__subtitle">500 Error</p>
+    <p>There was a server error when processing your request.</p>
+    <img class="error-page__image" src="{% static 'img/404_img.png' %}" />
+  </div>
+</article>
+
+{% endblock %}

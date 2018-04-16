@@ -1,0 +1,421 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block page-subtitle %}{{ instance.work.primary_title }}{% if instance.work.authors.count == 1 %}, {{ instance.work.authors.first.lastname }}{% endif %} {% if instance.print_year or instance.copyright_year %}({% firstof instance.print_year instance.copyright_year %}{% if instance.copy %} - {{ instance.copy }}{% endif %}){% endif %} ‖ {{ canvas.label }} ‖ {% endblock %}
+{% block nav-title %} Derrida's Library {% endblock %}
+
+{% block header_class %}mdl-layout__header--transparent{% endblock %}
+
+{% block body_class %}disable-coordinate-navigation{% endblock %}
+
+{% block page-context-id %}book-image-gallery{% endblock %}
+
+{% block page-js %}
+<script src="{% static 'js//openseadragon/openseadragon.min.js' %}"></script>
+<script type="text/javascript" charset="utf-8">
+  document.addEventListener('DOMContentLoaded', function (){
+    // basic seadragon configuration for deep zoom
+      var viewer = OpenSeadragon({
+        id: "deep-zoom",
+        prefixUrl: "{% static 'js/openseadragon/images/' %}",
+        tileSources: "{% url 'books:canvas-image' instance.slug canvas.short_id 'info' %}",
+        zoomInButton: "zoom-in",
+        zoomOutButton: "zoom-out",
+        homeButton: "zoom-fit",
+        fullPageButton: "zoom-fullscreen-svg",
+        toolbar: "deepzoom-toolbar",
+    });
+
+    viewer.setFullScreen = function( fullPage ) {
+      var $body = $("body");
+      $body.toggleClass("is-full-screen", !$body.hasClass("is-full-screen"));
+    }
+
+  });
+</script>
+
+<script>
+  $(function () {
+    $("body").addClass("is-canvas-view");
+
+    function htmlDecode(input) {
+      var doc = new DOMParser().parseFromString(input, "text/html");
+      return doc.documentElement.textContent;
+    }
+
+    function parseJSONFromHtml(input) {
+      return JSON.parse(htmlDecode(input).replace(/\'/g, '\"'))
+    }
+
+    function calcRelativePosition(percentVal, rel) {
+      return (parseFloat(percentVal)/100) * rel + "px"
+    }
+
+    var $annotationSection = $(".annotation-selections"),
+        $deepZoom = $(".deep-zoom-component"),
+        $img = $(".gallery-image-view__img"),
+        imgH = parseFloat($img.height()),
+        imgW = parseFloat($img.width()),
+        zones = [];
+    {# image selection zones #}
+    {% for intervention in canvas.intervention_set.sorted_by_page_loc %}
+    {# provides x,y offset and width,height in percentages #}
+      var data = "{{ intervention.extra_data.image_selection }}";
+      zones.push(parseJSONFromHtml(data));
+    {% endfor %}
+
+    var drawAttempts = 0;
+    function drawZones() {
+      // if the image is not yet drawn, attempt to redraw zones
+      if (imgH === 0) {
+        // limit attmpts to draw zones
+        if (drawAttempts > 6) {
+          console.log("Failed to calculate and draw annotation areas");
+          return;
+        }
+        imgH = parseFloat($img.height());
+        imgW = parseFloat($img.width());
+        drawAttempts++;
+        setTimeout(drawZones, 500);
+        return;
+      }
+
+      var zoneDivs = [];
+      $.each(zones, function(index, zone) {
+        var zoneCSS = {
+            height: calcRelativePosition(zone.h, imgH),
+            width: calcRelativePosition(zone.w, imgW),
+            top: calcRelativePosition(zone.y, imgH),
+            left: calcRelativePosition(zone.x, imgW)
+          }
+        var $zone = $("<div/>").addClass("zone").css(zoneCSS);
+        zoneDivs.push($zone);
+      });
+
+      if (zoneDivs.length > 0) {
+        $annotationSection.css({
+          height: $deepZoom.height(),
+          width: $deepZoom.width()
+        }).append(zoneDivs);
+        setTimeout(function() {
+          $annotationSection.addClass("has-zones-added");
+        }, 100)
+      }
+      return;
+    }
+
+    drawZones();
+
+    $(".gallery-image-view__nav .mdl-layout__tab").on("click", function(e) {
+      var $this = $(this),
+          value = $this.data("value");
+
+      $this.siblings(".is-active").removeClass("is-active");
+      $this.addClass("is-active");
+
+      function toggleViews() {
+        var $annotationSwitch = $("#annotations-switch"),
+            $zoomSwitch = $("#zoom-switch"),
+            $annotationCards = $(".annotation-cards"),
+            $container = $(".gallery-image-view");
+        if (value === "annotations") {
+          $annotationSection.removeClass("is-hidden");
+          $annotationCards.removeClass("is-hidden");
+          $deepZoom.addClass("is-hidden");
+          $container.removeClass("is-background-darken");
+
+          $zoomSwitch.removeClass("is-checked");
+          $annotationSwitch.addClass("is-checked");
+
+        } else if (value === "zoom") {
+          $annotationSection.addClass("is-hidden");
+          $annotationCards.addClass("is-hidden");
+          $deepZoom.removeClass("is-hidden");
+          $container.addClass("is-background-darken");
+
+          $annotationSwitch.removeClass("is-checked");
+          $zoomSwitch.addClass("is-checked");
+
+        } else {
+          return false;
+        }
+        toggleSideBarFn($toggle); // put the sidebar away by default when switching to deep zoom
+      }
+
+      setTimeout(toggleViews, 100);
+    });
+
+    var $toggle = $(".page-header__toggle"),
+        $toggleIcon = $toggle.find('img'),
+        $sideBar = $(".gallery-image-view__header"),
+        $pageHeaders = $(".mdl-layout__header, .page-header"),
+        toggleSideBarFn = function($context) {
+          var $this = $context;
+          if ($this.hasClass("is-active")) {
+            $sideBar.addClass("is-hidden");
+            $this.removeClass("is-active");
+            $pageHeaders.removeClass("is-sidebar-visible");
+            $toggleIcon.attr("src", "{% static 'img/icons/Menu.svg' %}")
+          } else {
+            $sideBar.removeClass("is-hidden");
+            $this.addClass("is-active");
+            $pageHeaders.addClass("is-sidebar-visible");
+            $toggleIcon.attr("src", "{% static 'img/icons/Expand.svg' %}")
+          }
+        }
+    $toggle.on("click", function(e) {
+      e.preventDefault();
+      toggleSideBarFn($(this));
+    });
+
+    // The sidebar is hidden by default.
+    // Invoke the toggle function to show on load.
+    toggleSideBarFn($toggle);
+
+    function selectAnnotationCard($card) {
+      var $this = $card,
+          $zones = $annotationSelections.find(".zone"),
+          idx = $(".collection__item").index($this),
+          $selectedZone = $($zones[idx]);
+
+      if (! $this.hasClass("is-selected")) {
+        $this.siblings(".is-selected").removeClass("is-selected");
+        $this.addClass("is-selected");
+
+        $zones.removeClass("is-selected");
+        $selectedZone.addClass("is-selected");
+      }
+    }
+
+    function updateHashWithCardReference(referenceId) {
+      window.location.hash = "#annotations/" + referenceId;
+    }
+
+    var $annotationCards = $(".annotation-cards .collection__item"),
+        $annotationSelections = $(".annotation-selections");
+    $annotationCards.on("click", function() {
+      var $this = $(this);
+      selectAnnotationCard($this);
+      updateHashWithCardReference($this.data("refId"));
+    });
+
+    var $annotationList = $(".annotation-list");
+    $annotationSelections.on("click", ".zone", function() {
+      var $this = $(this),
+          $zones = $annotationSelections.find(".zone"),
+          idx = $zones.index($this),
+          $selectedCard = $($annotationCards[idx]);
+      if (! $this.hasClass("is-selected")) {
+        // Add the highlight class to card
+        $annotationCards.removeClass("is-selected");
+        $selectedCard.addClass("is-selected");
+
+        // Scroll annotation list so the selected card is in view.
+        var top = $selectedCard.position().top;
+        $annotationList.animate({ scrollTop: top });
+
+        // Add the highlight class to zone
+        $zones.removeClass("is-selected");
+        $this.addClass("is-selected");
+
+        // update hash
+        updateHashWithCardReference($selectedCard.data("refId"));
+      }
+    });
+
+    if (window.location.hash.indexOf("#annotations/") !== -1) {
+      var annotationId = window.location.hash.split("/")[1];
+      var $selected = $(".annotation-cards .collection__item[data-ref-id=" + annotationId + "]");
+      if ($selected.length === 1) {
+        selectAnnotationCard($selected);
+      }
+    }
+  });
+</script>
+{% endblock %}
+
+{% block content %}
+  <header class="page-header page-header--link">
+    <div class="container">
+      <a class="page-header__toggle"><img class="icon" src="{% static 'img/icons/Expand.svg' %}" /></a>
+      <a class="page-header__link" href="{% url 'books:detail-gallery' instance.slug %}"><h1 class="page-header__heading"><span class="arrow_icon">⟵</span> Book Image Gallery</h1></a>
+
+      {# no deep zoom if image is suppressed #}
+      {% if not instance.suppress_all_images and not canvas_suppressed %}
+      <nav class="gallery-image-view__nav mdl-tabs">
+        <a class="mdl-layout__tab is-active" href="#annotations" data-value="annotations">Display Annotation</a>
+        <a class="mdl-layout__tab" href="#zoom" data-value="zoom">Deep Zoom</a>
+      </nav>
+      {% endif %}
+    </div>
+  </header>
+
+  <article class="gallery-image-view">
+    <header class="gallery-image-view__header is-hidden">
+      {# brief title information (copied from book-header) #}
+      {% with book=instance %}
+      <h1 class="item-title">{{ book.work.primary_title }}</h1>
+      <p class="item-author">
+        {% for author in book.work.authors.all %}
+          {% if not forloop.last %}
+            {{ author.authorized_name }};
+          {% else %}
+            {{ author.authorized_name }}
+          {% endif %}
+        {% endfor %}
+      </p>
+      <p class="item-term__value">{{ book.copyright_year }}{% if book.copy %} - {{ book.copy }}{% endif %}</p>
+      {% endwith %}
+
+      {# locations where cited by Derrida #}
+      {# using corresponding references, since that is the only reliable way to identify #}
+      {% if canvas.reference_set.all %}
+        <h3 class="gallery-image-view__list-title">Cited in <span class="book-chapter-title">{{ canvas.reference_set.all.0.derridawork }}</span></h3>
+        {% for reference in canvas.reference_set.all %}
+          <span class="gallery-image-view__list-item">p.{{ reference.derridawork_page }}</span>
+        {% endfor %}
+        <hr class="gallery-image-view__list-end" />
+      {% endif %}
+
+      {# pages in this volume - navigation list #}
+
+      {# overview images #}
+      {% if instance.overview_images %}
+        <h3 class="gallery-image-view__list-title--bold">Overview Images</h3>
+        <div class="gallery-image-view__overview">
+        {% for ov_canvas in instance.overview_images %}
+          <span class="gallery-image-view__overview-item"><a class="gallery-image-view__list-item {% if canvas.id == ov_canvas.id %}list-item__active{% endif %}" href="{% url 'books:canvas-detail' instance.slug ov_canvas.short_id %}">
+            {{ ov_canvas.label }}
+          </a></span>
+        {% endfor %}
+        </div>
+        <hr class="gallery-image-view__list-end" />
+      {% endif %}
+
+      {% if instance.annotated_pages %}
+        <h3 class="gallery-image-view__list-title--bold">Annotated pages</h3>
+        {% for anno_canvas in instance.annotated_pages %}
+          <a class="gallery-image-view__list-item {% if canvas.id == anno_canvas.id %}list-item__active{% endif %}" href="{% url 'books:canvas-detail' instance.slug anno_canvas.short_id %}">
+            {{ anno_canvas.label }}
+          </a>
+        {% endfor %}
+        <hr class="gallery-image-view__list-end" />
+      {% endif %}
+
+       {% if instance.insertion_images %}
+         <h3 class="gallery-image-view__list-title--bold">Insertions</h3>
+         {% for ins_canvas in instance.insertion_images %}
+          <a class="gallery-image-view__list-item {% if canvas.id == ins_canvas.id %}list-item__active{% endif %}" href="{% url 'books:canvas-detail' instance.slug ins_canvas.short_id %}">
+            {{ ins_canvas.label }}
+          </a>
+        {% endfor %}
+        <hr class="gallery-image-view__list-end" />
+      {% endif %}
+
+      {% if suppress_form and perms.books.change_instance %}
+      <section class="gallery-image-view__form">
+        <h3 class="gallery-image-view__list-title--bold">Admin Actions</h3>
+        {# admin form - suppress current page image or all annotated page images for this volume #}
+        {# display if suppress form is present and user has permission to change book instance #}
+        {% if instance.suppress_all_images %}
+          <p>All annotated page images in this volume are suppressed.</p>
+        {% elif canvas_suppressed %}
+          <p>This page image is suppressed.</p>
+        {% else %}
+          <form class="suppress-form" method="POST" action="{% url 'books:suppress-canvas' instance.slug %}">
+            {% csrf_token %}
+            Suppress {{ suppress_form.suppress }}
+            {{ suppress_form.canvas_id }}
+            <input type="submit"/>
+          </form>
+        {% endif %}
+      </section>
+      {% endif %}
+    </header>
+
+    <article class="gallery-image-view__container">
+      {% comment %}
+      NOTE: if canvas is suppressed, access to page image has been restricted
+      by an admin due to a copyright holder take-down request.
+      Display a placeholder for the image, and show all other content.
+      {% endcomment %}
+      {% if instance.suppress_all_images or canvas_suppressed %}
+      <section class="deep-zoom-component is-hidden"></section>
+        <div class="annotation-selections">
+          {# display suppressed image #}
+          <img class="gallery-image-view__img" src="{% static 'img/suppressed_page@1x.png' %}"
+            srcset="{% static 'img/suppressed_page@2x.png' %} 2x"
+            alt="This image has been suppressed due to copyright" />
+        </div>
+      {% else %}
+
+      <section class="deep-zoom-component is-hidden">
+        {# deep zoom controls #}
+        <div id="deepzoom-toolbar" class="deepzoom__controls">
+          <div title="Zoom in" class="deepzoom__control" id="zoom-in" style="position: relative">
+            <svg class="svg" id="zoom-in-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+              <title>ZoomIn</title>
+              <polygon points="17.6 9 11 9 11 2.4 9 2.4 9 9 2.4 9 2.4 11 9 11 9 17.6 11 17.6 11 11 17.6 11 17.6 9" />
+            </svg>
+          </div>
+          <div title="Zoom out" class="deepzoom__control" id="zoom-out" style="position: relative">
+            <svg class="svg" id="zoom-out-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+              <title>ZoomOut</title>
+              <rect x="2.4" y="9" width="15.2" height="2" />
+            </svg>
+          </div>
+          <div title="Fit" class="deepzoom__control" id="zoom-fit" style="position: relative">
+            <svg class="svg" id="zoom-fit-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+              <title>Fit</title>
+              <g>
+              <polygon points="11.77 4.748 11.77 2.948 16.762 2.948 16.762 7.939 14.962 7.939 14.962 6.021 11.809 9.174 10.536 7.901 13.689 4.748 11.77 4.748" fill="#979797"/>
+              <polygon points="4.872 11.846 4.872 13.765 8.025 10.612 9.298 11.884 6.145 15.037 8.064 15.037 8.064 16.837 3.072 16.837 3.072 11.846 4.872 11.846" fill="#979797"/>
+            </g>
+            </svg>
+          </div>
+           <div title="Zoom FullScreen" class="deepzoom__control" id="zoom-fullscreen" style="position: relative">
+            <svg class="svg" id="zoom-fullscreen-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+              <title>FullScreen</title>
+              <polygon points="5.1 8 3.1 8 3.1 3 8.1 3 8.1 5 5.1 5 5.1 8" fill="#979797"/>
+              <polygon points="16.9 8 14.9 8 14.9 5 11.9 5 11.9 3 16.9 3 16.9 8" fill="#979797"/>
+              <polygon points="16.9 17 11.9 17 11.9 15 14.9 15 14.9 12 16.9 12 16.9 17" fill="#979797"/>
+              <polygon points="8.1 17 3.1 17 3.1 12 5.1 12 5.1 15 8.1 15 8.1 17" fill="#979797"/>
+            </svg>
+          </div>
+
+        </div>
+        {# deep zoom #}
+        <div id="deep-zoom"></div>
+      </section>
+
+      <div class="annotation-selections">
+        {# large size image #}
+        <img class="gallery-image-view__img" src="{% url 'books:canvas-image' instance.slug canvas.short_id 'large' %}"
+          srcset="{% url 'books:canvas-image' instance.slug canvas.short_id 'large' '@2x' %} 2x" />
+      </div>
+      {% endif %}
+
+      <section class="collection annotation-cards annotation-list">
+        {% for intervention in canvas.intervention_set.sorted_by_page_loc %}
+          {% include 'components/intervention-card.html' %}
+        {% endfor %}
+      </section>
+    </article>
+    <footer class="gallery-image-view__footer">
+      {# for now, only supports rightsstatments.org licenses (should work for PUL content) #}
+      {% if instance.digital_edition.license %}
+        <a href="{{ instance.digital_edition.license }}">
+          <img class="img" src="{% static 'img/rightsstatements_org/' %}{{ instance.digital_edition.rights_statement_id }}.svg" />
+        </a>
+      {% endif %}
+
+      {# logo for IIIF provider of digitized item #}
+      {% if instance.digital_edition.logo %}
+      <img class="img" src="{{ instance.digital_edition.logo }}"/>
+      {% endif %}
+    </footer>
+  </article>
+{% endblock %}
+
+{# disable page footer #}
+{% block page_footer %}{% endblock %}

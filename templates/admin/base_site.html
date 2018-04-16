@@ -1,5 +1,5 @@
 {% extends "admin/base.html" %}
-{% load i18n grp_tags static %}
+{% load i18n grp_tags static compress %}
 
 {% block title %}{{ title }} | {% get_site_title %}{% endblock %}
 
@@ -22,14 +22,29 @@
     {{ block.super }}
  {% endblock %}
 
-
 {% block extrastyle %}
-    <link rel="stylesheet" type="text/css" href="{% static "css/local.css" %}" />
     <link rel="stylesheet" type="text/css" href="{% static "css/test-banner.css" %}" />
+    <style type="text/css">
+    .hidden-admin-info { display: none; }
+    </style>
 {% endblock %}
 
 {% block extrahead %}
     {{ block.super }}
+    {% compress js %}
+    {# csrf adapted from mezzanine admin base site template #}
+    <script>
+    window.__csrf_token = '{{ csrf_token }}';
+    (function($) {
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                xhr.setRequestHeader('X-CSRFToken', window.__csrf_token);
+            }
+        });
+    })(grp.jQuery);
+    </script>
+    {# Since both are in tandem, include both js files in compressor #}
+    <script src="{% static 'js/material.min.js' %}"></script>
     <script src="{% static 'js/local.js' %}"></script>
+    {% endcompress %}
 {% endblock %}
-

@@ -1,0 +1,9 @@
+{% load pages_tags i18n %}
+{# primary site navigation #}
+{% for page in page_branch %}
+    {% if page.in_menu %}
+    <a class="mdl-navigation__link {% if page.is_current_or_ascendant %}mdl-navigation__link--active{% endif %}" href="{{ page.get_absolute_url }}">
+      <span class="navigation-title">{{ page.title }}</span>
+    </a>
+    {% endif %}
+{% endfor %}

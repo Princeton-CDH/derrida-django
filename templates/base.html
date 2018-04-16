@@ -1,0 +1,132 @@
+{% load static pages_tags mezzanine_tags keyword_tags fullurl %}
+
+{% comment %}
+NOTE: This site uses RDFa and schema.org vocabulary.  Every page will be declared as schema:Webpage
+by default; use page_rdf_type to override with a webpage subclass.
+{% endcomment %}
+<!DOCTYPE html>
+<html lang="en" xmlns:schema="http://schema.org/" xmlns:og="http://ogp.me/ns#">
+  <head>
+    <title>{% block page-title %}{% block page-subtitle %}{{ page.meta_title }}{% endblock %}Derrida's Margins{% endblock %}</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'apple-touch-icon.png' %}" />
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon-32x32.png' %}" />
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'favicon-16x16.png' %}" />
+    <link rel="manifest" href="{% static 'manifest.json' %}" />
+    <link rel="mask-icon" href="{% static 'safari-pinned-tab.svg' %}" color="#175498" />
+    <meta name="theme-color" content="#175498" />
+    <meta name="keywords" content="{% block meta_keywords %}{% metablock %}
+{% keywords_for page as keywords %}
+{% for keyword in keywords %}
+    {% if not forloop.first %}, {% endif %}
+    {{ keyword }}
+{% endfor %}
+{% endmetablock %}{% endblock %}">
+    <meta name="description" content="{% block meta_description %}{% metablock %}
+{{ page.description }}
+{% endmetablock %}{% endblock %}">
+{# html metadata #}
+    {% firstof page_meta_image 'mstile-150x150.png' as preview_image %}
+    {# open graph metadata #}
+    <meta property="og:title" content="{{ page.meta_title }}" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="{{ request.build_absolute_uri }}" />
+    <meta property="og:image" content="{% fullstatic preview_image %}" />
+    <meta property="og:description" content="{{ page.description }}"/>
+    <meta property="og:site_name" content="Derrida's Margins"/>
+    {# twitter card #}
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:domain" content="{{ request.get_host }}" />
+    <meta name="twitter:title" content="{{ page.meta_title }}"/>
+    <meta name="twitter:description" content="{{ page.description }}" />
+    <meta name="twitter:image" content="{% fullstatic preview_image %}" />
+    <meta name="twitter:url" content="{{ request.build_absolute_uri }}" />
+
+    {% block metadata %}{% endblock %}
+
+    <!-- styles -->
+    {% block css %}{% endblock %} {# add any local css here #}
+
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+    {% include 'snippets/local_styles.html' %}
+    <link rel="stylesheet" type="text/css" href="{% static "css/test-banner.css" %}" />
+    <script src="{% static 'js/material.min.js' %}"></script>
+    <script src="{% static 'js//lib/webui-popover.min.js' %}"></script>
+    <script src="{% static 'js/lib/sticky-sidebar.js' %}"></script>
+    <script src="{% static 'js/lib/selectize.min.js' %}"></script>
+    <script src="{% static 'js/lib/list.min.js' %}"></script>
+    <script src="{% static 'js/site.js' %}"></script>
+    {# Include analytics if INCLUDE_ANALYTICS is set to True #}
+    {# {% include 'snippets/analytics.html' %} #}
+
+    {% block javascript %}{% endblock %} {# add any additional javascript here #}
+    {% block head_extras %}{% endblock %}  {# any header metadata, etc #}
+  </head>
+  <body class="{% block body_class %}{% endblock %}"{% block body_attrs %}{% endblock %}>
+    <div class="mdl-layout mdl-js-layout has-drawer is-small-screen is-upgraded">
+    <header class="mdl-layout__header {{ headerClass }}{% block header_class %}{% endblock %}">
+      <div class="mdl-layout__header-row">
+        <!-- Logo -->
+          <a class="mdl-layout-logo" href="{% url 'home' %}" title="Home"><img width="60px" src="{% static "img/derrida_VI_logo_arrow.svg" %}"/></a>
+        <!-- Navigation -->
+        <nav class="mdl-navigation">
+          {% block navlinks %}
+          {% page_menu 'components/navlinks.html' %}
+          {% endblock %}
+          {% block admin-navlink %} {# adding block to allow override/disable #}
+            {% if user.is_staff %}
+              <a class="mdl-navigation__link admin-link" href="{% block admin-url %}{% url 'admin:index' %}{% endblock %}"><span class="navigation-title">Admin</span></a>
+            {% endif %}
+          {% endblock %}
+          {% block navbar-extra %}{% include 'snippets/test_banner.html' %}{% endblock %}
+        </nav>
+        <!-- Search Form -->
+        <div class="header__search-button" data-action="toggle-search-form">
+          <div class="mdl-button mdl-js-button mdl-button--icon">
+            <svg class="svg" xmlns="http://www.w3.org/2000/svg"><path d="M19.25,18.16l-4.71-4.71a7.83,7.83,0,1,0-1.49,1.34l4.78,4.78ZM2.75,8.3a5.87,5.87,0,1,1,5.87,5.87A5.87,5.87,0,0,1,2.75,8.3Z" fill="#FFFFFF"/></svg>
+          </div>
+        </div>
+      </div>
+    </header>
+    <header class="search-form-header {% block search-form-classes %}is-hidden{% endblock %}">
+      {% include 'components/search-bar.html' %}
+    </header>
+
+    {# Mobile Navigation #}
+    <div class="mdl-layout__drawer">
+      <nav class="mdl-navigation">
+      {% page_menu 'components/navlinks.html' %}
+      </nav>
+    </div>
+
+    <div class="coordinate-navigation {% block coordinate-nav-classes %}{% endblock %}">
+      {% page_menu 'components/navlinks.html' %}
+    </div>
+
+  {% block message %}
+    {% if messages %} {# default display of django messages, when present #}
+    <div class="messages">
+        {% for message in messages %} {# should work for success, info, warning #}
+        {% if message.level_tag %} {# since django 1.7 #}
+        <p {% if message.tags %} class="{{ message.level_tag }}"{% endif %}>{{ message|safe }}</p>
+        {% else %}
+        <p {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message|safe }}</p>
+        {% endif %}
+        {% endfor %}
+    </div>
+    {% endif %}
+  {% endblock %}
+
+    <main id="{% block page-context-id %}{% endblock %}">
+      {% block content %}{% endblock %}
+    </main>
+    {% block page_footer %}
+     {% page_menu 'components/footer.html' %}
+    {% endblock %}
+  {% block page-js %}{% endblock %}
+  </div>
+  </body>
+</html>

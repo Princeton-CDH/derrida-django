@@ -1,0 +1,28 @@
+form#grp-changelist-search-form {
+  border: none;
+}
+
+input#grp-changelist-search {
+  width: 75%;
+}
+
+#grp-breadcrumbs>ul a {
+  &,
+  &:hover,
+  &:active {
+    background-position: 100% -258px;
+  }
+}
+
+a.grp-add-link.grp-state-focus {
+  &,
+  &:hover,
+  &:active {
+    background-position: 0 -728px, 0 0;
+    color: $white;
+  }
+}
+
+#grp-filters {
+  width: 200px;
+}

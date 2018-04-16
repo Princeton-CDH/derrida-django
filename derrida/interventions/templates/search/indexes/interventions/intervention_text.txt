@@ -1,0 +1,10 @@
+{# intervention text for generic keyword search across all fields #}
+{% for tag in object.tags.all %}
+    {{ tag.name }}
+{% endfor %}
+{{ object.text|default:'' }}
+{{ object.text_language|default:'' }}
+{{ object.text_translation|default:'' }}
+{{ object.quote|default:'' }}
+{{ object.quote_language|default:'' }}
+{{ object.author|default:'' }}

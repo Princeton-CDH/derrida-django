@@ -1,0 +1,469 @@
+// Page filter for collections
+.page-filter {
+  background: $white;
+  color: $base-font-color;
+
+  .container {
+    width: 80%;
+    margin: auto;
+  }
+}
+
+.page-filter__header {
+  padding: 1rem 1rem 0;
+  color: $black;
+
+  p {
+    font-weight: 300;
+
+    &::after {
+      // this is stupid, but a quick fix because the form doesn't know which page it is, and this text needs to change
+      #citations-list & {
+        content: "Only display cited books:"
+      }
+      #books-list & {
+        content: "Only display books:"
+      }
+    }
+  }
+}
+
+.page-filter__form {
+  position: relative;
+  z-index: 4;
+  transform: scaleY(0);
+  max-height: 0;
+  @include transition(transform $base-duration $base-timing, max-height $base-duration $base-timing);
+  @include transform-origin(50% 0);
+
+  .is-visible & {
+    transform: scaleY(1);
+    max-height: 65em;
+
+    @include grid-media($large-medium-viewport-grid) {
+      max-height: 45em;
+    }
+  }
+}
+
+.page-filter__footer {
+  background-color: $base-background-color;
+  border-top: 0.5em solid $white;
+  text-align: center;
+}
+
+.page-filter__status-icon {
+  height: 2em;
+  max-height: 2em;
+  width: 100%;
+  background: $white;
+  padding: 0 0 0.5em;
+  position: relative;
+  z-index: 3;
+  transform: scaleY(1);
+  @include transition(transform $base-duration $base-timing, max-height $base-duration $base-timing);
+  @include transform-origin(50% 0);
+
+  .svg-icon {
+    height: 1.3em;
+  }
+
+  path {
+    fill: $medium-grey;
+  }
+
+  .is-visible & {
+    transform: scaleY(0);
+    max-height: 0;
+    overflow: hidden;
+
+    .svg-icon {
+      height: 0;
+    }
+  }
+
+  .is-active & {
+    path {
+      fill: $blue;
+    }
+
+    &::after {
+      content: "";
+      background-color: $red;
+      position: absolute;
+      height: 6px;
+      width: 6px;
+      border-radius: 50%;
+      margin-left: 4px;
+    }
+  }
+
+  .is-active.is-visible & {
+    &::after {
+      display: none;
+    }
+  }
+}
+
+.toggle-button {
+  background: $white;
+  padding: 0 2em;
+  margin-bottom: 1.2rem;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  color: $blue;
+  position: relative;
+  top: -2em;
+  z-index: 1;
+
+  .page-filter:not(.is-visible) .page-filter__footer & {
+    @include transition(top $base-duration $base-timing);
+  }
+
+  .page-filter:not(.is-visible) .page-filter__footer:hover & {
+      top: 0;
+  }
+
+  .is-visible & {
+    top: -7px;
+  }
+
+  &:focus {
+    outline: 0;
+  }
+
+  &:hover,
+  &:active {
+    background: $light-grey;
+  }
+
+  .md-icon--hide {
+    display: show;
+
+    .is-visible & {
+      display: none;
+    }
+  }
+
+  .md-icon--show {
+    display: none;
+
+    .is-visible & {
+      display: block;
+    }
+  }
+}
+
+.filter__section {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  padding-bottom: 1em;
+
+  .mdl-button {
+    align-self: center;
+  }
+
+  &.filter__section--toggles {
+    display: block;
+  }
+}
+
+.filter__selector {
+  align-self: baseline;
+  padding: 0 1rem;
+  flex-grow: 2;
+  flex-basis: 330px;
+  position: relative;
+
+  @include grid-media($large-medium-viewport-grid) {
+    max-width: 50%;
+  }
+
+  &.filter__selector--condensed {
+    $selector-width-s: 50%;
+    $selector-width-ml: 33%;
+    $selector-width-xl: 25%;
+
+    flex-grow: 1;
+    flex-basis: $selector-width-s;
+    max-width: $selector-width-s;
+    min-width: 0;
+
+    @include grid-media($large-medium-viewport-grid) {
+      min-width: 11em;
+      flex-basis: $selector-width-ml;
+      max-width: $selector-width-ml;
+    }
+
+    @include grid-media($xlarge-viewport-grid) {
+      flex-basis: $selector-width-xl;
+      max-width: $selector-width-xl;
+    }
+  }
+
+  .mdl-textfield {
+    width: 100%;
+    padding: 15px 0;
+  }
+
+  .mdl-textfield__input {
+    font-size: 12px;
+    margin-top: 4px;
+    opacity: 0.6;
+  }
+
+  .mdl-textfield__label {
+    font-size: 12px;
+    top: 4px;
+    visibility: visible;
+  }
+
+  .filter__section--toggles & {
+    display: inline-block;
+  }
+}
+
+.filter {
+  background-color: $white;
+  border: 1px solid $primary-color;
+  padding: 1rem 1rem 0.8rem;
+  max-width: 95%;
+  position: absolute;
+  top: 3em;
+  z-index: 3;
+
+  .mdl-checkbox__box-outline {
+    border: 1px solid transparentize($black, 0.8);
+  }
+
+  .clear-link {
+    font-size: 0.8em;
+    @include faded-link(transparentize($black, 0.6));
+    height: 1.75em;
+    display: inline-block;
+  }
+
+  .filter__selector--condensed & {
+    max-width: 90%;
+  }
+
+  &#cited_in {
+    width: 100%;
+  }
+
+  &#derridawork {
+    width: 100%;
+    max-width: 90%;
+  }
+}
+
+.filter__nav {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  font-size: 0.85em;
+  padding: 0 1.4rem 1rem;
+}
+
+.filter__nav-link {
+  width: 7.5%;
+  text-align: center;
+  text-decoration: none;
+  color: $base-font-color;
+  @include transition(color $base-duration $base-timing);
+  outline: none;
+
+  &:hover,
+  &:active,
+  &.is-active {
+    color: $blue;
+  }
+
+  &.filter__nav-link--disabled {
+    color: $medium-grey;
+    opacity: 0.6;
+
+    &:hover,
+    &:active {
+      color: $medium-grey;
+    }
+  }
+}
+
+.filter__search {
+  border: 1px solid lighten($medium-grey, 20%);
+  margin-bottom: 1rem;
+  border-radius: 1em;
+  display: flex;
+  padding: 0 0.5em;
+
+  .mdl-button--icon {
+    width: 1.25rem;
+    height: 100%;
+    min-width: 0;
+    margin-top: -5px;
+    opacity: 0.8;
+  }
+
+  .filter__search-field {
+    border: 0;
+    overflow: auto;
+    padding-left: 0.5rem;
+    width: 90%;
+    outline: none;
+
+    &::placeholder {
+      opacity: 0.8;
+    }
+  }
+}
+
+.filter__check-list {
+  max-height: 8em;
+  overflow: hidden;
+  margin-bottom: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+
+  &:hover {
+    overflow-y: scroll;
+    // margin-right: -1em;
+  }
+
+  .mdl-checkbox {
+    width: 50%;
+    height: auto;
+    margin-bottom: 0.6rem;
+    display: flex;
+    padding-right: 1.5rem;
+    font-size: 0.85em;
+
+    &:hover {
+      color: $primary-color;
+    }
+
+    &:active .mdl-checkbox__box-outline,
+    &:hover .mdl-checkbox__box-outline {
+      border-color: $primary-color;
+    }
+
+    .filter__selector--condensed & {
+      width: 100%;
+      padding-right: 0;
+    }
+  }
+
+  .name {
+    flex-basis: 100%;
+    padding-right: 6px;
+    text-overflow: ellipsis;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .filter__count {
+    opacity: 0.5;
+  }
+
+  .mdl-checkbox.is-disabled,
+   .mdl-checkbox.is-disabled:hover {
+    color: $base-font-color;
+    opacity: 0.5;
+
+    .mdl-checkbox__box-outline {
+      border-color: transparentize($base-font-color, 0.5);
+    }
+  }
+}
+
+.is-not-ready {
+  display: none;
+}
+
+.filter--years {
+  max-width: 90%;
+
+  .filter__search {
+    padding: 0;
+    border: 0;
+  }
+
+  .filter__search-label {
+    padding: 0 1em;
+  }
+
+  .filter__search-field {
+    border: 1px solid lighten($medium-grey, 20%);
+    border-radius: 1rem;
+    height: 1.7rem;
+    padding: 0 1em;
+    text-align: center;
+  }
+}
+
+.frequency_chart {
+  height: 4rem;
+  border: 1px solid lighten($medium-grey, 20%);
+  display: flex;
+  margin-bottom: 0.25rem;
+
+  &.frequency_chart--bar {
+    align-items: flex-end;
+  }
+}
+
+.frequency_chart__bar {
+  background-color: lighten($medium-grey, 20%);
+  cursor: pointer;
+  width: 100%;
+  @include transition(background-color $base-duration $base-timing);
+
+  &:hover,
+  &:active {
+    background-color: $blue;
+  }
+
+  @for $i from 1 through 10 {
+    &.frequency_chart__bar--#{$i} {
+      height: $i * 10%;
+    }
+  }
+
+  &.is-selected {
+    background-color: $red;
+  }
+
+  &.is-selected ~ .frequency_chart__bar:not(.is-selected) {
+    background-color: transparentize($red, 0.4);
+
+    &:hover,
+    &:active {
+      background-color: transparentize($red, 0.2);
+    }
+  }
+
+  &.is-selected ~ &.is-selected ~ &,
+  &.is-selected.is-selected--end ~ & {
+    background-color: lighten($medium-grey, 20%);
+
+    &:hover,
+    &:active {
+      background-color: $blue;
+    }
+  }
+}
+
+.frequency_chart-axis {
+  display: flex;
+  color: lighten($medium-grey, 10%);
+
+  .chart-label {
+    width: 50%;
+    font-size: 0.8em;
+
+    &.chart-label--end {
+      text-align: right;
+    }
+  }
+}

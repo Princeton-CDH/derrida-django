@@ -4,20 +4,12 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>derrida.books.models &#8212; Derrida 0.8.1 documentation</title>
+    <title>derrida.books.models &#8212; Derrida 0.9-0 documentation</title>
     <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../../../',
-        VERSION:     '0.8.1',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
@@ -29,8 +21,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-  </head>
-  <body>
+  </head><body>
   
 
     <div class="document">
@@ -40,6 +31,8 @@
             
   <h1>Source code for derrida.books.models</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">string</span>
 
 <span class="kn">from</span> <span class="nn">django.db</span> <span class="k">import</span> <span class="n">models</span>
 <span class="kn">from</span> <span class="nn">django.contrib.contenttypes.fields</span> <span class="k">import</span> <span class="n">GenericRelation</span>
@@ -47,8 +40,10 @@
 <span class="kn">from</span> <span class="nn">django.core.exceptions</span> <span class="k">import</span> <span class="n">ValidationError</span>
 <span class="kn">from</span> <span class="nn">django.urls</span> <span class="k">import</span> <span class="n">reverse</span>
 <span class="kn">from</span> <span class="nn">django.utils.safestring</span> <span class="k">import</span> <span class="n">mark_safe</span>
+<span class="kn">from</span> <span class="nn">django.utils.text</span> <span class="k">import</span> <span class="n">slugify</span>
 <span class="kn">from</span> <span class="nn">djiffy.models</span> <span class="k">import</span> <span class="n">Canvas</span><span class="p">,</span> <span class="n">Manifest</span>
 <span class="kn">from</span> <span class="nn">sortedm2m.fields</span> <span class="k">import</span> <span class="n">SortedManyToManyField</span>
+<span class="kn">from</span> <span class="nn">unidecode</span> <span class="k">import</span> <span class="n">unidecode</span>
 
 <span class="kn">from</span> <span class="nn">derrida.common.models</span> <span class="k">import</span> <span class="n">Named</span><span class="p">,</span> <span class="n">Notable</span><span class="p">,</span> <span class="n">DateRange</span>
 <span class="kn">from</span> <span class="nn">derrida.places.models</span> <span class="k">import</span> <span class="n">Place</span>
@@ -66,14 +61,18 @@
     <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
         <span class="n">abstract</span> <span class="o">=</span> <span class="kc">True</span>
 
-    <span class="k">def</span> <span class="nf">work_count</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="WorkCount.work_count"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.models.WorkCount.work_count">[docs]</a>    <span class="k">def</span> <span class="nf">work_count</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Return number of associated :class:`derrida.books.models.Works` for</span>
+<span class="sd">        a given object as an HTML snippet for the Django admin.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">base_url</span> <span class="o">=</span> <span class="n">reverse</span><span class="p">(</span><span class="s1">&#39;admin:books_work_changelist&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">mark_safe</span><span class="p">(</span><span class="s1">&#39;&lt;a href=&quot;</span><span class="si">%s</span><span class="s1">?</span><span class="si">%s</span><span class="s1">s__id__exact=</span><span class="si">%s</span><span class="s1">&quot;&gt;</span><span class="si">%s</span><span class="s1">&lt;/a&gt;&#39;</span> <span class="o">%</span> <span class="p">(</span>
                             <span class="n">base_url</span><span class="p">,</span>
                             <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span>
                             <span class="bp">self</span><span class="o">.</span><span class="n">pk</span><span class="p">,</span>
                             <span class="bp">self</span><span class="o">.</span><span class="n">work_set</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
-                <span class="p">))</span>
+                <span class="p">))</span></div>
     <span class="n">work_count</span><span class="o">.</span><span class="n">short_description</span> <span class="o">=</span> <span class="s1">&#39;# works&#39;</span></div>
     <span class="c1"># NOTE: possible to use a count field for admin ordering!</span>
     <span class="c1"># see https://mounirmesselmeni.github.io/2016/03/21/how-to-order-a-calculated-count-field-in-djangos-admin/</span>
@@ -86,14 +85,18 @@
     <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
         <span class="n">abstract</span> <span class="o">=</span> <span class="kc">True</span>
 
-    <span class="k">def</span> <span class="nf">instance_count</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="InstanceCount.instance_count"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.models.InstanceCount.instance_count">[docs]</a>    <span class="k">def</span> <span class="nf">instance_count</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Return a count of associated :class:`derrida.books.models.Instance` for</span>
+<span class="sd">        object as an HTML snippet for the Django admin.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">base_url</span> <span class="o">=</span> <span class="n">reverse</span><span class="p">(</span><span class="s1">&#39;admin:books_instance_changelist&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">mark_safe</span><span class="p">(</span><span class="s1">&#39;&lt;a href=&quot;</span><span class="si">%s</span><span class="s1">?</span><span class="si">%s</span><span class="s1">s__id__exact=</span><span class="si">%s</span><span class="s1">&quot;&gt;</span><span class="si">%s</span><span class="s1">&lt;/a&gt;&#39;</span> <span class="o">%</span> <span class="p">(</span>
                             <span class="n">base_url</span><span class="p">,</span>
                             <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span>
                             <span class="bp">self</span><span class="o">.</span><span class="n">pk</span><span class="p">,</span>
                             <span class="bp">self</span><span class="o">.</span><span class="n">instance_set</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
-                <span class="p">))</span>
+                <span class="p">))</span></div>
     <span class="n">instance_count</span><span class="o">.</span><span class="n">short_description</span> <span class="o">=</span> <span class="s1">&#39;# instances&#39;</span></div>
 
 
@@ -129,8 +132,9 @@
 
 
 <div class="viewcode-block" id="Journal"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.models.Journal">[docs]</a><span class="k">class</span> <span class="nc">Journal</span><span class="p">(</span><span class="n">Named</span><span class="p">,</span> <span class="n">Notable</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;List of associated journals for use with &quot;book&quot; objects&#39;&#39;&#39;</span>
+    <span class="sd">&#39;&#39;&#39;List of associated journals for items published as journal articles&#39;&#39;&#39;</span>
     <span class="k">pass</span></div>
+
 
 <div class="viewcode-block" id="Work"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.models.Work">[docs]</a><span class="k">class</span> <span class="nc">Work</span><span class="p">(</span><span class="n">Notable</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;A platonic work.  Stores common information about multiple</span>
@@ -149,7 +153,7 @@
     <span class="n">uri</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">URLField</span><span class="p">(</span><span class="s1">&#39;URI&#39;</span><span class="p">,</span> <span class="n">blank</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">help_text</span><span class="o">=</span><span class="s1">&#39;Linked data URI&#39;</span><span class="p">,</span>
         <span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
     <span class="c1">#: relation to :class:`Person` authors</span>
-    <span class="n">authors</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ManyToManyField</span><span class="p">(</span><span class="n">Person</span><span class="p">)</span>
+    <span class="n">authors</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ManyToManyField</span><span class="p">(</span><span class="n">Person</span><span class="p">,</span> <span class="n">blank</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="c1">#: :class:`Subject` related through :class:`WorkSubject`</span>
     <span class="n">subjects</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ManyToManyField</span><span class="p">(</span><span class="n">Subject</span><span class="p">,</span> <span class="n">through</span><span class="o">=</span><span class="s1">&#39;WorkSubject&#39;</span><span class="p">)</span>
     <span class="c1">#: :class:`Language` related through :class:`WorkLanguage`</span>
@@ -169,15 +173,32 @@
     <span class="n">author_names</span><span class="o">.</span><span class="n">short_description</span> <span class="o">=</span> <span class="s1">&#39;Authors&#39;</span>
     <span class="n">author_names</span><span class="o">.</span><span class="n">admin_order_field</span> <span class="o">=</span> <span class="s1">&#39;authors__authorized_name&#39;</span>
 
-    <span class="k">def</span> <span class="nf">instance_count</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Work.instance_count"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.models.Work.instance_count">[docs]</a>    <span class="k">def</span> <span class="nf">instance_count</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Return count of :class:`derrida.book.models.Instance` associated with</span>
+<span class="sd">        :class:`Work` formatted as an HTML snippet for the Django admin.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">base_url</span> <span class="o">=</span> <span class="n">reverse</span><span class="p">(</span><span class="s1">&#39;admin:books_instance_changelist&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">mark_safe</span><span class="p">(</span><span class="s1">&#39;&lt;a href=&quot;</span><span class="si">%s</span><span class="s1">?</span><span class="si">%s</span><span class="s1">s__id__exact=</span><span class="si">%s</span><span class="s1">&quot;&gt;</span><span class="si">%s</span><span class="s1">&lt;/a&gt;&#39;</span> <span class="o">%</span> <span class="p">(</span>
                             <span class="n">base_url</span><span class="p">,</span>
                             <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span>
                             <span class="bp">self</span><span class="o">.</span><span class="n">pk</span><span class="p">,</span>
                             <span class="bp">self</span><span class="o">.</span><span class="n">instance_set</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
-                <span class="p">))</span>
+                <span class="p">))</span></div>
     <span class="n">instance_count</span><span class="o">.</span><span class="n">short_description</span> <span class="o">=</span> <span class="s1">&#39;# instances&#39;</span></div>
+
+
+<div class="viewcode-block" id="InstanceQuerySet"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.models.InstanceQuerySet">[docs]</a><span class="k">class</span> <span class="nc">InstanceQuerySet</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">QuerySet</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Custom :class:`~django.db.models.QuerySet` for :class:`Instance` to</span>
+<span class="sd">    make it easy to find all instances that have a digital</span>
+<span class="sd">    edition&#39;&#39;&#39;</span>
+
+<div class="viewcode-block" id="InstanceQuerySet.with_digital_eds"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.models.InstanceQuerySet.with_digital_eds">[docs]</a>    <span class="k">def</span> <span class="nf">with_digital_eds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Return :class:`derrida.books.models.Instance` queryset filtered by</span>
+<span class="sd">        having a digital edition.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">exclude</span><span class="p">(</span><span class="n">digital_edition__isnull</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="Instance"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.models.Instance">[docs]</a><span class="k">class</span> <span class="nc">Instance</span><span class="p">(</span><span class="n">Notable</span><span class="p">):</span>
@@ -185,7 +206,7 @@
 <span class="sd">    or translation.  Can also include books that appear as sections</span>
 <span class="sd">    of a collected works.&#39;&#39;&#39;</span>
 
-    <span class="c1">#: :class:`Work` this instancebelongs to</span>
+    <span class="c1">#: :class:`Work` this instance belongs to</span>
     <span class="n">work</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">Work</span><span class="p">)</span>
     <span class="c1">#: alternate title (optional)</span>
     <span class="n">alternate_title</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">blank</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">255</span><span class="p">)</span>
@@ -204,6 +225,20 @@
                         <span class="n">message</span><span class="o">=</span><span class="s1">&#39;Zotero IDs must be alphanumeric.&#39;</span>
                     <span class="p">)]</span>
     <span class="p">)</span>
+    <span class="c1"># identifying slug for use in get_absolute_url, indexed for speed</span>
+    <span class="n">slug</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">SlugField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">255</span><span class="p">,</span>
+                            <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                            <span class="n">help_text</span><span class="o">=</span><span class="p">(</span>
+                                <span class="s1">&#39;To auto-generate a valid slug for a new &#39;</span>
+                                <span class="s1">&#39;instance, choose a work then click &#39;</span>
+                                <span class="s1">&#39;&quot;Save and Continue Editing&quot; in the lower &#39;</span>
+                                <span class="s1">&#39;right. Editing slugs of previously saved &#39;</span>
+                                <span class="s1">&#39;instances should be done with caution, &#39;</span>
+                                <span class="s1">&#39;as this may break permanent links.&#39;</span>
+                            <span class="p">),</span>
+                            <span class="n">blank</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+
     <span class="c1">#: item is extant</span>
     <span class="n">is_extant</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">BooleanField</span><span class="p">(</span><span class="n">help_text</span><span class="o">=</span><span class="s1">&#39;Extant in PUL JD&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="c1">#: item is annotated</span>
@@ -242,6 +277,13 @@
     <span class="n">start_page</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">blank</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="c1">#: end page for book section or journal article</span>
     <span class="n">end_page</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">blank</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1">#: optional label to distinguish multiple copies of the same work</span>
+    <span class="n">copy</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">blank</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">help_text</span><span class="o">=</span><span class="s1">&#39;Label to distinguish multiple copies of the same edition&#39;</span><span class="p">,</span>
+        <span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">RegexValidator</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;[A-Z]&#39;</span><span class="p">,</span>
+            <span class="n">message</span><span class="o">=</span><span class="s1">&#39;Please set a capital letter from A-Z.&#39;</span>
+        <span class="p">)],</span>
+    <span class="p">)</span>
 
     <span class="c1">#: :class:`Language` this item is written in;</span>
     <span class="c1"># uses :class:`InstanceLanguage` to indicate primary language</span>
@@ -269,22 +311,122 @@
         <span class="n">on_delete</span><span class="o">=</span><span class="n">models</span><span class="o">.</span><span class="n">SET_NULL</span><span class="p">,</span>
         <span class="n">help_text</span><span class="o">=</span><span class="s1">&#39;Digitized edition of this book, if available&#39;</span><span class="p">)</span>
 
+    <span class="c1">#: flag to suppress content page images, to comply with copyright</span>
+    <span class="c1">#: owner take-down request</span>
+    <span class="n">suppress_all_images</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">BooleanField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">help_text</span><span class="o">=</span><span class="s1">&#39;&#39;&#39;Suppress large image display for all annotated pages</span>
+<span class="s1">        in this volume, to comply with copyright take-down requests.</span>
+<span class="s1">        (Overview images, insertions, and thumbnails will still display.)&#39;&#39;&#39;</span><span class="p">)</span>
+    <span class="c1">#: specific page images to be suppressed, to comply with copyright</span>
+    <span class="c1">#: owner take-down request</span>
+    <span class="n">suppressed_images</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ManyToManyField</span><span class="p">(</span><span class="n">Canvas</span><span class="p">,</span> <span class="n">blank</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">help_text</span><span class="o">=</span><span class="s1">&#39;&#39;&#39;Suppress large image for specific annotated images to comply</span>
+<span class="s1">        with copyright take-down requests.&#39;&#39;&#39;</span><span class="p">)</span>
+
     <span class="c1"># proof-of-concept generic relation to footnotes</span>
     <span class="c1">#: generic relation to :class:~`derrida.footnotes.models.Footnote`</span>
     <span class="n">footnotes</span> <span class="o">=</span> <span class="n">GenericRelation</span><span class="p">(</span><span class="n">Footnote</span><span class="p">)</span>
 
+    <span class="n">objects</span> <span class="o">=</span> <span class="n">InstanceQuerySet</span><span class="o">.</span><span class="n">as_manager</span><span class="p">()</span>
+
     <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
         <span class="n">ordering</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;alternate_title&#39;</span><span class="p">,</span> <span class="s1">&#39;work__primary_title&#39;</span><span class="p">]</span> <span class="c1">## ??</span>
         <span class="n">verbose_name</span> <span class="o">=</span> <span class="s1">&#39;Derrida library work instance&#39;</span>
+        <span class="n">unique_together</span> <span class="o">=</span> <span class="p">((</span><span class="s2">&quot;work&quot;</span><span class="p">,</span> <span class="s2">&quot;copyright_year&quot;</span><span class="p">,</span> <span class="s2">&quot;copy&quot;</span><span class="p">),)</span>
 
-    <span class="k">def</span> <span class="nf">clean</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Instance.save"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.models.Instance.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">slug</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">slug</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate_safe_slug</span><span class="p">()</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Instance</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Instance.clean"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.models.Instance.clean">[docs]</a>    <span class="k">def</span> <span class="nf">clean</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># Don&#39;t allow both journal and collected work</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">journal</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">collected_in</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="s1">&#39;Cannot belong to both a journal and a collection&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="s1">&#39;Cannot belong to both a journal and a collection&#39;</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> (</span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">display_title</span><span class="p">(),</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">copyright_year</span> <span class="ow">or</span> <span class="s1">&#39;n.d.&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> (</span><span class="si">%s%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">display_title</span><span class="p">(),</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">copyright_year</span> <span class="ow">or</span> <span class="s1">&#39;n.d.&#39;</span><span class="p">,</span>
+            <span class="s1">&#39; </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Instance.get_absolute_url"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.models.Instance.get_absolute_url">[docs]</a>    <span class="k">def</span> <span class="nf">get_absolute_url</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;URL for this :class:`Instance` on the website.&#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="n">reverse</span><span class="p">(</span><span class="s1">&#39;books:detail&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;slug&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">slug</span><span class="p">})</span></div>
+
+<div class="viewcode-block" id="Instance.generate_base_slug"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.models.Instance.generate_base_slug">[docs]</a>    <span class="k">def</span> <span class="nf">generate_base_slug</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Generate a slug based on first author, work title, and year.</span>
+<span class="sd">        Not guaranteed to be unique if there are multiple copies of</span>
+<span class="sd">        the same instance/edition of a work.</span>
+
+<span class="sd">        :rtype str: String in the format ``lastname-title-of-work-year``</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="c1"># get the first author, if there is one</span>
+        <span class="n">author</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">work</span><span class="o">.</span><span class="n">authors</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">author</span><span class="p">:</span>
+            <span class="c1"># use the last name of the first author</span>
+            <span class="n">author</span> <span class="o">=</span> <span class="n">author</span><span class="o">.</span><span class="n">authorized_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># otherwise, set it to an empty string</span>
+            <span class="n">author</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="c1"># truncate the title to first several words of the title</span>
+        <span class="n">title</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">work</span><span class="o">.</span><span class="n">primary_title</span><span class="o">.</span><span class="n">split</span><span class="p">()[:</span><span class="mi">9</span><span class="p">])</span>
+        <span class="c1"># use copyright year if available, with fallback to work year if</span>
+        <span class="n">year</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copyright_year</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">work</span><span class="o">.</span><span class="n">year</span> <span class="ow">or</span> <span class="s1">&#39;&#39;</span>
+        <span class="c1"># # return a slug (not unique for multiple copies of same instance)</span>
+        <span class="k">return</span> <span class="n">slugify</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">unidecode</span><span class="p">(</span><span class="n">author</span><span class="p">),</span> <span class="n">unidecode</span><span class="p">(</span><span class="n">title</span><span class="p">),</span> <span class="n">year</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Instance.generate_safe_slug"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.models.Instance.generate_safe_slug">[docs]</a>    <span class="k">def</span> <span class="nf">generate_safe_slug</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Generate a unique slug.  Checks for duplicates and calculates</span>
+<span class="sd">        an appropriate copy letter if needed.</span>
+
+<span class="sd">        :rtype str: String in the format `lastname-title-of-work-year-copy`</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="c1"># base slug, without any copy letter</span>
+        <span class="n">base_slug</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate_base_slug</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">:</span>
+            <span class="n">slug</span> <span class="o">=</span> <span class="s1">&#39;-&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">base_slug</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">slug</span> <span class="o">=</span> <span class="n">base_slug</span>
+
+        <span class="c1"># check for any copies with the same base slug</span>
+        <span class="n">duplicates</span> <span class="o">=</span> <span class="n">Instance</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
+            <span class="n">slug__icontains</span><span class="o">=</span><span class="n">base_slug</span><span class="p">)</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s1">&#39;-slug&#39;</span><span class="p">)</span>
+        <span class="c1"># exclude current record if it has already been saved</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pk</span><span class="p">:</span>
+            <span class="n">duplicates</span> <span class="o">=</span> <span class="n">duplicates</span><span class="o">.</span><span class="n">exclude</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pk</span><span class="p">)</span>
+        <span class="c1"># any new copies should start with &#39;B&#39; since &#39;A&#39; is implicit in already</span>
+        <span class="c1"># saved slug for original</span>
+        <span class="n">new_copy_letter</span> <span class="o">=</span> <span class="s1">&#39;B&#39;</span>
+        <span class="c1"># check for duplicates</span>
+        <span class="k">if</span> <span class="n">duplicates</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="c1"># get the list of matching slugs</span>
+            <span class="n">slugs</span> <span class="o">=</span> <span class="n">duplicates</span><span class="o">.</span><span class="n">values_list</span><span class="p">(</span><span class="s1">&#39;slug&#39;</span><span class="p">,</span> <span class="n">flat</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="c1"># if slug with specified copy is already unique, use that without</span>
+            <span class="c1"># further processing</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">slug</span> <span class="ow">in</span> <span class="n">slugs</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">slug</span>
+
+            <span class="c1"># otherwise, calculate the appropriate copy letter to use</span>
+
+            <span class="c1"># collect copy suffixes from the slugs</span>
+            <span class="c1"># (trailing single uppercase letters only)</span>
+            <span class="n">letters</span> <span class="o">=</span> <span class="p">[</span><span class="n">ltr</span> <span class="k">for</span> <span class="n">slug</span> <span class="ow">in</span> <span class="n">slugs</span>
+                       <span class="k">for</span> <span class="n">ltr</span> <span class="ow">in</span> <span class="n">slug</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+                       <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ltr</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">ltr</span> <span class="ow">in</span> <span class="n">string</span><span class="o">.</span><span class="n">ascii_uppercase</span><span class="p">]</span>
+
+            <span class="c1"># if existing copies letters are found, increment from the</span>
+            <span class="c1"># highest one (already sorted properly from queryset return)</span>
+            <span class="k">if</span> <span class="n">letters</span><span class="p">:</span>
+                <span class="n">next_copy</span> <span class="o">=</span> <span class="nb">chr</span><span class="p">(</span><span class="nb">ord</span><span class="p">(</span><span class="n">letters</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># otherwise, default next copy is B (first is assumed to be A)</span>
+                <span class="n">next_copy</span> <span class="o">=</span> <span class="s1">&#39;B&#39;</span>
+            <span class="n">slug</span> <span class="o">=</span> <span class="s1">&#39;-&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">base_slug</span><span class="p">,</span> <span class="n">next_copy</span><span class="p">])</span>
+            <span class="c1"># also store the new copy letter as instance copy</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">copy</span> <span class="o">=</span> <span class="n">next_copy</span>
+
+        <span class="k">return</span> <span class="n">slug</span></div>
 
 <div class="viewcode-block" id="Instance.display_title"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.models.Instance.display_title">[docs]</a>    <span class="k">def</span> <span class="nf">display_title</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;display title - alternate title or work short title&#39;&#39;&#39;</span>
@@ -293,11 +435,26 @@
 
 <div class="viewcode-block" id="Instance.is_digitized"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.models.Instance.is_digitized">[docs]</a>    <span class="k">def</span> <span class="nf">is_digitized</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;boolean indicator if there is an associated digital edition&#39;&#39;&#39;</span>
-        <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">digital_edition</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">digital_edition</span><span class="p">)</span> <span class="ow">or</span> \
+            <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">collected_in</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">collected_in</span><span class="o">.</span><span class="n">digital_edition</span><span class="p">)</span></div>
     <span class="c1"># technically sorts on the foreign key, but that effectively filters</span>
     <span class="c1"># instances with/without digital additions</span>
     <span class="n">is_digitized</span><span class="o">.</span><span class="n">admin_order_field</span> <span class="o">=</span> <span class="s1">&#39;digital_edition&#39;</span>
     <span class="n">is_digitized</span><span class="o">.</span><span class="n">boolean</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">location</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Location in Derrida&#39;s library (currently only available for</span>
+<span class="sd">        digitized books).&#39;&#39;&#39;</span>
+        <span class="c1"># NOTE: PUL digital editions from the Finding Aid include the</span>
+        <span class="c1"># location in the item title</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_digitized</span><span class="p">():</span>
+            <span class="c1"># Split manifest label on dashes; at most we want the first two</span>
+            <span class="n">location_parts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">digital_edition</span><span class="o">.</span><span class="n">label</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; - &#39;</span><span class="p">)[:</span><span class="mi">2</span><span class="p">]</span>
+            <span class="c1"># some volumes include a &quot;Gift Books&quot; notation we don&#39;t care about</span>
+            <span class="k">if</span> <span class="n">location_parts</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;Gift Books&#39;</span><span class="p">):</span>
+                <span class="n">location_parts</span> <span class="o">=</span> <span class="n">location_parts</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">return</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">location_parts</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">item_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -319,7 +476,101 @@
         <span class="k">return</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">c</span><span class="o">.</span><span class="n">call_number</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">instancecatalogue_set</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
                           <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">call_number</span><span class="p">])</span></div>
     <span class="n">catalogue_call_numbers</span><span class="o">.</span><span class="n">short_description</span> <span class="o">=</span> <span class="s1">&#39;Call Numbers&#39;</span>
-    <span class="n">catalogue_call_numbers</span><span class="o">.</span><span class="n">admin_order_field</span> <span class="o">=</span> <span class="s1">&#39;catalogue__call_number&#39;</span></div>
+    <span class="n">catalogue_call_numbers</span><span class="o">.</span><span class="n">admin_order_field</span> <span class="o">=</span> <span class="s1">&#39;catalogue__call_number&#39;</span>
+
+<div class="viewcode-block" id="Instance.print_year"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.models.Instance.print_year">[docs]</a>    <span class="k">def</span> <span class="nf">print_year</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Year from :attr:`print_date` if year is known&#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">print_date</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">print_date_year_known</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">print_date</span><span class="o">.</span><span class="n">year</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">year</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;year for indexing and display; :attr:`print_date` if known,</span>
+<span class="sd">        otherwise :attr:`copyright_year`&#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">print_year</span><span class="p">()</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">copyright_year</span>
+
+<div class="viewcode-block" id="Instance.images"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.models.Instance.images">[docs]</a>    <span class="k">def</span> <span class="nf">images</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Queryset containing all :class:`djiffy.models.Canvas` objects</span>
+<span class="sd">        associated with the digital edition for this item.&#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">digital_edition</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">digital_edition</span><span class="o">.</span><span class="n">canvases</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">Canvas</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">none</span><span class="p">()</span></div>
+
+    <span class="c1">#: terms in an image label that indicate a canvas should be</span>
+    <span class="c1">#: considered an overview image (e.g., cover &amp; outside views)</span>
+    <span class="n">overview_labels</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;cover&#39;</span><span class="p">,</span> <span class="s1">&#39;spine&#39;</span><span class="p">,</span> <span class="s1">&#39;back&#39;</span><span class="p">,</span> <span class="s1">&#39;edge&#39;</span><span class="p">,</span> <span class="s1">&#39;view&#39;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="Instance.overview_images"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.models.Instance.overview_images">[docs]</a>    <span class="k">def</span> <span class="nf">overview_images</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Overview images for this book - cover, spine, etc.</span>
+<span class="sd">        Filtered based on canvas label naming conventions.&#39;&#39;&#39;</span>
+        <span class="n">label_query</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">Q</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">overview_label</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">overview_labels</span><span class="p">:</span>
+            <span class="n">label_query</span> <span class="o">|=</span> <span class="n">models</span><span class="o">.</span><span class="n">Q</span><span class="p">(</span><span class="n">label__icontains</span><span class="o">=</span><span class="n">overview_label</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="p">()</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">label_query</span><span class="p">)</span> \
+                   <span class="o">.</span><span class="n">exclude</span><span class="p">(</span><span class="n">label__icontains</span><span class="o">=</span><span class="s1">&#39;insertion&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Instance.annotated_pages"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.models.Instance.annotated_pages">[docs]</a>    <span class="k">def</span> <span class="nf">annotated_pages</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Annotated pages for this book. Filtered based on the presence</span>
+<span class="sd">        of a documented :class:`~derrida.interventions.models.Intervention`</span>
+<span class="sd">        in the database.&#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="p">()</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">intervention__isnull</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">distinct</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Instance.insertion_images"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.models.Instance.insertion_images">[docs]</a>    <span class="k">def</span> <span class="nf">insertion_images</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Insertion images for this book.</span>
+<span class="sd">        Filtered based on canvas label naming conventions.&#39;&#39;&#39;</span>
+        <span class="c1"># NOTE: using Insertion because of possible case-sensitive</span>
+        <span class="c1"># search on mysql even when icontains is used</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="p">()</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">label__icontains</span><span class="o">=</span><span class="s1">&#39;Insertion&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Instance.allow_canvas_detail"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.models.Instance.allow_canvas_detail">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">allow_canvas_detail</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">canvas</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Check if canvas detail view is allowed.  Allows insertion images,</span>
+<span class="sd">        overview images, and pages with documented interventions.&#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="nb">any</span><span class="p">([</span>
+            <span class="s1">&#39;insertion&#39;</span> <span class="ow">in</span> <span class="n">canvas</span><span class="o">.</span><span class="n">label</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span>
+            <span class="nb">any</span><span class="p">(</span><span class="n">label</span> <span class="ow">in</span> <span class="n">canvas</span><span class="o">.</span><span class="n">label</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+                <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">overview_labels</span><span class="p">),</span>
+            <span class="n">canvas</span><span class="o">.</span><span class="n">intervention_set</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span>
+        <span class="p">])</span></div>
+
+<div class="viewcode-block" id="Instance.allow_canvas_large_image"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.models.Instance.allow_canvas_large_image">[docs]</a>    <span class="k">def</span> <span class="nf">allow_canvas_large_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">canvas</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Check if canvas large image view is allowed.  Always allows</span>
+<span class="sd">        insertion images and overview images; other pages with documented</span>
+<span class="sd">        interventions are allowed as long as they are not suppressed,</span>
+<span class="sd">        either via :attr:`suppress_all_images` or specific</span>
+<span class="sd">        :attr:`suppressed_images`.&#39;&#39;&#39;</span>
+        <span class="c1"># insertion &amp; overview always allowed</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">([</span><span class="s1">&#39;insertion&#39;</span> <span class="ow">in</span> <span class="n">canvas</span><span class="o">.</span><span class="n">label</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span>
+                <span class="nb">any</span><span class="p">(</span><span class="n">label</span> <span class="ow">in</span> <span class="n">canvas</span><span class="o">.</span><span class="n">label</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+                    <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">overview_labels</span><span class="p">)]):</span>
+            <span class="c1"># allow</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="c1"># if all other images are suppressed, deny without checking further</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">suppress_all_images</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="c1"># if image has interventions, check if it is suppressed</span>
+        <span class="k">if</span> <span class="n">canvas</span><span class="o">.</span><span class="n">intervention_set</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="c1"># deny if suppressed</span>
+            <span class="k">if</span> <span class="n">canvas</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">suppressed_images</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+                <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># otherwise, allow</span>
+                <span class="k">return</span> <span class="kc">True</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">related_instances</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Find related works; for now, this means works by the</span>
+<span class="sd">        same author.  For a work that collects item, include</span>
+<span class="sd">        work by any book section authors.&#39;&#39;&#39;</span>
+        <span class="n">authors</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">work</span><span class="o">.</span><span class="n">authors</span><span class="o">.</span><span class="n">all</span><span class="p">())</span>
+        <span class="n">exclude</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">pk</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">collected_set</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">instance</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">collected_set</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+                <span class="n">authors</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">instance</span><span class="o">.</span><span class="n">work</span><span class="o">.</span><span class="n">authors</span><span class="o">.</span><span class="n">all</span><span class="p">())</span>
+
+        <span class="k">return</span> <span class="n">Instance</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">work__authors__in</span><span class="o">=</span><span class="n">authors</span><span class="p">)</span> \
+                       <span class="o">.</span><span class="n">exclude</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pk</span><span class="p">)</span> \
+                       <span class="o">.</span><span class="n">exclude</span><span class="p">(</span><span class="n">digital_edition__isnull</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="WorkSubject"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.models.WorkSubject">[docs]</a><span class="k">class</span> <span class="nc">WorkSubject</span><span class="p">(</span><span class="n">Notable</span><span class="p">):</span>
@@ -450,14 +701,55 @@
     <span class="n">full_citation</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">TextField</span><span class="p">()</span>
     <span class="c1">#: boolean indicator for primary work</span>
     <span class="n">is_primary</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">BooleanField</span><span class="p">()</span>
+    <span class="c1">#: slug for use in URLs</span>
+    <span class="n">slug</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">SlugField</span><span class="p">(</span>
+        <span class="n">help_text</span><span class="o">=</span><span class="s1">&#39;slug for use in URLs (changing after creation will break URLs)&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">short_title</span></div>
 
 
+<div class="viewcode-block" id="DerridaWorkSection"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.models.DerridaWorkSection">[docs]</a><span class="k">class</span> <span class="nc">DerridaWorkSection</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Sections of a :class:`DerridaWork` (e.g. chapters). Used to look at</span>
+<span class="sd">    :class:`Reference` by sections of the work.&#39;&#39;&#39;</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">255</span><span class="p">)</span>
+    <span class="n">derridawork</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">DerridaWork</span><span class="p">)</span>
+    <span class="n">order</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">PositiveIntegerField</span><span class="p">(</span><span class="s1">&#39;Order&#39;</span><span class="p">)</span>
+    <span class="n">start_page</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">IntegerField</span><span class="p">(</span><span class="n">blank</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+       <span class="n">help_text</span><span class="o">=</span><span class="s1">&#39;Sections with no pages will be treated as headers.&#39;</span><span class="p">)</span>
+    <span class="n">end_page</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">IntegerField</span><span class="p">(</span><span class="n">blank</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">ordering</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;derridawork&#39;</span><span class="p">,</span> <span class="s1">&#39;order&#39;</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span></div>
+
+
 <div class="viewcode-block" id="ReferenceType"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.models.ReferenceType">[docs]</a><span class="k">class</span> <span class="nc">ReferenceType</span><span class="p">(</span><span class="n">Named</span><span class="p">,</span> <span class="n">Notable</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;Type of reference, i.e. citation, quotation, foonotes, epigraph, etc.&#39;&#39;&#39;</span>
+    <span class="sd">&#39;&#39;&#39;Type of reference, i.e. citation, quotation, footnotes, epigraph, etc.&#39;&#39;&#39;</span>
     <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="ReferenceQuerySet"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.models.ReferenceQuerySet">[docs]</a><span class="k">class</span> <span class="nc">ReferenceQuerySet</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">QuerySet</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Custom :class:`~django.db.models.QuerySet` for :class:`Reference`.&#39;&#39;&#39;</span>
+
+<div class="viewcode-block" id="ReferenceQuerySet.order_by_source_page"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.models.ReferenceQuerySet.order_by_source_page">[docs]</a>    <span class="k">def</span> <span class="nf">order_by_source_page</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Order by page in derrida work (attr:`Reference.derridawork_page`)&#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s1">&#39;derridawork_page&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ReferenceQuerySet.order_by_author"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.models.ReferenceQuerySet.order_by_author">[docs]</a>    <span class="k">def</span> <span class="nf">order_by_author</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Order by author of cited work&#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s1">&#39;instance__work__authors__authorized_name&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ReferenceQuerySet.summary_values"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.models.ReferenceQuerySet.summary_values">[docs]</a>    <span class="k">def</span> <span class="nf">summary_values</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Return a values list of summary information for display or</span>
+<span class="sd">        visualization.  Currently used for histogram visualization.</span>
+<span class="sd">        Author of cited work is aliased to `author`.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;instance__slug&#39;</span><span class="p">,</span> <span class="s1">&#39;derridawork__slug&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;derridawork_page&#39;</span><span class="p">,</span> <span class="s1">&#39;derridawork_pageloc&#39;</span><span class="p">,</span>
+           <span class="n">author</span><span class="o">=</span><span class="n">models</span><span class="o">.</span><span class="n">F</span><span class="p">(</span><span class="s1">&#39;instance__work__authors__authorized_name&#39;</span><span class="p">))</span></div></div>
 
 
 <div class="viewcode-block" id="Reference"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.models.Reference">[docs]</a><span class="k">class</span> <span class="nc">Reference</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
@@ -467,8 +759,9 @@
     <span class="n">instance</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">Instance</span><span class="p">,</span> <span class="n">blank</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="c1">#: :class:`DerridaWork` that references the item</span>
     <span class="n">derridawork</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">DerridaWork</span><span class="p">)</span>
-    <span class="c1">#: page in the Derrida work</span>
-    <span class="n">derridawork_page</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+    <span class="c1">#: page in the Derrida work.</span>
+    <span class="c1"># FIXME: does this have to be char and not integer?</span>
+    <span class="n">derridawork_page</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">IntegerField</span><span class="p">()</span>
     <span class="c1">#: location/identifier on the page</span>
     <span class="n">derridawork_pageloc</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
     <span class="c1">#: page in the referenced item</span>
@@ -484,6 +777,8 @@
     <span class="n">interventions</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ManyToManyField</span><span class="p">(</span><span class="s1">&#39;interventions.Intervention&#39;</span><span class="p">,</span>
         <span class="n">blank</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># Lazy reference to avoid a circular import</span>
 
+    <span class="n">objects</span> <span class="o">=</span> <span class="n">ReferenceQuerySet</span><span class="o">.</span><span class="n">as_manager</span><span class="p">()</span>
+
     <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
         <span class="n">ordering</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;derridawork&#39;</span><span class="p">,</span> <span class="s1">&#39;derridawork_page&#39;</span><span class="p">,</span> <span class="s1">&#39;derridawork_pageloc&#39;</span><span class="p">]</span>
 
@@ -492,10 +787,20 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">derridawork</span><span class="o">.</span><span class="n">short_title</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">derridawork_page</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">derridawork_pageloc</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">instance</span><span class="o">.</span><span class="n">display_title</span><span class="p">(),</span>
+            <span class="c1"># instance is technically optional...</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">instance</span><span class="o">.</span><span class="n">display_title</span><span class="p">()</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">instance</span> <span class="k">else</span> <span class="s1">&#39;[no instance]&#39;</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">book_page</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">reference_type</span>
         <span class="p">)</span>
+
+<div class="viewcode-block" id="Reference.get_absolute_url"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.models.Reference.get_absolute_url">[docs]</a>    <span class="k">def</span> <span class="nf">get_absolute_url</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;URL for this reference on the site&#39;&#39;&#39;</span>
+        <span class="c1"># NOTE: currently view is html snippet for loading via ajax only</span>
+        <span class="k">return</span> <span class="n">reverse</span><span class="p">(</span><span class="s1">&#39;books:reference&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span>
+            <span class="s1">&#39;derridawork_slug&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">derridawork</span><span class="o">.</span><span class="n">slug</span><span class="p">,</span>
+            <span class="s1">&#39;page&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">derridawork_page</span><span class="p">,</span>
+            <span class="s1">&#39;pageloc&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">derridawork_pageloc</span>
+        <span class="p">})</span></div>
 
 <div class="viewcode-block" id="Reference.anchor_text_snippet"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.models.Reference.anchor_text_snippet">[docs]</a>    <span class="k">def</span> <span class="nf">anchor_text_snippet</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Anchor text snippet, for admin display&#39;&#39;&#39;</span>
@@ -506,20 +811,48 @@
     <span class="n">anchor_text_snippet</span><span class="o">.</span><span class="n">short_description</span> <span class="o">=</span> <span class="s1">&#39;Anchor Text&#39;</span>
     <span class="n">anchor_text</span><span class="o">.</span><span class="n">admin_order_field</span> <span class="o">=</span> <span class="s1">&#39;anchor_text&#39;</span>
 
-<div class="viewcode-block" id="Reference.get_autocomplete_instances"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.models.Reference.get_autocomplete_instances">[docs]</a>    <span class="k">def</span> <span class="nf">get_autocomplete_instances</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Returns a list of :class:`Instance` primary keys as JSON for</span>
-<span class="sd">        jQuery use in disabling or enabling the autocompletes for</span>
-<span class="sd">        :class:`~derrida.interventions.models.Canvas` and</span>
-<span class="sd">        :class:`~derrida.interventions.models.Interventions` on the change_form</span>
-<span class="sd">        for :class:`Reference`.</span>
-
-<span class="sd">        :return: Returns a JSON formatted array</span>
-<span class="sd">        :rtype: str</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">instance_slug</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Slug for the work instance used to display this reference.</span>
+<span class="sd">        For a reference to a book section, returns the slug</span>
+<span class="sd">        for the book that collects it.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="n">valid_instance_pks</span> <span class="o">=</span> <span class="n">Instance</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">exclude</span><span class="p">(</span>
-                                <span class="n">digital_edition__isnull</span><span class="o">=</span><span class="kc">True</span>
-                             <span class="p">)</span><span class="o">.</span><span class="n">values_list</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="n">flat</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">valid_instance_pks</span><span class="p">))</span></div></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">book</span><span class="o">.</span><span class="n">slug</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">instance_url</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;absolute url for the work instance where this reference</span>
+<span class="sd">        is displayed; uses :attr:`instance_slug`&#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="n">reverse</span><span class="p">(</span><span class="s1">&#39;books:detail&#39;</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">instance_slug</span><span class="p">])</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">book</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;The &quot;book&quot; this reference is associated with; for a book section,</span>
+<span class="sd">        this is the work instance the section is collected in; for all other</span>
+<span class="sd">        cases, it is the work instance associated with this reference.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">instance</span><span class="o">.</span><span class="n">collected_in</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">instance</span><span class="o">.</span><span class="n">collected_in</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">instance</span>
+
+<div class="viewcode-block" id="Reference.instance_ids_with_digital_editions"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.models.Reference.instance_ids_with_digital_editions">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">instance_ids_with_digital_editions</span><span class="p">():</span>
+        <span class="sd">&#39;&#39;&#39;Used as a convenience method to provide a readonly field in the</span>
+<span class="sd">        admin change form for :class:`Reference` with a list of JSON formatted</span>
+<span class="sd">        primary keys. This is used by jQuery in the :class:`Reference`</span>
+<span class="sd">        change_form and reference inlines on the :class:`Instance`change_form</span>
+<span class="sd">        to disable the autocomplete fields when there is or is not a digital</span>
+<span class="sd">        edition. See ``sitemedia/js/reference-instance-canvas-toggle.js`` for</span>
+<span class="sd">        this logic.</span>
+
+<span class="sd">        :rtype: JSON formatted string of :class:`Instance` primary keys</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">with_digital_eds</span> <span class="o">=</span> <span class="n">Instance</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">with_digital_eds</span><span class="p">()</span>
+        <span class="c1"># Flatten to just the primary keys</span>
+        <span class="n">ids</span> <span class="o">=</span> <span class="n">with_digital_eds</span><span class="o">.</span><span class="n">values_list</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="n">flat</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span>
+        <span class="c1"># Return serialized JSON</span>
+        <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">ids</span><span class="p">))</span></div></div>
 </pre></div>
 
           </div>
@@ -581,12 +914,14 @@
 
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="../../../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -594,10 +929,10 @@
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2017, CDH @ Princeton & Trustees of Princeotn University.
+      &copy;2017, CDH @ Princeton & Trustees of Princeton University.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.2</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
       
     </div>

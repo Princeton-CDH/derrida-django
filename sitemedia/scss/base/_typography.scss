@@ -1,0 +1,103 @@
+html, body {
+  color: $base-font-color;
+  @include primary-font-style();
+  font-size: $base-font-size;
+  line-height: $base-line-height;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  @include secondary-font-style();
+  font-size: modular-scale(1);
+  line-height: $heading-line-height;
+  margin: 0 0 $small-spacing;
+
+  .dashboard & {
+    @include primary-font-style();
+  }
+
+  .background-colored--dark & { // smooth when on a dark background
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+h1 {
+  font-size: 3em;
+}
+
+h2 {
+  font-size: modular-scale(3);
+}
+
+h3,
+h4 {
+  font-size: 1.35em;
+}
+
+h3 {
+  @include secondary-font-style("bold");
+}
+
+h5,
+h6 {
+  @include primary-font-style();
+}
+
+h6 {
+  @include primary-font-style("bold");
+}
+
+h6, p {
+  line-height: $base-line-height;
+}
+
+p {
+  font-size: modular-scale(0);
+  margin: 0 0 $small-spacing;
+}
+
+b, strong {
+  @include primary-font-style("bold");
+}
+
+.lead {
+  font-size: 1.6em;
+  @include secondary-font-style("italic");
+}
+
+a {
+  color: $action-color;
+  text-decoration-skip: ink;
+  @include transition(color $base-duration $base-timing);
+
+  &:hover {
+    color: shade($action-color, 25%);
+  }
+
+  &:focus {
+    outline: $focus-outline;
+    outline-offset: $focus-outline-offset;
+  }
+}
+
+hr {
+  border-bottom: $base-border;
+  border-left: 0;
+  border-right: 0;
+  border-top: 0;
+  margin: $base-spacing 0;
+}
+
+.arrow_icon {
+  font-family: "Cambria", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Geneva, Verdana, sans-serif;
+}
+
+#homepage { // almost all text on homepage is white on dark
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

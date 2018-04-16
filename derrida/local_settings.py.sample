@@ -38,6 +38,34 @@ DATABASES = {
     # }
 }
 
+# Haystack configuration for search/browse with Solr
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        # NOTE: must use local solr engine for range facets
+        'ENGINE': 'derrida.common.solr_backend.RangeSolrEngine',
+        #'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
+        # example multicore setup with core named derrida
+        'URL': 'http://127.0.0.1:8983/solr/derrida',
+        'ADMIN_URL': 'http://127.0.0.1:8983/solr/admin/cores',
+    },
+}
+
+# Haystack configuration for unit tests that use Solr
+HAYSTACK_TEST_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'derrida.common.solr_backend.RangeSolrEngine',
+        # example multicore setup with core named test-derrida
+        'URL': 'http://127.0.0.1:8983/solr/test-derrida',
+        'ADMIN_URL': 'http://127.0.0.1:8983/solr/admin/cores',
+    },
+}
+
+# Use custom Haystack signal processor to index objects on save *AND*
+# update related objects as needed based on indexing
+# NOTE: this should be enabled in Production and QA
+# HAYSTACK_SIGNAL_PROCESSOR = 'derrida.books.signals.RelationSafeRTSP'
+
+
 # username for accessing GeoNames API
 GEONAMES_USERNAME = ''
 

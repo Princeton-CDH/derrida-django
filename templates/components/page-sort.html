@@ -1,0 +1,18 @@
+{% load humanize widget_tweaks %}
+<section class="page-sort">
+  <div class="container">
+    <header class="page-sort__header">
+      <p class="sort-label sort-label--diminished ">{{ total|intcomma }} Result{{ total|pluralize }}</p>
+      <a class="sort-link" href="{{ request.path }}">Clear All</a>
+    </header>
+    {% if form.order_by %}
+    <header class="page-sort__header">
+      <p class="sort-label">Sort By</p>
+      <form class="order_by">
+        <div class="hidden">{{form}}</div>
+        {% render_field form.order_by class="order_by__options" %}
+      </form>
+    </header>
+    {% endif %}
+  </div>
+</section>

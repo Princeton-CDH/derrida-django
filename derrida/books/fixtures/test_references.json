@@ -1,0 +1,1580 @@
+[
+    {
+        "model": "books.subject",
+        "pk": 4,
+        "fields": {
+            "name": "Philosophy",
+            "notes": "",
+            "uri": null
+        }
+    },
+    {
+        "model": "books.subject",
+        "pk": 6,
+        "fields": {
+            "name": "Linguistics",
+            "notes": "",
+            "uri": null
+        }
+    },
+    {
+        "model": "books.subject",
+        "pk": 7,
+        "fields": {
+            "name": "Anthropology",
+            "notes": "",
+            "uri": null
+        }
+    },
+    {
+        "model": "books.subject",
+        "pk": 9,
+        "fields": {
+            "name": "History and Theory of Writing",
+            "notes": "",
+            "uri": null
+        }
+    },
+    {
+        "model": "books.publisher",
+        "pk": 5,
+        "fields": {
+            "name": "Belin/Ducros",
+            "notes": ""
+        }
+    },
+    {
+        "model": "books.publisher",
+        "pk": 6,
+        "fields": {
+            "name": "Armand Colin",
+            "notes": ""
+        }
+    },
+    {
+        "model": "books.publisher",
+        "pk": 11,
+        "fields": {
+            "name": "Gallimard",
+            "notes": ""
+        }
+    },
+    {
+        "model": "books.publisher",
+        "pk": 12,
+        "fields": {
+            "name": "The University of Chicago Press",
+            "notes": ""
+        }
+    },
+    {
+        "model": "books.publisher",
+        "pk": 20,
+        "fields": {
+            "name": "Vrin",
+            "notes": ""
+        }
+    },
+    {
+        "model": "books.publisher",
+        "pk": 29,
+        "fields": {
+            "name": "Aubier",
+            "notes": ""
+        }
+    },
+    {
+        "model": "books.owninginstitution",
+        "pk": 1,
+        "fields": {
+            "name": "",
+            "notes": "",
+            "short_name": "PUL",
+            "contact_info": "http://library.princeton.edu/help/contact-us",
+            "place": 1
+        }
+    },
+    {
+        "model": "books.journal",
+        "pk": 1,
+        "fields": {
+            "name": "Critique",
+            "notes": ""
+        }
+    },
+    {
+        "model": "books.journal",
+        "pk": 9,
+        "fields": {
+            "name": "Recherches internationales \u00e0 la lumi\u00e8re du marxisme",
+            "notes": ""
+        }
+    },
+    {
+        "model": "books.work",
+        "pk": 2,
+        "fields": {
+            "notes": "",
+            "primary_title": "L'Ecriture et la psychologie des peuples: actes de colloque",
+            "short_title": "L'Ecriture et la psychologie des peuples: actes de colloque",
+            "year": 1963,
+            "uri": "",
+            "authors": []
+        }
+    },
+    {
+        "model": "books.work",
+        "pk": 4,
+        "fields": {
+            "notes": "",
+            "primary_title": "Le d\u00e9bat sur les \u00e9critures et l'hi\u00e9roglyphe aux XVIIe et XVIIIe si\u00e8cles",
+            "short_title": "Le d\u00e9bat sur les \u00e9critures et l'hi\u00e9roglyphe aux XVIIe et XVIIIe si\u00e8cles",
+            "year": 1965,
+            "uri": "",
+            "authors": [
+                2
+            ]
+        }
+    },
+    {
+        "model": "books.work",
+        "pk": 5,
+        "fields": {
+            "notes": "2 volumes",
+            "primary_title": "Le geste et la parole",
+            "short_title": "Le geste et la parole",
+            "year": 1965,
+            "uri": "",
+            "authors": [
+                3
+            ]
+        }
+    },
+    {
+        "model": "books.work",
+        "pk": 60,
+        "fields": {
+            "notes": "",
+            "primary_title": "Essai sur l'origine des langues",
+            "short_title": "Essai sur l'origine des langues",
+            "year": 1817,
+            "uri": "",
+            "authors": [
+                8
+            ]
+        }
+    },
+    {
+        "model": "books.work",
+        "pk": 72,
+        "fields": {
+            "notes": "",
+            "primary_title": "Le discours et le symbole",
+            "short_title": "Le discours et le symbole",
+            "year": 1962,
+            "uri": "",
+            "authors": [
+                66
+            ]
+        }
+    },
+    {
+        "model": "books.work",
+        "pk": 98,
+        "fields": {
+            "notes": "",
+            "primary_title": "A Study of Writing",
+            "short_title": "A Study of Writing",
+            "year": 1952,
+            "uri": "",
+            "authors": [
+                88
+            ]
+        }
+    },
+    {
+        "model": "books.work",
+        "pk": 109,
+        "fields": {
+            "notes": "",
+            "primary_title": "Enzyklop\u00e4die der philosophischen Wissenschaften im Grundrisse",
+            "short_title": "Enzyklop\u00e4die der philosophischen Wissenschaften im Grundrisse",
+            "year": 1817,
+            "uri": "",
+            "authors": [
+                63
+            ]
+        }
+    },
+    {
+        "model": "books.work",
+        "pk": 116,
+        "fields": {
+            "notes": "",
+            "primary_title": "Die Geburt der Trag\u00f6die aus dem Geiste der Musik",
+            "short_title": "Birth of Tragedy",
+            "year": 1872,
+            "uri": "",
+            "authors": [
+                113
+            ]
+        }
+    },
+    {
+        "model": "books.work",
+        "pk": 126,
+        "fields": {
+            "notes": "",
+            "primary_title": "Pens\u00e9e formelle et sciences de l'homme",
+            "short_title": "Pens\u00e9e formelle et sciences de l'homme",
+            "year": 1960,
+            "uri": "",
+            "authors": [
+                128
+            ]
+        }
+    },
+    {
+        "model": "books.work",
+        "pk": 142,
+        "fields": {
+            "notes": "",
+            "primary_title": "La r\u00e9forme de l'\u00e9criture chinoise",
+            "short_title": "La r\u00e9forme de l'\u00e9criture chinoise",
+            "year": 1958,
+            "uri": "",
+            "authors": []
+        }
+    },
+    {
+        "model": "books.work",
+        "pk": 143,
+        "fields": {
+            "notes": "",
+            "primary_title": "De la grammatologie I, De la grammatologie II",
+            "short_title": "De la grammatologie I, De la grammatologie II",
+            "year": 1965,
+            "uri": "",
+            "authors": [
+                1
+            ]
+        }
+    },
+    {
+        "model": "books.instance",
+        "pk": 2,
+        "fields": {
+            "notes": "P. 87\nContains: - Alfred M\u00e9traux: Les primitifs, signaux et symboles, pictogrammes et proto\u00e9criture, 9-28 - Jacques Gernet: La Chine, Aspects et fonctions psychologiques de l'\u00e9criture, 29-50 - Jean Sainte Fare Garnot: Les hi\u00e9roglyphes, l'\u00e9volution des \u00e9critures \u00e9gyptiennes, 51-72 - Ren\u00e9 Labat: L'\u00e9criture cun\u00e9iforme et la civilisation m\u00e9sopotamienne, 73-92 - Olivier Masson: La civilisation \u00e9g\u00e9enne, 93-102 - Emmanuel Laroche: L'Asie Mineure, 103-116 - James F\u00e9vrier: Les S\u00e9mites et l'alphabet, 117-130 - Maxime Rodinson: Les S\u00e9mites et l'alphabet, 131-146 - Jean Filliozat, Les Ecritures indiennes, 147-166 -Alphonse Dain, L'Ecriture grecque..., 167-182 - Raymond Bloch, Etrusques et Romains, 183-198 -Robert Marichal, L'\u00e9riture latine..., 199-148 - Janine Sourdel-Thomine, L'ecriture arabe et son \u00e9volution ornementale, 249-262 - Maxime Rodinson, Le monde islamique et l'\u00e9criture arabe, 263-278 - Henri-Jean Martin, L'Imprimerie, 279-300 - Andr\u00e9 Vaillant, L'\u00e9criture  cyrillique..., 301-312 - Marcel Cohen, Les \u00e9critures latines, 313-325 - Henri Levy-Bruhl,  L'ecriture et le droit, 325-334 - Confrontations et conclusions, 335-360",
+            "work": 2,
+            "alternate_title": "",
+            "publisher": 6,
+            "zotero_id": "",
+            "is_extant": true,
+            "is_annotated": true,
+            "is_translation": false,
+            "dimensions": "",
+            "copyright_year": 1963,
+            "journal": null,
+            "print_date": null,
+            "print_date_day_known": true,
+            "print_date_month_known": true,
+            "print_date_year_known": true,
+            "uri": "http://findingaids.princeton.edu/collections/RBD1.1/c13577",
+            "has_dedication": false,
+            "has_insertions": false,
+            "start_page": null,
+            "end_page": null,
+            "collected_in": null,
+            "digital_edition": null,
+            "pub_place": [
+                3
+            ],
+            "cited_in": [],
+            "slug": "lecriture-et-la-psychologie-des-peuples-actes-de-colloque"
+        }
+    },
+    {
+        "model": "books.instance",
+        "pk": 4,
+        "fields": {
+            "notes": "",
+            "work": 4,
+            "alternate_title": "",
+            "publisher": null,
+            "zotero_id": "",
+            "is_extant": false,
+            "is_annotated": false,
+            "is_translation": false,
+            "dimensions": "",
+            "copyright_year": 1965,
+            "journal": null,
+            "print_date": null,
+            "print_date_day_known": true,
+            "print_date_month_known": true,
+            "print_date_year_known": true,
+            "uri": "",
+            "has_dedication": false,
+            "has_insertions": false,
+            "start_page": null,
+            "end_page": null,
+            "collected_in": null,
+            "digital_edition": null,
+            "pub_place": [],
+            "cited_in": [],
+            "slug": "le-debat-sur-les-ecritures-et-lhieroglyphe-aux-xviie-et-xviiie-siecles"
+        }
+    },
+    {
+        "model": "books.instance",
+        "pk": 5,
+        "fields": {
+            "notes": "",
+            "work": 5,
+            "alternate_title": "",
+            "publisher": null,
+            "zotero_id": "",
+            "is_extant": false,
+            "is_annotated": false,
+            "is_translation": false,
+            "dimensions": "",
+            "copyright_year": 1965,
+            "journal": null,
+            "print_date": null,
+            "print_date_day_known": true,
+            "print_date_month_known": true,
+            "print_date_year_known": true,
+            "uri": "",
+            "has_dedication": false,
+            "has_insertions": false,
+            "start_page": null,
+            "end_page": null,
+            "collected_in": null,
+            "digital_edition": null,
+            "pub_place": [],
+            "cited_in": [],
+            "slug": "le-geste-et-la-parole"
+        }
+    },
+    {
+        "model": "books.instance",
+        "pk": 60,
+        "fields": {
+            "notes": "So, we don't seem to have the Belin edition, but this copy also has some annotations, so it might be helpful to have a look?\nSee note 2 pp 202-203 regarding publisher.",
+            "work": 60,
+            "alternate_title": "",
+            "publisher": 5,
+            "zotero_id": "",
+            "is_extant": true,
+            "is_annotated": true,
+            "is_translation": false,
+            "dimensions": "",
+            "copyright_year": 1817,
+            "journal": null,
+            "print_date": null,
+            "print_date_day_known": true,
+            "print_date_month_known": true,
+            "print_date_year_known": true,
+            "uri": "",
+            "has_dedication": false,
+            "has_insertions": false,
+            "start_page": null,
+            "end_page": null,
+            "collected_in": null,
+            "digital_edition": null,
+            "pub_place": [],
+            "cited_in": [],
+            "slug": "essai-sur-lorigine-des-langues"
+        }
+    },
+    {
+        "model": "books.instance",
+        "pk": 72,
+        "fields": {
+            "notes": "",
+            "work": 72,
+            "alternate_title": "",
+            "publisher": null,
+            "zotero_id": "",
+            "is_extant": false,
+            "is_annotated": false,
+            "is_translation": false,
+            "dimensions": "",
+            "copyright_year": 1962,
+            "journal": null,
+            "print_date": null,
+            "print_date_day_known": true,
+            "print_date_month_known": true,
+            "print_date_year_known": true,
+            "uri": "",
+            "has_dedication": false,
+            "has_insertions": false,
+            "start_page": null,
+            "end_page": null,
+            "collected_in": null,
+            "digital_edition": null,
+            "pub_place": [],
+            "cited_in": [],
+            "slug": "le-discours-et-le-symbole"
+        }
+    },
+    {
+        "model": "books.instance",
+        "pk": 98,
+        "fields": {
+            "notes": "",
+            "work": 98,
+            "alternate_title": "",
+            "publisher": 12,
+            "zotero_id": "",
+            "is_extant": true,
+            "is_annotated": false,
+            "is_translation": false,
+            "dimensions": "",
+            "copyright_year": 1963,
+            "journal": null,
+            "print_date": null,
+            "print_date_day_known": true,
+            "print_date_month_known": true,
+            "print_date_year_known": true,
+            "uri": "http://findingaids.princeton.edu/collections/RBD1/c9643",
+            "has_dedication": false,
+            "has_insertions": false,
+            "start_page": null,
+            "end_page": null,
+            "collected_in": null,
+            "digital_edition": 75,
+            "pub_place": [
+                6,
+                7
+            ],
+            "cited_in": [],
+            "slug": "a-study-of-writing"
+        }
+    },
+    {
+        "model": "books.instance",
+        "pk": 109,
+        "fields": {
+            "notes": "",
+            "work": 109,
+            "alternate_title": "",
+            "publisher": 20,
+            "zotero_id": "",
+            "is_extant": true,
+            "is_annotated": true,
+            "is_translation": true,
+            "dimensions": "",
+            "copyright_year": 1952,
+            "journal": null,
+            "print_date": null,
+            "print_date_day_known": true,
+            "print_date_month_known": true,
+            "print_date_year_known": true,
+            "uri": "http://findingaids.princeton.edu/collections/RBD1/c13076",
+            "has_dedication": false,
+            "has_insertions": false,
+            "start_page": null,
+            "end_page": null,
+            "collected_in": null,
+            "digital_edition": 14,
+            "pub_place": [
+                3
+            ],
+            "cited_in": [],
+            "slug": "enzyklopadie-der-philosophischen-wissenschaften-im-grundrisse"
+        }
+    },
+    {
+        "model": "books.instance",
+        "pk": 116,
+        "fields": {
+            "notes": "",
+            "work": 116,
+            "alternate_title": "",
+            "publisher": 11,
+            "zotero_id": "",
+            "is_extant": true,
+            "is_annotated": false,
+            "is_translation": true,
+            "dimensions": "",
+            "copyright_year": 1949,
+            "journal": null,
+            "print_date": null,
+            "print_date_day_known": true,
+            "print_date_month_known": true,
+            "print_date_year_known": true,
+            "uri": "http://findingaids.princeton.edu/collections/RBD1/c9758",
+            "has_dedication": false,
+            "has_insertions": false,
+            "start_page": null,
+            "end_page": null,
+            "collected_in": null,
+            "digital_edition": 22,
+            "pub_place": [
+                3
+            ],
+            "cited_in": [],
+            "slug": "die-geburt-der-tragodie-aus-dem-geiste-der-musik"
+        }
+    },
+    {
+        "model": "books.instance",
+        "pk": 126,
+        "fields": {
+            "notes": "",
+            "work": 126,
+            "alternate_title": "",
+            "publisher": 29,
+            "zotero_id": "",
+            "is_extant": true,
+            "is_annotated": true,
+            "is_translation": false,
+            "dimensions": "",
+            "copyright_year": 1960,
+            "journal": null,
+            "print_date": null,
+            "print_date_day_known": true,
+            "print_date_month_known": true,
+            "print_date_year_known": true,
+            "uri": "http://findingaids.princeton.edu/collections/RBD1.1/c13608",
+            "has_dedication": false,
+            "has_insertions": false,
+            "start_page": null,
+            "end_page": null,
+            "collected_in": null,
+            "digital_edition": 6,
+            "pub_place": [
+                3
+            ],
+            "cited_in": [],
+            "slug": "pensee-formelle-et-sciences-de-lhomme"
+        }
+    },
+    {
+        "model": "books.instance",
+        "pk": 142,
+        "fields": {
+            "notes": "Article Title:",
+            "work": 142,
+            "alternate_title": "",
+            "publisher": null,
+            "zotero_id": "",
+            "is_extant": true,
+            "is_annotated": false,
+            "is_translation": false,
+            "dimensions": "",
+            "copyright_year": 1958,
+            "journal": 9,
+            "print_date": "1958-06-01",
+            "print_date_day_known": false,
+            "print_date_month_known": true,
+            "print_date_year_known": true,
+            "uri": "",
+            "has_dedication": false,
+            "has_insertions": false,
+            "start_page": null,
+            "end_page": null,
+            "collected_in": null,
+            "digital_edition": null,
+            "pub_place": [],
+            "cited_in": [],
+            "slug": "la-reforme-de-lecriture-chinoise"
+        }
+    },
+    {
+        "model": "books.instance",
+        "pk": 143,
+        "fields": {
+            "notes": "",
+            "work": 143,
+            "alternate_title": "",
+            "publisher": null,
+            "zotero_id": "",
+            "is_extant": false,
+            "is_annotated": false,
+            "is_translation": false,
+            "dimensions": "",
+            "copyright_year": 1965,
+            "journal": 1,
+            "print_date": "1965-01-01",
+            "print_date_day_known": false,
+            "print_date_month_known": true,
+            "print_date_year_known": true,
+            "uri": "",
+            "has_dedication": false,
+            "has_insertions": false,
+            "start_page": null,
+            "end_page": null,
+            "collected_in": null,
+            "digital_edition": null,
+            "pub_place": [],
+            "cited_in": [],
+            "slug": "de-la-grammatologie-i-de-la-grammatologie-ii"
+        }
+    },
+    {
+        "model": "books.worksubject",
+        "pk": 61,
+        "fields": {
+            "notes": "",
+            "subject": 9,
+            "work": 98,
+            "is_primary": false
+        }
+    },
+    {
+        "model": "books.worksubject",
+        "pk": 65,
+        "fields": {
+            "notes": "",
+            "subject": 4,
+            "work": 126,
+            "is_primary": false
+        }
+    },
+    {
+        "model": "books.worksubject",
+        "pk": 66,
+        "fields": {
+            "notes": "",
+            "subject": 4,
+            "work": 109,
+            "is_primary": false
+        }
+    },
+    {
+        "model": "books.worksubject",
+        "pk": 87,
+        "fields": {
+            "notes": "",
+            "subject": 7,
+            "work": 5,
+            "is_primary": false
+        }
+    },
+    {
+        "model": "books.worksubject",
+        "pk": 117,
+        "fields": {
+            "notes": "",
+            "subject": 4,
+            "work": 116,
+            "is_primary": false
+        }
+    },
+    {
+        "model": "books.worksubject",
+        "pk": 119,
+        "fields": {
+            "notes": "",
+            "subject": 4,
+            "work": 72,
+            "is_primary": false
+        }
+    },
+    {
+        "model": "books.worksubject",
+        "pk": 120,
+        "fields": {
+            "notes": "",
+            "subject": 6,
+            "work": 72,
+            "is_primary": false
+        }
+    },
+    {
+        "model": "books.worklanguage",
+        "pk": 50,
+        "fields": {
+            "notes": "",
+            "language": 3,
+            "work": 98,
+            "is_primary": false
+        }
+    },
+    {
+        "model": "books.worklanguage",
+        "pk": 54,
+        "fields": {
+            "notes": "",
+            "language": 1,
+            "work": 126,
+            "is_primary": false
+        }
+    },
+    {
+        "model": "books.worklanguage",
+        "pk": 55,
+        "fields": {
+            "notes": "",
+            "language": 2,
+            "work": 109,
+            "is_primary": false
+        }
+    },
+    {
+        "model": "books.worklanguage",
+        "pk": 77,
+        "fields": {
+            "notes": "",
+            "language": 1,
+            "work": 5,
+            "is_primary": false
+        }
+    },
+    {
+        "model": "books.worklanguage",
+        "pk": 103,
+        "fields": {
+            "notes": "",
+            "language": 2,
+            "work": 116,
+            "is_primary": false
+        }
+    },
+    {
+        "model": "books.worklanguage",
+        "pk": 105,
+        "fields": {
+            "notes": "",
+            "language": 1,
+            "work": 72,
+            "is_primary": false
+        }
+    },
+    {
+        "model": "books.instancecatalogue",
+        "pk": 1,
+        "fields": {
+            "notes": "",
+            "start_year": null,
+            "end_year": null,
+            "institution": 1,
+            "instance": 2,
+            "is_current": true,
+            "call_number": null
+        }
+    },
+    {
+        "model": "books.instancecatalogue",
+        "pk": 3,
+        "fields": {
+            "notes": "",
+            "start_year": null,
+            "end_year": null,
+            "institution": 1,
+            "instance": 4,
+            "is_current": true,
+            "call_number": null
+        }
+    },
+    {
+        "model": "books.instancecatalogue",
+        "pk": 4,
+        "fields": {
+            "notes": "",
+            "start_year": null,
+            "end_year": null,
+            "institution": 1,
+            "instance": 5,
+            "is_current": true,
+            "call_number": null
+        }
+    },
+    {
+        "model": "books.instancecatalogue",
+        "pk": 59,
+        "fields": {
+            "notes": "",
+            "start_year": null,
+            "end_year": null,
+            "institution": 1,
+            "instance": 60,
+            "is_current": true,
+            "call_number": null
+        }
+    },
+    {
+        "model": "books.instancecatalogue",
+        "pk": 71,
+        "fields": {
+            "notes": "",
+            "start_year": null,
+            "end_year": null,
+            "institution": 1,
+            "instance": 72,
+            "is_current": true,
+            "call_number": null
+        }
+    },
+    {
+        "model": "books.instancecatalogue",
+        "pk": 97,
+        "fields": {
+            "notes": "",
+            "start_year": null,
+            "end_year": null,
+            "institution": 1,
+            "instance": 98,
+            "is_current": true,
+            "call_number": null
+        }
+    },
+    {
+        "model": "books.instancecatalogue",
+        "pk": 108,
+        "fields": {
+            "notes": "",
+            "start_year": null,
+            "end_year": null,
+            "institution": 1,
+            "instance": 109,
+            "is_current": true,
+            "call_number": null
+        }
+    },
+    {
+        "model": "books.instancecatalogue",
+        "pk": 115,
+        "fields": {
+            "notes": "",
+            "start_year": null,
+            "end_year": null,
+            "institution": 1,
+            "instance": 116,
+            "is_current": true,
+            "call_number": null
+        }
+    },
+    {
+        "model": "books.instancecatalogue",
+        "pk": 125,
+        "fields": {
+            "notes": "",
+            "start_year": null,
+            "end_year": null,
+            "institution": 1,
+            "instance": 126,
+            "is_current": true,
+            "call_number": null
+        }
+    },
+    {
+        "model": "books.instancecatalogue",
+        "pk": 141,
+        "fields": {
+            "notes": "",
+            "start_year": null,
+            "end_year": null,
+            "institution": 1,
+            "instance": 142,
+            "is_current": true,
+            "call_number": null
+        }
+    },
+    {
+        "model": "books.instancecatalogue",
+        "pk": 142,
+        "fields": {
+            "notes": "",
+            "start_year": null,
+            "end_year": null,
+            "institution": 1,
+            "instance": 143,
+            "is_current": true,
+            "call_number": null
+        }
+    },
+    {
+        "model": "books.creatortype",
+        "pk": 1,
+        "fields": {
+            "name": "Author",
+            "notes": "",
+            "uri": null
+        }
+    },
+    {
+        "model": "books.creatortype",
+        "pk": 2,
+        "fields": {
+            "name": "Editor",
+            "notes": "",
+            "uri": null
+        }
+    },
+    {
+        "model": "books.creatortype",
+        "pk": 3,
+        "fields": {
+            "name": "Series Editor",
+            "notes": "",
+            "uri": null
+        }
+    },
+    {
+        "model": "books.creatortype",
+        "pk": 4,
+        "fields": {
+            "name": "Translator",
+            "notes": "",
+            "uri": null
+        }
+    },
+    {
+        "model": "interventions.intervention",
+        "pk": "00ad6d22-64f6-4649-9a95-a6f8270cceb8",
+        "fields": {
+            "created": "2017-09-25T15:22:23Z",
+            "updated": "2017-09-25T15:22:24Z",
+            "text": "",
+            "quote": "kritisieren",
+            "uri": "https://plum.princeton.edu/concern/scanned_resources/pdz012x47s/manifest/canvas/pfn109459p",
+            "user": null,
+            "extra_data": "{}",
+            "intervention_type": "A",
+            "canvas": null,
+            "text_language": null,
+            "text_translation": "",
+            "quote_language": 2,
+            "author": 1,
+            "tags": []
+        }
+    },
+    {
+        "model": "books.reference",
+        "pk": 1,
+        "fields": {
+            "instance": 143,
+            "derridawork": 1,
+            "derridawork_page": 7,
+            "derridawork_pageloc": "a",
+            "book_page": "",
+            "reference_type": 1,
+            "anchor_text": "",
+            "canvases": [],
+            "interventions": [
+                "00ad6d22-64f6-4649-9a95-a6f8270cceb8"
+            ]
+        }
+    },
+    {
+        "model": "books.reference",
+        "pk": 2,
+        "fields": {
+            "instance": 4,
+            "derridawork": 1,
+            "derridawork_page": 7,
+            "derridawork_pageloc": "b",
+            "book_page": "",
+            "reference_type": 1,
+            "anchor_text": "",
+            "canvases": [],
+            "interventions": []
+        }
+    },
+    {
+        "model": "books.reference",
+        "pk": 15,
+        "fields": {
+            "instance": 5,
+            "derridawork": 1,
+            "derridawork_page": 7,
+            "derridawork_pageloc": "c",
+            "book_page": "",
+            "reference_type": 1,
+            "anchor_text": "",
+            "canvases": [],
+            "interventions": []
+        }
+    },
+    {
+        "model": "books.reference",
+        "pk": 165,
+        "fields": {
+            "instance": 60,
+            "derridawork": 1,
+            "derridawork_page": 11,
+            "derridawork_pageloc": "b",
+            "book_page": "",
+            "reference_type": 2,
+            "anchor_text": "",
+            "canvases": [],
+            "interventions": []
+        }
+    },
+    {
+        "model": "books.reference",
+        "pk": 392,
+        "fields": {
+            "instance": 72,
+            "derridawork": 1,
+            "derridawork_page": 12,
+            "derridawork_pageloc": "a",
+            "book_page": "62p",
+            "reference_type": 1,
+            "anchor_text": "",
+            "canvases": [],
+            "interventions": []
+        }
+    },
+    {
+        "model": "books.reference",
+        "pk": 393,
+        "fields": {
+            "instance": 72,
+            "derridawork": 1,
+            "derridawork_page": 12,
+            "derridawork_pageloc": "a",
+            "book_page": "171p",
+            "reference_type": 1,
+            "anchor_text": "",
+            "canvases": [],
+            "interventions": []
+        }
+    },
+    {
+        "model": "books.reference",
+        "pk": 600,
+        "fields": {
+            "instance": 142,
+            "derridawork": 1,
+            "derridawork_page": 12,
+            "derridawork_pageloc": "g",
+            "book_page": "",
+            "reference_type": 4,
+            "anchor_text": "",
+            "canvases": [],
+            "interventions": []
+        }
+    },
+    {
+        "model": "books.reference",
+        "pk": 609,
+        "fields": {
+            "instance": 2,
+            "derridawork": 1,
+            "derridawork_page": 11,
+            "derridawork_pageloc": "a",
+            "book_page": "87p",
+            "reference_type": 2,
+            "anchor_text": "",
+            "canvases": [],
+            "interventions": []
+        }
+    },
+    {
+        "model": "books.reference",
+        "pk": 610,
+        "fields": {
+            "instance": 2,
+            "derridawork": 1,
+            "derridawork_page": 11,
+            "derridawork_pageloc": "b",
+            "book_page": "87p",
+            "reference_type": 2,
+            "anchor_text": "",
+            "canvases": [],
+            "interventions": []
+        }
+    },
+    {
+        "model": "books.reference",
+        "pk": 611,
+        "fields": {
+            "instance": 2,
+            "derridawork": 1,
+            "derridawork_page": 12,
+            "derridawork_pageloc": "g",
+            "book_page": "44s",
+            "reference_type": 4,
+            "anchor_text": "",
+            "canvases": [],
+            "interventions": []
+        }
+    },
+    {
+        "model": "books.reference",
+        "pk": 612,
+        "fields": {
+            "instance": 2,
+            "derridawork": 1,
+            "derridawork_page": 20,
+            "derridawork_pageloc": "a",
+            "book_page": "126p",
+            "reference_type": 4,
+            "anchor_text": "Cf. par ex. EP. pp. 126, 148, 355, etc. D'un autre point de vue, cf. Jakobson, *Essais de linguistique g\u00e9n\u00e9rale* (tr. fr. p. 116)",
+            "canvases": [],
+            "interventions": []
+        }
+    },
+    {
+        "model": "books.reference",
+        "pk": 613,
+        "fields": {
+            "instance": 2,
+            "derridawork": 1,
+            "derridawork_page": 20,
+            "derridawork_pageloc": "b",
+            "book_page": "148p",
+            "reference_type": 4,
+            "anchor_text": "Cf. par ex. EP. pp. 126, 148, 355, etc. D'un autre point de vue, cf. Jakobson, *Essais de linguistique g\u00e9n\u00e9rale* (tr. fr. p. 116)",
+            "canvases": [],
+            "interventions": []
+        }
+    },
+    {
+        "model": "books.reference",
+        "pk": 614,
+        "fields": {
+            "instance": 2,
+            "derridawork": 1,
+            "derridawork_page": 20,
+            "derridawork_pageloc": "c",
+            "book_page": "355p",
+            "reference_type": 4,
+            "anchor_text": "Cf. par ex. EP. pp. 126, 148, 355, etc. D'un autre point de vue, cf. Jakobson, *Essais de linguistique g\u00e9n\u00e9rale* (tr. fr. p. 116)",
+            "canvases": [],
+            "interventions": []
+        }
+    },
+    {
+        "model": "books.reference",
+        "pk": 661,
+        "fields": {
+            "instance": 98,
+            "derridawork": 1,
+            "derridawork_page": 13,
+            "derridawork_pageloc": "a",
+            "book_page": "v",
+            "reference_type": 2,
+            "anchor_text": "*Grammatologie*: \u00abTrait\u00e9 des lettres, de l'alphabet, de la syllabation, de la lecture et de l'\u00e9criture\u00bb, Littr\u00e9. \u00c0 notre connaissance, ce mot n'a \u00e9t\u00e9 utilis\u00e9, de nos jours, pour d\u00e9signer le projet d'une science moderne, que par I. J. Gelb. Cf. *A study of writing the foundations of grammatology*, 1952 (le sous-titre dispara\u00eet dans la r\u00e9\u00e9dition de 1963). Malgr\u00e9 un souci de classification syst\u00e9matique ou simplifi\u00e9e et malgr\u00e9 des hypoth\u00e8ses controvers\u00e9es sur la monog\u00e9n\u00e8se ou la polyg\u00e9n\u00e8se des \u00e9critures, ce livre r\u00e9pond au mod\u00e8le des histoires classiques de l'\u00e9criture.",
+            "canvases": [],
+            "interventions": []
+        }
+    },
+    {
+        "model": "books.reference",
+        "pk": 662,
+        "fields": {
+            "instance": 98,
+            "derridawork": 1,
+            "derridawork_page": 13,
+            "derridawork_pageloc": "b",
+            "book_page": "23p",
+            "reference_type": 2,
+            "anchor_text": "",
+            "canvases": [],
+            "interventions": []
+        }
+    },
+    {
+        "model": "books.reference",
+        "pk": 766,
+        "fields": {
+            "instance": 109,
+            "derridawork": 1,
+            "derridawork_page": 11,
+            "derridawork_pageloc": "d",
+            "book_page": "256p",
+            "reference_type": 3,
+            "anchor_text": "",
+            "canvases": [],
+            "interventions": []
+        }
+    },
+    {
+        "model": "books.reference",
+        "pk": 925,
+        "fields": {
+            "instance": 116,
+            "derridawork": 1,
+            "derridawork_page": 15,
+            "derridawork_pageloc": "a",
+            "book_page": "",
+            "reference_type": 3,
+            "anchor_text": "",
+            "canvases": [],
+            "interventions": []
+        }
+    },
+    {
+        "model": "books.reference",
+        "pk": 986,
+        "fields": {
+            "instance": 126,
+            "derridawork": 1,
+            "derridawork_page": 12,
+            "derridawork_pageloc": "d",
+            "book_page": "38",
+            "reference_type": 1,
+            "anchor_text": "",
+            "canvases": [],
+            "interventions": []
+        }
+    },
+    {
+        "model": "books.reference",
+        "pk": 987,
+        "fields": {
+            "instance": 126,
+            "derridawork": 1,
+            "derridawork_page": 12,
+            "derridawork_pageloc": "e",
+            "book_page": "43",
+            "reference_type": 1,
+            "anchor_text": "",
+            "canvases": [],
+            "interventions": []
+        }
+    },
+    {
+        "model": "books.reference",
+        "pk": 988,
+        "fields": {
+            "instance": 126,
+            "derridawork": 1,
+            "derridawork_page": 12,
+            "derridawork_pageloc": "f",
+            "book_page": "",
+            "reference_type": 1,
+            "anchor_text": "",
+            "canvases": [],
+            "interventions": []
+        }
+    },
+    {
+        "model": "people.person",
+        "pk": 1,
+        "fields": {
+            "notes": "",
+            "start_year": null,
+            "end_year": null,
+            "authorized_name": "Derrida, Jacques",
+            "viaf_id": "https://viaf.org/viaf/88958529/",
+            "sort_name": "",
+            "family_group": ""
+        }
+    },
+    {
+        "model": "people.person",
+        "pk": 2,
+        "fields": {
+            "notes": "",
+            "start_year": null,
+            "end_year": null,
+            "authorized_name": "V.-David, Madeleine",
+            "viaf_id": "https://viaf.org/viaf/95336082/",
+            "sort_name": "",
+            "family_group": ""
+        }
+    },
+    {
+        "model": "people.person",
+        "pk": 3,
+        "fields": {
+            "notes": "",
+            "start_year": null,
+            "end_year": null,
+            "authorized_name": "Leroi-Gourhan, Andr\u00e9",
+            "viaf_id": null,
+            "sort_name": "",
+            "family_group": ""
+        }
+    },
+    {
+        "model": "people.person",
+        "pk": 8,
+        "fields": {
+            "notes": "",
+            "start_year": null,
+            "end_year": null,
+            "authorized_name": "Rousseau, Jean-Jacques",
+            "viaf_id": "https://viaf.org/viaf/100184045/",
+            "sort_name": "",
+            "family_group": ""
+        }
+    },
+    {
+        "model": "people.person",
+        "pk": 63,
+        "fields": {
+            "notes": "",
+            "start_year": null,
+            "end_year": null,
+            "authorized_name": "Hegel, Georg Wilhelm Friedrich",
+            "viaf_id": "https://viaf.org/viaf/89774942/",
+            "sort_name": "",
+            "family_group": ""
+        }
+    },
+    {
+        "model": "people.person",
+        "pk": 66,
+        "fields": {
+            "notes": "",
+            "start_year": null,
+            "end_year": null,
+            "authorized_name": "Ortigues, Edmond",
+            "viaf_id": "https://viaf.org/viaf/7395071/",
+            "sort_name": "",
+            "family_group": ""
+        }
+    },
+    {
+        "model": "people.person",
+        "pk": 88,
+        "fields": {
+            "notes": "",
+            "start_year": null,
+            "end_year": null,
+            "authorized_name": "Gelb, Ignace J.",
+            "viaf_id": null,
+            "sort_name": "",
+            "family_group": ""
+        }
+    },
+    {
+        "model": "people.person",
+        "pk": 113,
+        "fields": {
+            "notes": "",
+            "start_year": null,
+            "end_year": null,
+            "authorized_name": "Nietzsche, Friedrich",
+            "viaf_id": "https://viaf.org/viaf/89798474/",
+            "sort_name": "",
+            "family_group": ""
+        }
+    },
+    {
+        "model": "people.person",
+        "pk": 128,
+        "fields": {
+            "notes": "",
+            "start_year": null,
+            "end_year": null,
+            "authorized_name": "Granger, Gilles-Gaston",
+            "viaf_id": "https://viaf.org/viaf/66468139/",
+            "sort_name": "",
+            "family_group": ""
+        }
+    },
+    {
+        "model": "places.place",
+        "pk": 1,
+        "fields": {
+            "name": "Princeton, NJ",
+            "notes": "",
+            "geonames_id": "http://sws.geonames.org/5102922/",
+            "latitude": 40.34872,
+            "longitude": -74.65905
+        }
+    },
+    {
+        "model": "places.place",
+        "pk": 3,
+        "fields": {
+            "name": "Paris",
+            "notes": "",
+            "geonames_id": "http://sws.geonames.org/2988507/",
+            "latitude": 48.85341,
+            "longitude": 2.3488
+        }
+    },
+    {
+        "model": "places.place",
+        "pk": 6,
+        "fields": {
+            "name": "Chicago",
+            "notes": "",
+            "geonames_id": "http://sws.geonames.org/4887398/",
+            "latitude": 41.85003,
+            "longitude": -87.65005
+        }
+    },
+    {
+        "model": "places.place",
+        "pk": 7,
+        "fields": {
+            "name": "London",
+            "notes": "",
+            "geonames_id": "http://sws.geonames.org/2643743/",
+            "latitude": 51.50853,
+            "longitude": -0.12574
+        }
+    },
+    {
+        "model": "djiffy.manifest",
+        "pk": 6,
+        "fields": {
+            "label": "House - Living Room and Attic - Annotated or Inscribed - Pens\u00e9e Formelle et Sciences de l'Homme",
+            "short_id": "pd7",
+            "uri": "https://plum.princeton.edu/concern/scanned_resources/pd7/manifest",
+            "metadata": "{}",
+            "created": "2017-07-27",
+            "last_modified": "2017-07-27",
+            "extra_data": "{}"
+        }
+    },
+    {
+        "model": "djiffy.manifest",
+        "pk": 14,
+        "fields": {
+            "label": "Studio - Wall 4 - G. W. F. Hegel. Pr\u00e9cis de l'encyclop\u00e9die des sciences\n                                philosophiques",
+            "short_id": "pj6",
+            "uri": "https://plum.princeton.edu/concern/scanned_resources/pj6/manifest",
+            "metadata": "{}",
+            "created": "2017-07-27",
+            "last_modified": "2017-07-27",
+            "extra_data": "{}"
+        }
+    },
+    {
+        "model": "djiffy.manifest",
+        "pk": 22,
+        "fields": {
+            "label": "Studio - Wall 1 - Friedrich Nietzsche. La Naissance de la trag\u00e9die",
+            "short_id": "p2n",
+            "uri": "https://plum.princeton.edu/concern/scanned_resources/p2n/manifest",
+            "metadata": "{}",
+            "created": "2017-07-27",
+            "last_modified": "2017-07-27",
+            "extra_data": "{}"
+        }
+    },
+    {
+        "model": "djiffy.manifest",
+        "pk": 75,
+        "fields": {
+            "label": "Studio - Wall 1 - A Study of Writing : A Discussion of the general principles governing the use and evolution of writing",
+            "short_id": "pj43",
+            "uri": "https://plum.princeton.edu/concern/scanned_resources/pj43/manifest",
+            "metadata": "{}",
+            "created": "2017-08-01",
+            "last_modified": "2017-08-01",
+            "extra_data": "{}"
+        }
+    },
+    {
+        "model": "books.derridaworksection",
+        "pk": 1,
+        "fields": {
+            "name": "Chapter 1",
+            "derridawork": 1,
+            "order": 2,
+            "start_page": 15,
+            "end_page": 40
+        }
+    },
+    {
+        "model": "books.derridaworksection",
+        "pk": 2,
+        "fields": {
+            "name": "Chapter 1",
+            "derridawork": 1,
+            "order": 7,
+            "start_page": 145,
+            "end_page": 196
+        }
+    },
+    {
+        "model": "books.derridaworksection",
+        "pk": 3,
+        "fields": {
+            "name": "Chapter 2",
+            "derridawork": 1,
+            "order": 3,
+            "start_page": 41,
+            "end_page": 104
+        }
+    },
+    {
+        "model": "books.derridaworksection",
+        "pk": 4,
+        "fields": {
+            "name": "Part 1",
+            "derridawork": 1,
+            "order": 0,
+            "start_page": null,
+            "end_page": null
+        }
+    },
+    {
+        "model": "books.derridaworksection",
+        "pk": 5,
+        "fields": {
+            "name": "Part 2",
+            "derridawork": 1,
+            "order": 5,
+            "start_page": null,
+            "end_page": null
+        }
+    },
+    {
+        "model": "books.derridaworksection",
+        "pk": 6,
+        "fields": {
+            "name": "Exergue",
+            "derridawork": 1,
+            "order": 1,
+            "start_page": 11,
+            "end_page": 14
+        }
+    },
+    {
+        "model": "books.derridaworksection",
+        "pk": 7,
+        "fields": {
+            "name": "Chapter 3",
+            "derridawork": 1,
+            "order": 4,
+            "start_page": 105,
+            "end_page": 140
+        }
+    },
+    {
+        "model": "books.derridaworksection",
+        "pk": 8,
+        "fields": {
+            "name": "Introduction to the \"Epoch of Rousseau\"",
+            "derridawork": 1,
+            "order": 6,
+            "start_page": 141,
+            "end_page": 144
+        }
+    },
+    {
+        "model": "books.derridaworksection",
+        "pk": 9,
+        "fields": {
+            "name": "Chapter 2",
+            "derridawork": 1,
+            "order": 8,
+            "start_page": 197,
+            "end_page": 226
+        }
+    },
+    {
+        "model": "books.derridaworksection",
+        "pk": 10,
+        "fields": {
+            "name": "Chapter 3",
+            "derridawork": 1,
+            "order": 9,
+            "start_page": 227,
+            "end_page": 362
+        }
+    },
+    {
+        "model": "books.derridaworksection",
+        "pk": 11,
+        "fields": {
+            "name": "Chapter 4",
+            "derridawork": 1,
+            "order": 10,
+            "start_page": 363,
+            "end_page": 450
+        }
+    }
+]

@@ -1,5 +1,11 @@
-# Byte-compiled / optimized / DLL files
-__pycache__/
+# pytest caches
+.pytest_cache
+
+# Compressor related static files
+static/
+CACHE/
+.sass-cache/
+
 *.py[cod]
 *$py.class
 
@@ -100,3 +106,8 @@ ENV/
 
 # MacOS hidden files
 .DS_Store
+sitemedia/scss/.sass-cache
+
+# Proprietary fonts
+sitemedia/fonts
+!sitemedia/fonts/meltdown*

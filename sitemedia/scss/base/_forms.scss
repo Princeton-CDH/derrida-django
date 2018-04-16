@@ -1,0 +1,75 @@
+fieldset {
+  background-color: transparent;
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
+
+legend {
+  margin-bottom: $small-spacing / 2;
+  padding: 0;
+}
+
+input,
+select,
+textarea {
+  @include primary-font-style();
+}
+
+.mdl-checkbox__ripple-container .mdl-ripple {
+  display: none;
+  background: $primary-color;
+}
+
+.mdl-checkbox.is-checked {
+  .mdl-checkbox__box-outline {
+    border-color: $primary-color;
+  }
+
+  .mdl-checkbox__tick-outline {
+    background: $primary-color;
+  }
+}
+
+.mdl-button:hover {
+  background: none;
+}
+
+.mdl-textfield__label--disabled {
+  cursor: default;
+}
+
+// Override for page-filter textbox bottom border
+section.page-filter {
+  .mdl-textfield__input {
+    // browser safe way to make the blinking text cursor vanish
+    cursor: default;
+    color: transparent;
+    text-shadow: 0px 0px 0px $grey-500;
+    border-bottom-color: rgba(0, 0, 0, 0.2);
+    &:focus {
+      border-bottom-color: $doger-blue;
+    }
+  }
+
+  .mdl-textfield {
+    .expand-icon {
+      position: absolute;
+      transition: all 0.5s ease;
+      top: 0;
+      right: 0;
+      height: 20px;
+    }
+    &.is-open {
+      .expand-icon {
+        transform: rotate(0.5turn)
+      }
+    }
+  }
+}
+
+// Switch
+@import "switch";
+
+// Selects
+@import "selectize/selectize";

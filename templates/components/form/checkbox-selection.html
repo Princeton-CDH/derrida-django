@@ -1,0 +1,40 @@
+{% comment %}
+The checkbox-selection component is used for the page filter facets used
+on the books and reference list pages. This transforms form elments into
+the .filter element for the various checkboxes and generates js for interactions.
+This component uses the following parameters to render:
+* name - the unique name for the filter element and accompanying script
+* label - the text to be displayed as the label for the filter
+* item - the form element being transformed (i.e. form.subject)
+* disabled (optional) - option to disabled a checkbox. If not provided,
+  the value on the form item will be used.
+{% endcomment %}
+{% load static %}
+<script>
+  $(function() {
+    window.initCheckboxSelector({
+      filterInputSelector: "#{{name}}-selection",
+      filterCheckListSelector: ".filter__check-list--{{name}}",
+      filterSelector: ".filter.filter--{{name}}",
+      filterClickEvent: "{{name}}",
+      isDisabled: {{disabled|yesno:"true,false"}}
+    });
+  });
+</script>
+
+<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+  <input class="mdl-textfield__input" type="text" id="{{name}}-selection" readonly="readonly" />
+  <img class="expand-icon" src="{% static 'img/icons/Expand.svg' %}">
+  <label class="mdl-textfield__label" for="{{name}}-selection">{{ label }}</label>
+</div>
+<div class="filter filter--{{name}} is-not-ready" id="{{name}}">
+  <section class="filter__check-list filter__check-list--{{name}}">
+    {% for item in items %}
+      {{item}}
+    {% endfor %}
+  </section>
+
+  <footer class="filter__footer">
+    <a class="clear-link" href="#">Clear Selection</a>
+  </footer>
+</div>

@@ -1,0 +1,504 @@
+.collection {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+
+  .collection__item {
+    position: relative;
+    @include grid-column(4);
+
+    @include grid-media($large-medium-viewport-grid) {
+      @include grid-column(6);
+    }
+  }
+}
+
+.collection--condensed {
+  .collection__item {
+    @include grid-column(4);
+    max-width: 212px;
+    margin-bottom: 0;
+
+    @media screen and (min-width: 550px) {
+      @include grid-column(2);
+      max-width: none;
+      margin-bottom: inherit;
+    }
+
+    @include grid-media($large-medium-viewport-grid) {
+      @include grid-column(3);
+    }
+  }
+
+  .text-badge,
+  .item__location,
+  .item__excerpt,
+  .item__citation {
+    display: none;
+    visibility: hidden;
+  }
+}
+
+.collection--wide {
+  @include grid-media($large-medium-viewport-grid) {
+    max-width: 66%;
+    margin: auto;
+  }
+
+  .collection__item {
+    width: 100%;
+
+    @include grid-media($large-medium-viewport-grid) {
+      .item__body {
+        @include grid-column(9);
+        margin-left: 0;
+      }
+
+      .item__image {
+        @include grid-column(3);
+        float: right;
+      }
+    }
+  }
+}
+
+#books-list {
+  .collection {
+    display: grid;
+    grid-gap: 30px;
+    grid-template-columns: repeat(2, 1fr);
+
+    @include grid-media($large-medium-viewport-grid) {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+}
+
+.collection--no-images {
+  padding-top: 1rem;
+  padding-bottom: 2rem;
+
+  .collection__item {
+    @include grid-column(4);
+
+    @media screen and (min-width: 550px) {
+      @include grid-column(2);
+    }
+
+    @include grid-media($large-medium-viewport-grid) {
+      @include grid-column(4);
+    }
+  }
+}
+
+.collection__header {
+  width: 100%;
+  padding: 1em $gutter-size 2em;
+}
+
+.collection__title {
+  color: $base-font-color;
+  font-size: ems(18px, 14);
+  @include secondary-font-style("bold");
+
+  a {
+    text-decoration: none;
+
+    &:hover,
+    &:active {
+      color: $blue;
+
+      & span {
+        color: $blue;
+      }
+    }
+
+    span {
+      color: $base-font-color;
+      @include primary-font-style();
+      font-size: 0.666em;
+      text-decoration: none;
+      @include transition(color $base-duration $base-timing);
+
+      &:first-child {
+        margin-left: 1em;
+        margin-right: 0.25em;
+      }
+    }
+  }
+}
+
+.collection__item {
+  color: $base-font-color;
+  margin-bottom: 2rem;
+  padding-bottom: 2.5rem;
+  border-bottom: 1px solid $blue;
+
+  .collection--condensed & {
+    padding-bottom: 2rem;
+    border-bottom: 0;
+  }
+
+  &.annotation {
+    border-bottom-color: $orange-red;
+  }
+
+  &.outwork {
+    .text-badge,
+    .item__author,
+    .item__citation {
+      display: none;
+    }
+  }
+
+  &.book--short {
+    .text-badge,
+    .item__excerpt,
+    .item__citation,
+    .item__indicator {
+      display: none;
+    }
+  }
+}
+
+.item__body {
+  @include grid-column(2);
+
+  .collection--condensed & {
+    width: 100%;
+    float: none;
+  }
+
+  .collection--no-images & {
+    width: 100%;
+    margin-left: 0;
+  }
+}
+
+.item__heading {
+  font-size: ems(15px, 14);
+  @include grid-media($xlarge-viewport-grid) {
+    font-size: ems(19px, 14);
+  }
+  @include secondary-font-style("italic");
+  margin-top: 0.4em;
+
+  .collection--condensed & {
+    margin-top: 0.6em;
+    margin-bottom: 0.25em;
+  }
+}
+
+.item__link {
+  @include faded-link();
+  color: inherit;
+  line-height: 1.5;
+  padding-bottom: 1.3px;
+}
+
+.item__secondary-link {
+  color: inherit;
+  text-decoration: none;
+  line-height: 1.4;
+  @include faded-link($inital-border-color: transparent);
+}
+
+.item__heading,
+.item__author {
+  margin-bottom: 0;
+}
+
+.item__author {
+  font-size: ems(14px, 14);
+  @include secondary-font-style();
+
+  @include grid-media($xlarge-viewport-grid) {
+    font-size: ems(18px, 14);
+  }
+  a {
+    @include faded-link();
+    border-bottom-width: 0;
+    color: inherit;
+    font-weight: inherit;
+    text-decoration: inherit;
+    &:hover,
+    &:active,
+    &.is-hovered {
+      border-bottom-width: 3px;
+    }
+  }
+
+}
+
+.item__date,
+.item__location {
+  display: inline-block;
+  margin-right: 1rem;
+  font-size: ems(12px, 14);
+  line-height: 1;
+  margin-bottom: 1.2em;
+}
+
+.item__date {
+  @include primary-font-style();
+}
+
+.item-gallery {
+  display: flex;
+  flex-flow: row;
+  flex-wrap: wrap;
+
+  &.canvas .item__image-link .img {
+    width: 100%;
+  }
+}
+
+.item__image {
+  position: relative;
+  @include grid-column(2);
+  float: right;
+  height: 100%;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+
+  .collection--condensed & {
+    float: none;
+  }
+
+  &.item__image--gallery {
+    @include grid-column(2);
+
+    @include grid-media($large-medium-viewport-grid) {
+      @include grid-column(3);
+    }
+
+    float: none;
+  }
+
+
+  .img {
+    position: relative;
+    width: auto;
+    max-height: 200px;
+    display: block;
+
+    &.img--placeholder {
+      height: 200px;
+      width: 140px;
+      max-width: 100%;
+      background: $light-grey;
+      background-image: url("../img/cover_notinPUL.png");
+      background-size: 100% auto;
+      background-repeat: no-repeat;
+      align-self: flex-end;
+      margin: 0;
+
+      #books-list & {
+        height: 100%;
+        max-height: 280px;
+        width: 225px;
+      }
+
+      /* use hover style to indicate content not available */
+      &::after {
+        font-size: 2rem;
+        line-height: 1;
+        text-align: center;
+        display: inline-block;
+        padding-top: 25%;
+        color: $white;
+        opacity: 0;
+        @include transition(opacity 0.3s $base-timing);
+        content: "Not available";
+      }
+
+      &:hover {
+        &::after {
+          opacity: 1;
+        }
+
+      }
+    }
+
+    .collection--condensed & {
+      // max-height: none;
+      // max-width: 96%;
+      // width: 100%;
+    }
+  }
+
+  .collection--condensed & {
+    width: 100%;
+    height: auto;
+    margin-bottom: 1em;
+  }
+
+  .collection--no-images & {
+    display: none;
+  }
+}
+
+.item__image-link {
+  top: 0;
+  right: 0;
+  background-color: transparent;
+  @include transition(background-color 0.3s $base-timing);
+  // position: absolute;
+  width: auto;
+  display: inline-table;
+
+  .collection--condensed &,
+  .item-gallery & {
+    position: relative;
+  }
+
+  .item-gallery & {
+    display: block;
+
+    .img {
+      max-height: none;
+    }
+  }
+
+  .img {
+    opacity: 1;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    @include transition(opacity 0.3s $base-timing);
+  }
+
+  &::after {
+    cursor: pointer;
+    content: "";
+    background-image: url("../img/icons/Magnify.svg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 20%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    font-size: 2.5rem;
+    line-height: 1;
+    color: $white;
+    opacity: 0;
+    @include transition(opacity 0.3s $base-timing);
+  }
+
+  &.item__image-overview {
+    // disable magnifying glass for images that gallery instead of detail page
+      &::after {
+        background-image: none;
+      }
+    }
+
+  &:hover {
+    background-color: $primary-color;
+
+    .img {
+      opacity: 0.3;
+    }
+
+    &::after {
+      opacity: 0.8;
+      transition-duration: 0.5s;
+    }
+  }
+}
+
+// recreate hover style for placeholders on library page, which have to be scalable
+span.item__image__link {
+  &::after {
+    font-size: 2em;
+    line-height: 1;
+    text-align: center;
+    display: inline-block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 2em 10%;
+    color: $white;
+    opacity: 0;
+    @include transition(opacity 0.3s $base-timing);
+    content: "Not available";
+  }
+
+  &:hover {
+    &::after {
+      opacity: 1;
+    }
+
+  }
+}
+
+.item__image-caption {
+  color: $base-font-color;
+  font-style: normal;
+  padding-top: 0.3em;
+  padding-bottom: 1.7em;
+}
+
+.item__excerpt,
+.item__citation {
+  font-size: 0.9em;
+}
+
+.item__excerpt {
+  opacity: 0.6;
+}
+
+.item__indicator {
+  position: absolute;
+  right: calc(4.666% + 10px); // Need to account for margins on item container
+  top: -10px;
+  width: 30px;
+  z-index: 10;
+  display: none;
+
+  &::before {
+    content: "contains annotations";
+    position: absolute;
+    opacity: 0;
+    background-color: darken($light-grey, 5%);
+    top: -5em;
+    left: -80%;
+    font-size: 0.8em;
+    text-align: center;
+    padding: 10px;
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    opacity: 0;
+    z-index: -1;
+    right: calc(50% - 10px);
+    top: -8px;
+    border-style: solid;
+    border-width: 10px 10px 0;
+    border-color: darken($light-grey, 5%) transparent transparent;
+  }
+
+  &::after,
+  &::before {
+    margin-top: 0;
+    @include transition(opacity $base-duration $base-timing,
+      margin-top $base-duration $base-timing);
+  }
+
+  &:hover {
+    &::after,
+    &::before {
+      margin-top: -5px;
+      opacity: 1;
+    }
+  }
+
+  #books-list & {
+    display: block;
+
+
+  }
+}

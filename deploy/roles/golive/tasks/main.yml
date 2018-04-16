@@ -1,32 +1,29 @@
-- name: Make a database dump to /tmp just in case
-  mysql_db:
-    state: dump
-    login_host: cdh-db.princeton.edu
-    name: "{{ db_name }}"
-    target: "{{backup_location}}"
 - name: Run database migrations
   django_manage:
     command: migrate
     app_path: "{{ deploy }}"
     virtualenv: "{{ deploy }}/env"
 - name: check for old symlink
-  command: "ls /var/www/{{ symlink }}"
-  register: result
-  ignore_errors: True
-  check_mode: no
-- name: Copy old symlink path from /var/www to "{{ prod }}/old"
+  stat:
+    path: "/var/www/{{ symlink }}"
+  register: sym
+- name: Copy old symlink path from /var/www to "{{ install_root }}/old"
   file:
     src: /var/www/{{ symlink }}
-    dest: "{{ prod }}/old"
+    dest: "{{ install_root }}/old"
     state: link
-  when: result|succeeded
+  when: sym.stat.islnk is defined and sym.stat.islnk == True
 - name: New symlink path
   file:
     src: "{{ deploy }}"
     dest: "/var/www/{{ symlink }}"
     state: link
-- name: Create courtesy symlink in
+- name: Create courtesy symlink in /srv/www
   file:
     src: "{{ deploy }}"
-    dest: "{{ prod }}/current"
+    dest: "{{ install_root }}/current"
     state: link
+- name: Call restorecon just in case
+  command: 'restorecon -R {{ deploy }}'
+- name: Restart Apache (scl-httpd24-httpd)
+  command: "sudo systemctl restart httpd24-httpd"

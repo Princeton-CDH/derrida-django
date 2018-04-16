@@ -1,0 +1,23 @@
+{% extends "pages/page.html" %}
+{# template for site home page; main block based on mezzanine richtextpage template #}
+{% load derrida_tags %}
+{% load mezzanine_tags %}
+
+{% block body_class %}background-colored--light-navy background-colored--dark{% endblock %}
+{% block page-context-id %}homepage{% endblock %}
+{% block coordinate-nav-classes %}coordinate-navigation--background-light-navy{% endblock %}
+
+{% block main %}
+
+  {{ block.super }}
+  {{page.richtextpage.content|richtext_filters|safe}}
+{% endblock %}
+
+
+{% block header_class %}mdl-layout__header--transparent{% endblock %}
+
+{% block content %}
+{# include page header for banner image #}
+  <header class="page-header header-banner"></header>
+  {{ block.super }}
+{% endblock %}

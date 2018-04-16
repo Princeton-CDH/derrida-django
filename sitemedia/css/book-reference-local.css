@@ -1,5 +1,5 @@
 
-/* Upload the */
+/* Fix field text issue in select2 widgets */
 .select2-search__field {
       width: 500px !important;
 }

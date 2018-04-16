@@ -1,0 +1,81 @@
+@import "normalize";
+@import "bourbon/bourbon";
+@import "grid-settings";
+@import "neat/neat";
+@import "base/base";
+@import "version";
+
+@import "fonts/development";
+
+// Background Colors
+body {
+  background: $base-background-color;
+}
+
+.background-colored--light-navy {
+  background-color: $light-navy;
+}
+
+main {
+  flex-grow: 2;
+  z-index: 3;
+}
+
+.mdl-layout.is-submitting {
+  &,
+  & .mdl-switch__thumb,
+  & .mdl-textfield__input {
+    cursor: wait;
+  }
+
+  #books-list,
+  #citations-list,
+  #interventions-list {
+    .page-sort .container {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+    .collection,
+    .pagination {
+      display: none;
+    }
+  }
+
+
+  .loading-spinner {
+    display: block;
+  }
+}
+
+.loading-spinner {
+  opacity: 1;
+  width: 100%;
+  display: none;
+  position: relative;
+
+  img {
+    display: block;
+    position: relative;
+    margin: auto;
+    z-index: 3;
+  }
+}
+
+
+// Home Page style
+@import "homepage";
+
+// Visaulization style
+@import "visualizations";
+
+// Outlook list/page styles
+@import "outwork-pages";
+
+// Canvas style
+@import "canvases";
+
+// Error Page style
+@import "error-pages";
+
+// Local snips for banner and overrides from release 0.8
+@import "local-snips";

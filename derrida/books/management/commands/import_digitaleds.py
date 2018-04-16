@@ -1,5 +1,5 @@
 '''
-Manage command to import digitized book content viaf IIIF.  It takes
+Manage command to import digitized book content via IIIF.  It takes
 both files and URLs, and supports both IIIF Collections and single
 Manifests.  If a collection is specified, all supported manifests in the
 system will be loaded.  If a manifest is already loaded, it will be
@@ -16,11 +16,13 @@ Example use::
 
 When a local identifier is present in manifest metadata, it will be used
 to link the cached manifest in the django database with the appropriate
-:class:`winthrop.books.models.Book`.
+:class:`derrida.books.models.Instance``.
 '''
 from collections import defaultdict
 
 from django.core.management.base import BaseCommand
+from django.core.exceptions import ObjectDoesNotExist
+from django.template.defaultfilters import slugify
 from djiffy.importer import ManifestImporter
 
 from derrida.books.models import Instance
@@ -33,6 +35,14 @@ class DerridaManifestImporter(ManifestImporter):
 
     stats = defaultdict(int)
 
+    def canvas_short_id(self, canvas):
+        '''Override default short id logic, because that would result in
+        a uuid for PUL figgy content; instead, generate a slug based on the
+        image label.  Canvas model requires short id + manifest unique
+        together, but that won't be a problem with project image
+        label naming conventions.'''
+        return slugify(canvas.label)
+
     def import_manifest(self, manifest, path):
         # parent method returns newly created db manifest
         # or None if there was an error or manifest was already imported
@@ -44,6 +54,16 @@ class DerridaManifestImporter(ManifestImporter):
 
         short_id = db_manifest.short_id
         self.stats['manifests'] += 1
+
+        # if updating an existing db manifest that already has an
+        # associated instance, bail out
+        if self.update:
+            try:
+                db_manifest.instance
+                return db_manifest
+            except ObjectDoesNotExist:
+                pass
+
 
         self.output('Imported %s "%s"' % (short_id, db_manifest.label))
 
@@ -88,25 +108,27 @@ class DerridaManifestImporter(ManifestImporter):
 
 
 class Command(BaseCommand):
-    '''Import digital editions and associate with Winthrop books'''
+    '''Import digital editions and associate with Derrida work instances'''
     help = __doc__
 
     # shorthand for known URIs to be imported
     manifest_uris = {
-        'PUL': 'https://plum.princeton.edu/collections/pb5646r538/manifest'
+        'PUL': 'https://figgy.princeton.edu/collections/7081b751-abb6-4f62-9c38-ff1fda0f9d30/manifest'
     }
 
     def add_arguments(self, parser):
         parser.add_argument('path', nargs='+',
             help='''One or more IIIF Collections or Manifests as file or URL.
             Use 'PUL' to import PUL Derrida materials.''')
+        parser.add_argument('--update', action='store_true',
+            help='Update previously imported manifests')
 
     def handle(self, *args, **kwargs):
         # convert any shorthand ids into the appropriate manifest uri
         manifest_paths = [self.manifest_uris[p] if p in self.manifest_uris else p
                           for p in kwargs['path']]
         dmi = DerridaManifestImporter(stdout=self.stdout, stderr=self.stderr,
-                                     style=self.style)
+                                     style=self.style, update=kwargs['update'])
         dmi.import_paths(manifest_paths)
         self.summarize(dmi.stats)
 
@@ -114,7 +136,7 @@ class Command(BaseCommand):
         # briefly summarize what was done
         self.stdout.write('\nURLs processed: %(urls)d' % stats)
         if stats['manifests']:
-            self.stdout.write('Manifests imported: %(manifests)d' % stats)
+            self.stdout.write('Manifests imported or updated: %(manifests)d' % stats)
             if stats['nomatch']:
                 self.stdout.write('Manifests not matched to library work instances: %(nomatch)d' \
                     % stats)

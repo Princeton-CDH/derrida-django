@@ -1,0 +1,68 @@
+{% comment %}
+The books-gallery template is used to display the gallery tab from the
+book details view.
+{% endcomment %}
+{% load static %}
+
+<header class="item-header" id="book-header">
+  {% include "components/book-header.html" with book=instance hideLicense=True %}
+  <nav class="item-navigation">
+    {% if book.overview_images %}
+    <a class="item-navigation-link item-navigation-link--active" href="#overview">Overview Images</a>
+    {% endif %}
+    {% if book.annotated_pages %}
+    <a class="item-navigation-link" href="#annotated">Annotated Pages</a>
+    {% endif %}
+    {# <a class="item-navigation-link" href="#relevant">Relevant Markings</a> #}
+    {% if book.insertion_images %}
+    <a class="item-navigation-link" href="#insertions">Insertions</a>
+    {% endif %}
+  </nav>
+
+  {% include "components/book-license.html" with book=instance %}
+</header>
+
+<section class="item-section">
+  {% include "components/navigation-tabs.html" with book=instance is_gallery=True %}
+  <div class="item-gallery">
+      {# overview images #}
+      {% for canvas in book.overview_images %}
+        {% if forloop.first %}
+         <header class="item-gallery__heading">
+          <h2 class="item-gallery__title"><a name="overview">Overview Images</a></h2>
+        </header>
+        {% endif %}
+        {% include 'books/detail/gallery-image.html' %}
+      {% endfor %}
+
+      {% for canvas in book.annotated_pages %}
+        {% if forloop.first %}
+       <header class="item-gallery__heading">
+        <h2 class="item-gallery__title"><a name="annotated">Annotated pages</a></h2>
+        <p>Only pages cited in <i>De la grammatologie</i> are displayed here.</p>
+      </header>
+        {% endif %}
+        {% include 'books/detail/gallery-image.html' %}
+      {% endfor %}
+
+   {% for canvas in book.insertion_images %}
+        {% if forloop.first %}
+       <header class="item-gallery__heading">
+        <h2 class="item-gallery__title"><a name="insertions">Insertions</a></h2>
+      </header>
+        {% endif %}
+        {% include 'books/detail/gallery-image.html' %}
+      {% endfor %}
+
+
+{% comment %}    {# no relevant markings data (?) #}
+    {% if forloop.counter == 10 %}
+      <header class="item-gallery__heading">
+        <h2 class="item-gallery__title"><a name="relevant">Relevant markings</h2>
+      </header>
+    {% endif %}
+    {% endcomment %}
+
+
+  </div>
+</section>

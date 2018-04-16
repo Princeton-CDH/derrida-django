@@ -1,39 +1,51 @@
+- name: Make a database dump to /tmp just in case
+  mysql_db:
+    state: dump
+    login_host: "{{ db_host}}"
+    name: "{{ db_name }}"
+    target: "{{ db_backup }}"
 - name: Make a directory for virtualenv
   file:
       path: "{{ deploy }}/env"
       state: directory
       mode: "u+rwx,g+rwx,o-rw"
-      setype: httpd_sys_script_exec_t
-- name: Build a virtualenvironment
-  command: "virtualenv --system-site-packages {{ deploy }}/env"
 - name: Upgrade pip to latest in virtualenv
   pip:
     name: pip
     state: latest
     virtualenv: "{{ deploy }}/env"
-- name: Install requirements via pip
+    virtualenv_site_packages: yes
+  ignore_errors: true
+- name: Set perms
+  file:
+      path: "{{ deploy }}/env"
+      state: directory
+      mode: "u+rwx,g+rwx,o-rw"
+- name: Install requirements via pip (MySQLdb should be system version and skipped)
   pip:
     virtualenv: "{{ deploy }}/env"
     requirements: "{{ deploy }}/requirements.txt"
-- name: Copy local_settings.py from /root/
-  synchronize:
-    src: /home/deploy/local_settings.py
-    dest: '{{ prod }}/{{ shorthash.stdout }}/{{ djangoapp }}'
-  delegate_to: "{{ inventory_hostname }}"
+    virtualenv_site_packages: yes
+- name: Install local_settings.py
+  copy:
+    src: "{{ lookup('env', 'HOME') }}/.deploy/{{ local_settings_path }}"
+    dest: "{{ deploy }}/{{ djangoapp }}/local_settings.py"
 - name: Run ./manage.py collectstatic
   django_manage:
     command: collectstatic
     app_path: "{{ deploy }}"
     virtualenv: "{{ deploy }}/env"
-- name: Copy over robots.txt
-  synchronize:
-    src: /home/deploy/robots.txt
-    dest: '{{ prod }}/{{ shorthash.stdout }}/static/'
-  delegate_to: "{{ inventory_hostname }}"
-- name: Set ownership recursively
+- name: Configure CACHE for django-compressor
   file:
-    path: "{{ prod }}/{{ shorthash.stdout }}"
+    path: '{{ deploy }}/static/CACHE'
     state: directory
     owner: deploy
     group: apache
-    recurse: yes
+    mode: 0770
+  ignore_errors: true
+- name: chgrp the CACHE folder to project user
+  shell: "sudo chgrp -R {{ project_user }} {{ deploy }}/static/CACHE"
+  when: group == "qa"
+  args:
+    warn: False
+    executable: /bin/bash

@@ -1,0 +1,24 @@
+#canvas-detail {
+  position: relative;
+}
+
+.annotation-list {
+  background-color: $base-background-color;
+}
+
+.text-center {
+  text-align: center;
+  margin-left: $gutter-size;
+  margin-right: $gutter-size;
+  position: relative;
+}
+
+.margin-container {
+  opacity: 1;
+  transition-property: right, left, opacity;
+
+  .margin-container-hide & {
+    right: 33%;
+    opacity: 0;
+  }
+}

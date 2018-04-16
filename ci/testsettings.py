@@ -6,12 +6,39 @@
 # immediately.
 
 DEBUG = False
+ALLOWED_HOSTS = ["*"]
+# disable compression for tests that check javascript contents
+COMPRESS_ENABLED = False
 
+# include database settings to use Mariadb ver on production (5.5)
 DATABASES = {
-    "default": {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'derrida-django.db'
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'test',
+        'USER': 'root',
+        'HOST': 'localhost',
+        'PORT': '',
+        'TEST': {
+                'CHARSET': 'utf8',
+                'COLLATION': 'utf8_general_ci',
+            },
+    },
+
+}
+
+# must be defined for initial setup
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'derrida.common.solr_backend.RangeSolrEngine',
+        'URL': 'http://127.0.0.1:8983/solr/test-derrida',
+        'ADMIN_URL': 'http://127.0.0.1:8983/solr/admin/cores',
     }
 }
+
+# for unit tests, that swap test connection in for default
+HAYSTACK_TEST_CONNECTIONS = HAYSTACK_CONNECTIONS
+
+
+
 
 # secret key added as a travis build step

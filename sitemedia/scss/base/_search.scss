@@ -1,0 +1,299 @@
+.search-form-header {
+  $search-duration: 400ms;
+  $search-height: 4.3em;
+
+  z-index: 10;
+  padding: 0 $gutter-size;
+  height: 4em;
+  width: 100%;
+  top: 4.3em;
+  position: absolute;
+
+  @include grid-media($xlarge-viewport-grid) {
+    .mdl-layout:not(.disable-coordinate-navigation) & {
+      position: fixed;
+      top: 0;
+      margin: 0 10%;
+      width: 80%;
+    }
+  }
+
+  &.is-hidden {
+    pointer-events: none;
+  }
+
+  &.is-fixed {
+    position: fixed;
+    top: 0;
+    z-index: 5;
+
+    &::before {
+      content: "";
+      background: $base-background-color;
+      position: absolute;
+      width: 200%;
+      top: 0;
+      left: -50%;
+      height: 4em;
+      z-index: -3;
+      @include transition(background-color $search-duration $base-timing, top $search-duration $base-timing);
+
+      .background-colored--light-navy & {
+        background-color: $light-navy;
+      }
+    }
+
+    &.is-hidden::before {
+      top: -4em;
+      background-color: transparent;
+    }
+  }
+
+  & ~ main {
+    @include transition(padding-top $search-duration $base-timing);
+  }
+
+  &:not(.is-hidden) ~ main {
+    padding-top: $search-height;
+  }
+
+  @include grid-media($large-medium-viewport-grid) {
+    .background-colored--dark & {
+      color: $light-grey;
+    }
+  }
+
+  .search-form-header__form {
+    height: $search-height;
+
+    @include transition(margin-bottom $search-duration $base-timing,
+      height $search-duration $base-timing,
+      opacity $search-duration $base-timing);
+
+    @include grid-media($xlarge-viewport-grid) {
+      margin-bottom: 5em;
+    }
+
+    & > * {
+      filter: grayscale(100);
+    }
+
+    &.is-focused > *,
+    &:hover > * {
+      filter: grayscale(0);
+    }
+
+    // Never grey out the selection options
+    & > .mdl-selectfield {
+      filter: grayscale(0);
+      .selectize-input {
+        filter: grayscale(100);
+      }
+
+      .selectize-dropdown {
+        filter: grayscale(0);
+      }
+    }
+
+    &.is-focused > .mdl-selectfield,
+    &:hover > .mdl-selectfield {
+      .selectize-input {
+        filter: grayscale(0);
+      }
+    }
+  }
+
+  &.is-hidden .search-form-header__form {
+    height: 0;
+    overflow: hidden;
+    opacity: 0;
+    margin-bottom: 0;
+  }
+
+  .mdl-button {
+    color: $medium-grey;
+    align-self: center;
+
+    .background-colored--dark & {
+      color: $white;
+      opacity: 0.8;
+      border-bottom-color: transparentize($white, 0.2);
+    }
+  }
+}
+
+.search-form-header__form {
+  display: flex;
+  margin: auto;
+
+  .mdl-button--search {
+    // border-bottom: 1px solid $primary-color;
+    // border-radius: 0;
+    margin-bottom: 4px;
+    min-width: 0;
+    width: 30px;
+    padding-right: 10px;
+    margin-left: 6px;
+
+    .img {
+      width: 100%;
+    }
+  }
+
+  .mdl-textfield {
+    align-self: center;
+    width: 100%;
+  }
+
+  .mdl-textfield__label--search {
+    $label-offset: 25px;
+    width: calc(100% + $label-offset);
+    left: -$label-offset;
+    padding-left: $label-offset;
+
+    &::after {
+      left: 0;
+      transform-origin: 0 0;
+    }
+}
+
+  .mdl-textfield__label {
+    font-size: 14px;
+  }
+
+  .mdl-selectfield {
+    align-self: center;
+    width: 150px;
+    padding-bottom: 0;
+    padding-top: 0.75em;
+    margin-right: 2rem;
+
+    &.is-active {
+      padding-top: 22px;
+      line-height: 0;
+    }
+
+    .selectize-input,
+    .selectize-input.has-options,
+    .selectize-input.has-items {
+      padding-bottom: 0.65rem;
+      margin-top: -0.4rem;
+      color: $base-font-color;
+      border-bottom-color: $primary-color;
+
+      input {
+        display: none !important;
+      }
+
+      .background-colored--dark & {
+        color: $white;
+        border-bottom-color: rgba($white, 0.6);
+      }
+    }
+  }
+
+  .selectize-input > * {
+    font-size: 12px;
+    color: $grey-500;
+  }
+
+  .selectize-input > .item {
+    width: 100%;
+    z-index: 3;
+    position: relative;
+  }
+
+  .selectize-control.single .selectize-input.input-active {
+    background: transparent;
+    margin-top: -0.6rem;
+  }
+
+  .selectize-control.single .selectize-input::after {
+    border: 0;
+    content: "";
+    background-image: url("../img/icons/Expand.svg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 60%;
+    width: 30px;
+    height: 30px;
+    margin-top: -17px;
+    margin-right: -15px;
+    line-height: 1;
+  }
+
+  .mdl-selectfield.is-active .selectize-control.single .selectize-input::after {
+    background-image: url("../img/icons/Collapse-focus.svg");
+  }
+
+  .selectize-dropdown {
+    border: 1px solid $primary-color;
+    border-radius: 0;
+
+    .option {
+      font-size: 0.9rem;
+      padding: 0.5em 10px;
+    }
+  }
+
+  .submit-button.is-hidden {
+    visibility: hidden;
+    position: absolute;
+    overflow: hidden;
+    height: 0;
+    width: 0;
+  }
+}
+
+
+.full-width-input {
+  width: 100%;
+}
+
+.mdl-textfield.is-upgraded {
+  .mdl-textfield__label {
+    color: $base-font-color;
+
+    &.mdl-textfield__label--search {
+      color: $grey-500;
+    }
+  }
+
+  &.is-focused .mdl-textfield__label {
+    &::after {
+      background-color: $primary-color;
+      width: 0;
+      visibility: hidden;
+    }
+  }
+
+  .background-colored--dark & {
+    .mdl-textfield__label {
+      color: $grey-500;
+    }
+
+    .mdl-textfield__input {
+      border-bottom-color: rgba($white, 0.6);
+    }
+
+    &.is-focused .mdl-textfield__label::after {
+      background-color: $white;
+    }
+  }
+}
+
+#search-results {
+  .page-header__container {
+    min-height: 0;
+    padding: 1em 0;
+    background: $base-background-color;
+  }
+}
+
+.search__no-results {
+  @include grid-column(4);
+
+  @include grid-media($large-medium-viewport-grid) {
+    @include grid-column(12);
+  }
+}

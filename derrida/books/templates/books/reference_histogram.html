@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block nav-title %} Derrida's Library {% endblock %}
+{% block page-subtitle %}{{ page.meta_title }} ‖ {% endblock %}
+
+{% block header_class %}mdl-layout__header--transparent{% endblock %}
+
+{% block page-context-id %}visualizations{% endblock %}
+
+{% block content %}
+<header class="page-header page-header--condensed">
+  <div class="container page-header__container">
+    <h1 class="page-header__heading"><a class="page-header__link" href="{{ request.path }}">{{ page.title }}</a></h1>
+    <div class="page-header__callout">
+      <p class="lead">{{ page.description }}</p>
+      <p><a class="callout__link" href="/">Export Complete List to Zotero</a></p>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+  <section class="page-sort">
+    <header class="page-sort__header">
+      <p class="sort-label">View By</p>
+      {% for dw in derrida_works %}
+      <a class="sort-link {% if mode == 'section' and derridawork_slug == dw.slug %}sort-link--active{% endif %}"
+        href="{% url 'books:reference-histogram' derridawork_slug=dw.slug %}">Chapter in <em>{{ dw.short_title }}</em></a>
+      {% endfor %}
+      <a class="sort-link {% if mode != 'section' %}sort-link--active{% endif %}"
+      href="{% url 'books:reference-histogram' %}">Author of cited work</a>
+    </header>
+  </section>
+
+{% if mode == 'section' %}
+
+  <article class="visualizations">
+  {% for section in sections %}
+    <section class="visualization-section">
+       {#  sections with start and end are normal #}
+        {% if section.start_page and section.end_page %}
+        <h3 class="visualization-chapter-header">{{ section.name }}</h3>
+        <div class="visualization-chapter-markers">
+        {% for ref in object_list %}
+            {# filter references based on section page numbers #}
+            {% if ref.derridawork_page >= section.start_page and ref.derridawork_page <= section.end_page %}
+                {% include 'components/visualization-marker.html' %}
+            {% endif %}
+        {% endfor %}
+        </div>
+        {% else %}
+        {# sections with no start/end are groupings, higher-level sections #}
+        <h3 class="visualization-part-header">{{ section.name }}</h3>
+        {% endif %}
+    </section>
+  {% endfor %}
+</article>
+
+{% else %}
+
+  {% regroup object_list by author as references_by_author %}
+  <article class="visualizations">
+
+    {% for work in references_by_author %}
+      <section class="visualization-section">
+        <h3 class="visualization-chapter-header">{{ work.grouper|default:'[no author]' }}</h3>
+        <div class="visualization-chapter-markers">
+          {% for ref in work.list %}
+              {% include 'components/visualization-marker.html' %}
+        {% endfor %}
+        </div>
+      </section>
+    {% endfor %}
+  </article>
+  {% endif %}
+</div>
+{% endblock %}

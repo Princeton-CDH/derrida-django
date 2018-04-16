@@ -1,0 +1,39 @@
+$_button-background-color: $action-color;
+$_button-background-color-hover: shade($action-color, 20%);
+
+#{$all-buttons} {
+  appearance: none;
+  border: 0;
+  border-radius: $base-border-radius;
+  color: contrast-switch($_button-background-color);
+  cursor: pointer;
+  display: inline-block;
+  @include primary-font-style;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  line-height: 1;
+  padding: $small-spacing $base-spacing;
+  text-align: center;
+  text-decoration: none;
+  @include transition(background-color $base-duration $base-timing);
+  user-select: none;
+  vertical-align: middle;
+  white-space: nowrap;
+
+  &:focus {
+    outline: $focus-outline;
+    outline-offset: $focus-outline-offset;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+
+    &:hover {
+      background-color: $_button-background-color;
+    }
+  }
+}
+
+// MDL Buttons
+.mdl-button--fab.mdl-button--colored {  background-color: $_button-background-color;  &:hover,  &:active,  &:focus,  &:focus:not(:active) {    background-color: $_button-background-color-hover;  }}.mdl-button--primary.mdl-button--primary {  color: $primary-color;}

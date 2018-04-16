@@ -1,0 +1,76 @@
+{% comment %}
+The books-list-item template is used to display a book as part of a list.
+This template is used on multi-item search, library
+list/search page, the tab section of the library details page.
+The template allows for the following parameters:
+* `book` - the instance of the book (properties of the instance are
+  referenced as "book.properties" within the template)
+* `href` - the link to the details page for the instance. Will render a span
+  instead of a link if not defined
+* `shorten` -  this will hide the badge, image, excerpt, and citation sections
+  of the template
+* `thumbnail_size` - determines the book image thumbnail size;
+   should be one of `thumbnail` or `smthumb`
+* ``
+{% endcomment %}
+{% load static %}
+<section class="collection__item book {% if shorten %}book--short{% endif %}">
+  {% if book.is_annotated %}
+    <span class="item__indicator">
+      <img class="icon--annotation" src="{% static 'img/bookmark_annotation.svg' %}" />
+    </span>
+  {% endif %}
+  {% if not shorten %}
+  <figure class="item__image">
+    {% with book.digital_edition|yesno:"a,span" as tag %}
+    <{{tag}} class="img item__image__link"{% if tag == "a" %} href="{{ href }}"{% endif %}>
+      {% if book.digital_edition %}
+        <img class="img" src="{% url 'books:book-image' book.slug thumbnail_size %}"
+            srcset="{% url 'books:book-image' book.slug thumbnail_size '@2x' %} 2x" />
+      {% else %}
+        <img class="img img--placeholder" src="{% static 'img/cover_notinPUL.png' thumbnail_size %}"
+          srcset="{% static 'img/cover_notinPUL.png' book.slug thumbnail_size '@2x' %} 2x" />
+      {% endif %}
+    </{{tag}}>
+    {% endwith %}
+  </figure>
+  {% endif %}
+
+  <div class="item__body">
+    <a class="text-badge text-badge--blue text-badge--link" href="#">{{ book.item_type }}</a>
+    <h3 class="item__heading">
+      {% with book.digital_edition|yesno:"a,span" as tag %}
+      <{{tag}}{% if tag == 'a' %} class="item__link" href="{{ href }}"{% endif %}>{{ book.display_title }}</{{tag}}>
+      {% endwith %}
+    </h3>
+    <p class="item__author">
+      {% url 'books:list' as library_url %}
+      {# only display first two authors; display et, al if theree are more #}
+      {# solr result #}
+      {% if book.author_firstname_last %}
+        <a class="item__secondary-link" href="{{ library_url }}?author={{ book.author.0 }}">{{ book.author_firstname_last.0}}</a>{% if book.author_firstname_last|length > 1 %}, <a class="item__secondary-link" href="{{ library_url }}?author={{ book.author.1 }}">{{ book.author_firstname_last.1}}</a>{% endif %}{% if book.author_firstname_last|length > 2 %}, et al.{% endif %}
+      {% endif %}
+      {# database result #}
+      {% for author in book.work.authors.all|slice:":2" %}
+          <a class="item__secondary-link" href="{{ library_url }}?author={{ author.authorized_name }}">{{ author.firstname_last }}</a>{% if not forloop.last %}, {% endif %}{% if forloop.last and book.work.authors.count > 2 %}, et al.{% endif %}
+      {% endfor %}
+    </p>
+    {% if book.year %}
+    <p class="item__date">{{ book.year }}{% if book.copy %} - {{ book.copy }}{% endif %}</p>
+    {% endif %}
+    <p class="item__location">{{ book.location|default:'' }}</p>
+    <p class="item__excerpt">---</p>
+    {% if book.cited_in %}
+    <p class="item__citation">
+      Cited in:
+      {% for cited in book.cited_in.all %}
+        {% if not forloop.last %}
+          {{ cited.work.primary_title }};&nbsp;
+        {% else %}
+          {{ author.work.primary_title }}
+        {% endif %}
+      {% endfor %}
+    </p>
+    {% endif %}
+  </div>
+</section>

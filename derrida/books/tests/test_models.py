@@ -1,19 +1,21 @@
 # -*- coding: utf-8 -*-
+from datetime import datetime
+
 from django.core.exceptions import ValidationError
 from django.test import TestCase
-from django.urls import reverse
-from djiffy.models import Manifest
+from django.urls import reverse, resolve
+from djiffy.models import Manifest, Canvas
 import pytest
 import json
 
 from derrida.places.models import Place
-from derrida.people.models import Person
-# Common models between projects and associated new types
-from derrida.books.models import CreatorType, Publisher, OwningInstitution, \
-    Journal, DerridaWork, Reference, \
+from derrida.books.models import Publisher, OwningInstitution, \
+    Journal, DerridaWork, DerridaWorkSection, Reference, \
     ReferenceType, Work, Instance, InstanceCatalogue, WorkLanguage, \
     InstanceLanguage, Language, WorkSubject, Subject
-from derrida.interventions.models import Canvas
+from derrida.interventions.models import Intervention
+from derrida.people.models import Person
+
 
 class TestOwningInstitution(TestCase):
     fixtures = ['sample_work_data.json']
@@ -74,8 +76,14 @@ class TestDerridaWork(TestCase):
         assert str(testwork) == short_title
 
 
+class TestDerridaSection(TestCase):
+
+    def test_str(self):
+        assert str(DerridaWorkSection(name='Chapter 1')) == 'Chapter 1'
+
+
 class TestReference(TestCase):
-    fixtures = ['sample_work_data.json']
+    fixtures = ['sample_work_data']
 
     def setUp(self):
         self.manif = Manifest.objects.create()
@@ -97,27 +105,137 @@ class TestReference(TestCase):
         )
         assert str(reference) == desired_output
 
-    def test_valid_autocompletes(self):
-        la_vie = self.la_vie
-        reference = Reference.objects.create(
-            instance=la_vie,
+    def test_get_absolute_url(self):
+        ref = Reference.objects.create(
+            instance=self.la_vie,
             derridawork=self.dg,
             derridawork_page='110',
             derridawork_pageloc='a',
             book_page='10s',
             reference_type=self.quotation
         )
+        ref_url = ref.get_absolute_url()
+        resolved_url = resolve(ref_url)
+        assert resolved_url.url_name == 'reference'
+        assert resolved_url.namespace == 'books'
+        assert resolved_url.kwargs['derridawork_slug'] == self.dg.slug
+        assert resolved_url.kwargs['page'] == ref.derridawork_page
+        assert resolved_url.kwargs['pageloc'] == ref.derridawork_pageloc
+
+    def test_instance_ids_with_digital_editions(self):
+        # check static method, so we don't need cls or self
+        Reference.instance_ids_with_digital_editions()
 
         # no instances have associated canvases so this should return an
         # empty list as a JSON string
-        data = reference.get_autocomplete_instances()
+        data = Reference.instance_ids_with_digital_editions()
         assert json.loads(data) == []
 
         # add a canvas to la_vie, then it should appear in the list
-        la_vie.digital_edition = self.manif
-        la_vie.save()
-        data = reference.get_autocomplete_instances()
-        assert json.loads(data) == [la_vie.pk]
+        self.la_vie.digital_edition = self.manif
+        self.la_vie.save()
+        data = Reference.instance_ids_with_digital_editions()
+        assert json.loads(data) == [self.la_vie.pk]
+
+    def test_instance_slug(self):
+        # create a reference
+        ref = Reference.objects.create(
+            instance=self.la_vie,
+            derridawork=self.dg,
+            derridawork_page='110',
+            derridawork_pageloc='a',
+            book_page='10s',
+            reference_type=self.quotation
+        )
+        # not a book section (none in test set are)
+        # should return the slug of its instance
+        assert ref.instance_slug == self.la_vie.slug
+
+        # make work into a book section as a 'collected in'
+        la_vie_collected = Instance.objects.create(work=self.la_vie.work,
+            slug='la-vie-collected')
+        self.la_vie.collected_in = la_vie_collected
+        self.la_vie.save()
+        # should return the slug for the collection
+        assert ref.instance_slug == la_vie_collected.slug
+
+    def test_get_instance_url(self):
+        # create a reference
+        ref = Reference.objects.create(
+            instance=self.la_vie,
+            derridawork=self.dg,
+            derridawork_page='110',
+            derridawork_pageloc='a',
+            book_page='10s',
+            reference_type=self.quotation
+        )
+        # not a book section (none in test set are)
+        # should return the slug of its instance
+        assert ref.instance_url == self.la_vie.get_absolute_url()
+
+        # make work into a book section as a 'collected in'
+        la_vie_collected = Instance.objects.create(work=self.la_vie.work,
+            slug='la-vie-collected')
+        self.la_vie.collected_in = la_vie_collected
+        self.la_vie.save()
+        # should return the slug for the collection
+        assert ref.instance_url == la_vie_collected.get_absolute_url()
+
+    def test_book(self):
+        ref = Reference.objects.create(
+            instance=self.la_vie,
+            derridawork=self.dg,
+            derridawork_page='110',
+            derridawork_pageloc='a',
+            reference_type=self.quotation
+        )
+        # not a book section (none in test set are)
+        # should return the instance
+        assert ref.book == self.la_vie
+
+        # create a book section and reassociated the reference
+        vie_part_wk = Work.objects.create()
+        vie_part = Instance.objects.create(work=vie_part_wk,
+            collected_in=self.la_vie)
+        ref.instance = vie_part
+        # book should return the collected work
+        assert ref.book == self.la_vie
+
+
+class TestReferenceQuerySet(TestCase):
+    fixtures = ['test_references.json']
+
+    def setUp(self):
+        self.ref_qs = Reference.objects.all()
+
+    def test_order_by_source_page(self):
+        pages = sorted([ref.derridawork_page for ref in self.ref_qs.all()])
+        assert list(Reference.objects.order_by_source_page()
+                             .values_list('derridawork_page', flat=True)) \
+                == pages
+
+    def test_order_by_author(self):
+        authors = sorted(
+            ['; '.join([str(p) for p in ref.instance.work.authors.all()])
+             for ref in self.ref_qs])
+        qs_authors = list(self.ref_qs.order_by_author() \
+           .values_list('instance__work__authors__authorized_name', flat=True))
+        qs_authors = ['' if name is None else name for name in qs_authors]
+        assert qs_authors == authors
+
+    def test_summary_values(self):
+        ref = self.ref_qs.first()
+        ref_values = self.ref_qs.summary_values().first()
+        assert ref_values['id'] == ref.pk
+        assert ref_values['instance__slug'] == ref.instance.slug
+        assert ref_values['derridawork__slug'] == ref.derridawork.slug
+        assert ref_values['derridawork_page'] == ref.derridawork_page
+        assert ref_values['derridawork_pageloc'] == ref.derridawork_pageloc
+        assert ref_values['author'] == \
+            ref.instance.work.authors.first().authorized_name
+
+        # TODO: not actually sure how this works for multi-author items
+
 
 class TestWork(TestCase):
     fixtures = ['sample_work_data.json']
@@ -159,8 +277,94 @@ class TestInstance(TestCase):
         assert '%s (%s)' % (la_vie.display_title(), la_vie.copyright_year) \
             == str(la_vie)
         # no date
-        la_vie.year = None
+        la_vie.copyright_year = None
         assert '%s (n.d.)' % (la_vie.display_title(), )
+
+    def test_generate_base_slug(self):
+        work = Work.objects.create(primary_title='Ulysses')
+        inst = Instance(work=work)
+        # short title, no author or year
+        assert inst.generate_base_slug() == 'ulysses'
+
+        # single-name author
+        joyce = Person.objects.create(authorized_name='Joyce')
+        work.authors.add(joyce)
+        assert inst.generate_base_slug() == 'joyce-ulysses'
+        # comma-delimited author name
+        joyce.authorized_name = 'Joyce, James'
+        joyce.save()
+        assert inst.generate_base_slug() == 'joyce-ulysses'
+
+        # work year - used if no instance copyright year
+        work.year = 1922
+        work.save()
+        assert inst.generate_base_slug() == 'joyce-ulysses-1922'
+        # copyright year used when available
+        inst.copyright_year = 1950
+        assert inst.generate_base_slug() == 'joyce-ulysses-1950'
+
+        # long titles truncated to ten words
+        work.primary_title = 'A portrait of the artist as a young man: ' + \
+            ' the strange story of Stephen Dedalus'
+        work.save()
+        assert inst.generate_base_slug() == 'joyce-a-portrait-of-the-artist-as-a-young-man-1950'
+
+        # should handle unicode in titles
+        emil_wk = Work.objects.create(primary_title="Émile ou de l'éducation")
+        emil = Instance(work=emil_wk)
+        assert emil.generate_base_slug() == 'emile-ou-de-leducation'
+        # handle unicode in author names
+        zizek = Person.objects.create(authorized_name='Žižek')
+        emil_wk.authors.add(zizek)
+        assert emil.generate_base_slug() == 'zizek-emile-ou-de-leducation'
+
+
+    def test_generate_safe_slug(self):
+        # should ignore itself when checking for duplicates
+        la_vie = Instance.objects.get(work__short_title__contains="La vie")
+        assert la_vie.generate_safe_slug() == la_vie.generate_base_slug()
+
+        # new instance of the same edition, copy field not set, no other copies
+        la_vie2 = Instance(work=la_vie.work, copyright_year=la_vie.copyright_year)
+        assert la_vie2.generate_safe_slug() == '%s-B' % la_vie.generate_base_slug()
+        # should also set copy value
+        assert la_vie2.copy == 'B'
+
+        # new instance of the same edition, with copy field set
+        la_vie2 = Instance(work=la_vie.work, copyright_year=la_vie.copyright_year,
+            copy='C')
+        # should use copy field as set if it is unique
+        assert la_vie2.generate_safe_slug() == \
+            '%s-%s' % (la_vie.generate_base_slug(), la_vie2.copy)
+        la_vie2.save()
+
+        # create additional copy to test against multiple
+        la_vie4 = Instance.objects.create(work=la_vie.work,
+            copyright_year=la_vie.copyright_year, copy='D')
+        # creating a new instance of the same edition with copy field unset
+        la_vie3 = Instance(work=la_vie.work, copyright_year=la_vie.copyright_year)
+        # should increment letter from the last copy letter encountered
+        assert la_vie3.generate_safe_slug() == '%s-E' % la_vie.generate_base_slug()
+        # should also set copy value
+        assert la_vie3.copy == 'E'
+
+
+    def test_save(self):
+        # on save, if empty slug, should set one with generate safe slug
+        la_vie = Instance.objects.get(work__short_title__contains="La vie")
+        la_vie.slug = ''
+        expected_slug = la_vie.generate_safe_slug()
+        la_vie.save()
+        la_vie.refresh_from_db()
+        assert la_vie.slug == expected_slug
+
+    def test_get_absolute_url(self):
+        la_vie = Instance.objects.get(work__short_title__contains="La vie")
+        item_url = la_vie.get_absolute_url()
+        resolved_url = resolve(item_url)
+        assert resolved_url.url_name == 'detail'
+        assert resolved_url.namespace == 'books'
+        assert resolved_url.kwargs['slug'] == la_vie.slug
 
     def test_item_type(self):
         la_vie = Instance.objects.get(work__short_title__contains="La vie")
@@ -207,6 +411,244 @@ class TestInstance(TestCase):
 
         la_vie.digital_edition = Manifest()
         assert la_vie.is_digitized()
+
+        # book section associated with a digitized work should be
+        # considered digitized
+        vie_part_wk = Work.objects.create()
+        vie_part = Instance.objects.create(work=vie_part_wk)
+        vie_part.collected_in = la_vie
+        assert vie_part.is_digitized()
+
+    def test_location(self):
+        la_vie = Instance.objects.get(work__short_title__contains="La vie")
+        # location is based on first part of manifest title
+        la_vie.digital_edition = Manifest(
+            label='Shelf - By the Cupboard - Title'
+        )
+        assert la_vie.location == 'Shelf, By the Cupboard'
+
+        # some manifests have only one location, and second part
+        # indicates it is a gift
+        la_vie.digital_edition = Manifest(
+            label='House - Gift Books, Works By and About Derrida, and Related Items - Derrida, Jacques. De la grammatologie.'
+        )
+        assert la_vie.location == 'House'
+
+    def test_year(self):
+        la_vie = Instance.objects.get(work__short_title__contains="La vie")
+        # print year not known - use copyright year
+        assert la_vie.year == la_vie.copyright_year
+        # use print year if known
+        la_vie.print_date = datetime(year=1965, month=1, day=1)
+        assert la_vie.year == la_vie.print_date.year
+        # nothing known
+        la_vie.print_date_year_known = False
+        la_vie.copyright_year = None
+        assert la_vie.year is None
+
+    def test_images(self):
+        la_vie = Instance.objects.get(work__short_title__contains="La vie")
+        # no digital edition - empty queryset
+        assert la_vie.images().count() == 0
+        # digital edition, no pages
+        la_vie.digital_edition = mfst = Manifest.objects.create(short_id='m1')
+        assert la_vie.images().count() == 0
+        Canvas.objects.bulk_create([
+            Canvas(manifest=mfst, label='p1', order=1, short_id='c1'),
+            Canvas(manifest=mfst, label='p2', order=2, short_id='c2'),
+            Canvas(manifest=mfst, label='p3', order=3, short_id='c3'),
+        ])
+        assert la_vie.images().count() == 3
+        assert Canvas.objects.first() in la_vie.images()
+
+    def test_overview_images(self):
+        la_vie = Instance.objects.get(work__short_title__contains="La vie")
+        # no digital edition - empty queryset
+        assert la_vie.overview_images().count() == 0
+        # digital edition, no pages
+        la_vie.digital_edition = mfst = Manifest.objects.create(short_id='m1')
+        assert la_vie.overview_images().count() == 0
+        # create some test canvases to include/exclude
+        outside_views = ['Front Cover', 'Inside Cover', 'Back Cover',
+            'Spine', 'Edge View']
+        for i, label in enumerate(outside_views):
+            Canvas.objects.create(manifest=mfst, label=label,
+                short_id='cover%d' % i, order=i)
+        # normal page
+        page = Canvas.objects.create(manifest=mfst, label='p. 33',
+            short_id='page33', order=len(outside_views) + 1)
+        # insertion
+        insertion = Canvas.objects.create(manifest=mfst,
+            label='pp. 33-34 Insertion A recto', short_id='insa',
+            order=len(outside_views) + 2)
+
+        overview_images = la_vie.overview_images()
+        assert page not in overview_images
+        assert insertion not in overview_images
+        overview_labels = [c.label for c in overview_images]
+        for label in outside_views:
+            assert label in overview_labels
+
+    def test_annotated_pages(self):
+        la_vie = Instance.objects.get(work__short_title__contains="La vie")
+        # no digital edition - empty queryset
+        assert la_vie.annotated_pages().count() == 0
+        # digital edition, no pages
+        la_vie.digital_edition = mfst = Manifest.objects.create(short_id='m1')
+        assert la_vie.annotated_pages().count() == 0
+        # normal pages, no annotations
+        page = Canvas.objects.create(manifest=mfst, label='p. 33',
+            short_id='page33', order=1)
+        page2 = Canvas.objects.create(manifest=mfst, label='p. 35',
+            short_id='page35', order=2)
+        assert la_vie.annotated_pages().count() == 0
+        # create an annotation
+        Intervention.objects.create(canvas=page)
+        assert la_vie.annotated_pages().count() == 1
+        assert la_vie.annotated_pages().first() == page
+        assert page2 not in la_vie.annotated_pages()
+        # multiple annotations on the same page- should still only show once
+        Intervention.objects.create(canvas=page)
+        assert la_vie.annotated_pages().count() == 1
+
+    def test_insertion_images(self):
+        la_vie = Instance.objects.get(work__short_title__contains="La vie")
+        # no digital edition - empty queryset
+        assert la_vie.insertion_images().count() == 0
+        # digital edition, no pages
+        la_vie.digital_edition = mfst = Manifest.objects.create(short_id='m1')
+        assert la_vie.insertion_images().count() == 0
+        # cover
+        cover = Canvas.objects.create(manifest=mfst, label='Front Cover',
+            short_id='cov1', order=1)
+        # normal page
+        page = Canvas.objects.create(manifest=mfst, label='p. 33',
+            short_id='page33', order=2)
+        # insertion
+        insertion = Canvas.objects.create(manifest=mfst,
+            label='pp. 33-34 Insertion A recto', short_id='insa', order=3)
+        insertion2 = Canvas.objects.create(manifest=mfst,
+            label='pp. 33-34 Insertion A verso', short_id='insb', order=4)
+
+        insertions = la_vie.insertion_images()
+        assert page not in insertions
+        assert cover not in insertions
+        assert insertion in insertions
+        assert insertion2 in insertions
+
+    def test_allow_canvas_detail(self):
+        la_vie = Instance.objects.get(work__short_title__contains="La vie")
+        la_vie.digital_edition = mfst = Manifest.objects.create(short_id='m1')
+        # cover
+        cover = Canvas.objects.create(manifest=mfst, label='Front Cover',
+            short_id='cov1', order=1)
+        # normal page
+        page = Canvas.objects.create(manifest=mfst, label='p. 33',
+            short_id='page33', order=2)
+        # insertion
+        insertion = Canvas.objects.create(manifest=mfst,
+            label='pp. 33-34 Insertion A recto', short_id='insa', order=3)
+
+        assert Instance.allow_canvas_detail(cover)
+        assert not Instance.allow_canvas_detail(page)
+        assert Instance.allow_canvas_detail(insertion)
+
+        Intervention.objects.create(canvas=page)
+        assert Instance.allow_canvas_detail(page)
+
+    def test_allow_canvas_large_image(self):
+        la_vie = Instance.objects.get(work__short_title__contains="La vie")
+        la_vie.digital_edition = mfst = Manifest.objects.create(short_id='m1')
+        # cover
+        cover = Canvas.objects.create(manifest=mfst, label='Front Cover',
+            short_id='cov1', order=1)
+        # normal page
+        page = Canvas.objects.create(manifest=mfst, label='p. 33',
+            short_id='page33', order=2)
+        # insertion
+        insertion = Canvas.objects.create(manifest=mfst,
+            label='pp. 33-34 Insertion A recto', short_id='insa', order=3)
+
+        # insertion and overview always allowed
+        assert la_vie.allow_canvas_large_image(cover)
+        assert la_vie.allow_canvas_large_image(insertion)
+        # unannotated page not allowed
+        assert not la_vie.allow_canvas_large_image(page)
+
+        # annotated page allowed if not suppressed
+        Intervention.objects.create(canvas=page)
+        assert la_vie.allow_canvas_large_image(page)
+
+        # suppress all
+        la_vie.suppress_all_images = True
+        assert not la_vie.allow_canvas_large_image(page)
+
+        # suppress a different page
+        la_vie.suppress_all_images = False
+        la_vie.suppressed_images.add(cover)
+        assert la_vie.allow_canvas_large_image(page)
+
+        # suppress this specific page
+        la_vie.suppressed_images.add(page)
+        assert not la_vie.allow_canvas_large_image(page)
+
+    def test_related_instances(self):
+        # get la_vie and clone it
+        la_vie = Instance.objects.filter(work__primary_title__icontains='la vie').first()
+        la_vie.digital_edition = mfst = Manifest.objects.create(short_id='m1')
+        la_vie.copy = 'B'
+        la_vie.save()
+        pk = la_vie.pk
+        la_vie.pk = None
+        la_vie.digital_edition = mfst = Manifest.objects.create(short_id='m2')
+        la_vie.slug = 'a-completely-different-slug'
+        la_vie.copy = 'C'
+        la_vie.save()
+        # refresh the object so it has its pk and related objects
+        la_vie.refresh_from_db()
+        # original la_vie should be the only related instance
+        assert len(la_vie.related_instances) == 1
+        assert la_vie.related_instances[0].pk == pk
+
+        # related instances for collected work should include any section authors
+        vie_collection_wk = Work.objects.create()
+        vie_collection = Instance.objects.create(work=vie_collection_wk)
+        la_vie.collected_in = vie_collection
+        la_vie.digital_edition = None
+        la_vie.save()
+        assert len(vie_collection.related_instances) == 1
+        assert vie_collection.related_instances[0].pk == pk
+
+        # delete digital edition
+        la_vie_old = la_vie.related_instances[0]
+        la_vie_old.digital_edition = None
+        la_vie_old.save()
+        # now check to get an empty set
+        la_vie.refresh_from_db()
+        assert len(la_vie.related_instances) == 0
+
+
+class TestInstanceQuerySet(TestCase):
+    fixtures = ['sample_work_data.json']
+
+    def setUp(self):
+        self.manif1 = Manifest.objects.create(short_id='bk123', label='Foobar')
+
+    def test_with_digital_eds(self):
+        la_vie = Instance.objects.get(work__short_title__contains="La vie")
+
+        # no digital editiosn with manifests, so should return empty queryset
+        empty = Instance.objects.with_digital_eds()
+        assert len(empty) == 0
+
+        # associate la_vie with the set up manfest, len should be 1
+        # and the only result should be la_vie
+        la_vie.digital_edition = self.manif1
+        la_vie.save()
+
+        qs = Instance.objects.with_digital_eds()
+        assert len(qs) == 1
+        assert qs[0] == la_vie
 
 class TestWorkLanguage(TestCase):
     fixtures = ['sample_work_data.json']

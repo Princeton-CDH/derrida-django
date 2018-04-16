@@ -1,16 +1,25 @@
+# -*- coding: utf-8 -*-
+import datetime
 import json
 from unittest.mock import Mock, patch
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
-from django.test import TestCase
+from django.core.cache import cache
+from django.db.models import Max, Min
+from django.template.loader import get_template
+from django.test import TestCase, override_settings
 from django.urls import reverse
 from djiffy.models import Canvas, Manifest
+from haystack.models import SearchResult
+import pytest
 
 from derrida.books.models import Instance, Language
 from derrida.people.models import Person
-from .models import Tag, INTERVENTION_TYPES, Intervention, get_default_intervener
+from derrida.interventions.models import Tag, INTERVENTION_TYPES, \
+    Intervention, get_default_intervener
+from derrida.interventions.search_indexes import InterventionIndex
 
 
 class TestTagQuerySet(TestCase):
@@ -279,6 +288,89 @@ class TestIntervention(TestCase):
         note.text = 'foobar'
         assert note.is_verbal()
 
+    def test_annotation_type(self):
+        note = Intervention.objects.create()
+        # no tags, no text - nonverbal annotation
+        assert note.annotation_type == ['nonverbal annotation']
+
+        note.text = 'some content'
+        assert note.annotation_type == ['verbal annotation']
+
+        note.tags.set([
+            Tag.objects.get(name='underlining'),
+            Tag.objects.get(name='marginal mark'),
+            Tag.objects.get(name='blue ink'),
+            Tag.objects.get(name='transcription uncertain'),
+        ])
+        assert set(note.annotation_type) == \
+            set(['underlining', 'marginal mark', 'verbal annotation'])
+        note.text = ''
+        note.tags.set([
+            Tag.objects.get(name='line'),
+            Tag.objects.get(name='black ink'),
+            Tag.objects.get(name='text illegible'),
+        ])
+        assert set(note.annotation_type) == \
+            set(['line', 'nonverbal annotation'])
+
+    def test_inke(self):
+        note = Intervention.objects.create()
+        # no tags
+        assert note.ink == []
+
+        note.tags.set([
+            Tag.objects.get(name='underlining'),
+            Tag.objects.get(name='marginal mark'),
+            Tag.objects.get(name='blue ink'),
+            Tag.objects.get(name='transcription uncertain'),
+        ])
+        assert note.ink == ['blue ink']
+
+        note.tags.set([
+            Tag.objects.get(name='line'),
+            Tag.objects.create(name='pencil'),
+            Tag.objects.get(name='black ink')
+        ])
+        assert set(note.ink) == set(['black ink', 'pencil'])
+
+
+class TestInterventionQuerySet(TestCase):
+
+    def test_sorted_by_page_loc(self):
+
+        # create three note objects
+        note1 = Intervention.objects.create()
+        note2 = Intervention.objects.create()
+        note3 = Intervention.objects.create()
+        # snippet reused from above
+        extra_data = {}
+        extra_data['image_selection'] = {
+            'x': "21.58%",
+            'y': "49.40%",
+            'h': "13.50%",
+            'w': "24.68%"
+        }
+        # save each with a different y value for their page location
+        note1.extra_data = extra_data
+        note1.save()
+        extra_data['image_selection']['y'] = '23.00%'
+        note2.extra_data = extra_data
+        note2.save()
+        extra_data['image_selection']['y'] = '91.00%'
+        note3.extra_data = extra_data
+        note3.save()
+        # method should return a list of annotations sorted by y value
+        sorted_notes = Intervention.objects.all().sorted_by_page_loc()
+        assert sorted_notes == [note2, note1, note3]
+
+        # missing image selection y should not error
+        del note3.extra_data['image_selection']['y']
+        note3.save()
+        Intervention.objects.all().sorted_by_page_loc()
+        del note3.extra_data['image_selection']
+        note3.save()
+        Intervention.objects.all().sorted_by_page_loc()
+
 
 class TestInterventionViews(TestCase):
 
@@ -379,6 +471,7 @@ class TestInterventionViews(TestCase):
         response = self.client.get(canvas_url)
         assert response.status_code == 200
         self.assertTemplateUsed(response, 'djiffy/canvas_detail.html')
+        self.assertTemplateNotUsed(response, 'books/canvas_detail.html')
         self.assertNotContains(response, 'annotator.min.js',
             msg_prefix='Annotator not enabled for user without annotation add permission')
 
@@ -396,7 +489,10 @@ class TestInterventionViews(TestCase):
             msg_prefix='canvas detail page includes local annotator styles')
         self.assertContains(response, 'interventions-plugin.js',
             msg_prefix='canvas detail page includes local intervention plugin')
+
         # check that expected autocomplete urls are present
+        # NOTE: these tests fail if compression is enabled, because the
+        # expected urls are in a javascript block
         # NOTE: currently tag autocomplete is annotation tags only
         self.assertContains(response,
             reverse('interventions:tag-autocomplete', kwargs={'mode': 'annotation'}),
@@ -408,6 +504,143 @@ class TestInterventionViews(TestCase):
         self.assertContains(response,
             reverse('books:language-autocomplete'),
             msg_prefix='annotator init includes language autocomplete url')
+
+
+#: override_settings and use test haystack connection
+@override_settings(HAYSTACK_CONNECTIONS=settings.HAYSTACK_TEST_CONNECTIONS)
+class TestInterventionSolrViews(TestCase):
+    fixtures = ['test_interventions.json']
+
+    @pytest.mark.haystack
+    def test_intervention_list(self):
+        intervention_list_url = reverse('interventions:list')
+        response = self.client.get(intervention_list_url)
+        assert response.status_code == 200
+        assert 'object_list' in response.context
+        assert isinstance(response.context['object_list'][0], SearchResult)
+        assert len(response.context['object_list']) == \
+            Intervention.objects.count()
+        self.assertContains(response, '%d Results' % Intervention.objects.count(),
+            msg_prefix='total number of results displayed')
+
+        # default order - author of annotated work
+        first_result = response.context['object_list'][0]
+        alpha_author = Intervention.objects \
+            .order_by('canvas__manifest__instance__work__authors__authorized_name',
+                'canvas__label') \
+            .first()
+        assert first_result.pk == str(alpha_author.pk)
+        # check details included in template
+        # annotation type
+        for annotype in first_result.annotation_type:
+            self.assertContains(response, annotype)
+        # canvas image & link
+        self.assertContains(response,
+            reverse('books:canvas-detail', args=[first_result.item_slug, first_result.canvas_id]),
+            msg_prefix='annotation should link to canvas detail')
+        self.assertContains(response,
+            reverse('books:canvas-image', args=[first_result.item_slug, first_result.canvas_id, 'smthumb']),
+            msg_prefix='annotation should display local thumbnail image')
+        self.assertContains(response,
+            reverse('books:canvas-image', args=[first_result.item_slug, first_result.canvas_id, 'smthumb', '@2x']),
+            msg_prefix='annotation should display include 2x thumbnail image')
+        self.assertContains(response,
+            reverse('books:detail', args=[first_result.item_slug]),
+            msg_prefix='should link to annotated book')
+        self.assertContains(response, first_result.item_title,
+            msg_prefix='should display annotated book title')
+        # first result item has no print year
+        self.assertContains(response, first_result.annotated_page,
+            msg_prefix='should display label of annotated page')
+
+        # keyword search
+        response = self.client.get(intervention_list_url, {'query': 'kritisieren'})
+        assert response.status_code == 200
+        assert len(response.context['object_list']) == 1
+
+        # filter by annotated work author
+        response = self.client.get(intervention_list_url, {'hand': ['Jacques Derrida']})
+        assert len(response.context['object_list']) == 1
+
+        # filter by ink
+        response = self.client.get(intervention_list_url, {'ink': ['blue ink']})
+        assert len(response.context['object_list']) == 1
+
+        # range filter
+        # - work year
+        response = self.client.get(intervention_list_url,
+                                   {'item_work_year_0': 1950})
+        # use total as a proxy of count() and to avoid pagination issues
+        assert response.context['total'] == \
+            Intervention.objects.filter(
+                canvas__manifest__instance__work__year__gte=1950
+            ).count()
+        response = self.client.get(intervention_list_url,
+            {'item_work_year_0': 1927, 'item_work_year_1': 1950})
+        assert response.context['total'] == \
+            Intervention.objects.filter(
+                canvas__manifest__instance__work__year__lte=1950,
+                canvas__manifest__instance__work__year__gte=1927
+            ).count()
+        # - copyright year
+        response = self.client.get(intervention_list_url,
+                                   {'item_copyright_year_0': 1950})
+        # use total as a proxy of count() and to avoid pagination issues
+        assert response.context['total'] == \
+            Intervention.objects.filter(
+                canvas__manifest__instance__copyright_year__gte=1950
+            ).count()
+        response = self.client.get(intervention_list_url,
+            {'item_copyright_year_0': 1927,
+             'item_copyright_year_1': 1950})
+        assert response.context['total'] == \
+            Intervention.objects.filter(
+                canvas__manifest__instance__copyright_year__lte=1950,
+                canvas__manifest__instance__copyright_year__gte=1927
+            ).count()
+        # - print year
+        response = self.client.get(intervention_list_url,
+                                   {'item_print_year_0': 1950})
+        # use total as a proxy of count() and to avoid pagination issues
+        # pass date as ISO string since these are date fields but we're
+        # only checking very coarsely by year, don't need to check date known
+        # flags
+        assert response.context['total'] == \
+            Intervention.objects.filter(
+                canvas__manifest__instance__print_date__gte='1950-01-01'
+            ).count()
+        response = self.client.get(
+            intervention_list_url,
+            {'item_print_year_0': 1927, 'item_print_year_1': 1950}
+        )
+        assert response.context['total'] == \
+            Intervention.objects.filter(
+                canvas__manifest__instance__print_date__lte='1950-12-31',
+                canvas__manifest__instance__print_date__gte='1927-01-01'
+            ).count()
+        # The aggregate values should be in the cache with values as expected
+        # - This reuses the code from the view, which is ugly, but
+        # it avoids problems with a changed fixture that would be
+        # caused by hardcoding it
+        aggregate_queries = {
+            'item_work_year_max': Max('canvas__manifest__instance__work__year'),
+            'item_work_year_min': Min('canvas__manifest__instance__work__year'),
+            'item_copyright_year_max': Max('canvas__manifest__instance__copyright_year'),
+            'item_copyright_year_min': Min('canvas__manifest__instance__copyright_year'),
+            'item_print_year_max': Max('canvas__manifest__instance__print_date'),
+            'item_print_year_min': Min('canvas__manifest__instance__print_date'),
+        }
+        ranges = (
+            Intervention.objects
+            .filter(canvas__manifest__instance__is_extant=True)
+            .aggregate(**aggregate_queries)
+        )
+        # pre-process datetime.date instances to get just
+        # year as an integer
+        for field, value in ranges.items():
+            if isinstance(value, datetime.date):
+                ranges[field] = value.year
+        assert ranges == cache.get('intervention_ranges', None)
 
 
 class TestExtendedCanvasAutocomplete(TestCase):
@@ -458,6 +691,15 @@ class TestExtendedCanvasAutocomplete(TestCase):
         response = self.client.get(
             canvas_autocomplete_url,
             {'q': 'p1', 'forward': '{"instance": "%s"}' % self.instance.pk}
+        )
+        data = json.loads(response.content.decode('utf-8'))
+        assert 'results' in data
+        assert data['results'][0]['text'] == str(self.pages[0])
+
+        # test forwarding manifest id
+        response = self.client.get(
+            canvas_autocomplete_url,
+            {'q': 'p1', 'forward': '{"manifest": "%s"}' % self.manif1.pk}
         )
         data = json.loads(response.content.decode('utf-8'))
         assert 'results' in data
@@ -577,3 +819,64 @@ class TestGetDefaultIntervener(TestCase):
         self.derrida.delete()
         derrida = get_default_intervener()
         assert not derrida
+
+
+class TestInterventionSearchIndex(TestCase):
+    fixtures = ['sample_work_data']
+
+    def setUp(self):
+        self.manif = Manifest.objects.create(short_id='bk123', label='Foobar')
+        self.canvas = Canvas.objects.create(
+            label='P1',
+            short_id='pg1',
+            order=0,
+            manifest=self.manif,
+            uri='http://so.me/iiif/id')
+        self.instance = Instance.objects.get(work__short_title__contains="La vie")
+        self.instance.digital_edition = self.manif
+        self.instance.save()
+
+    def test_text_template(self):
+        note = Intervention.objects.create(uri=self.canvas.uri, canvas=self.canvas)
+        doodle = Tag.objects.create(name='doodle')
+        nice_doodle = Tag.objects.create(name='nice doodle')
+
+        tpl = get_template('search/indexes/interventions/intervention_text.txt')
+        text = tpl.render({'object': note})
+        # no empty values should generate the string "None"
+        assert 'None' not in text
+        # only author is set for template
+        assert str(note.author) in text
+        # set values that are reflected in template
+        note.tags.set([doodle, nice_doodle])
+        note.text = 'Un griffoner'
+        note.text_translation = 'A scribble'
+        note.quote = 'Some anchor text'
+        note.quote_language = Language.objects.get(name='French')
+        text = tpl.render({'object': note})
+        assert 'doodle' in text
+        assert 'nice doodle' in text
+        assert note.text in text
+        assert note.text_translation in text
+        assert note.quote in text
+        assert str(note.quote_language) in text
+        assert str(note.author) in text
+
+    def test_index_querysets(self):
+        inter_index = InterventionIndex()
+        note = Intervention.objects.create(uri=self.canvas.uri, canvas=self.canvas)
+        qs = inter_index.index_queryset(note)
+        # note has an Instance so it should be returned
+        assert qs.count() == 1
+        assert qs[0] == note
+        self.instance.digital_edition = None
+        self.instance.save()
+        # now note does not have an Instance and so should not be returned
+        qs = inter_index.index_queryset(note)
+        assert not qs.exists()
+
+    def test_prepare_annotation_author(self):
+        inter_index = InterventionIndex()
+        note = Intervention.objects.create(uri=self.canvas.uri, canvas=self.canvas)
+        assert inter_index.prepare_annotation_author(note) == \
+            note.author.firstname_last

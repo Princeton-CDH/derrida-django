@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block page-subtitle %}{{ page.meta_title }} ‖ {% endblock %}
+{% block nav-title %} {{ page.title }} {% endblock %}
+
+{% block header_class %}mdl-layout__header--transparent{% endblock %}
+
+{% block page-context-id %}books-list{% endblock %}
+
+{% block content %}
+  <header class="page-header header-banner">
+    <div class="container page-header__container">
+      <h1 class="page-header__heading"><a class="page-header__link" href="{{ request.path }}">{{ page.title }}</a></h1>
+      <div class="page-header__callout">
+        <p class="lead">{{ page.description }}</p>
+        {# <p class="help">Only books extant in the Library of Jacques Derrida collection, held at the Princeton University Library’s Department of Rare Books and Special Collections, are displayed below.</p> #}
+        <p><a class="callout__link" href="{% url 'books:reference-list' %}">A full list of references is accessible through Reference List.</a></p>
+      </div>
+    </div>
+  </header>
+
+  {% include "components/page-filter.html" with formItems=form %}
+  {% include "components/page-sort.html" with number=count orderBy=orderBy %}
+
+  <div class="container">
+    <div class="loading-spinner">
+      <img src="{% static 'img/loading.gif' %}" />
+    </div>
+    <article class="collection collection--condensed">
+      {% for instance in object_list %}
+        {% url 'books:detail' instance.slug as instance_url %}
+        {% include 'components/books-list-item.html' with href=instance_url book=instance thumbnail_size='thumbnail' %}
+      {% empty %}
+        {% include 'components/search-results-empty.html' %}
+      {% endfor %}
+    </article>
+    {% if is_paginated %}
+      {% include "components/page-pagination.html" with page_obj=page_obj %}
+    {% endif %}
+  </div>
+{% endblock %}
