@@ -1,7 +1,11 @@
+# This role serves to configure the settings repo (if it does not already
+# exist on the deploy server), then clone the github repoistory for the project
+# to the remote server for deployment
 - name: Clone settings repository locally
   git:
       repo: 'git@github.com:Princeton-CDH/deployment.git'
-      dest: '{{ home }}/.deploy/'
+      # Use lookup here because we're working on the machine running ansible
+      dest: '{{ lookup('env', 'HOME') }}/.deploy/'
       version: 'master'
   delegate_to: localhost
 - name: Clone the repo if doesn't already exist and make sure it's on gitref

@@ -1,3 +1,7 @@
+# This role runs all of the tasks needed to make the new code live, starting
+# with any database migrations and ending with configuring symlinks and
+# restarting Apache (httpd24-httpd in Springdale)
+
 - name: Run database migrations
   django_manage:
     command: migrate
@@ -8,11 +12,10 @@
     path: "/var/www/{{ symlink }}"
   register: sym
 - name: Copy old symlink path from /var/www to "{{ install_root }}/old"
-  file:
-    src: /var/www/{{ symlink }}
-    dest: "{{ install_root }}/old"
-    state: link
+  shell: "cp -d /var/www/{{ symlink }} {{ deploy }}/old"
   when: sym.stat.islnk is defined and sym.stat.islnk == True
+  args:
+    executable: /bin/bash
 - name: New symlink path
   file:
     src: "{{ deploy }}"
@@ -23,7 +26,17 @@
     src: "{{ deploy }}"
     dest: "{{ install_root }}/current"
     state: link
+
+# This makes sure that any server side settings that handle autoconfiguring
+# SELinux permissions (that we would otherwise need to be root for) are
+# put in place on newly created directories
+
+# Both this and the command below it use the command/shell modules rather than
+# the SELinux or Apache modules because we only have limited sudo and rights
+# for both these statements    
 - name: Call restorecon just in case
-  command: 'restorecon -R {{ deploy }}'
+  shell: 'restorecon -R {{ deploy }}'
+  args:
+    executable: /bin/bash
 - name: Restart Apache (scl-httpd24-httpd)
   command: "sudo systemctl restart httpd24-httpd"

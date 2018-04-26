@@ -1,9 +1,8 @@
-- name: Make a database dump to /tmp just in case
-  mysql_db:
-    state: dump
-    login_host: "{{ db_host}}"
-    name: "{{ db_name }}"
-    target: "{{ db_backup }}"
+# This role configures the production directory, calling all the necessary
+# Django commands along with directory configurations needed to make SELinux
+# permissions work
+
+# Build the virtual environment and install requirements
 - name: Make a directory for virtualenv
   file:
       path: "{{ deploy }}/env"
@@ -15,7 +14,6 @@
     state: latest
     virtualenv: "{{ deploy }}/env"
     virtualenv_site_packages: yes
-  ignore_errors: true
 - name: Set perms
   file:
       path: "{{ deploy }}/env"
@@ -26,15 +24,18 @@
     virtualenv: "{{ deploy }}/env"
     requirements: "{{ deploy }}/requirements.txt"
     virtualenv_site_packages: yes
+
+# - Django configuration and management commands
 - name: Install local_settings.py
   copy:
-    src: "{{ lookup('env', 'HOME') }}/.deploy/{{ local_settings_path }}"
+    src: "{{ home }}/.deploy/{{ local_settings_path }}"
     dest: "{{ deploy }}/{{ djangoapp }}/local_settings.py"
 - name: Run ./manage.py collectstatic
   django_manage:
     command: collectstatic
     app_path: "{{ deploy }}"
     virtualenv: "{{ deploy }}/env"
+# Ownership needs to deploy/apache for production
 - name: Configure CACHE for django-compressor
   file:
     path: '{{ deploy }}/static/CACHE'
@@ -42,10 +43,16 @@
     owner: deploy
     group: apache
     mode: 0770
-  ignore_errors: true
+# On QA server the actual owner for purposes of CACHE needs to be the
+# user associated with the WSGI Daemon, in this case a manual call to sudo
 - name: chgrp the CACHE folder to project user
   shell: "sudo chgrp -R {{ project_user }} {{ deploy }}/static/CACHE"
   when: group == "qa"
   args:
     warn: False
     executable: /bin/bash
+- name: run ./manage.py compress to build CSS
+  django_manage:
+    command: compress
+    app_path: "{{ deploy }}"
+    virtualenv: "{{ deploy }}/env"
