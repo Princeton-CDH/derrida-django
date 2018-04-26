@@ -36,7 +36,7 @@ views) and db model (ajax request via reference histogram).
 
   <div class="item__body">
     {% with instance=reference.instance %}
-    <a class="text-badge text-badge--blue text-badge--link" href="{% url 'books:reference-list' %}?reference_type={{ reference.reference_type }}">{{ reference.reference_type }}</a>
+    <a class="text-badge text-badge--blue text-badge--link" href="{% url 'books:reference-list' %}?reference_type={{ reference.reference_type }}" title="view all {{reference.reference_type}}">{{ reference.reference_type }}</a>
       <h3 class="item__heading">
         {% with has_digital_edition|yesno:"a,span" as tag %}
         <{{ tag }} class="item__link" href="{% firstof instance_url reference.instance_url %}">{% firstof reference.instance_title instance.display_title %}
