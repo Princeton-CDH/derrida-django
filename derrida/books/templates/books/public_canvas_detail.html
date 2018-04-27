@@ -391,7 +391,8 @@
       <div class="annotation-selections">
         {# large size image #}
         <img class="gallery-image-view__img" src="{% url 'books:canvas-image' instance.slug canvas.short_id 'large' %}"
-          srcset="{% url 'books:canvas-image' instance.slug canvas.short_id 'large' '@2x' %} 2x" />
+          srcset="{% url 'books:canvas-image' instance.slug canvas.short_id 'large' '@2x' %} 2x"
+          {% if ocr_text %}alt="Page text (OCR generated): {{ ocr_text }}"{% else %}alt="No OCR text available for image."{% endif %} />
       </div>
       {% endif %}
 

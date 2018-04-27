@@ -14,7 +14,7 @@ from django.utils.decorators import method_decorator
 from django.views.generic import DetailView, ListView, View
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import FormView
-from djiffy.models import Canvas
+from djiffy.models import Canvas, get_iiif_url
 from haystack.query import SearchQuerySet
 from haystack.inputs import Clean, Raw
 import requests
@@ -499,10 +499,20 @@ class CanvasDetail(DetailView):
         Set extra context for :class:`CanvasDetail` view.
         '''
         context = super(CanvasDetail, self).get_context_data(*args, **kwargs)
+        # If there is a plain_text_url in info, use a Djiffy method to get the
+        # text from Figgy and pass it to the view, default ocr_text to None
+        ocr_text = None
+        if self.object.plain_text_url:
+            # get the text
+            res = get_iiif_url(self.object.plain_text_url)
+            # check that we got a valid response and set ocr_text if so.
+            if res.status_code == 200:
+                ocr_text = res.text
         context.update({
             'instance': self.instance,
             'canvas_suppressed': self.instance.suppress_all_images or \
-                    self.object in self.instance.suppressed_images.all()
+                    self.object in self.instance.suppressed_images.all(),
+            'ocr_text': ocr_text
         })
         if self.request.user.has_perm('books.change_instance'):
             context.update({

@@ -257,7 +257,8 @@ class TestInstanceViews(TestCase):
                     'mode': 'smthumb'})
         assert response.url == cover_image_url
 
-    def test_canvas_detail_view(self):
+    @patch('derrida.books.views.get_iiif_url')
+    def test_canvas_detail_view(self, mockiiifurl):
         # get an instance with a digital edition
         item = Instance.objects.filter(digital_edition__isnull=False).first()
         # add logo and license to manifest
@@ -266,12 +267,26 @@ class TestInstanceViews(TestCase):
         item.digital_edition.save()
 
         # create some test canvases
+        # also create some OCR text for one
+        extra_data = {
+            'rendering': [
+                {'@id': 'http://a/foo/url', 'format': 'text/plain',
+                    'label': 'text here'}
+            ]
+        }
+        # create a mock response for the url to get and set it so that it will be
+        # set on the different views
+        mockresponse = Mock()
+        mockiiifurl.return_value = mockresponse
+        mockresponse.status_code = 200
+        mockresponse.text = "some text"
+
         cover = Canvas.objects.create(manifest=item.digital_edition, order=2,
             label='Front Cover', short_id='cover1')
         cover2 = Canvas.objects.create(manifest=item.digital_edition, order=3,
             label='Inside Front Cover', short_id='cover2')
         p23 = Canvas.objects.create(manifest=item.digital_edition, order=4,
-            label='p. 23', short_id='p23')
+            label='p. 23', short_id='p23', extra_data=extra_data)
         ins = Canvas.objects.create(manifest=item.digital_edition, order=5,
             label='pp. 20-21 Insertion A recto', short_id='ins1')
 
@@ -306,6 +321,8 @@ class TestInstanceViews(TestCase):
         # iiif logo and license should be present somewhere
         self.assertContains(response, item.digital_edition.logo)
         self.assertContains(response, item.digital_edition.license)
+        # include alt text indicating that OCR was not found
+        self.assertContains(response, "No OCR text available for image.")
 
         # trying to get normal page with no annotations should fail
         response = self.client.get(p23_detail_url)
@@ -315,6 +332,8 @@ class TestInstanceViews(TestCase):
         Intervention.objects.create(canvas=p23)
         response = self.client.get(p23_detail_url)
         assert response.status_code == 200
+        # should also have set the alt text on the image
+        self.assertContains(response, mockresponse.text)
 
         # annotated page should be listed in nav on other pages
         response = self.client.get(cover_detail_url)
