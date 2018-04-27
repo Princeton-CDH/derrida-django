@@ -31,7 +31,6 @@
 
 {% block extrahead %}
     {{ block.super }}
-    {% compress js %}
     {# csrf adapted from mezzanine admin base site template #}
     <script>
     window.__csrf_token = '{{ csrf_token }}';
@@ -46,5 +45,4 @@
     {# Since both are in tandem, include both js files in compressor #}
     <script src="{% static 'js/material.min.js' %}"></script>
     <script src="{% static 'js/local.js' %}"></script>
-    {% endcompress %}
 {% endblock %}
