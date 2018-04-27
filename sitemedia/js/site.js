@@ -868,10 +868,10 @@ $(function() {
    * tablets at all.
   */
   $vizMarkers = $(".visualization-chapter-marker");
-  $vizMarkers.on("mouseenter touchstart focus", function() {
+  $vizMarkers.on("mouseenter focus click", function() {
     $(this).webuiPopover('show');
   });
-  $vizMarkers.on("mouseleave touchend blur", function() {
+  $vizMarkers.on("mouseleave blur", function() {
     $(this).webuiPopover('hide');
   });
 });
