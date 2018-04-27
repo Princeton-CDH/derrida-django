@@ -66,7 +66,9 @@ by default; use page_rdf_type to override with a webpage subclass.
     {% block head_extras %}{% endblock %}  {# any header metadata, etc #}
   </head>
   <body class="{% block body_class %}{% endblock %}"{% block body_attrs %}{% endblock %}>
+    {% block sr_navlink %}
     <a href="#derrida-footer" class="sr-only sr-only-focusable">Skip to navigation</a>
+    {% endblock %}
     <div class="mdl-layout mdl-js-layout has-drawer is-small-screen is-upgraded">
     <header class="mdl-layout__header {{ headerClass }}{% block header_class %}{% endblock %}">
       <div class="mdl-layout__header-row">

@@ -4,6 +4,10 @@
 {% block page-subtitle %}{{ instance.work.primary_title }}{% if instance.work.authors.count == 1 %}, {{ instance.work.authors.first.lastname }}{% endif %} {% if instance.print_year or instance.copyright_year %}({% firstof instance.print_year instance.copyright_year %}{% if instance.copy %} - {{ instance.copy }}{% endif %}){% endif %} ‖ {{ canvas.label }} ‖ {% endblock %}
 {% block nav-title %} Derrida's Library {% endblock %}
 
+{% block sr_navlink %}
+<a href="#annotation-list" class="sr-only sr-only-focusable">Skip to annotations</a>
+{% endblock %}
+
 {% block header_class %}mdl-layout__header--transparent{% endblock %}
 
 {% block body_class %}disable-coordinate-navigation{% endblock %}
@@ -86,9 +90,11 @@
             height: calcRelativePosition(zone.h, imgH),
             width: calcRelativePosition(zone.w, imgW),
             top: calcRelativePosition(zone.y, imgH),
-            left: calcRelativePosition(zone.x, imgW)
+            left: calcRelativePosition(zone.x, imgW),
+            padding: 0 // overrides default button padding
           }
-        var $zone = $("<div/>").addClass("zone").css(zoneCSS);
+        var $zone = $("<button/>").addClass("zone").css(zoneCSS);
+        $zone.attr('title', 'annotated region')
         zoneDivs.push($zone);
       });
 
@@ -244,14 +250,14 @@
       {% if not instance.suppress_all_images and not canvas_suppressed %}
       <nav class="gallery-image-view__nav mdl-tabs">
         <a class="mdl-layout__tab is-active" href="#annotations" data-value="annotations">Display Annotation</a>
-        <a class="mdl-layout__tab" href="#zoom" data-value="zoom">Deep Zoom</a>
+        <a class="mdl-layout__tab" href="#zoom" data-value="zoom" title="hide annotations">Deep Zoom</a>
       </nav>
       {% endif %}
     </div>
   </header>
 
   <article class="gallery-image-view">
-    <header class="gallery-image-view__header is-hidden">
+    <header class="gallery-image-view__header is-hidden" id="toc">
       {# brief title information (copied from book-header) #}
       {% with book=instance %}
       <h1 class="item-title">{{ book.work.primary_title }}</h1>
@@ -395,7 +401,8 @@
       </div>
       {% endif %}
 
-      <section class="collection annotation-cards annotation-list">
+      <section class="collection annotation-cards annotation-list" id="annotation-list">
+        <a href="#toc" class="sr-only sr-only-focusable">Skip back to table of contents</a>
         {% for intervention in canvas.intervention_set.sorted_by_page_loc %}
           {% include 'components/intervention-card.html' %}
         {% endfor %}
