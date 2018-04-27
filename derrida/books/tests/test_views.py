@@ -334,6 +334,11 @@ class TestInstanceViews(TestCase):
         assert response.status_code == 200
         # should also have set the alt text on the image
         self.assertContains(response, mockresponse.text)
+        # try again with a bad code for the request for the OCR text
+        mockresponse.status_code = 403
+        response = self.client.get(p23_detail_url)
+        self.assertNotContains(response, mockresponse.text)
+
 
         # annotated page should be listed in nav on other pages
         response = self.client.get(cover_detail_url)
