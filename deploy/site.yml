@@ -4,7 +4,8 @@
   # Set environment to use scl rh-python35
   environment:
     PATH: '/opt/rh/rh-python35/root/usr/bin/:/opt/rh/rh-nodejs6/root/usr/bin:{{ ansible_env.PATH }}'
-    LD_LIBRARY_PATH: '/opt/rh/rh-python35/root/usr/lib64:/opt/rh/rh-nodejs6/root/usr/lib64'
+    LD_LIBRARY_PATH: '/opt/rh/rh-python35/root/usr/lib64:/opt/rh/rh-nodejs6/root/usr/lib64:{{ ansible_env.LD_LIBRARY_PATH}}'
+    PYTHONPATH: '/opt/rh/rh-nodejs6/root/usr/lib/python2.7/site-packages:{{ ansible_env.PATH }}' 
   roles:
       # Creates repo variable names and builds repo
       - projectrepo
