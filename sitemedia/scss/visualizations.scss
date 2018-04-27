@@ -100,12 +100,15 @@
   border-radius: 50%;
   color: transparent;
   background-color: transparentize($primary-color, 0.2);
+  tabindex: 0;
 
   &:hover,
+  &:focus,
   &.active {
     color: transparent;
     background-color: $primary-color;
     opacity: 1;
+    cursor: pointer;
   }
 }
 

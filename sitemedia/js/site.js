@@ -292,7 +292,7 @@ $(function() {
     var $visualizationMarkers = $(".visualization-chapter-marker");
     if ($visualizationMarkers.length) {
       $visualizationMarkers.webuiPopover({
-        trigger: "hover",
+        trigger: "manual",
         animation: "fade",
         placement: "auto-top",
         arrow: true,
@@ -863,4 +863,15 @@ $(function() {
   initAnnotatorDropdown();
   initGlobalFunctions();
 
+  /**
+   * Add handlers for the visualization since the default hover doesn't handle
+   * tablets at all.
+  */
+  $vizMarkers = $(".visualization-chapter-marker");
+  $vizMarkers.on("mouseenter touchstart focus", function() {
+    $(this).webuiPopover('show');
+  });
+  $vizMarkers.on("mouseleave touchend blur", function() {
+    $(this).webuiPopover('hide');
+  });
 });
