@@ -892,10 +892,27 @@ $(function() {
   // there using tab navigation for every single filter
   var $filterBoxes = $('.filter, .mdl-input');
   $filterBoxes.keyup(function(event) {
-    console.log('escape key@')
       if (event.keyCode === 27) {
         $(this).click();
       }
+  });
+
+  /**
+   * Add aria accessible descriptions of how many items there are in a
+   * particular section in reference-histogram.html
+  */
+  var $vizChapterHeaders = $('.visualization-chapter-header');
+  $vizChapterHeaders.each(function() {
+    // Find the length of all markers in a chapter section
+    var numMarkers = $(this).next().find('.visualization-chapter-marker').length;
+    // Build a label and set it as aria-label
+    var ariaLabel = $(this).text() + " has " + numMarkers
+    if (numMarkers > 1 ) {
+      ariaLabel += " references."
+    } else {
+      ariaLabel += " reference."
+    }
+    $(this).attr('aria-label', ariaLabel)
   });
 
 });
