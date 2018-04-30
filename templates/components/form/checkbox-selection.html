@@ -24,7 +24,7 @@ This component uses the following parameters to render:
 
 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
   <input class="mdl-textfield__input" type="text" id="{{name}}-selection" readonly="readonly" />
-  <img class="expand-icon" src="{% static 'img/icons/Expand.svg' %}">
+  <img class="expand-icon" src="{% static 'img/icons/Expand.svg' %}" ara-hidden="True">
   <label class="mdl-textfield__label" for="{{name}}-selection">{{ label }}</label>
 </div>
 <div class="filter filter--{{name}} is-not-ready" id="{{name}}">

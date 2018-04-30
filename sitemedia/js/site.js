@@ -888,4 +888,14 @@ $(function() {
     $(this).webuiPopover('hide');
   });
 
+  // Add a handler to let user escape out of the filter
+  // there using tab navigation for every single filter
+  var $filterBoxes = $('.filter, .mdl-input');
+  $filterBoxes.keyup(function(event) {
+    console.log('escape key@')
+      if (event.keyCode === 27) {
+        $(this).click();
+      }
+  });
+
 });
