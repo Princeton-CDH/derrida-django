@@ -865,13 +865,27 @@ $(function() {
 
   /**
    * Add handlers for the visualization since the default hover doesn't handle
-   * tablets at all.
+   * tablets well.
+   * Expected behavior is to show on click, focus, or hover; close by clicking
+   * or focusing elsewhere.
   */
   $vizMarkers = $(".visualization-chapter-marker");
-  $vizMarkers.on("mouseenter focus click", function() {
-    $(this).webuiPopover('show');
+  $vizMarkers.on("mouseenter click focus", function(event) {
+    var $this = $(this);
+    $this.webuiPopover('show');
+    var popOver = $('#'+$this.attr('data-target'));
+    // Set the aria-describedby so that the reference output will be read by
+    // screen-reader, including reference
+    $this.attr('aria-describedby', $this.attr('data-target'));
+    // Stop click propagation for the pop-over div so that
+    // users can interact with the div
+    popOver.click(function(event) {
+      event.stopPropagation();
+    });
   });
-  $vizMarkers.on("mouseleave blur", function() {
+  // Hide if the user clicks anywhere else
+  $("html").on("click blur", function(event) {
     $(this).webuiPopover('hide');
   });
+
 });
