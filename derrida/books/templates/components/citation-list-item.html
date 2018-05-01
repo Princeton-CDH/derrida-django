@@ -28,7 +28,7 @@ views) and db model (ajax request via reference histogram).
       <a class="item__image-link item__image-overview" href="{% url 'books:detail' instance_slug %}">
         <img class="img" src="{% url 'books:canvas-image' slug=instance_slug short_id='default' mode='smthumb' %}"
            srcset="{% url 'books:canvas-image' slug=instance_slug short_id='default' mode='smthumb' x='@2x' %} 2x"
-           alt="View bibliography page of {% firstof reference.instance_title instance.display_title %} (detail of this page not available)"/>
+           alt="View bibliographic details for {% firstof reference.instance_title instance.display_title %} (detail of this page not available)"/>
       </a>
       {% endif %}
     {% else %}
