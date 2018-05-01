@@ -1,4 +1,4 @@
-{% load static compress %}
+{% load static %}
   {# include jquery-ui for autocomplete #}
   <script type="text/javascript" src="{% static 'js/jquery-ui.min.js' %}"></script>
   <link rel="stylesheet" type="text/css" href="{% static 'js/jquery-ui.min.css' %}"/>
@@ -29,7 +29,6 @@
 
 
 {# Initialize annotator.js *#}
-{% compress js %}
 <script type="text/javascript" charset="utf-8">
 
 
@@ -237,4 +236,3 @@ annotator.authz.AclAuthzPolicy.prototype.permits = function (action, context, id
 
 });
 </script>
-{% endcompress %}
