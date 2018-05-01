@@ -3,7 +3,8 @@
   <figure class="item__image">
     <a class="item__image-link" href="{% url 'books:canvas-detail' intervention.item_slug intervention.canvas_id %}">
       <img class="img" src="{% url 'books:canvas-image' intervention.item_slug intervention.canvas_id 'smthumb' %}"
-         srcset="{% url 'books:canvas-image' intervention.item_slug intervention.canvas_id 'smthumb' '@2x' %} 2x" />
+         srcset="{% url 'books:canvas-image' intervention.item_slug intervention.canvas_id 'smthumb' '@2x' %} 2x"
+         alt="View page from {% firstof intervention.item_title intervention.work_instance.display_title  %}" />
     </a>
   </figure>
   <div class="item__body">

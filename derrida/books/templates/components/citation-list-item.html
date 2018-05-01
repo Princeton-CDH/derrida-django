@@ -20,13 +20,15 @@ views) and db model (ajax request via reference histogram).
       {% if page_slug %}
       <a class="item__image-link" href="{% url 'books:canvas-detail' instance_slug page_slug  %}">
         <img class="img" src="{% url 'books:canvas-image' slug=instance_slug short_id=page_slug mode='smthumb'%}"
-           srcset="{% url 'books:canvas-image' slug=instance_slug short_id=page_slug mode='smthumb' x='@2x' %} 2x" />
+           srcset="{% url 'books:canvas-image' slug=instance_slug short_id=page_slug mode='smthumb' x='@2x' %} 2x"
+           alt="View the page containing this reference in {% firstof reference.instance_title instance.display_title %}"/>
       </a>
       {% else %}
       {# if page view is not available, display cover thumbnail and link to book bibliography page #}
       <a class="item__image-link item__image-overview" href="{% url 'books:detail' instance_slug %}">
         <img class="img" src="{% url 'books:canvas-image' slug=instance_slug short_id='default' mode='smthumb' %}"
-           srcset="{% url 'books:canvas-image' slug=instance_slug short_id='default' mode='smthumb' x='@2x' %} 2x" />
+           srcset="{% url 'books:canvas-image' slug=instance_slug short_id='default' mode='smthumb' x='@2x' %} 2x"
+           alt="View bibliography page of {% firstof reference.instance_title instance.display_title %} (detail of this page not available)"/>
       </a>
       {% endif %}
     {% else %}

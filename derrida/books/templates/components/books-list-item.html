@@ -17,7 +17,7 @@ The template allows for the following parameters:
 <section class="collection__item book {% if shorten %}book--short{% endif %}">
   {% if book.is_annotated %}
     <span class="item__indicator">
-      <img class="icon--annotation" src="{% static 'img/bookmark_annotation.svg' %}" />
+      <img class="icon--annotation" src="{% static 'img/bookmark_annotation.svg' %}" alt="contains annotations" />
     </span>
   {% endif %}
   {% if not shorten %}
@@ -26,10 +26,12 @@ The template allows for the following parameters:
     <{{tag}} class="img item__image__link"{% if tag == "a" %} href="{{ href }}"{% endif %}>
       {% if book.digital_edition %}
         <img class="img" src="{% url 'books:book-image' book.slug thumbnail_size %}"
-            srcset="{% url 'books:book-image' book.slug thumbnail_size '@2x' %} 2x" />
+            srcset="{% url 'books:book-image' book.slug thumbnail_size '@2x' %} 2x"
+            alt="View bibliographic details of {{ book.display_title }}"/>
       {% else %}
         <img class="img img--placeholder" src="{% static 'img/cover_notinPUL.png' thumbnail_size %}"
-          srcset="{% static 'img/cover_notinPUL.png' book.slug thumbnail_size '@2x' %} 2x" />
+          srcset="{% static 'img/cover_notinPUL.png' book.slug thumbnail_size '@2x' %} 2x"
+          alt="Edition not digitized by Princeton University Libraries"/>
       {% endif %}
     </{{tag}}>
     {% endwith %}

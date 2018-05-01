@@ -59,6 +59,22 @@ class InstanceDetailView(DetailView):
         instances = super(InstanceDetailView, self).get_queryset()
         return instances.filter(digital_edition__isnull=False)
 
+    def get_context_data(self, *args, **kwargs):
+        '''Insert manifest license data into template context.'''
+        context_data = super(InstanceDetailView, self).get_context_data()
+        instance = context_data['object']
+        license_url = instance.digital_edition.license
+        if license_url:
+            data_url = license_url.split('?')[0].replace('vocab', 'data')
+            response = requests.get(data_url)
+            if response.status_code == 200:
+                # This should be safe for all rightsstatments.org
+                # prefLabels as they seem to be setting English as their
+                # default using @ notation.
+                context_data['license_text'] = \
+                    response.json()['prefLabel']['@value']
+        return context_data
+
 
 class InstanceReferenceDetailView(InstanceDetailView):
 
