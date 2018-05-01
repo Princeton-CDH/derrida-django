@@ -3,7 +3,6 @@ The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/1.10/topics/http/urls/
 """
 from annotator_store import views as annotator_views
-# from django.conf import settings
 from django.conf.urls import url, include
 from django.contrib import admin
 from django.views.generic import TemplateView
@@ -29,9 +28,6 @@ urlpatterns = [
     # alternate homepage named url needed for djiffy templates
     url(r'^$', mezzanine.pages.views.page, {"slug": "/"}, name="site-index"),
 
-    # placeholders for new design
-    url(r'^citations/$', RedirectView.as_view(pattern_name='admin:index'), name='citations-list'),
-
     # grappelli URLS for admin related lookups & autocompletes
     url(r'^grappelli/', include('grappelli.urls')),
 
@@ -50,18 +46,8 @@ urlpatterns = [
 
     # annotations API
     url(r'^annotations/api/', include('annotator_store.urls', namespace='annotation-api')),
-
     # annotatorjs doesn't handle trailing slash in api prefix url
     url(r'^annotations/api', annotator_views.AnnotationIndex.as_view(), name='annotation-api-prefix'),
-
-    # url(r'^library', TemplateView.as_view(template_name='public/library.html'), name="library"),
-    url(r'^visualization', TemplateView.as_view(template_name='public/visualization.html'), name="visualization"),
-
-    url(r'^citations', TemplateView.as_view(template_name='public/citations.html'), name="citations-list"),
-
-    # url(r'^search', TemplateView.as_view(template_name='public/search-results.html'), name="search"),
-
-    url(r'^inputs', TemplateView.as_view(template_name='public/search-inputs.html'), name="show-inputs"),
 
     # content pages managed by mezzanine
     url("^", include(mezzanine.urls))
