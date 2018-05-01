@@ -3,14 +3,27 @@ The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/1.10/topics/http/urls/
 """
 from annotator_store import views as annotator_views
+# from django.conf import settings
 from django.conf.urls import url, include
 from django.contrib import admin
+from django.contrib.sitemaps import views as sitemap_views
 from django.views.generic import TemplateView
 from django.views.generic.base import RedirectView
 import mezzanine.urls
 import mezzanine.pages.views
 
 from derrida.books.views import SearchView
+from derrida.books import sitemaps as book_sitemaps
+from derrida.outwork import sitemaps as page_sitemaps
+
+
+sitemaps = {
+    'pages': page_sitemaps.PageSitemap,
+    'books': book_sitemaps.InstanceSitemap,
+    'book-references': book_sitemaps.InstanceReferencesSitemap,
+    'book-gallery': book_sitemaps.InstanceGallerySitemap,
+    'book-pages': book_sitemaps.CanvasSitemap,
+}
 
 
 urlpatterns = [
@@ -22,6 +35,10 @@ urlpatterns = [
         content_type='text/plain')),
     url(r'^favicon\.ico$', RedirectView.as_view(url='/static/favicon.ico',
         permanent=True)),
+    url(r'^sitemap\.xml$', sitemap_views.index, {'sitemaps': sitemaps},
+        name='sitemap-index'),
+    url(r'^sitemap-(?P<section>.+)\.xml$', sitemap_views.sitemap, {'sitemaps': sitemaps},
+        name='django.contrib.sitemaps.views.sitemap'),
 
     # home page managed via mezzanine, but needs a named url
     url(r'^$', mezzanine.pages.views.page, {"slug": "/"}, name="home"),
