@@ -80,7 +80,8 @@ views) and db model (ajax request via reference histogram).
         <p class="item__location">p{% if '-' in reference.book_page %}p{% endif %}. {{ reference.book_page }}</p>
       {% endif %}
 
-      <p class="item__excerpt">{{ reference.anchor_text|default:''|markdownify }}</p>
+      {# assuming always french for now, since from Derrida's published works #}
+      <p class="item__excerpt" lang="fr">{{ reference.anchor_text|default:''|markdownify }}</p>
 
       <p class="item__citation">
         Cited in <em>{{ reference.derridawork }}</em> p.{{ reference.derridawork_page }}
