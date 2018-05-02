@@ -885,7 +885,7 @@ $(function() {
   });
   // Hide if the user clicks anywhere else
   $("html").on("click blur", function(event) {
-    $(this).webuiPopover('hide');
+    $vizMarkers.webuiPopover('hide');
   });
 
   // Add a handler to let user escape out of the filter
