@@ -4,6 +4,17 @@ Deploy and Upgrade notes
 ========================
 
 
+1.0
+----
+
+* Solr XML configuration files ``schema.xml`` and ``solrconfig.xml``
+  need to be generated and deployed to production Solr server.  Use
+  ``python manage.py build_solr_schema`` to generate the schema.  Reload
+  the Solr core or restart Solr after updating the configuration.
+* After Solr configurations are in place, run ``python
+  manage.py rebuild_index --noinput`` to update the index based on
+  content in the Derrida database.
+
 0.9
 ---
 
@@ -15,8 +26,8 @@ Deploy and Upgrade notes
   ``python manage.py build_solr_schema`` to generate the schema.  Reload
   the Solr core or restart Solr after updating the configuration.
 * After Solr configurations are in place, run ``python
-  manage.py rebuild_index -i`` to update the index based on content
-  in the Derrida database.
+  manage.py rebuild_index --noinput`` to update the index based on
+  content in the Derrida database.
 * Production ``local_settings.py`` should have updated settings to use the
   extended signal processor for Haystack managed models::
 
