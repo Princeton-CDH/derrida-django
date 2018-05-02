@@ -7,6 +7,13 @@
 {% block page-context-id %}homepage{% endblock %}
 {% block coordinate-nav-classes %}coordinate-navigation--background-light-navy{% endblock %}
 
+{% block preview_meta %}
+{# override preview image for home page #}
+{% with page_meta_image='img/banner/derrida-banner-home-S@2x.png' %}
+    {{ block.super }}
+{% endwith %}
+{% endblock %}
+
 {% block main %}
 
   {{ block.super }}
