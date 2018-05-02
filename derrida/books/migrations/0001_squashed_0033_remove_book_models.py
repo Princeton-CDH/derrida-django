@@ -15,7 +15,9 @@ from derrida.utils import LoadFixtureData, reset_sqlsequence
 
 # derrida.books.migrations.0006_initial_languages
 def load_initial_languages(apps, schema_editor):
-    call_command('loaddata', 'initial_languages', app_label='books', verbose=0)
+    Language = apps.get_model('books', 'Language')
+    for lang in ['French', 'German', 'English']:
+        Language.objects.get_or_create(name=lang)
 
 # derrida.books.migrations.0010_initial_reftypes
 def load_initial_reftypes(apps, schema_editor):
