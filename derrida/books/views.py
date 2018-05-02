@@ -9,7 +9,6 @@ from django.db.models import Max, Min
 from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
-from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views.generic import DetailView, ListView, View
 from django.views.generic.base import TemplateView

@@ -84,8 +84,9 @@
           { title: 'h3', block: 'h3' },
           { title: 'p', block: 'p' },
           { title: 'footnotes', block: 'p', classes : 'footnote' },
+          { title: 'blockquote', block: 'blockquote' },
           { title: 'Credits (role)', block: 'li', classes: 'credits__role'},
-          { title: 'Credits (name)', block: 'li', classes: 'credits__name'}
+          { title: 'Credits (name)', block: 'li', classes: 'credits__name'},
         ],
         advlist_bullet_styles: "default",
         advlist_number_styles: "default",

@@ -101,3 +101,13 @@ hr {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+/* override material design defaults */
+blockquote {
+  @include primary-font-style();
+  font-size: $base-font-size;
+  line-height: $base-line-height;
+}
+blockquote::before, blockquote::after {
+  content: '';
+}

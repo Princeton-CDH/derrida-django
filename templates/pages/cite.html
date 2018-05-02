@@ -1,0 +1,9 @@
+{% extends "pages/richtextpage.html" %}
+{% load derrida_tags mezzanine_tags %}
+
+{% block main %}
+{% editable page.richtextpage.content %}
+{{ page.richtextpage.content|richtext_filters|safe|format_citation:SW_VERSION }}
+{% endeditable %}
+
+{% endblock %}

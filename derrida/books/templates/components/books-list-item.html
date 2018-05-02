@@ -27,7 +27,7 @@ The template allows for the following parameters:
       {% if book.digital_edition %}
         <img class="img" src="{% url 'books:book-image' book.slug thumbnail_size %}"
             srcset="{% url 'books:book-image' book.slug thumbnail_size '@2x' %} 2x"
-            alt="View bibliographic details of {{ book.display_title }}"/>
+            alt="View bibliographic details for {{ book.display_title }}"/>
       {% else %}
         <img class="img img--placeholder" src="{% static 'img/cover_notinPUL.png' thumbnail_size %}"
           srcset="{% static 'img/cover_notinPUL.png' book.slug thumbnail_size '@2x' %} 2x"
@@ -47,14 +47,15 @@ The template allows for the following parameters:
     </h3>
     <p class="item__author">
       {% url 'books:list' as library_url %}
-      {# only display first two authors; display et, al if theree are more #}
+      {# only display first two authors; display et, al if there are more #}
       {# solr result #}
       {% if book.author_firstname_last %}
         <a class="item__secondary-link" href="{{ library_url }}?author={{ book.author.0 }}">{{ book.author_firstname_last.0}}</a>{% if book.author_firstname_last|length > 1 %}, <a class="item__secondary-link" href="{{ library_url }}?author={{ book.author.1 }}">{{ book.author_firstname_last.1}}</a>{% endif %}{% if book.author_firstname_last|length > 2 %}, et al.{% endif %}
       {% endif %}
       {# database result #}
       {% for author in book.work.authors.all|slice:":2" %}
-          <a class="item__secondary-link" href="{{ library_url }}?author={{ author.authorized_name }}">{{ author.firstname_last }}</a>{% if not forloop.last %}, {% endif %}{% if forloop.last and book.work.authors.count > 2 %}, et al.{% endif %}
+          <a class="item__secondary-link" href="{{ library_url }}?author={{ author.authorized_name }}"
+          title="view all library works by {{ author.firstname_last}}">{{ author.firstname_last }}</a>{% if not forloop.last %}, {% endif %}{% if forloop.last and book.work.authors.count > 2 %}, et al.{% endif %}
       {% endfor %}
     </p>
     {% if book.year %}

@@ -33,7 +33,8 @@
     <header>
         <h1>{% block title %}{{ page.title }}{% endblock %}
         </h1>
-      <div class="lead">{% block lead %}{{ page.description }}{% endblock %}</div>
+      {# NOTE: description is usually redundant from the content and not useful here; disabling #}
+      {# <div class="lead">{% block lead %}{{ page.description }}{% endblock %}</div> #}
     </header>
 
     {% block main %}{% endblock %}
