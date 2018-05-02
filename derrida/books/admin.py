@@ -375,8 +375,14 @@ class InstanceAdmin(admin.ModelAdmin):
     filter_horizontal = ['cited_in']
 
 
+class LanguageAdmin(NamedNotableWorkInstanceCount):
+    list_display = NamedNotableAdmin.list_display + \
+        ('work_count', 'instance_count', 'code')
+
+
+
 admin.site.register(Subject,  NamedNotableWorkCount)
-admin.site.register(Language, NamedNotableWorkInstanceCount)
+admin.site.register(Language, LanguageAdmin)
 admin.site.register(Publisher, NamedNotableInstanceCount)
 admin.site.register(OwningInstitution, OwningInstitutionAdmin)
 # NOTE: suppress old book models from admin to avoid getting data

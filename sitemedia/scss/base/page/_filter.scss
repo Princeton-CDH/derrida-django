@@ -239,7 +239,7 @@
 
   .clear-link {
     font-size: 0.8em;
-    @include faded-link(transparentize($black, 0.6));
+    @include faded-link($medium-grey);
     height: 1.75em;
     display: inline-block;
   }

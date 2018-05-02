@@ -8,6 +8,7 @@ def template_settings(request):
 
     context_extras = {
         'SHOW_TEST_WARNING': getattr(settings, 'SHOW_TEST_WARNING', False),
-        'search_form': SearchForm(request.GET)
+        'search_form': SearchForm(request.GET),
+        'INCLUDE_ANALYTICS': getattr(settings, 'INCLUDE_ANALYTICS', False),
     }
     return context_extras

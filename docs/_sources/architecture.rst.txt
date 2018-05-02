@@ -5,6 +5,11 @@ Architecture
    :maxdepth: 2
 
 
+1.0
+~~~
+
+*  Added language code to Language table to indicate languages
+   of content on the public website where possible, to improve accessibility
 
 0.9 Public access to Library works, references, interventions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

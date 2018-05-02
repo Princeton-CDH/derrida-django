@@ -292,7 +292,7 @@ $(function() {
     var $visualizationMarkers = $(".visualization-chapter-marker");
     if ($visualizationMarkers.length) {
       $visualizationMarkers.webuiPopover({
-        trigger: "hover",
+        trigger: "manual",
         animation: "fade",
         placement: "auto-top",
         arrow: true,
@@ -862,5 +862,57 @@ $(function() {
   initCustomActions();
   initAnnotatorDropdown();
   initGlobalFunctions();
+
+  /**
+   * Add handlers for the visualization since the default hover doesn't handle
+   * tablets well.
+   * Expected behavior is to show on click, focus, or hover; close by clicking
+   * or focusing elsewhere.
+  */
+  $vizMarkers = $(".visualization-chapter-marker");
+  $vizMarkers.on("mouseenter click focus", function(event) {
+    var $this = $(this);
+    $this.webuiPopover('show');
+    var popOver = $('#'+$this.attr('data-target'));
+    // Set the aria-describedby so that the reference output will be read by
+    // screen-reader, including reference
+    $this.attr('aria-describedby', $this.attr('data-target'));
+    // Stop click propagation for the pop-over div so that
+    // users can interact with the div
+    popOver.click(function(event) {
+      event.stopPropagation();
+    });
+  });
+  // Hide if the user clicks anywhere else
+  $("html").on("click blur", function(event) {
+    $vizMarkers.webuiPopover('hide');
+  });
+
+  // Add a handler to let user escape out of the filter
+  // there using tab navigation for every single filter
+  var $filterBoxes = $('.filter, .mdl-input');
+  $filterBoxes.keyup(function(event) {
+      if (event.keyCode === 27) {
+        $(this).click();
+      }
+  });
+
+  /**
+   * Add aria accessible descriptions of how many items there are in a
+   * particular section in reference-histogram.html
+  */
+  var $vizChapterHeaders = $('.visualization-chapter-header');
+  $vizChapterHeaders.each(function() {
+    // Find the length of all markers in a chapter section
+    var numMarkers = $(this).next().find('.visualization-chapter-marker').length;
+    // Build a label and set it as aria-label
+    var ariaLabel = $(this).text() + " has " + numMarkers
+    if (numMarkers > 1 ) {
+      ariaLabel += " references."
+    } else {
+      ariaLabel += " reference."
+    }
+    $(this).attr('aria-label', ariaLabel)
+  });
 
 });

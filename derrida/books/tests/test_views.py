@@ -33,7 +33,8 @@ USE_TEST_HAYSTACK = override_settings(
 class TestInstanceViews(TestCase):
     fixtures = ['test_instances.json']
 
-    def test_instance_detail_view(self):
+    @patch('derrida.books.views.requests')
+    def test_instance_detail_view(self, mockrequests):
         # get an instance of la_vie
         la_vie = Instance.objects.filter(work__primary_title__icontains='la vie').first()
         # pass its pk to detail view
@@ -53,8 +54,35 @@ class TestInstanceViews(TestCase):
         assert response.status_code == 200
         # should have a context object called instance that's a copy of Instance
         assert 'instance' in response.context
-        # it should be the copy of la_view we looked up
+        # it should be the copy of la_vie we looked up
         assert response.context['instance'] == la_vie
+        # license lookup not called because there is no license info
+        assert not mockrequests.called
+
+        # add license info to manifest
+        manif.extra_data.update({
+            'license': 'http://rightstatements.org/vocab/FOO/v1/',
+        })
+        manif.save()
+        # mock a response from requests with a JSON-LD snippet
+        # and a successful response code
+        mockresponse = Mock()
+        mockrequests.get.return_value = mockresponse
+        mockresponse.json.return_value = {
+            'prefLabel': {'@value': 'Foo license'}
+        }
+        mockresponse.status_code = 200
+        response = self.client.get(detail_view_url)
+        mockrequests.get.assert_called_with('http://rightstatements.org/data/FOO/v1/')
+        # license text is in context
+        assert response.context['license_text'] == 'Foo license'
+        # the alt text exists somewhere in the template
+        self.assertContains(response, 'alt="Foo license"')
+        # an error on license lookup causes the license not to be applied
+        mockresponse.status_code = 403
+        response = self.client.get(detail_view_url)
+        assert 'license_text' not in response.context
+
 
     @pytest.mark.haystack
     def test_instance_list_view(self):
@@ -257,7 +285,8 @@ class TestInstanceViews(TestCase):
                     'mode': 'smthumb'})
         assert response.url == cover_image_url
 
-    def test_canvas_detail_view(self):
+    @patch('derrida.books.views.get_iiif_url')
+    def test_canvas_detail_view(self, mockiiifurl):
         # get an instance with a digital edition
         item = Instance.objects.filter(digital_edition__isnull=False).first()
         # add logo and license to manifest
@@ -266,12 +295,26 @@ class TestInstanceViews(TestCase):
         item.digital_edition.save()
 
         # create some test canvases
+        # also create some OCR text for one
+        extra_data = {
+            'rendering': [
+                {'@id': 'http://a/foo/url', 'format': 'text/plain',
+                    'label': 'text here'}
+            ]
+        }
+        # create a mock response for the url to get and set it so that it will be
+        # set on the different views
+        mockresponse = Mock()
+        mockiiifurl.return_value = mockresponse
+        mockresponse.status_code = 200
+        mockresponse.text = "some text"
+
         cover = Canvas.objects.create(manifest=item.digital_edition, order=2,
             label='Front Cover', short_id='cover1')
         cover2 = Canvas.objects.create(manifest=item.digital_edition, order=3,
             label='Inside Front Cover', short_id='cover2')
         p23 = Canvas.objects.create(manifest=item.digital_edition, order=4,
-            label='p. 23', short_id='p23')
+            label='p. 23', short_id='p23', extra_data=extra_data)
         ins = Canvas.objects.create(manifest=item.digital_edition, order=5,
             label='pp. 20-21 Insertion A recto', short_id='ins1')
 
@@ -306,6 +349,8 @@ class TestInstanceViews(TestCase):
         # iiif logo and license should be present somewhere
         self.assertContains(response, item.digital_edition.logo)
         self.assertContains(response, item.digital_edition.license)
+        # include alt text indicating that OCR was not found
+        self.assertContains(response, "No OCR text available for image.")
 
         # trying to get normal page with no annotations should fail
         response = self.client.get(p23_detail_url)
@@ -315,6 +360,13 @@ class TestInstanceViews(TestCase):
         Intervention.objects.create(canvas=p23)
         response = self.client.get(p23_detail_url)
         assert response.status_code == 200
+        # should also have set the alt text on the image
+        self.assertContains(response, mockresponse.text)
+        # try again with a bad code for the request for the OCR text
+        mockresponse.status_code = 403
+        response = self.client.get(p23_detail_url)
+        self.assertNotContains(response, mockresponse.text)
+
 
         # annotated page should be listed in nav on other pages
         response = self.client.get(cover_detail_url)

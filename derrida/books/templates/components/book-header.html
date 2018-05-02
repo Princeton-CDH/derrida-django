@@ -10,11 +10,13 @@ object for accessing properties to render.
 {% if book.digital_edition.thumbnail %}
 <img class="item-header__image"
    src="{% url 'books:canvas-image' instance.slug book.digital_edition.thumbnail.short_id 'thumbnail' %}"
-   srcset="{% url 'books:canvas-image' instance.slug book.digital_edition.thumbnail.short_id 'thumbnail' '@2x' %} 2x" />
+   srcset="{% url 'books:canvas-image' instance.slug book.digital_edition.thumbnail.short_id 'thumbnail' '@2x' %} 2x"
+   alt="Thumbnail view of {{ instance.display_title }}" />
 {% else %}
 <span class="item-header__image img--placeholder"></span>
 {% endif %}
-<h1 class="item-title">{{ book.display_title }}</h1>
+    {# use language code for book title if we know primary language (assumes title is in primary language) #}
+<h1 class="item-title" {% if book.primary_language %}lang="{{ book.primary_language.code }}"{% endif %}>{{ book.display_title }}</h1>
 <p class="item-author">
   {% for author in book.work.authors.all %}
     {{ author.firstname_last }}{% if not forloop.last %}; {% endif %}

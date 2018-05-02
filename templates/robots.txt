@@ -1,2 +1,3 @@
 User-agent: *
 Disallow: {% if DEBUG %}/{% else %}/admin{% endif %}
+Sitemap: https://{{ request.META.HTTP_HOST }}/sitemap.xml

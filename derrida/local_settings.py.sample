@@ -84,3 +84,6 @@ PUCAS_LDAP.update({
     'SEARCH_BASE': '',
     'SEARCH_FILTER': "(uid=%(user)s)",
 })
+
+# set to true to include analytics code in templates (i.e. in production only)
+#INCLUDE_ANALYTICS = True

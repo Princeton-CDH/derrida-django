@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>derrida.interventions.models &#8212; Derrida 0.9-0 documentation</title>
+    <title>derrida.interventions.models &#8212; Derrida 1.0.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
@@ -53,8 +53,8 @@
 <span class="sd">    object representing Jacques Derrida if he exists in the database or None&quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">Person</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">authorized_name</span><span class="o">=</span><span class="s1">&#39;Derrida, Jacques&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">pk</span>
-    <span class="k">except</span> <span class="n">ObjectDoesNotExist</span><span class="p">:</span>
-        <span class="k">return</span> <span class="kc">None</span></div>
+    <span class="k">except</span> <span class="n">ObjectDoesNotExist</span><span class="p">:</span></div>
+        <span class="k">return</span> <span class="kc">None</span>
 
 
 <div class="viewcode-block" id="TagQuerySet"><a class="viewcode-back" href="../../../codedocs.html#derrida.interventions.models.TagQuerySet">[docs]</a><span class="k">class</span> <span class="nc">TagQuerySet</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">QuerySet</span><span class="p">):</span>
@@ -63,12 +63,12 @@
 <span class="sd">    Intervention.&#39;&#39;&#39;</span>
 
 <div class="viewcode-block" id="TagQuerySet.for_annotations"><a class="viewcode-back" href="../../../codedocs.html#derrida.interventions.models.TagQuerySet.for_annotations">[docs]</a>    <span class="k">def</span> <span class="nf">for_annotations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Find tags that apply to annotations&#39;&#39;&#39;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">applies_to__contains</span><span class="o">=</span><span class="n">INTERVENTION_TYPES</span><span class="o">.</span><span class="n">ANNOTATION</span><span class="p">)</span></div>
+        <span class="sd">&#39;&#39;&#39;Find tags that apply to annotations&#39;&#39;&#39;</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">applies_to__contains</span><span class="o">=</span><span class="n">INTERVENTION_TYPES</span><span class="o">.</span><span class="n">ANNOTATION</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TagQuerySet.for_insertions"><a class="viewcode-back" href="../../../codedocs.html#derrida.interventions.models.TagQuerySet.for_insertions">[docs]</a>    <span class="k">def</span> <span class="nf">for_insertions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Find tags that apply to insertions&#39;&#39;&#39;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">applies_to__contains</span><span class="o">=</span><span class="n">INTERVENTION_TYPES</span><span class="o">.</span><span class="n">INSERTION</span><span class="p">)</span></div></div>
+        <span class="sd">&#39;&#39;&#39;Find tags that apply to insertions&#39;&#39;&#39;</span></div></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">applies_to__contains</span><span class="o">=</span><span class="n">INTERVENTION_TYPES</span><span class="o">.</span><span class="n">INSERTION</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="Tag"><a class="viewcode-back" href="../../../codedocs.html#derrida.interventions.models.Tag">[docs]</a><span class="k">class</span> <span class="nc">Tag</span><span class="p">(</span><span class="n">Named</span><span class="p">,</span> <span class="n">Notable</span><span class="p">):</span>
@@ -80,8 +80,8 @@
     <span class="n">applies_to</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="n">APPLIES_TO_CHOICES</span><span class="p">,</span>
         <span class="n">default</span><span class="o">=</span><span class="n">INTERVENTION_TYPES</span><span class="o">.</span><span class="n">BOTH</span><span class="p">,</span>
         <span class="n">help_text</span><span class="o">=</span><span class="s1">&#39;Type or types of interventions this tag is applicable to.&#39;</span><span class="p">)</span>
-
-    <span class="n">objects</span> <span class="o">=</span> <span class="n">TagQuerySet</span><span class="o">.</span><span class="n">as_manager</span><span class="p">()</span></div>
+</div>
+    <span class="n">objects</span> <span class="o">=</span> <span class="n">TagQuerySet</span><span class="o">.</span><span class="n">as_manager</span><span class="p">()</span>
 
 
 <div class="viewcode-block" id="InterventionQuerySet"><a class="viewcode-back" href="../../../codedocs.html#derrida.interventions.models.InterventionQuerySet">[docs]</a><span class="k">class</span> <span class="nc">InterventionQuerySet</span><span class="p">(</span><span class="n">AnnotationQuerySet</span><span class="p">):</span>
@@ -95,8 +95,8 @@
             <span class="c1"># assume zero if not present</span>
             <span class="n">y_percent</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">extra_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;image_selection&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;%&#39;</span><span class="p">)</span>
             <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">y_percent</span><span class="p">)</span>
-        <span class="c1"># return sorted list of current queryset based on y coord image selection</span>
-        <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">sort_y</span><span class="p">)</span></div></div>
+        <span class="c1"># return sorted list of current queryset based on y coord image selection</span></div></div>
+        <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">sort_y</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="Intervention"><a class="viewcode-back" href="../../../codedocs.html#derrida.interventions.models.Intervention">[docs]</a><span class="k">class</span> <span class="nc">Intervention</span><span class="p">(</span><span class="n">BaseAnnotation</span><span class="p">):</span>
@@ -175,24 +175,24 @@
             <span class="k">try</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span> <span class="o">=</span> <span class="n">Canvas</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">uri</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">uri</span><span class="p">)</span>
             <span class="k">except</span> <span class="n">Canvas</span><span class="o">.</span><span class="n">DoesNotExist</span><span class="p">:</span>
-                <span class="k">pass</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">Intervention</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span></div>
+                <span class="k">pass</span></div>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Intervention</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
 
 <div class="viewcode-block" id="Intervention.is_verbal"><a class="viewcode-back" href="../../../codedocs.html#derrida.interventions.models.Intervention.is_verbal">[docs]</a>    <span class="k">def</span> <span class="nf">is_verbal</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Return whether a :class:`Intervention` has a verbal component.&#39;&#39;&#39;</span>
-        <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="p">)</span></div>
+        <span class="sd">&#39;&#39;&#39;Return whether a :class:`Intervention` has a verbal component.&#39;&#39;&#39;</span></div>
+        <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
     <span class="c1"># Sorts on the binary of whether an intervention does or does not</span>
     <span class="c1"># have text</span>
     <span class="n">is_verbal</span><span class="o">.</span><span class="n">boolean</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="n">is_verbal</span><span class="o">.</span><span class="n">admin_order_field</span> <span class="o">=</span> <span class="s1">&#39;text&#39;</span>
 
 <div class="viewcode-block" id="Intervention.is_annotation"><a class="viewcode-back" href="../../../codedocs.html#derrida.interventions.models.Intervention.is_annotation">[docs]</a>    <span class="k">def</span> <span class="nf">is_annotation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Return whether :class:`Intervention` object is an annotation.&#39;&#39;&#39;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">intervention_type</span> <span class="o">==</span> <span class="n">INTERVENTION_TYPES</span><span class="o">.</span><span class="n">ANNOTATION</span></div>
+        <span class="sd">&#39;&#39;&#39;Return whether :class:`Intervention` object is an annotation.&#39;&#39;&#39;</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">intervention_type</span> <span class="o">==</span> <span class="n">INTERVENTION_TYPES</span><span class="o">.</span><span class="n">ANNOTATION</span>
 
 <div class="viewcode-block" id="Intervention.is_insertion"><a class="viewcode-back" href="../../../codedocs.html#derrida.interventions.models.Intervention.is_insertion">[docs]</a>    <span class="k">def</span> <span class="nf">is_insertion</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Return whether :class:`Intervention` object is an insersetion.&#39;&#39;&#39;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">intervention_type</span> <span class="o">==</span> <span class="n">INTERVENTION_TYPES</span><span class="o">.</span><span class="n">INSERTION</span></div>
+        <span class="sd">&#39;&#39;&#39;Return whether :class:`Intervention` object is an insersetion.&#39;&#39;&#39;</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">intervention_type</span> <span class="o">==</span> <span class="n">INTERVENTION_TYPES</span><span class="o">.</span><span class="n">INSERTION</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">digital_edition</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -249,8 +249,8 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">img_info_to_iiif</span><span class="p">[</span><span class="n">key</span><span class="p">]:</span> <span class="nb">float</span><span class="p">(</span><span class="n">val</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s1">&#39;%&#39;</span><span class="p">))</span>
                 <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">extra_data</span><span class="p">[</span><span class="s1">&#39;image_selection&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
                 <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">img_info_to_iiif</span>
-            <span class="p">}</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">region</span><span class="p">(</span><span class="n">percent</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">img_selection</span><span class="p">)</span></div>
+            <span class="p">}</span></div>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">region</span><span class="p">(</span><span class="n">percent</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">img_selection</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Intervention.admin_thumbnail"><a class="viewcode-back" href="../../../codedocs.html#derrida.interventions.models.Intervention.admin_thumbnail">[docs]</a>    <span class="k">def</span> <span class="nf">admin_thumbnail</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
@@ -261,8 +261,8 @@
         <span class="k">if</span> <span class="n">img_selection</span><span class="p">:</span>
             <span class="k">return</span> <span class="sa">u</span><span class="s1">&#39;&lt;img src=&quot;</span><span class="si">%s</span><span class="s1">&quot; /&gt;&#39;</span> <span class="o">%</span> <span class="n">img_selection</span><span class="o">.</span><span class="n">mini_thumbnail</span><span class="p">()</span>
         <span class="c1"># otherwise, if canvas is set, display canvas small thumbnail</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="p">:</span>
-            <span class="k">return</span> <span class="sa">u</span><span class="s1">&#39;&lt;img src=&quot;</span><span class="si">%s</span><span class="s1">&quot; /&gt;&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">mini_thumbnail</span><span class="p">()</span></div>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="p">:</span></div>
+            <span class="k">return</span> <span class="sa">u</span><span class="s1">&#39;&lt;img src=&quot;</span><span class="si">%s</span><span class="s1">&quot; /&gt;&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">mini_thumbnail</span><span class="p">()</span>
     <span class="n">admin_thumbnail</span><span class="o">.</span><span class="n">short_description</span> <span class="o">=</span> <span class="s1">&#39;Thumbnail&#39;</span>
     <span class="n">admin_thumbnail</span><span class="o">.</span><span class="n">allow_tags</span> <span class="o">=</span> <span class="kc">True</span>
 
@@ -314,8 +314,8 @@
                 <span class="k">del</span> <span class="n">data</span><span class="p">[</span><span class="n">field</span><span class="p">]</span>
             <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                 <span class="k">pass</span>
-
-        <span class="k">return</span> <span class="n">data</span></div>
+</div>
+        <span class="k">return</span> <span class="n">data</span>
 
 <div class="viewcode-block" id="Intervention.info"><a class="viewcode-back" href="../../../codedocs.html#derrida.interventions.models.Intervention.info">[docs]</a>    <span class="k">def</span> <span class="nf">info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Return a dictionary of fields and values for</span>
@@ -336,8 +336,8 @@
         <span class="c1"># author - display author name</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">author</span><span class="p">:</span>
             <span class="n">info</span><span class="p">[</span><span class="s1">&#39;author&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">authorized_name</span>
-
-        <span class="k">return</span> <span class="n">info</span></div></div>
+</div></div>
+        <span class="k">return</span> <span class="n">info</span>
 </pre></div>
 
           </div>
@@ -417,7 +417,7 @@
       &copy;2017, CDH @ Princeton & Trustees of Princeton University.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.2</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
       
     </div>

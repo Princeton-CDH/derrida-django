@@ -28,7 +28,9 @@
 </script>
 {% endif %}
 <section class="page-filter {% if not hide_filter %}is-visible{% endif %}">
+
 <form class="page-filter__form">
+  <p class='sr-only'>Use escape to immediately leave any filter panel</p>
   <div class="container">
     <header class="page-filter__header">
       <p class="toggle-text"></p>
@@ -44,7 +46,7 @@
         </label>
       </div>
       {% endif %}
-  
+
       {% if 'is_annotated' in form.fields %}
       <div class="filter__selector">  {# is_annotated #}
         <label class="mdl-switch__label mdl-switch__label--right" for="is-annotation">{{ form.is_annotated.label }}
@@ -54,7 +56,7 @@
         </label>
       </div>
       {% endif %}
-  
+
       {# FIXME: reusing id because otherwise javascript doesn't fire, but not sure where set #}
       {% if 'corresponding_intervention' in form.fields %}
       <div class="filter__selector">
@@ -68,7 +70,6 @@
     </section>
 
     <section class="filter__section">
-
       {% if 'author' in form.fields %}
       <div class="filter__selector">
         {% include 'components/form/author-selection.html' with authors=form.author %}

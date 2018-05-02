@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>djiffy.models &#8212; Derrida 0.9-0 documentation</title>
+    <title>djiffy.models &#8212; Derrida 1.0.0 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" src="../../_static/documentation_options.js"></script>
@@ -80,7 +80,7 @@
     <span class="n">last_modified</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DateField</span><span class="p">(</span><span class="n">auto_now</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="c1">#: extra data provided via a &#39;seeAlso&#39; reference</span>
     <span class="n">extra_data</span> <span class="o">=</span> <span class="n">JSONField</span><span class="p">(</span><span class="n">load_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;object_pairs_hook&#39;</span><span class="p">:</span> <span class="n">OrderedDict</span><span class="p">},</span>
-        <span class="n">default</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
+        <span class="n">default</span><span class="o">=</span><span class="n">OrderedDict</span><span class="p">)</span>
 
     <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
         <span class="n">verbose_name</span> <span class="o">=</span> <span class="s1">&#39;IIIF Manifest&#39;</span>
@@ -175,6 +175,9 @@
     <span class="n">order</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">PositiveIntegerField</span><span class="p">()</span>
     <span class="c1"># (for now only stores a single sequence, so just store order on the page    )</span>
     <span class="c1"># format? size? (ocr text eventually?)</span>
+    <span class="c1">#: extra data not otherwise given its own field, serialized as json</span>
+    <span class="n">extra_data</span> <span class="o">=</span> <span class="n">JSONField</span><span class="p">(</span><span class="n">load_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;object_pairs_hook&#39;</span><span class="p">:</span> <span class="n">OrderedDict</span><span class="p">},</span>
+        <span class="n">default</span><span class="o">=</span><span class="n">OrderedDict</span><span class="p">)</span>
 
     <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
         <span class="n">ordering</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;manifest&quot;</span><span class="p">,</span> <span class="s2">&quot;order&quot;</span><span class="p">]</span>
@@ -197,6 +200,29 @@
         <span class="c1"># Should update to handle iiif image ids as provided in manifests</span>
         <span class="c1"># for now, split into service and image id. (is this reliable?)</span>
         <span class="k">return</span> <span class="n">IIIFImage</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">iiif_image_id</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">plain_text_url</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Return plain text url for a canvas if one exists&#39;&#39;&#39;</span>
+
+        <span class="n">rendering</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extra_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;rendering&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">rendering</span><span class="p">:</span>
+            <span class="c1"># handle both cases where this is a list and where it is just</span>
+            <span class="c1"># a dictionary, to be safe</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rendering</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">rendering</span><span class="p">:</span>
+                    <span class="c1"># iterate over the list and return the first plain text url</span>
+                    <span class="c1"># we find</span>
+                    <span class="k">if</span> <span class="s1">&#39;format&#39;</span> <span class="ow">in</span> <span class="n">item</span> <span class="ow">and</span> <span class="n">item</span><span class="p">[</span><span class="s1">&#39;format&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;text/plain&#39;</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="n">item</span><span class="p">[</span><span class="s1">&#39;@id&#39;</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># otherwise, if it&#39;s a dictionary, check if it&#39;s plaintext and</span>
+                <span class="c1"># return</span>
+                <span class="k">if</span> <span class="s1">&#39;format&#39;</span> <span class="ow">in</span> <span class="n">rendering</span> \
+                        <span class="ow">and</span> <span class="n">rendering</span><span class="p">[</span><span class="s1">&#39;format&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;text/plain&#39;</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">rendering</span><span class="p">[</span><span class="s1">&#39;@id&#39;</span><span class="p">]</span>
+        <span class="c1"># finally return None if no plain text is available or no rendering</span>
+        <span class="k">return</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="nf">get_absolute_url</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;&#39;url for this canvas within the django site&#39;&#39;&#39;</span>
@@ -342,7 +368,6 @@
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">label</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-
 </pre></div>
 
           </div>
@@ -422,7 +447,7 @@
       &copy;2017, CDH @ Princeton & Trustees of Princeton University.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.2</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
       
     </div>

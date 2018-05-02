@@ -2,13 +2,13 @@
 
 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
   <input class="mdl-textfield__input" type="text" id="author-selection" readonly="readonly" />
-  <img class="expand-icon" src="{% static 'img/icons/Expand.svg' %}">
+  <img class="expand-icon" src="{% static 'img/icons/Expand.svg' %}" aria-hidden="True">
   <label class="mdl-textfield__label" for="author-selection">Author</label>
 </div>
 <div class="filter filter--author is-not-ready" id="authors">
   <header class="filter__search">
     <label class="mdl-button mdl-js-button mdl-button--icon" for="filter__search-term">
-      <img src="{% static "img/icons/Search.svg" %}" />
+      <img src="{% static "img/icons/Search.svg" %}" alt="search" />
     </label>
     <input class="filter__search-field filter__search-field--authors" id="filter__search-term" placeholder="Search" />
   </header>

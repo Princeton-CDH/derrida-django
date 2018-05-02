@@ -5,7 +5,7 @@
   <div class="grid-container">
     <div class="mdl-mega-footer__middle-section">
 
-      <div class="mdl-mega-footer-section">
+      <div class="mdl-mega-footer-section" id="derrida-footer">
          {% for page in page_branch %}
             {% if page.in_menu %}
               {# break for second section on first occurence of primary menu item #}
@@ -25,13 +25,17 @@
           <a href="{% url 'home' %}" title="Derrida's Margins Home"><img class="logo" width="150" src="{% static "img/derrida_VI_logo_full.svg" %}" alt="Derrida's Margins"/></a>
           <a href="https://cdh.princeton.edu" title="CDH @ Princeton"><img class="logo" height="70" src="{% static "img/CDH_logo_01.svg" %}" alt="The Center for Digital Humanities @ Princeton"/></a>
           <a href="https://www.princeton.edu" title="Princeton University"><img class="logo" height="80" src="{% static "img/PU_logo_web_XL.svg" %}" alt="Princeton University"/></a>
-          <p class="mdl-mega-footer__legal">©2018 Trustees of Princeton University</p>
+
         </div>
       </div>
     </div>
 
     <div class="mdl-mega-footer__bottom-section">
       <p id="sw_version">{{ SW_VERSION }}</p>
+      <p>©2018 Trustees of Princeton University
+        <a href="https://accessibility.princeton.edu/">Accessibility</a>
+        <a href="https://accessibility.princeton.edu/accessibility-assistance">Accessibility Assistance</a>
+      </p>
       {% block footer-content %}{% endblock %}
     </div>
   </div>

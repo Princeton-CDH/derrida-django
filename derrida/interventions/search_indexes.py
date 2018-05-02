@@ -24,8 +24,12 @@ class InterventionIndex(indexes.SearchIndex, indexes.Indexable):
         faceted=True, null=True)
     #: annotation text; :class:`derrida.interventions.models.Intervention.text`
     annotation_text = indexes.CharField(model_attr='text', null=True)
+    #: language code for annotation text language
+    annotation_text_lang = indexes.CharField(model_attr='text_language__code', null=True)
     #: annotation anchor text; :class:`derrida.interventions.models.Intervention.quote`
     anchor_text = indexes.CharField(model_attr='quote', null=True)
+    #: language code for anchor text language
+    anchor_text_lang = indexes.CharField(model_attr='quote_language__code', null=True)
     #: annotation author
     annotation_author = indexes.CharField(faceted=True, null=True)
     #: annotation text's language; :class:`derrida.interventions.models.Intervention.text_language`

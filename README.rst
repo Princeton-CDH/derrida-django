@@ -3,8 +3,8 @@ derrida-django
 
 .. sphinx-start-marker-do-not-remove
 
-Django web application for the `Derrida's Margins Project
-<https://cdh.princeton.edu/projects/derridas-margins/>`_.
+Django web application for `Derrida's Margins <https://derridas-margins.princeton.edu/>`_
+a `DH project sponsored by CDH <https://cdh.princeton.edu/projects/derridas-margins/>`_.
 
 .. image:: https://travis-ci.org/Princeton-CDH/derrida-django.svg?branch=master
    :target: https://travis-ci.org/Princeton-CDH/derrida-django

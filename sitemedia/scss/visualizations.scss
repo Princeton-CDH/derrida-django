@@ -18,7 +18,7 @@
   @include primary-font-style("italic");
   font-size: 0.9em;
   margin: 0;
-  color: $medium-grey;
+  color: $dark-grey;
 
   .visualization-section + .visualization-section & {
     padding-top: 1.5em;
@@ -100,12 +100,15 @@
   border-radius: 50%;
   color: transparent;
   background-color: transparentize($primary-color, 0.2);
+  tabindex: 0;
 
   &:hover,
+  &:focus,
   &.active {
     color: transparent;
     background-color: $primary-color;
     opacity: 1;
+    cursor: pointer;
   }
 }
 

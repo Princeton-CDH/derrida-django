@@ -3,6 +3,23 @@
 CHANGELOG
 =========
 
+1.0
+---
+
+Numerous design and accessibility fixes, including:
+
+* Improved keyboard and screen reader navigation
+* Image alt text throughout the site
+* Navigation and accessibility improvements for the reference visualization,
+  including screen reader content, readable reference labels, escape
+  to close reference card, etc
+* Accessibility improvements to annotation page view, including OCR
+  text for pages when available
+* Language codes for reference anchor text, intervention anchor
+  text and annotation text, and book titles on bibligraphic detail page.
+* Basic XML sitemaps for public site content
+
+
 0.9 Library works, references, interventions
 --------------------------------------------
 
