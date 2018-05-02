@@ -78,6 +78,8 @@ class Language(Named, Notable, WorkCount, InstanceCount):
     '''Language that a book is written in or a language included in a book'''
     #: optional uri
     uri = models.URLField(blank=True, null=True)
+    code = models.CharField(blank=True, null=True, max_length=3,
+        help_text='two or three letter language code from ISO 639')
 
 
 class Publisher(Named, Notable, InstanceCount):
