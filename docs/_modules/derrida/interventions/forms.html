@@ -1,0 +1,212 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>derrida.interventions.forms &#8212; Derrida 1.0.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for derrida.interventions.forms</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">django</span> <span class="k">import</span> <span class="n">forms</span>
+<span class="kn">from</span> <span class="nn">django.utils.safestring</span> <span class="k">import</span> <span class="n">mark_safe</span>
+
+<span class="kn">from</span> <span class="nn">derrida.books.forms</span> <span class="k">import</span> <span class="n">FacetChoiceField</span><span class="p">,</span> <span class="n">RangeField</span>
+
+
+<span class="k">class</span> <span class="nc">InterventionSearchForm</span><span class="p">(</span><span class="n">forms</span><span class="o">.</span><span class="n">Form</span><span class="p">):</span>
+    <span class="n">defaults</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;order_by&#39;</span><span class="p">:</span> <span class="s1">&#39;author&#39;</span>
+    <span class="p">}</span>
+
+    <span class="n">query</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Search&#39;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">order_by</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">ChoiceField</span><span class="p">(</span><span class="n">choices</span><span class="o">=</span><span class="p">[</span>
+            <span class="p">(</span><span class="s1">&#39;author&#39;</span><span class="p">,</span> <span class="s1">&#39;Author of annotated work&#39;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">&#39;title&#39;</span><span class="p">,</span> <span class="s1">&#39;Title of annotated work&#39;</span><span class="p">),</span>
+            <span class="c1"># TODO: number of annotations?</span>
+        <span class="p">],</span> <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">initial</span><span class="o">=</span><span class="n">defaults</span><span class="p">[</span><span class="s1">&#39;order_by&#39;</span><span class="p">],</span>
+        <span class="n">widget</span><span class="o">=</span><span class="n">forms</span><span class="o">.</span><span class="n">RadioSelect</span><span class="p">)</span>
+
+    <span class="c1">#: order options and corresponding solr field</span>
+    <span class="n">sort_fields</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;author&#39;</span><span class="p">:</span> <span class="s1">&#39;item_author_isort&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="s1">&#39;item_title_isort&#39;</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="c1"># fields to request facets from solr</span>
+    <span class="n">facet_fields</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;item_author&#39;</span><span class="p">,</span> <span class="s1">&#39;item_subject&#39;</span><span class="p">,</span> <span class="s1">&#39;item_language&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;item_work_language&#39;</span><span class="p">,</span> <span class="s1">&#39;item_pub_place&#39;</span><span class="p">,</span> <span class="c1"># &#39;item_print_year&#39;,</span>
+        <span class="s1">&#39;annotation_language&#39;</span><span class="p">,</span> <span class="s1">&#39;annotation_type&#39;</span><span class="p">,</span> <span class="s1">&#39;annotation_author&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;ink&#39;</span><span class="p">]</span>
+
+    <span class="c1"># input fields that wrap a solr facet</span>
+    <span class="n">facet_inputs</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;author&#39;</span><span class="p">,</span> <span class="s1">&#39;subject&#39;</span><span class="p">,</span> <span class="s1">&#39;language&#39;</span><span class="p">,</span> <span class="s1">&#39;work_language&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;pub_place&#39;</span><span class="p">,</span> <span class="s1">&#39;annotation_language&#39;</span><span class="p">,</span> <span class="s1">&#39;annotation_type&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;hand&#39;</span><span class="p">,</span> <span class="s1">&#39;ink&#39;</span><span class="p">]</span>
+
+    <span class="n">author</span> <span class="o">=</span> <span class="n">FacetChoiceField</span><span class="p">()</span>
+    <span class="n">subject</span> <span class="o">=</span> <span class="n">FacetChoiceField</span><span class="p">()</span>
+    <span class="n">language</span> <span class="o">=</span> <span class="n">FacetChoiceField</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Language of Publication&#39;</span><span class="p">)</span>
+    <span class="n">work_language</span> <span class="o">=</span> <span class="n">FacetChoiceField</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Original Language&#39;</span><span class="p">)</span>
+    <span class="n">pub_place</span> <span class="o">=</span> <span class="n">FacetChoiceField</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Place of Publication&#39;</span><span class="p">)</span>
+    <span class="n">annotation_language</span> <span class="o">=</span> <span class="n">FacetChoiceField</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Annotation Language&#39;</span><span class="p">)</span>
+    <span class="n">annotation_type</span> <span class="o">=</span> <span class="n">FacetChoiceField</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Annotation Type&#39;</span><span class="p">)</span>
+    <span class="n">hand</span> <span class="o">=</span> <span class="n">FacetChoiceField</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Annotation Hand&#39;</span><span class="p">)</span>
+    <span class="n">ink</span> <span class="o">=</span> <span class="n">FacetChoiceField</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Ink&#39;</span><span class="p">)</span>
+    <span class="c1"># range facets</span>
+    <span class="n">range_facets</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;item_work_year&#39;</span><span class="p">,</span> <span class="s1">&#39;item_copyright_year&#39;</span><span class="p">,</span> <span class="s1">&#39;item_print_year&#39;</span><span class="p">]</span>
+    <span class="n">item_work_year</span> <span class="o">=</span> <span class="n">RangeField</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Original Publication Year&#39;</span><span class="p">,</span>
+        <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">item_copyright_year</span> <span class="o">=</span> <span class="n">RangeField</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Edition Year&#39;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">item_print_year</span> <span class="o">=</span> <span class="n">RangeField</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Printing Year&#39;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="c1"># TODO cited_in ?</span>
+
+    <span class="c1"># map solr facet field to corresponding form input</span>
+    <span class="n">solr_facet_fields</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;item_author&#39;</span><span class="p">:</span> <span class="s1">&#39;author&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;item_subject&#39;</span><span class="p">:</span> <span class="s1">&#39;subject&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;item_language&#39;</span><span class="p">:</span> <span class="s1">&#39;language&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;item_work_language&#39;</span><span class="p">:</span> <span class="s1">&#39;work_language&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;item_pub_place&#39;</span><span class="p">:</span> <span class="s1">&#39;pub_place&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;item_print_year&#39;</span><span class="p">:</span> <span class="s1">&#39;print_year&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;annotation_author&#39;</span><span class="p">:</span> <span class="s1">&#39;hand&#39;</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">set_choices_from_facets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">facets</span><span class="p">):</span>
+        <span class="c1"># configure field choices based on facets returned from Solr</span>
+        <span class="k">for</span> <span class="n">facet</span><span class="p">,</span> <span class="n">counts</span> <span class="ow">in</span> <span class="n">facets</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">formfield</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">solr_facet_fields</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">facet</span><span class="p">,</span> <span class="n">facet</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">formfield</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">formfield</span><span class="p">]</span><span class="o">.</span><span class="n">choices</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">mark_safe</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> &lt;span&gt;</span><span class="si">%d</span><span class="s1">&lt;/span&gt;&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">count</span><span class="p">)))</span>
+                    <span class="k">for</span> <span class="n">val</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">counts</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">solr_field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Return corresponding solr field for search facet or order</span>
+<span class="sd">        input for this form.&#39;&#39;&#39;</span>
+        <span class="c1"># sort fields</span>
+        <span class="k">if</span> <span class="n">field</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sort_fields</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sort_fields</span><span class="p">[</span><span class="n">field</span><span class="p">]</span>
+
+        <span class="c1"># facets</span>
+        <span class="k">if</span> <span class="n">field</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">facet_fields</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">field</span>
+
+        <span class="k">if</span> <span class="n">field</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">solr_facet_fields</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="c1"># currently all are instance_field, but generate</span>
+            <span class="c1"># based on the dictionary in case that changes</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">solr_facet_fields</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">value</span> <span class="o">==</span> <span class="n">field</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">key</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">Derrida</a></h1>
+
+
+
+<p class="blurb">Django web application for "Derrida's Margins" CDH project</p>
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=Princeton-CDH&repo=derrida-django&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+    
+
+<p>
+<a href="https://travis-ci.org/Princeton-CDH/derrida-django">
+    <img
+        alt="https://secure.travis-ci.org/Princeton-CDH/derrida-django.svg?branch=master"
+        src="https://secure.travis-ci.org/Princeton-CDH/derrida-django.svg?branch=master"
+    />
+</a>
+</p>
+
+
+
+
+    
+
+<p>
+<a href="https://codecov.io/github/Princeton-CDH/derrida-django">
+    <img
+    alt="https://codecov.io/github/Princeton-CDH/derrida-django/coverage.svg?branch=master"
+    src="https://codecov.io/github/Princeton-CDH/derrida-django/coverage.svg?branch=master"
+    />
+</a>
+</p>
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../architecture.html">Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../codedocs.html">Code Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Change Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../deploynotes.html">Deploy and Upgrade notes</a></li>
+</ul>
+
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, CDH @ Princeton & Trustees of Princeton University.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

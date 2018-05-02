@@ -1,0 +1,611 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>sortedm2m.fields &#8212; Derrida 1.0.0 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for sortedm2m.fields</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="kn">import</span> <span class="nn">django</span>
+<span class="kn">from</span> <span class="nn">django.conf</span> <span class="k">import</span> <span class="n">settings</span>
+<span class="kn">from</span> <span class="nn">django.db</span> <span class="k">import</span> <span class="n">router</span>
+<span class="kn">from</span> <span class="nn">django.db</span> <span class="k">import</span> <span class="n">transaction</span>
+<span class="kn">from</span> <span class="nn">django.db</span> <span class="k">import</span> <span class="n">models</span>
+<span class="kn">from</span> <span class="nn">django.db.models</span> <span class="k">import</span> <span class="n">signals</span>
+<span class="kn">from</span> <span class="nn">django.db.models.fields.related</span> <span class="k">import</span> <span class="n">ManyToManyField</span> <span class="k">as</span> <span class="n">_ManyToManyField</span>
+<span class="kn">from</span> <span class="nn">django.db.models.fields.related</span> <span class="k">import</span> <span class="n">RECURSIVE_RELATIONSHIP_CONSTANT</span>
+<span class="kn">from</span> <span class="nn">django.utils</span> <span class="k">import</span> <span class="n">six</span>
+<span class="kn">from</span> <span class="nn">django.utils.functional</span> <span class="k">import</span> <span class="n">cached_property</span><span class="p">,</span> <span class="n">curry</span>
+
+<span class="kn">from</span> <span class="nn">.compat</span> <span class="k">import</span> <span class="n">create_forward_many_to_many_manager</span>
+<span class="kn">from</span> <span class="nn">.compat</span> <span class="k">import</span> <span class="n">get_foreignkey_field_kwargs</span>
+<span class="kn">from</span> <span class="nn">.compat</span> <span class="k">import</span> <span class="n">get_model_name</span><span class="p">,</span> <span class="n">get_rel</span><span class="p">,</span> <span class="n">get_rel_to</span><span class="p">,</span> <span class="n">add_lazy_relation</span>
+<span class="kn">from</span> <span class="nn">.forms</span> <span class="k">import</span> <span class="n">SortedMultipleChoiceField</span>
+
+<span class="n">SORT_VALUE_FIELD_NAME</span> <span class="o">=</span> <span class="s1">&#39;sort_value&#39;</span>
+
+
+<span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">transaction</span><span class="p">,</span> <span class="s1">&#39;atomic&#39;</span><span class="p">):</span>
+    <span class="n">atomic</span> <span class="o">=</span> <span class="n">transaction</span><span class="o">.</span><span class="n">atomic</span>
+<span class="c1"># Django 1.5 support</span>
+<span class="c1"># We mock the atomic context manager.</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="k">class</span> <span class="nc">atomic</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="k">pass</span>
+
+        <span class="k">def</span> <span class="nf">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">pass</span>
+
+        <span class="k">def</span> <span class="nf">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">exc_tb</span><span class="p">):</span>
+            <span class="k">pass</span>
+
+
+<span class="k">def</span> <span class="nf">create_sorted_many_related_manager</span><span class="p">(</span><span class="n">superclass</span><span class="p">,</span> <span class="n">rel</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="n">RelatedManager</span> <span class="o">=</span> <span class="n">create_forward_many_to_many_manager</span><span class="p">(</span>
+        <span class="n">superclass</span><span class="p">,</span> <span class="n">rel</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">class</span> <span class="nc">SortedRelatedManager</span><span class="p">(</span><span class="n">RelatedManager</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">get_queryset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="c1"># We use ``extra`` method here because we have no other access to</span>
+            <span class="c1"># the extra sorting field of the intermediary model. The fields</span>
+            <span class="c1"># are hidden for joins because we set ``auto_created`` on the</span>
+            <span class="c1"># intermediary&#39;s meta options.</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">instance</span><span class="o">.</span><span class="n">_prefetched_objects_cache</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">prefetch_cache_name</span><span class="p">]</span>
+            <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">KeyError</span><span class="p">):</span>
+                <span class="c1"># Django 1.5 support.</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">RelatedManager</span><span class="p">,</span> <span class="s1">&#39;get_queryset&#39;</span><span class="p">):</span>
+                    <span class="n">queryset</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">SortedRelatedManager</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_query_set</span><span class="p">()</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">queryset</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">SortedRelatedManager</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_queryset</span><span class="p">()</span>
+                <span class="k">return</span> <span class="n">queryset</span><span class="o">.</span><span class="n">extra</span><span class="p">(</span><span class="n">order_by</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">.</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                    <span class="n">rel</span><span class="o">.</span><span class="n">through</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">db_table</span><span class="p">,</span>
+                    <span class="n">rel</span><span class="o">.</span><span class="n">through</span><span class="o">.</span><span class="n">_sort_field_name</span><span class="p">,</span>
+                <span class="p">)])</span>
+
+        <span class="n">get_query_set</span> <span class="o">=</span> <span class="n">get_queryset</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">RelatedManager</span><span class="p">,</span> <span class="s1">&#39;_get_fk_val&#39;</span><span class="p">):</span>
+            <span class="nd">@property</span>
+            <span class="k">def</span> <span class="nf">_fk_val</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+                <span class="c1"># Django 1.5 support.</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;related_val&#39;</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pk_val</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">related_val</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">def</span> <span class="nf">get_prefetch_queryset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instances</span><span class="p">,</span> <span class="n">queryset</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+            <span class="c1"># Django 1.5 support. The method name changed since.</span>
+            <span class="k">if</span> <span class="n">django</span><span class="o">.</span><span class="n">VERSION</span> <span class="o">&lt;</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">):</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">SortedRelatedManager</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_prefetch_query_set</span><span class="p">(</span><span class="n">instances</span><span class="p">)</span>
+            <span class="c1"># Django 1.6 support. The queryset parameter was not supported.</span>
+            <span class="k">elif</span> <span class="n">django</span><span class="o">.</span><span class="n">VERSION</span> <span class="o">&lt;</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">7</span><span class="p">):</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">SortedRelatedManager</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_prefetch_queryset</span><span class="p">(</span><span class="n">instances</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">SortedRelatedManager</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_prefetch_queryset</span><span class="p">(</span><span class="n">instances</span><span class="p">,</span> <span class="n">queryset</span><span class="p">)</span>
+            <span class="n">queryset</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">queryset</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">extra_order_by</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">.</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                    <span class="n">rel</span><span class="o">.</span><span class="n">through</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">db_table</span><span class="p">,</span>
+                    <span class="n">rel</span><span class="o">.</span><span class="n">through</span><span class="o">.</span><span class="n">_sort_field_name</span><span class="p">,</span>
+                <span class="p">)]</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">queryset</span><span class="p">,)</span> <span class="o">+</span> <span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+
+        <span class="n">get_prefetch_query_set</span> <span class="o">=</span> <span class="n">get_prefetch_queryset</span>
+
+        <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">objs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="c1"># Choosing to clear first will ensure the order is maintained.</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;clear&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="nb">super</span><span class="p">(</span><span class="n">SortedRelatedManager</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">objs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="nb">set</span><span class="o">.</span><span class="n">alters_data</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">def</span> <span class="nf">_add_items</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_field_name</span><span class="p">,</span> <span class="n">target_field_name</span><span class="p">,</span> <span class="o">*</span><span class="n">objs</span><span class="p">):</span>
+            <span class="c1"># source_field_name: the PK fieldname in join table for the source object</span>
+            <span class="c1"># target_field_name: the PK fieldname in join table for the target object</span>
+            <span class="c1"># *objs - objects to add. Either object instances, or primary keys of object instances.</span>
+
+            <span class="c1"># If there aren&#39;t any objects, there is nothing to do.</span>
+            <span class="kn">from</span> <span class="nn">django.db.models</span> <span class="k">import</span> <span class="n">Max</span><span class="p">,</span> <span class="n">Model</span>
+            <span class="k">if</span> <span class="n">objs</span><span class="p">:</span>
+                <span class="c1"># Django uses a set here, we need to use a list to keep the</span>
+                <span class="c1"># correct ordering.</span>
+                <span class="n">new_ids</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">objs</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">):</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="n">router</span><span class="o">.</span><span class="n">allow_relation</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">instance</span><span class="p">):</span>
+                            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                                <span class="s1">&#39;Cannot add &quot;</span><span class="si">%r</span><span class="s1">&quot;: instance is on database &quot;</span><span class="si">%s</span><span class="s1">&quot;, value is on database &quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span> <span class="o">%</span>
+                                <span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">instance</span><span class="o">.</span><span class="n">_state</span><span class="o">.</span><span class="n">db</span><span class="p">,</span> <span class="n">obj</span><span class="o">.</span><span class="n">_state</span><span class="o">.</span><span class="n">db</span><span class="p">)</span>
+                            <span class="p">)</span>
+                        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_get_fk_val&#39;</span><span class="p">):</span>  <span class="c1"># Django&gt;=1.5</span>
+                            <span class="n">fk_val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_fk_val</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">target_field_name</span><span class="p">)</span>
+                            <span class="k">if</span> <span class="n">fk_val</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Cannot add &quot;</span><span class="si">%r</span><span class="s1">&quot;: the value for field &quot;</span><span class="si">%s</span><span class="s1">&quot; is None&#39;</span> <span class="o">%</span>
+                                                 <span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">target_field_name</span><span class="p">))</span>
+                            <span class="n">new_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_fk_val</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">target_field_name</span><span class="p">))</span>
+                        <span class="k">else</span><span class="p">:</span>  <span class="c1"># Django&lt;1.5</span>
+                            <span class="n">new_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">pk</span><span class="p">)</span>
+                    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">Model</span><span class="p">):</span>
+                        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                            <span class="s2">&quot;&#39;</span><span class="si">%s</span><span class="s2">&#39; instance expected, got </span><span class="si">%r</span><span class="s2">&quot;</span> <span class="o">%</span>
+                            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">object_name</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span>
+                        <span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">new_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+
+                <span class="n">db</span> <span class="o">=</span> <span class="n">router</span><span class="o">.</span><span class="n">db_for_write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">through</span><span class="p">,</span> <span class="n">instance</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">instance</span><span class="p">)</span>
+                <span class="n">manager</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">through</span><span class="o">.</span><span class="n">_default_manager</span><span class="o">.</span><span class="n">using</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
+                <span class="n">vals</span> <span class="o">=</span> <span class="p">(</span><span class="n">manager</span>
+                        <span class="o">.</span><span class="n">values_list</span><span class="p">(</span><span class="n">target_field_name</span><span class="p">,</span> <span class="n">flat</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                        <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="o">**</span><span class="p">{</span>
+                            <span class="n">source_field_name</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fk_val</span><span class="p">,</span>
+                            <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">__in&#39;</span> <span class="o">%</span> <span class="n">target_field_name</span><span class="p">:</span> <span class="n">new_ids</span><span class="p">,</span>
+                        <span class="p">}))</span>
+                <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">vals</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">new_ids</span><span class="p">:</span>
+                        <span class="n">new_ids</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+                <span class="n">_new_ids</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">pk</span> <span class="ow">in</span> <span class="n">new_ids</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">pk</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_new_ids</span><span class="p">:</span>
+                        <span class="n">_new_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pk</span><span class="p">)</span>
+                <span class="n">new_ids</span> <span class="o">=</span> <span class="n">_new_ids</span>
+                <span class="n">new_ids_set</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">new_ids</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">reverse</span> <span class="ow">or</span> <span class="n">source_field_name</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">source_field_name</span><span class="p">:</span>
+                    <span class="c1"># Don&#39;t send the signal when we are inserting the</span>
+                    <span class="c1"># duplicate data row for symmetrical reverse entries.</span>
+                    <span class="n">signals</span><span class="o">.</span><span class="n">m2m_changed</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">sender</span><span class="o">=</span><span class="n">rel</span><span class="o">.</span><span class="n">through</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;pre_add&#39;</span><span class="p">,</span>
+                        <span class="n">instance</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">instance</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">reverse</span><span class="p">,</span>
+                        <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">pk_set</span><span class="o">=</span><span class="n">new_ids_set</span><span class="p">,</span> <span class="n">using</span><span class="o">=</span><span class="n">db</span><span class="p">)</span>
+
+                <span class="c1"># Add the ones that aren&#39;t there already</span>
+                <span class="k">with</span> <span class="n">atomic</span><span class="p">(</span><span class="n">using</span><span class="o">=</span><span class="n">db</span><span class="p">):</span>
+                    <span class="n">fk_val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fk_val</span>
+                    <span class="n">source_queryset</span> <span class="o">=</span> <span class="n">manager</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">_id&#39;</span> <span class="o">%</span> <span class="n">source_field_name</span><span class="p">:</span> <span class="n">fk_val</span><span class="p">})</span>
+                    <span class="n">sort_field_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">through</span><span class="o">.</span><span class="n">_sort_field_name</span>
+                    <span class="n">sort_value_max</span> <span class="o">=</span> <span class="n">source_queryset</span><span class="o">.</span><span class="n">aggregate</span><span class="p">(</span><span class="nb">max</span><span class="o">=</span><span class="n">Max</span><span class="p">(</span><span class="n">sort_field_name</span><span class="p">))[</span><span class="s1">&#39;max&#39;</span><span class="p">]</span> <span class="ow">or</span> <span class="mi">0</span>
+
+                    <span class="n">manager</span><span class="o">.</span><span class="n">bulk_create</span><span class="p">([</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">through</span><span class="p">(</span><span class="o">**</span><span class="p">{</span>
+                            <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">_id&#39;</span> <span class="o">%</span> <span class="n">source_field_name</span><span class="p">:</span> <span class="n">fk_val</span><span class="p">,</span>
+                            <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">_id&#39;</span> <span class="o">%</span> <span class="n">target_field_name</span><span class="p">:</span> <span class="n">pk</span><span class="p">,</span>
+                            <span class="n">sort_field_name</span><span class="p">:</span> <span class="n">sort_value_max</span> <span class="o">+</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                        <span class="p">})</span>
+                        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">pk</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">new_ids</span><span class="p">)</span>
+                    <span class="p">])</span>
+
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">reverse</span> <span class="ow">or</span> <span class="n">source_field_name</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">source_field_name</span><span class="p">:</span>
+                    <span class="c1"># Don&#39;t send the signal when we are inserting the</span>
+                    <span class="c1"># duplicate data row for symmetrical reverse entries.</span>
+                    <span class="n">signals</span><span class="o">.</span><span class="n">m2m_changed</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">sender</span><span class="o">=</span><span class="n">rel</span><span class="o">.</span><span class="n">through</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;post_add&#39;</span><span class="p">,</span>
+                        <span class="n">instance</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">instance</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">reverse</span><span class="p">,</span>
+                        <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">pk_set</span><span class="o">=</span><span class="n">new_ids_set</span><span class="p">,</span> <span class="n">using</span><span class="o">=</span><span class="n">db</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">SortedRelatedManager</span>
+
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">django.db.models.fields.related_descriptors</span> <span class="k">import</span> <span class="n">ManyToManyDescriptor</span>
+
+    <span class="k">class</span> <span class="nc">SortedManyToManyDescriptor</span><span class="p">(</span><span class="n">ManyToManyDescriptor</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">):</span>
+            <span class="nb">super</span><span class="p">(</span><span class="n">SortedManyToManyDescriptor</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">remote_field</span><span class="p">)</span>
+
+        <span class="nd">@cached_property</span>
+        <span class="k">def</span> <span class="nf">related_manager_cls</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="n">model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rel</span><span class="o">.</span><span class="n">model</span>
+            <span class="k">return</span> <span class="n">create_sorted_many_related_manager</span><span class="p">(</span>
+                <span class="n">model</span><span class="o">.</span><span class="n">_default_manager</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">rel</span><span class="p">,</span>
+                <span class="c1"># This is the new `reverse` argument (which ironically should</span>
+                <span class="c1"># be False)</span>
+                <span class="n">reverse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="p">)</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="c1"># Django 1.8 support</span>
+    <span class="kn">from</span> <span class="nn">django.db.models.fields.related</span> <span class="k">import</span> <span class="n">ReverseManyRelatedObjectsDescriptor</span>
+
+    <span class="k">class</span> <span class="nc">SortedManyToManyDescriptor</span><span class="p">(</span><span class="n">ReverseManyRelatedObjectsDescriptor</span><span class="p">):</span>
+        <span class="nd">@cached_property</span>
+        <span class="k">def</span> <span class="nf">related_manager_cls</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">create_sorted_many_related_manager</span><span class="p">(</span>
+                <span class="n">get_rel_to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="p">)</span><span class="o">.</span><span class="n">_default_manager</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span>
+                <span class="n">get_rel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="p">))</span>
+
+
+<span class="k">class</span> <span class="nc">SortedManyToManyField</span><span class="p">(</span><span class="n">_ManyToManyField</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Providing a many to many relation that remembers the order of related</span>
+<span class="sd">    objects.</span>
+
+<span class="sd">    Accept a boolean ``sorted`` attribute which specifies if relation is</span>
+<span class="sd">    ordered or not. Default is set to ``True``. If ``sorted`` is set to</span>
+<span class="sd">    ``False`` the field will behave exactly like django&#39;s ``ManyToManyField``.</span>
+
+<span class="sd">    Accept a class ``base_class`` attribute which specifies the base class of</span>
+<span class="sd">    the intermediate model. It allows to customize the intermediate model.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">to</span><span class="p">,</span> <span class="nb">sorted</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">base_class</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sorted</span> <span class="o">=</span> <span class="nb">sorted</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sort_value_field_name</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span>
+            <span class="s1">&#39;sort_value_field_name&#39;</span><span class="p">,</span>
+            <span class="n">SORT_VALUE_FIELD_NAME</span><span class="p">)</span>
+
+        <span class="c1"># Base class of through model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">base_class</span> <span class="o">=</span> <span class="n">base_class</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">SortedManyToManyField</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">to</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sorted</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">help_text</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;help_text&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">deconstruct</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># We have to persist custom added options in the ``kwargs``</span>
+        <span class="c1"># dictionary. For readability only non-default values are stored.</span>
+        <span class="n">name</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">SortedManyToManyField</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">deconstruct</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sort_value_field_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">SORT_VALUE_FIELD_NAME</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;sort_value_field_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sort_value_field_name</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sorted</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;sorted&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sorted</span>
+        <span class="k">return</span> <span class="n">name</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span>
+
+    <span class="k">def</span> <span class="nf">contribute_to_class</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">sorted</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">SortedManyToManyField</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">contribute_to_class</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="c1"># To support multiple relations to self, it&#39;s useful to have a non-None</span>
+        <span class="c1"># related name on symmetrical relations for internal reasons. The</span>
+        <span class="c1"># concept doesn&#39;t make a lot of sense externally (&quot;you want me to</span>
+        <span class="c1"># specify *what* on my non-reversible relation?!&quot;), so we set it up</span>
+        <span class="c1"># automatically. The funky name reduces the chance of an accidental</span>
+        <span class="c1"># clash.</span>
+        <span class="n">rel</span> <span class="o">=</span> <span class="n">get_rel</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">rel_to</span> <span class="o">=</span> <span class="n">get_rel_to</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">rel</span><span class="o">.</span><span class="n">symmetrical</span> <span class="ow">and</span> <span class="p">(</span><span class="n">rel_to</span> <span class="o">==</span> <span class="s2">&quot;self&quot;</span> <span class="ow">or</span> <span class="n">rel_to</span> <span class="o">==</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">object_name</span><span class="p">):</span>
+            <span class="n">rel</span><span class="o">.</span><span class="n">related_name</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">_rel_+&quot;</span> <span class="o">%</span> <span class="n">name</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">_ManyToManyField</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">contribute_to_class</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="c1"># The intermediate m2m model is not auto created if:</span>
+        <span class="c1">#  1) There is a manually specified intermediate, or</span>
+        <span class="c1">#  2) The class owning the m2m field is abstract.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">rel</span><span class="o">.</span><span class="n">through</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">abstract</span><span class="p">:</span>
+            <span class="n">rel</span><span class="o">.</span><span class="n">through</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_intermediate_model</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
+
+        <span class="c1"># Add the descriptor for the m2m relation</span>
+        <span class="nb">setattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">SortedManyToManyDescriptor</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+
+        <span class="c1"># Set up the accessor for the m2m table name for the relation</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">m2m_db_table</span> <span class="o">=</span> <span class="n">curry</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_m2m_db_table</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_meta</span><span class="p">)</span>
+
+        <span class="c1"># Populate some necessary rel arguments so that cross-app relations</span>
+        <span class="c1"># work correctly.</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rel</span><span class="o">.</span><span class="n">through</span><span class="p">,</span> <span class="n">six</span><span class="o">.</span><span class="n">string_types</span><span class="p">):</span>
+            <span class="k">def</span> <span class="nf">resolve_through_model</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="bp">cls</span><span class="p">):</span>
+                <span class="n">get_rel</span><span class="p">(</span><span class="n">field</span><span class="p">)</span><span class="o">.</span><span class="n">through</span> <span class="o">=</span> <span class="n">model</span>
+            <span class="n">add_lazy_relation</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">rel</span><span class="o">.</span><span class="n">through</span><span class="p">,</span> <span class="n">resolve_through_model</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">_meta</span><span class="p">,</span> <span class="s1">&#39;duplicate_targets&#39;</span><span class="p">):</span>  <span class="c1"># Django&lt;1.5</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rel_to</span><span class="p">,</span> <span class="n">six</span><span class="o">.</span><span class="n">string_types</span><span class="p">):</span>
+                <span class="n">target</span> <span class="o">=</span> <span class="n">rel_to</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">target</span> <span class="o">=</span> <span class="n">rel_to</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">db_table</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">duplicate_targets</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="s2">&quot;m2m&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get_internal_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;ManyToManyField&#39;</span>
+
+    <span class="k">def</span> <span class="nf">formfield</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">defaults</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sorted</span><span class="p">:</span>
+            <span class="n">defaults</span><span class="p">[</span><span class="s1">&#39;form_class&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">SortedMultipleChoiceField</span>
+        <span class="n">defaults</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">SortedManyToManyField</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">formfield</span><span class="p">(</span><span class="o">**</span><span class="n">defaults</span><span class="p">)</span>
+
+    <span class="c1">###############################</span>
+    <span class="c1"># Intermediate Model Creation #</span>
+    <span class="c1">###############################</span>
+
+    <span class="k">def</span> <span class="nf">get_intermediate_model_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">klass</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">_</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">klass</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">object_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get_intermediate_model_meta_class</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">klass</span><span class="p">,</span> <span class="n">from_field_name</span><span class="p">,</span>
+                                          <span class="n">to_field_name</span><span class="p">,</span>
+                                          <span class="n">sort_value_field_name</span><span class="p">):</span>
+        <span class="n">managed</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">to_model</span> <span class="o">=</span> <span class="n">get_rel_to</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">to_model</span><span class="p">,</span> <span class="n">six</span><span class="o">.</span><span class="n">string_types</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">to_model</span> <span class="o">!=</span> <span class="n">RECURSIVE_RELATIONSHIP_CONSTANT</span><span class="p">:</span>
+                <span class="k">def</span> <span class="nf">set_managed</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="bp">cls</span><span class="p">):</span>
+                    <span class="n">get_rel</span><span class="p">(</span><span class="n">field</span><span class="p">)</span><span class="o">.</span><span class="n">through</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">managed</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">managed</span> <span class="ow">or</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">managed</span>
+                <span class="n">add_lazy_relation</span><span class="p">(</span><span class="n">klass</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">to_model</span><span class="p">,</span> <span class="n">set_managed</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">managed</span> <span class="o">=</span> <span class="n">klass</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">managed</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">managed</span> <span class="o">=</span> <span class="n">klass</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">managed</span> <span class="ow">or</span> <span class="n">to_model</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">managed</span>
+
+        <span class="n">options</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;db_table&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_m2m_db_table</span><span class="p">(</span><span class="n">klass</span><span class="o">.</span><span class="n">_meta</span><span class="p">),</span>
+            <span class="s1">&#39;managed&#39;</span><span class="p">:</span> <span class="n">managed</span><span class="p">,</span>
+            <span class="s1">&#39;auto_created&#39;</span><span class="p">:</span> <span class="n">klass</span><span class="p">,</span>
+            <span class="s1">&#39;app_label&#39;</span><span class="p">:</span> <span class="n">klass</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">app_label</span><span class="p">,</span>
+            <span class="s1">&#39;db_tablespace&#39;</span><span class="p">:</span> <span class="n">klass</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">db_tablespace</span><span class="p">,</span>
+            <span class="s1">&#39;unique_together&#39;</span><span class="p">:</span> <span class="p">((</span><span class="n">from_field_name</span><span class="p">,</span> <span class="n">to_field_name</span><span class="p">),),</span>
+            <span class="s1">&#39;ordering&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">sort_value_field_name</span><span class="p">,),</span>
+            <span class="s1">&#39;verbose_name&#39;</span><span class="p">:</span> <span class="s1">&#39;</span><span class="si">%(from)s</span><span class="s1">-</span><span class="si">%(to)s</span><span class="s1"> relationship&#39;</span> <span class="o">%</span> <span class="p">{</span><span class="s1">&#39;from&#39;</span><span class="p">:</span> <span class="n">from_field_name</span><span class="p">,</span> <span class="s1">&#39;to&#39;</span><span class="p">:</span> <span class="n">to_field_name</span><span class="p">},</span>
+            <span class="s1">&#39;verbose_name_plural&#39;</span><span class="p">:</span> <span class="s1">&#39;</span><span class="si">%(from)s</span><span class="s1">-</span><span class="si">%(to)s</span><span class="s1"> relationships&#39;</span> <span class="o">%</span> <span class="p">{</span><span class="s1">&#39;from&#39;</span><span class="p">:</span> <span class="n">from_field_name</span><span class="p">,</span> <span class="s1">&#39;to&#39;</span><span class="p">:</span> <span class="n">to_field_name</span><span class="p">},</span>
+        <span class="p">}</span>
+        <span class="c1"># Django 1.6 support.</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">_meta</span><span class="p">,</span> <span class="s1">&#39;apps&#39;</span><span class="p">):</span>
+            <span class="n">options</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
+                <span class="s1">&#39;apps&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">apps</span><span class="p">,</span>
+            <span class="p">})</span>
+        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="s1">&#39;Meta&#39;</span><span class="p">),</span> <span class="p">(</span><span class="nb">object</span><span class="p">,),</span> <span class="n">options</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get_rel_to_model_and_object_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">klass</span><span class="p">):</span>
+        <span class="n">rel_to</span> <span class="o">=</span> <span class="n">get_rel_to</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rel_to</span><span class="p">,</span> <span class="n">six</span><span class="o">.</span><span class="n">string_types</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">rel_to</span> <span class="o">!=</span> <span class="n">RECURSIVE_RELATIONSHIP_CONSTANT</span><span class="p">:</span>
+                <span class="n">to_model</span> <span class="o">=</span> <span class="n">rel_to</span>
+                <span class="n">to_object_name</span> <span class="o">=</span> <span class="n">to_model</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">to_model</span> <span class="o">=</span> <span class="n">klass</span>
+                <span class="n">to_object_name</span> <span class="o">=</span> <span class="n">to_model</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">object_name</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">to_model</span> <span class="o">=</span> <span class="n">rel_to</span>
+            <span class="n">to_object_name</span> <span class="o">=</span> <span class="n">to_model</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">object_name</span>
+        <span class="k">return</span> <span class="n">to_model</span><span class="p">,</span> <span class="n">to_object_name</span>
+
+    <span class="k">def</span> <span class="nf">get_intermediate_model_sort_value_field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">klass</span><span class="p">):</span>
+        <span class="n">field_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sort_value_field_name</span>
+        <span class="n">field</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">IntegerField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">field_name</span><span class="p">,</span> <span class="n">field</span>
+
+    <span class="k">def</span> <span class="nf">get_intermediate_model_from_field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">klass</span><span class="p">):</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_intermediate_model_name</span><span class="p">(</span><span class="n">klass</span><span class="p">)</span>
+
+        <span class="n">to_model</span><span class="p">,</span> <span class="n">to_object_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_rel_to_model_and_object_name</span><span class="p">(</span><span class="n">klass</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">get_rel_to</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="n">RECURSIVE_RELATIONSHIP_CONSTANT</span> <span class="ow">or</span> <span class="n">to_object_name</span> <span class="o">==</span> <span class="n">klass</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">object_name</span><span class="p">:</span>
+            <span class="n">field_name</span> <span class="o">=</span> <span class="s1">&#39;from_</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">to_object_name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">field_name</span> <span class="o">=</span> <span class="n">get_model_name</span><span class="p">(</span><span class="n">klass</span><span class="p">)</span>
+
+        <span class="n">field</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">klass</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">+&#39;</span> <span class="o">%</span> <span class="n">name</span><span class="p">,</span>
+                                  <span class="o">**</span><span class="n">get_foreignkey_field_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">field_name</span><span class="p">,</span> <span class="n">field</span>
+
+    <span class="k">def</span> <span class="nf">get_intermediate_model_to_field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">klass</span><span class="p">):</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_intermediate_model_name</span><span class="p">(</span><span class="n">klass</span><span class="p">)</span>
+
+        <span class="n">to_model</span><span class="p">,</span> <span class="n">to_object_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_rel_to_model_and_object_name</span><span class="p">(</span><span class="n">klass</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">get_rel_to</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="n">RECURSIVE_RELATIONSHIP_CONSTANT</span> <span class="ow">or</span> <span class="n">to_object_name</span> <span class="o">==</span> <span class="n">klass</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">object_name</span><span class="p">:</span>
+            <span class="n">field_name</span> <span class="o">=</span> <span class="s1">&#39;to_</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">to_object_name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">field_name</span> <span class="o">=</span> <span class="n">to_object_name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+        <span class="n">field</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">to_model</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">+&#39;</span> <span class="o">%</span> <span class="n">name</span><span class="p">,</span>
+                                  <span class="o">**</span><span class="n">get_foreignkey_field_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">field_name</span><span class="p">,</span> <span class="n">field</span>
+
+    <span class="k">def</span> <span class="nf">create_intermediate_model_from_attrs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">klass</span><span class="p">,</span> <span class="n">attrs</span><span class="p">):</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_intermediate_model_name</span><span class="p">(</span><span class="n">klass</span><span class="p">)</span>
+        <span class="n">base_classes</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_class</span><span class="p">,</span> <span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_class</span> <span class="k">else</span> <span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">,)</span>
+
+        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">name</span><span class="p">),</span> <span class="n">base_classes</span><span class="p">,</span> <span class="n">attrs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">create_intermediate_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">klass</span><span class="p">):</span>
+        <span class="c1"># Construct and return the new class.</span>
+        <span class="n">from_field_name</span><span class="p">,</span> <span class="n">from_field</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_intermediate_model_from_field</span><span class="p">(</span><span class="n">klass</span><span class="p">)</span>
+        <span class="n">to_field_name</span><span class="p">,</span> <span class="n">to_field</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_intermediate_model_to_field</span><span class="p">(</span><span class="n">klass</span><span class="p">)</span>
+        <span class="n">sort_value_field_name</span><span class="p">,</span> <span class="n">sort_value_field</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_intermediate_model_sort_value_field</span><span class="p">(</span><span class="n">klass</span><span class="p">)</span>
+        <span class="n">meta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_intermediate_model_meta_class</span><span class="p">(</span><span class="n">klass</span><span class="p">,</span>
+                                                      <span class="n">from_field_name</span><span class="p">,</span>
+                                                      <span class="n">to_field_name</span><span class="p">,</span>
+                                                      <span class="n">sort_value_field_name</span><span class="p">)</span>
+
+        <span class="n">attrs</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;Meta&#39;</span><span class="p">:</span> <span class="n">meta</span><span class="p">,</span>
+            <span class="s1">&#39;__module__&#39;</span><span class="p">:</span> <span class="n">klass</span><span class="o">.</span><span class="vm">__module__</span><span class="p">,</span>
+            <span class="n">from_field_name</span><span class="p">:</span> <span class="n">from_field</span><span class="p">,</span>
+            <span class="n">to_field_name</span><span class="p">:</span> <span class="n">to_field</span><span class="p">,</span>
+            <span class="n">sort_value_field_name</span><span class="p">:</span> <span class="n">sort_value_field</span><span class="p">,</span>
+            <span class="s1">&#39;_sort_field_name&#39;</span><span class="p">:</span> <span class="n">sort_value_field_name</span><span class="p">,</span>
+            <span class="s1">&#39;_from_field_name&#39;</span><span class="p">:</span> <span class="n">from_field_name</span><span class="p">,</span>
+            <span class="s1">&#39;_to_field_name&#39;</span><span class="p">:</span> <span class="n">to_field_name</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_intermediate_model_from_attrs</span><span class="p">(</span><span class="n">klass</span><span class="p">,</span> <span class="n">attrs</span><span class="p">)</span>
+
+
+<span class="c1"># Add introspection rules for South database migrations</span>
+<span class="c1"># See http://south.aeracode.org/docs/customfields.html</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">south</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">south</span> <span class="o">=</span> <span class="kc">None</span>
+
+
+<span class="k">if</span> <span class="n">south</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="s1">&#39;south&#39;</span> <span class="ow">in</span> <span class="n">settings</span><span class="o">.</span><span class="n">INSTALLED_APPS</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">south.modelsinspector</span> <span class="k">import</span> <span class="n">add_introspection_rules</span>
+    <span class="n">add_introspection_rules</span><span class="p">(</span>
+        <span class="p">[(</span>
+            <span class="p">(</span><span class="n">SortedManyToManyField</span><span class="p">,),</span>
+            <span class="p">[],</span>
+            <span class="p">{</span><span class="s2">&quot;sorted&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;sorted&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}]},</span>
+        <span class="p">)],</span>
+        <span class="p">[</span><span class="sa">r</span><span class="s1">&#39;^sortedm2m\.fields\.SortedManyToManyField&#39;</span><span class="p">]</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Monkeypatch South M2M actions to create the sorted through model.</span>
+    <span class="c1"># FIXME: This doesn&#39;t detect if you changed the sorted argument to the field.</span>
+    <span class="kn">import</span> <span class="nn">south.creator.actions</span>
+    <span class="kn">from</span> <span class="nn">south.creator.freezer</span> <span class="k">import</span> <span class="n">model_key</span>
+
+    <span class="k">class</span> <span class="nc">AddM2M</span><span class="p">(</span><span class="n">south</span><span class="o">.</span><span class="n">creator</span><span class="o">.</span><span class="n">actions</span><span class="o">.</span><span class="n">AddM2M</span><span class="p">):</span>
+        <span class="n">SORTED_FORWARDS_TEMPLATE</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">        # Adding SortedM2M table for field </span><span class="si">%(field_name)s</span><span class="s1"> on &#39;</span><span class="si">%(model_name)s</span><span class="s1">&#39;</span>
+<span class="s1">        db.create_table(</span><span class="si">%(table_name)r</span><span class="s1">, (</span>
+<span class="s1">            (&#39;id&#39;, models.AutoField(verbose_name=&#39;ID&#39;, primary_key=True, auto_created=True)),</span>
+<span class="s1">            (</span><span class="si">%(left_field)r</span><span class="s1">, models.ForeignKey(orm[</span><span class="si">%(left_model_key)r</span><span class="s1">], null=False)),</span>
+<span class="s1">            (</span><span class="si">%(right_field)r</span><span class="s1">, models.ForeignKey(orm[</span><span class="si">%(right_model_key)r</span><span class="s1">], null=False)),</span>
+<span class="s1">            (</span><span class="si">%(sort_field)r</span><span class="s1">, models.IntegerField())</span>
+<span class="s1">        ))</span>
+<span class="s1">        db.create_unique(</span><span class="si">%(table_name)r</span><span class="s1">, [</span><span class="si">%(left_column)r</span><span class="s1">, </span><span class="si">%(right_column)r</span><span class="s1">])&#39;&#39;&#39;</span>
+
+        <span class="k">def</span> <span class="nf">console_line</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="p">,</span> <span class="n">SortedManyToManyField</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="o">.</span><span class="n">sorted</span><span class="p">:</span>
+                <span class="k">return</span> <span class="s2">&quot; + Added SortedM2M table for </span><span class="si">%s</span><span class="s2"> on </span><span class="si">%s</span><span class="s2">.</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">app_label</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">object_name</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">AddM2M</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">console_line</span><span class="p">()</span>
+
+        <span class="k">def</span> <span class="nf">forwards_code</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="p">,</span> <span class="n">SortedManyToManyField</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="o">.</span><span class="n">sorted</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">SORTED_FORWARDS_TEMPLATE</span> <span class="o">%</span> <span class="p">{</span>
+                    <span class="s2">&quot;model_name&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">object_name</span><span class="p">,</span>
+                    <span class="s2">&quot;field_name&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                    <span class="s2">&quot;table_name&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="o">.</span><span class="n">m2m_db_table</span><span class="p">(),</span>
+                    <span class="s2">&quot;left_field&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="o">.</span><span class="n">m2m_column_name</span><span class="p">()[:</span><span class="o">-</span><span class="mi">3</span><span class="p">],</span> <span class="c1"># Remove the _id part</span>
+                    <span class="s2">&quot;left_column&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="o">.</span><span class="n">m2m_column_name</span><span class="p">(),</span>
+                    <span class="s2">&quot;left_model_key&quot;</span><span class="p">:</span> <span class="n">model_key</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">),</span>
+                    <span class="s2">&quot;right_field&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="o">.</span><span class="n">m2m_reverse_name</span><span class="p">()[:</span><span class="o">-</span><span class="mi">3</span><span class="p">],</span> <span class="c1"># Remove the _id part</span>
+                    <span class="s2">&quot;right_column&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="o">.</span><span class="n">m2m_reverse_name</span><span class="p">(),</span>
+                    <span class="s2">&quot;right_model_key&quot;</span><span class="p">:</span> <span class="n">model_key</span><span class="p">(</span><span class="n">get_rel_to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="p">)),</span>
+                    <span class="s2">&quot;sort_field&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="o">.</span><span class="n">sort_value_field_name</span><span class="p">,</span>
+                <span class="p">}</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">AddM2M</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">forwards_code</span><span class="p">()</span>
+
+    <span class="k">class</span> <span class="nc">DeleteM2M</span><span class="p">(</span><span class="n">AddM2M</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">console_line</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">return</span> <span class="s2">&quot; - Deleted M2M table for </span><span class="si">%s</span><span class="s2"> on </span><span class="si">%s</span><span class="s2">.</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">app_label</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">object_name</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">forwards_code</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">AddM2M</span><span class="o">.</span><span class="n">backwards_code</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">backwards_code</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">AddM2M</span><span class="o">.</span><span class="n">forwards_code</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="n">south</span><span class="o">.</span><span class="n">creator</span><span class="o">.</span><span class="n">actions</span><span class="o">.</span><span class="n">AddM2M</span> <span class="o">=</span> <span class="n">AddM2M</span>
+    <span class="n">south</span><span class="o">.</span><span class="n">creator</span><span class="o">.</span><span class="n">actions</span><span class="o">.</span><span class="n">DeleteM2M</span> <span class="o">=</span> <span class="n">DeleteM2M</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">Derrida</a></h1>
+
+
+
+<p class="blurb">Django web application for "Derrida's Margins" CDH project</p>
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=Princeton-CDH&repo=derrida-django&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+    
+
+<p>
+<a href="https://travis-ci.org/Princeton-CDH/derrida-django">
+    <img
+        alt="https://secure.travis-ci.org/Princeton-CDH/derrida-django.svg?branch=master"
+        src="https://secure.travis-ci.org/Princeton-CDH/derrida-django.svg?branch=master"
+    />
+</a>
+</p>
+
+
+
+
+    
+
+<p>
+<a href="https://codecov.io/github/Princeton-CDH/derrida-django">
+    <img
+    alt="https://codecov.io/github/Princeton-CDH/derrida-django/coverage.svg?branch=master"
+    src="https://codecov.io/github/Princeton-CDH/derrida-django/coverage.svg?branch=master"
+    />
+</a>
+</p>
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../architecture.html">Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../codedocs.html">Code Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Change Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../deploynotes.html">Deploy and Upgrade notes</a></li>
+</ul>
+
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, CDH @ Princeton & Trustees of Princeton University.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
