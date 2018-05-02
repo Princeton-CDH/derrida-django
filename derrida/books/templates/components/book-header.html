@@ -15,7 +15,8 @@ object for accessing properties to render.
 {% else %}
 <span class="item-header__image img--placeholder"></span>
 {% endif %}
-<h1 class="item-title">{{ book.display_title }}</h1>
+    {# use language code for book title if we know primary language (assumes title is in primary language) #}
+<h1 class="item-title" {% if book.primary_language %}lang="{{ book.primary_language.code }}"{% endif %}>{{ book.display_title }}</h1>
 <p class="item-author">
   {% for author in book.work.authors.all %}
     {{ author.firstname_last }}{% if not forloop.last %}; {% endif %}
