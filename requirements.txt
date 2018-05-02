@@ -10,14 +10,13 @@ django-sortedm2m
 attrdict
 unidecode
 pucas>=0.5
-# unreleased py3 piffle currently needs to be required explicitly
-git+https://github.com/Princeton-CDH/piffle.git@develop#egg=piffle
-git+https://github.com/Princeton-CDH/djiffy.git@develop#egg=djiffy
+piffle>=0.3
+djiffy>=0.4.1
 annotator_store>=0.6
 viapy
-#django-haystack
+django-haystack>=2.7
 # haystack from github required for django 1.11 support; should be 2.7 when released
-git+https://github.com/django-haystack/django-haystack.git@master#egg=django-haystack
+#git+https://github.com/django-haystack/django-haystack.git@master#egg=django-haystack
 pysolr
 django-widget-tweaks
 django-markdownify
