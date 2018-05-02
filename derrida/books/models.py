@@ -412,6 +412,29 @@ class Instance(Notable):
     is_digitized.admin_order_field = 'digital_edition'
     is_digitized.boolean = True
 
+    def primary_language(self):
+        '''Primary :class:`Language` for this work instance.  Use only
+        language or primary language for the instance if available; falls
+        back to only or primary language for the associated work.'''
+
+        langs = self.languages.all()
+        # if instance has only one language, use that
+        # (whether or not marked as primary)
+        if langs.exists():
+            # if more than one, filter to just primary
+            if langs.count() > 1:
+                langs = langs.filter(instancelanguage__is_primary=True)
+
+        # otherwise, return language for the work
+        if not langs and self.work.languages.exists():
+            langs = self.work.languages.all()
+            # filter by primary if more than one
+            if langs.count() > 1:
+                langs = langs.filter(worklanguage__is_primary=True)
+
+        if langs:
+            return langs.first()
+
     @property
     def location(self):
         '''Location in Derrida's library (currently only available for

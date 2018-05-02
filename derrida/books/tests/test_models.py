@@ -318,7 +318,6 @@ class TestInstance(TestCase):
         emil_wk.authors.add(zizek)
         assert emil.generate_base_slug() == 'zizek-emile-ou-de-leducation'
 
-
     def test_generate_safe_slug(self):
         # should ignore itself when checking for duplicates
         la_vie = Instance.objects.get(work__short_title__contains="La vie")
@@ -347,7 +346,6 @@ class TestInstance(TestCase):
         assert la_vie3.generate_safe_slug() == '%s-E' % la_vie.generate_base_slug()
         # should also set copy value
         assert la_vie3.copy == 'E'
-
 
     def test_save(self):
         # on save, if empty slug, should set one with generate safe slug
@@ -626,6 +624,39 @@ class TestInstance(TestCase):
         # now check to get an empty set
         la_vie.refresh_from_db()
         assert len(la_vie.related_instances) == 0
+
+    def test_primary_language(self):
+        la_vie = Instance.objects.get(work__short_title__contains="La vie")
+
+        # no lang
+        assert not la_vie.primary_language()
+
+        lang_fr = Language.objects.get(name='French')
+        lang_ger = Language.objects.get(name='German')
+        lang_it = Language.objects.create(name='Italian')
+
+        # one language on instance, not marked primary; one work language
+        wklang = WorkLanguage.objects.create(language=lang_it, work=la_vie.work,
+            is_primary=False)
+        instlang = InstanceLanguage.objects.create(language=lang_fr, instance=la_vie,
+            is_primary=False)
+        assert la_vie.primary_language() == lang_fr
+
+        # multiple languages, one marked primary
+        instlang2 = InstanceLanguage.objects.create(language=lang_ger, instance=la_vie,
+            is_primary=True)
+        assert la_vie.primary_language() == lang_ger
+
+        # work language used as fallback if no instance languages
+        instlang.delete()
+        instlang2.delete()
+        # first work language used if only one
+        assert la_vie.primary_language() == lang_it
+        # primary work language used if set
+        wklang2 = WorkLanguage.objects.create(language=lang_fr, work=la_vie.work,
+            is_primary=True)
+        # primary work language used
+        assert la_vie.primary_language() == lang_fr
 
 
 class TestInstanceQuerySet(TestCase):
