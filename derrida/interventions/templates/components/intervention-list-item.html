@@ -22,8 +22,12 @@
     {% endif %}
     <p class="item__location">{{ intervention.annotated_page }}</p> {# NOTE: canvas labels still to be updated #}
     {# which for excerpt? both? #}
-    <p class="item__excerpt">{{ intervention.anchor_text|default:'' }}</p>
-    <p class="item__excerpt">{{ intervention.annotation_text|default:'' }}</p>
+    {% if intervention.anchor_text %}
+    <p class="item__excerpt" {% if intervention.anchor_text_lang %}lang="{{ intervention.anchor_text_lang }}"{% endif %}>{{ intervention.anchor_text|default:'' }}</p>
+    {% endif %}
+    {% if intervention.annotation_text %}
+    <p class="item__excerpt" {% if intervention.annotation_text_lang %}lang="{{ intervention.annotation_text_lang }}"{% endif %}>{{ intervention.annotation_text|default:'' }}</p>
+    {% endif %}
      {# TODO - corresponding citation logic #}
     {# <p class="item__citation">Cited in De la grammatologie  p. 401</p> #}
   </div>
