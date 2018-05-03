@@ -9,9 +9,11 @@
 
 {% block preview_meta %}
 {# override preview image for home page #}
-{% with page_meta_image='img/banner/derrida-banner-home-S@2x.png' %}
+{% with page_meta_image='img/banner/derrida-banner-home-S@2x.png' twitter_card='summary_large_image' %}
     {{ block.super }}
 {% endwith %}
+{# google site verification code for webmaster tools #}
+<meta name="google-site-verification" content="pS2kpksxg6JeC90IvA8BHVsFuK_6b7J_vARVLqqu7ck" />
 {% endblock %}
 
 {% block main %}
