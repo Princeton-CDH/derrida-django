@@ -233,8 +233,6 @@ class InstanceListView(ListView):
             'facets': facets,   # now includes ranges as facets.ranges
             'total': self.queryset.count(),
             'form': self.form,
-            # specify preview image for metadata
-            'page_meta_image': 'img/banner/derrida-banner-library-S@2x.png'
         })
         return context
 
@@ -367,8 +365,6 @@ class ReferenceListView(ListView):
             'facets': facets,
             'total': self.queryset.count(),
             'form': self.form,
-            # specify preview image for metadata
-            'page_meta_image': 'img/banner/derrida-banner-reference-S@2x.png'
         })
         return context
 
