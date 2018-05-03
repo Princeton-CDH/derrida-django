@@ -33,8 +33,10 @@
     <header>
         <h1>{% block title %}{{ page.title }}{% endblock %}
         </h1>
-      {# NOTE: description is usually redundant from the content and not useful here; disabling #}
-      {# <div class="lead">{% block lead %}{{ page.description }}{% endblock %}</div> #}
+      {# only display tagline if it is custom text #}
+      {% if not page.gen_description %}
+      <div class="lead">{% block lead %}{{ page.description }}{% endblock %}</div>
+      {% endif %}
     </header>
 
     {% block main %}{% endblock %}
