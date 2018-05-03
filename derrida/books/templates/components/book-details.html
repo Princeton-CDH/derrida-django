@@ -25,7 +25,7 @@ This template is only used on the details view for a book instance.
 
   <div class="item-term item-term--inline">
     <h3 class="item-term__label">Publication Year</h3>
-    <p class="item-term__value">{{ book.copyright_year }}</p>
+    <p class="item-term__value">{{ book.copyright_year|default:'' }}</p>
   </div>
 
   {% if book.languages.count %}
