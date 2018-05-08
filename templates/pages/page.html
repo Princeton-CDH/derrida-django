@@ -4,6 +4,10 @@
 
 {% block page-subtitle %}{{ page.meta_title }} ‖ {% endblock %}
 
+{# content pages should use the same layout as outwork post #}
+{% block page-context-id %}outwork-page{% endblock %}
+{% block header_class %}mdl-layout__header--transparent{% endblock %}
+
 {% block meta_keywords %}{% metablock %}
 {% keywords_for page as keywords %}
 {% for keyword in keywords %}
