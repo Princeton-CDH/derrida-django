@@ -29,6 +29,16 @@ contains the most recent release, and work in progress will be on the develop br
 Pull requests should be made against develop.
 
 
+License
+-------
+
+**derrida-django** is distributed under the Apache 2.0 License.
+
+©2018 Trustees of Princeton University.  Permission granted via
+Princeton Docket #18-3472-1 for distribution online under a standard Open Source
+license.  Ownership rights transferred to Rebecca Koeser provided software
+is distributed online via open source.
+
 Development instructions
 ------------------------
 
