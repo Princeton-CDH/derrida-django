@@ -15,18 +15,27 @@
   file:
     src: "{{ deploy }}"
     dest: "{{ install_root }}/current"
+    state: link
+- name: Register current symlink
+  stat:
+    path: "{{ install_root }}/current"
   register: current
 - name: If current path differs from previous current, update previous
   file:
-    src: "{{ previous.lnk_target }}"
+    src: "{{ previous.stat.lnk_target }}"
     dest: "{{ install_root }}/previous"
-  when: previous.stat.exists == True and previous.stat.lnk_target != current.stat.lnk_target
-- name: If previous does not exist, create it with current
-  # The logic here is that this would only occur on an initial deploy, and that
-  # in the future the previous stanza will ensure the links are set correctly.
+    state: link
+  when: previous.stat.exists == True and previous.stat.lnk_source != current.stat.lnk_source
+- name: Register there is now a previous symlink
+  stat:
+    path: "{{ install_root }}/previous"
+  register: previous
+- name: If previous did not exist (and therefore wasn't reset above), create it with current
+  # should only trigger on first run of deploy script
   file:
     src: "{{ deploy }}"
     dest: "{{ install_root }}/previous"
+    state: link
   when: previous.stat.exists == False
 - name: Set /var/www/ path to make live
   file:
