@@ -20,23 +20,18 @@
   file:
     src: "{{ previous.lnk_target }}"
     dest: "{{ install_root }}/previous"
-  when: previous.exists == True and previous.lnk_target != current_link.target
+  when: previous.stat.exists == True and previous.stat.lnk_target != current.stat.lnk_target
 - name: If previous does not exist, create it with current
   # The logic here is that this would only occur on an initial deploy, and that
   # in the future the previous stanza will ensure the links are set correctly.
   file:
     src: "{{ deploy }}"
     dest: "{{ install_root }}/previous"
-  when: previous.exists == False
+  when: previous.stat.exists == False
 - name: Set /var/www/ path to make live
   file:
     src: "{{ deploy }}"
     dest: "/var/www/{{ symlink }}"
-    state: link
-- name: Create courtesy symlink in /srv/www
-  file:
-    src: "{{ deploy }}"
-    dest: "{{ install_root }}/current"
     state: link
 
 # This makes sure that any server side settings that handle autoconfiguring
