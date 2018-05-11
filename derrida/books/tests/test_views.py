@@ -83,6 +83,15 @@ class TestInstanceViews(TestCase):
         response = self.client.get(detail_view_url)
         assert 'license_text' not in response.context
 
+        # fixture with edm_rights in manifest extra data
+        saussure = Instance.objects.get(slug__contains='saussure-cours-de-linguistique')
+        mockrequests.reset_mock()
+        response = self.client.get(saussure.get_absolute_url())
+        # license label from edm rights
+        assert response.context['license_text'] == 'In Copyright'
+        # no need to load externally when found in manifest data
+        mockrequests.get.assert_not_called()
+
 
     @pytest.mark.haystack
     def test_instance_list_view(self):

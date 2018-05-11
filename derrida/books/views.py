@@ -62,16 +62,30 @@ class InstanceDetailView(DetailView):
         '''Insert manifest license data into template context.'''
         context_data = super(InstanceDetailView, self).get_context_data()
         instance = context_data['object']
-        license_url = instance.digital_edition.license
-        if license_url:
-            data_url = license_url.split('?')[0].replace('vocab', 'data')
-            response = requests.get(data_url)
-            if response.status_code == 200:
-                # This should be safe for all rightsstatments.org
-                # prefLabels as they seem to be setting English as their
-                # default using @ notation.
-                context_data['license_text'] = \
-                    response.json()['prefLabel']['@value']
+        license_text = None
+        # PUL seeAlso data contains an "edm_rights" section with
+        # a label for the rights statement.  Use that if possible
+        for data in instance.digital_edition.extra_data.values():
+            if 'edm_rights' in data:
+                license_text = data['edm_rights']['pref_label']
+                break
+
+        # if license text not found, look up label based on license uri
+        if not license_text:
+            license_url = instance.digital_edition.license
+            if license_url:
+                # NOTE: url logic is specific to rightsstatements.org
+                data_url = license_url.replace('vocab', 'data')
+                response = requests.get(data_url)
+                if response.status_code == 200:
+                    # This should be safe for all rightsstatments.org
+                    # prefLabels as they seem to be setting English as their
+                    # default using @ notation.
+                    license_text = response.json()['prefLabel']['@value']
+
+        if license_text:
+            context_data['license_text'] = license_text
+
         return context_data
 
 
