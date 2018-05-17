@@ -27,9 +27,6 @@ sitemaps = {
 
 
 urlpatterns = [
-    # error pages - remove after testing
-    url(r'^404/$', mezzanine.core.views.page_not_found, ),
-    url(r'^500/$', mezzanine.core.views.server_error, ),
 
      url(r'^robots\.txt$', TemplateView.as_view(template_name='robots.txt',
         content_type='text/plain')),
