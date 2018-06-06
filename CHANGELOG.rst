@@ -3,6 +3,13 @@
 CHANGELOG
 =========
 
+1.0.1
+-----
+
+* bugfix: use license text label from local manifest data if possible;
+  avoids issue with current logic for retrieving labels from
+  rightsstatements.org causing a 500 error.
+
 1.0
 ---
 
