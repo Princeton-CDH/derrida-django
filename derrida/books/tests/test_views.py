@@ -33,8 +33,7 @@ USE_TEST_HAYSTACK = override_settings(
 class TestInstanceViews(TestCase):
     fixtures = ['test_instances.json']
 
-    @patch('derrida.books.views.requests')
-    def test_instance_detail_view(self, mockrequests):
+    def test_instance_detail_view(self):
         # get an instance of la_vie
         la_vie = Instance.objects.filter(work__primary_title__icontains='la vie').first()
         # pass its pk to detail view
@@ -56,41 +55,12 @@ class TestInstanceViews(TestCase):
         assert 'instance' in response.context
         # it should be the copy of la_vie we looked up
         assert response.context['instance'] == la_vie
-        # license lookup not called because there is no license info
-        assert not mockrequests.called
-
-        # add license info to manifest
-        manif.extra_data.update({
-            'license': 'http://rightstatements.org/vocab/FOO/v1/',
-        })
-        manif.save()
-        # mock a response from requests with a JSON-LD snippet
-        # and a successful response code
-        mockresponse = Mock()
-        mockrequests.get.return_value = mockresponse
-        mockresponse.json.return_value = {
-            'prefLabel': {'@value': 'Foo license'}
-        }
-        mockresponse.status_code = 200
-        response = self.client.get(detail_view_url)
-        mockrequests.get.assert_called_with('http://rightstatements.org/data/FOO/v1/')
-        # license text is in context
-        assert response.context['license_text'] == 'Foo license'
-        # the alt text exists somewhere in the template
-        self.assertContains(response, 'alt="Foo license"')
-        # an error on license lookup causes the license not to be applied
-        mockresponse.status_code = 403
-        response = self.client.get(detail_view_url)
-        assert 'license_text' not in response.context
 
         # fixture with edm_rights in manifest extra data
         saussure = Instance.objects.get(slug__contains='saussure-cours-de-linguistique')
-        mockrequests.reset_mock()
         response = self.client.get(saussure.get_absolute_url())
-        # license label from edm rights
-        assert response.context['license_text'] == 'In Copyright'
-        # no need to load externally when found in manifest data
-        mockrequests.get.assert_not_called()
+        # license label from edm rights should be set in alt text
+        self.assertContains(response, 'alt="In Copyright"')
 
 
     @pytest.mark.haystack
