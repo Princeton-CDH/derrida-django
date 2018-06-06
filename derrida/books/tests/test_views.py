@@ -953,6 +953,13 @@ class TestCanvasImageView(TestCase):
         assert str(imgurl) == \
             str(cover.image.size(height=canvasimgview.LARGE_HEIGHT * 2))
 
+        # work instance with no digital edition should 404
+        item.digital_edition = None
+        item.save()
+        canvasimgview.kwargs = {'slug': item.slug, 'short_id': 'default'}
+        with pytest.raises(Http404):
+            canvasimgview.get_proxy_url(mode='smthumb')
+
     # TODO: test proxyview logic in preserving headers, rewriting
     # iiif id to local url, etc
 

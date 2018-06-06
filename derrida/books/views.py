@@ -677,7 +677,14 @@ class CanvasImage(ProxyView):
         '''
         Return a proxy url for client browsers to access IIIF images from.
         '''
+
         instance = get_object_or_404(Instance, slug=self.kwargs['slug'])
+
+        # if instance has no digital edition associated, there are
+        # no images to be found
+        if not instance.digital_edition:
+            raise Http404
+
         canvas_id = self.kwargs.get('short_id', None)
         if canvas_id and canvas_id != 'default':
             canvas = instance.images() \
