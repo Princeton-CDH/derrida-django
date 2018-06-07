@@ -3,9 +3,9 @@
   remote_user: deploy
   # Set environment to use scl rh-python35
   environment:
-    PATH: '/opt/rh/rh-python35/root/usr/bin/:/opt/rh/rh-nodejs6/root/usr/bin:{{ ansible_env.PATH | default("") }}'
-    LD_LIBRARY_PATH: '/opt/rh/rh-python35/root/usr/lib64:/opt/rh/rh-nodejs6/root/usr/lib64:{{ ansible_env.LD_LIBRARY_PATH | default("") }}'
-    PYTHONPATH: '/opt/rh/rh-nodejs6/root/usr/lib/python2.7/site-packages:{{ ansible_env.PYTHONPATH | default("") }}'
+    PATH: '/opt/rh/rh-python35/root/usr/bin/:/opt/rh/rh-nodejs6/root/usr/bin:{{ ansible_env.PATH }}'
+    LD_LIBRARY_PATH: '/opt/rh/rh-python35/root/usr/lib64:/opt/rh/rh-nodejs6/root/usr/lib64'
+    PYTHONPATH: '/opt/rh/rh-nodejs6/root/usr/lib/python2.7/site-packages'
   roles:
       # Creates repo variable names and builds repo
       - projectrepo

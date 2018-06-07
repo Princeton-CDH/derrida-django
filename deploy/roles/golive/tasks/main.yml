@@ -50,8 +50,8 @@
 # Both this and the command below it use the command/shell modules rather than
 # the SELinux or Apache modules because we only have limited sudo and rights
 # for both these statements
-- name: Call restorecon just in case
-  shell: 'restorecon -R {{ deploy }}'
+- name: Call restorecon to set permissions for install_root
+  shell: '/usr/sbin/restorecon -R {{ install_root }}'
   args:
     executable: /bin/bash
 - name: Restart Apache (scl-httpd24-httpd)
