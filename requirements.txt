@@ -12,7 +12,7 @@ unidecode
 pucas>=0.5
 piffle>=0.3
 # new djiffy for rights license labels (should be 0.5 upon release)
-git+https://github.com/Princeton-CDH/djiffy.git@feature/manifest-license-label#egg=djiffy
+git+https://github.com/Princeton-CDH/djiffy.git@develop#egg=djiffy
 #djiffy>=0.4.1
 annotator_store>=0.6
 viapy
