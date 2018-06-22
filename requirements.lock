@@ -32,7 +32,7 @@ django-haystack==2.8.1
 django-markdownify==0.8.0
 django-sortedm2m==1.5.0
 django-widget-tweaks==1.4.1
-djiffy==0.4.1
+djiffy==0.5.0
 docutils==0.14
 eulcommon==0.19.0
 filebrowser-safe==0.4.7
@@ -78,6 +78,7 @@ pytz==2018.3
 PyYAML==3.12
 rcssmin==1.0.6
 rdflib==4.2.2
+rdflib-jsonld==0.4.0
 requests==2.18.4
 requests-oauthlib==0.8.0
 rjsmin==1.0.12
