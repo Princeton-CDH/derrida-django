@@ -11,14 +11,10 @@ attrdict
 unidecode
 pucas>=0.5
 piffle>=0.3
-# new djiffy for rights license labels (should be 0.5 upon release)
-git+https://github.com/Princeton-CDH/djiffy.git@develop#egg=djiffy
-#djiffy>=0.4.1
+djiffy>=0.5
 annotator_store>=0.6
 viapy
 django-haystack>=2.7
-# haystack from github required for django 1.11 support; should be 2.7 when released
-#git+https://github.com/django-haystack/django-haystack.git@master#egg=django-haystack
 pysolr
 django-widget-tweaks
 django-markdownify
