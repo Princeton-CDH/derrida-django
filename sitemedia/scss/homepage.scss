@@ -6,14 +6,18 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-gap: 2em;
+
+    @media screen and (max-width: 760px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
   }
-  
+
   .credits__role {
     @include primary-font-style();
     font-size: 1em;
     margin-bottom: .5em;
   }
-  
+
   .credits__name {
     font-size: 1em;
     @include secondary-font-style();
@@ -56,7 +60,7 @@
 
   header,
   section {
-    @include grid-column(6);
+    @include grid-column(4);
   }
 
   @include grid-media($large-medium-viewport-grid) {

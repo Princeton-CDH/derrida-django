@@ -4,8 +4,7 @@
 - name: Clone settings repository locally
   git:
       repo: 'git@github.com:Princeton-CDH/deployment.git'
-      # Use lookup here because we're working on the machine running ansible
-      dest: "{{ lookup('env', 'HOME') }}/.deploy/"
+      dest: "{{ home }}/.deploy/"
       version: 'master'
   delegate_to: localhost
 - name: Clone the repo if doesn't already exist and make sure it's on gitref

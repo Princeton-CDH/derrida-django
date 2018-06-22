@@ -58,37 +58,6 @@ class InstanceDetailView(DetailView):
         instances = super(InstanceDetailView, self).get_queryset()
         return instances.filter(digital_edition__isnull=False)
 
-    def get_context_data(self, *args, **kwargs):
-        '''Insert manifest license data into template context.'''
-        context_data = super(InstanceDetailView, self).get_context_data()
-        instance = context_data['object']
-        license_text = None
-        # PUL seeAlso data contains an "edm_rights" section with
-        # a label for the rights statement.  Use that if possible
-        for data in instance.digital_edition.extra_data.values():
-            if 'edm_rights' in data:
-                license_text = data['edm_rights']['pref_label']
-                break
-
-        # if license text not found, look up label based on license uri
-        if not license_text:
-            license_url = instance.digital_edition.license
-            if license_url:
-                # NOTE: url logic is specific to rightsstatements.org
-                data_url = license_url.replace('vocab', 'data')
-                response = requests.get(data_url)
-                if response.status_code == 200:
-                    # This should be safe for all rightsstatments.org
-                    # prefLabels as they seem to be setting English as their
-                    # default using @ notation.
-                    license_text = response.json()['prefLabel']['@value']
-
-        if license_text:
-            context_data['license_text'] = license_text
-
-        return context_data
-
-
 class InstanceReferenceDetailView(InstanceDetailView):
 
     template_name = 'books/detail/references.html'
@@ -247,8 +216,6 @@ class InstanceListView(ListView):
             'facets': facets,   # now includes ranges as facets.ranges
             'total': self.queryset.count(),
             'form': self.form,
-            # specify preview image for metadata
-            'page_meta_image': 'img/banner/derrida-banner-library-S@2x.png'
         })
         return context
 
@@ -381,8 +348,6 @@ class ReferenceListView(ListView):
             'facets': facets,
             'total': self.queryset.count(),
             'form': self.form,
-            # specify preview image for metadata
-            'page_meta_image': 'img/banner/derrida-banner-reference-S@2x.png'
         })
         return context
 
@@ -712,7 +677,14 @@ class CanvasImage(ProxyView):
         '''
         Return a proxy url for client browsers to access IIIF images from.
         '''
+
         instance = get_object_or_404(Instance, slug=self.kwargs['slug'])
+
+        # if instance has no digital edition associated, there are
+        # no images to be found
+        if not instance.digital_edition:
+            raise Http404
+
         canvas_id = self.kwargs.get('short_id', None)
         if canvas_id and canvas_id != 'default':
             canvas = instance.images() \

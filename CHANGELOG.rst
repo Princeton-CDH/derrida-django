@@ -3,6 +3,25 @@
 CHANGELOG
 =========
 
+1.1
+---
+
+* Add license to README and document Princeton docket # for permissions
+* Adjust homepage styles for mobile
+* Set content pages to use the same style as Outwork posts
+* Display page description as lead text if not auto-generated
+* Refine license text logic to use label from manifest if possible;
+  include on both library detail and canvas detail pages
+* Revise banner images metadata preview handling
+* Remove static urls for testing 404/500 pages
+* Don't display "None" on library book detail page for no publication date
+* Update deploy scripts with missing environment variables, and adjust
+  logic for deploy symlink and previous/current symlinks
+* bugfix: 404 on attempt to get image for a work instance with no
+  digital edition
+* bugfix: Correct reference card thumbnail display and instance title logic
+
+
 1.0.1
 -----
 

@@ -7,24 +7,40 @@
     command: migrate
     app_path: "{{ deploy }}"
     virtualenv: "{{ deploy }}/env"
-- name: check for old symlink
+- name: Check for current symlink as previous
   stat:
-    path: "/var/www/{{ symlink }}"
-  register: sym
-- name: Copy old symlink path from /var/www to "{{ install_root }}/old"
-  shell: "cp -d /var/www/{{ symlink }} {{ install_root }}/old"
-  when: sym.stat.islnk is defined and sym.stat.islnk == True
-  args:
-    executable: /bin/bash
-- name: New symlink path
-  file:
-    src: "{{ deploy }}"
-    dest: "/var/www/{{ symlink }}"
-    state: link
-- name: Create courtesy symlink in /srv/www
+    path: "{{ install_root }}/current"
+  register: previous
+- name: Set current symlink
   file:
     src: "{{ deploy }}"
     dest: "{{ install_root }}/current"
+    state: link
+- name: Register current symlink
+  stat:
+    path: "{{ install_root }}/current"
+  register: current
+- name: If current path differs from previous current, update previous
+  file:
+    src: "{{ previous.stat.lnk_target }}"
+    dest: "{{ install_root }}/previous"
+    state: link
+  when: previous.stat.exists == True and previous.stat.lnk_source != current.stat.lnk_source
+- name: Register there is now a previous symlink
+  stat:
+    path: "{{ install_root }}/previous"
+  register: previous
+- name: If previous did not exist (and therefore wasn't reset above), create it with current
+  # should only trigger on first run of deploy script
+  file:
+    src: "{{ deploy }}"
+    dest: "{{ install_root }}/previous"
+    state: link
+  when: previous.stat.exists == False
+- name: Set /var/www/ path to make live
+  file:
+    src: "{{ deploy }}"
+    dest: "/var/www/{{ symlink }}"
     state: link
 
 # This makes sure that any server side settings that handle autoconfiguring
@@ -34,8 +50,8 @@
 # Both this and the command below it use the command/shell modules rather than
 # the SELinux or Apache modules because we only have limited sudo and rights
 # for both these statements
-- name: Call restorecon just in case
-  shell: 'restorecon -R {{ deploy }}'
+- name: Call restorecon to set permissions for install_root
+  shell: '/usr/sbin/restorecon -R {{ install_root }}'
   args:
     executable: /bin/bash
 - name: Restart Apache (scl-httpd24-httpd)

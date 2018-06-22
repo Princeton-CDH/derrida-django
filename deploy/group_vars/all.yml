@@ -8,4 +8,4 @@ version: '{{ ver.stdout }}'
 # Name of the django application (usually 'project' of 'project-django')
 djangoapp: derrida
 # deploy user HOME
-home: "{{ ansible_env.HOME }}"
+home: "{{ lookup('env', 'HOME') }}"

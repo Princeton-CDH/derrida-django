@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Code Documentation &#8212; Derrida 1.0.0 documentation</title>
+    <title>Code Documentation &#8212; Derrida 1.1.0 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" src="_static/documentation_options.js"></script>
@@ -168,7 +168,7 @@ specific to each one.</p>
 <dt id="derrida.common.utils.absolutize_url">
 <code class="descclassname">derrida.common.utils.</code><code class="descname">absolutize_url</code><span class="sig-paren">(</span><em>local_url</em>, <em>request=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/derrida/common/utils.html#absolutize_url"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#derrida.common.utils.absolutize_url" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert a local url to an absolute url, with scheme and server name,
-based on the current configured <a class="reference external" href="http://django.readthedocs.io/en/latest/ref/contrib/sites.html#django.contrib.sites.models.Site" title="(in Django v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Site</span></code></a>.</p>
+based on the current configured <a class="reference external" href="http://django.readthedocs.io/en/latest/ref/contrib/sites.html#django.contrib.sites.models.Site" title="(in Django v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Site</span></code></a>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1370,12 +1370,6 @@ for <code class="xref py py-class docutils literal notranslate"><span class="pre
 <a class="reference internal" href="#derrida.books.models.Instance" title="derrida.books.models.Instance"><code class="xref py py-class docutils literal notranslate"><span class="pre">Instance</span></code></a>. Returns only Instances that have
 digtial editions set.</p>
 <dl class="method">
-<dt id="derrida.books.views.InstanceDetailView.get_context_data">
-<code class="descname">get_context_data</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/derrida/books/views.html#InstanceDetailView.get_context_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#derrida.books.views.InstanceDetailView.get_context_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Insert manifest license data into template context.</p>
-</dd></dl>
-
-<dl class="method">
 <dt id="derrida.books.views.InstanceDetailView.get_queryset">
 <code class="descname">get_queryset</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/derrida/books/views.html#InstanceDetailView.get_queryset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#derrida.books.views.InstanceDetailView.get_queryset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the <cite>QuerySet</cite> that will be used to look up the object.</p>
@@ -1428,7 +1422,7 @@ digtial editions set.</p>
 <dd><dl class="method">
 <dt id="derrida.books.views.InstanceReferenceDetailView.get_context_data">
 <code class="descname">get_context_data</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/derrida/books/views.html#InstanceReferenceDetailView.get_context_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#derrida.books.views.InstanceReferenceDetailView.get_context_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Insert manifest license data into template context.</p>
+<dd><p>Insert the single object into the context dict.</p>
 </dd></dl>
 
 </dd></dl>
@@ -2392,7 +2386,7 @@ object representing Jacques Derrida if he exists in the database or None</p>
 allow forms that specify an <a class="reference internal" href="#derrida.books.models.Instance" title="derrida.books.models.Instance"><code class="xref py py-class docutils literal notranslate"><span class="pre">Instance</span></code></a>
 object to filter based on annotations associated only
 with that instance.</p>
-<p>This lets instances of <a class="reference external" href="http://django.readthedocs.io/en/latest/topics/forms/modelforms.html#django.forms.ModelForm" title="(in Django v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModelForm</span></code></a> that have a
+<p>This lets instances of <a class="reference external" href="http://django.readthedocs.io/en/latest/topics/forms/modelforms.html#django.forms.ModelForm" title="(in Django v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModelForm</span></code></a> that have a
 <code class="xref py py-class docutils literal notranslate"><span class="pre">Canvas</span></code> autocomplete pass a set instance
 value to restrict autocomplete results only to the Instance currently
 being edited.</p>
@@ -2428,7 +2422,7 @@ access those variables easily.</p>
 <dd><p>Provides autocomplete to search on several fields of
 <code class="xref py py-class docutils literal notranslate"><span class="pre">Intervention</span></code> and filter by an instance
 primary key provided by a form.</p>
-<p>This lets instances of <a class="reference external" href="http://django.readthedocs.io/en/latest/topics/forms/modelforms.html#django.forms.ModelForm" title="(in Django v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModelForm</span></code></a> that have a
+<p>This lets instances of <a class="reference external" href="http://django.readthedocs.io/en/latest/topics/forms/modelforms.html#django.forms.ModelForm" title="(in Django v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModelForm</span></code></a> that have a
 <code class="xref py py-class docutils literal notranslate"><span class="pre">Intervention</span></code> autocomplete pass a set instance
 value to restrict autocomplete results only to the Instance currently
 being edited.</p>
@@ -2481,7 +2475,7 @@ access those variables easily.</p>
 <dl class="class">
 <dt id="derrida.interventions.views.LoginPermissionRequired">
 <em class="property">class </em><code class="descclassname">derrida.interventions.views.</code><code class="descname">LoginPermissionRequired</code><a class="reference internal" href="_modules/derrida/interventions/views.html#LoginPermissionRequired"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#derrida.interventions.views.LoginPermissionRequired" title="Permalink to this definition">¶</a></dt>
-<dd><p>Customization of <a class="reference external" href="http://django.readthedocs.io/en/latest/topics/auth/default.html#django.contrib.auth.mixins.PermissionRequiredMixin" title="(in Django v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">django.contrib.auth.mixins.PermissionRequiredMixin</span></code></a>
+<dd><p>Customization of <a class="reference external" href="http://django.readthedocs.io/en/latest/topics/auth/default.html#django.contrib.auth.mixins.PermissionRequiredMixin" title="(in Django v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">django.contrib.auth.mixins.PermissionRequiredMixin</span></code></a>
 that redirects to the configured login url if the user is not authenticated,
 and raises a 403 Forbidden if they already are authenticated.</p>
 <dl class="method">

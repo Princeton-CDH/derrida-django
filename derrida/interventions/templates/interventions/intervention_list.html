@@ -4,6 +4,13 @@
 {% block page-subtitle %}{{ page.meta_title }} ‖ {% endblock %}
 {% block nav-title %} {{ page.title }} {% endblock %}
 
+{% block preview_meta %}
+{# override preview image #}
+{% with page_meta_image='img/banner/derrida-banner-intervention-S@2x.png' twitter_card='summary_large_image' %}
+    {{ block.super }}
+{% endwith %}
+{% endblock %}
+
 {% block header_class %}mdl-layout__header--transparent{% endblock %}
 
 {% block page-context-id %}interventions-list{% endblock %}

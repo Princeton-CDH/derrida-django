@@ -12,7 +12,7 @@ object for accessing properties to render.
 {% if book.digital_edition.license %}
 <footer class="item-license">
   <img class="item-license__img" src="{% static 'img/rightsstatements_org/' %}{{ book.digital_edition.rights_statement_id }}.svg"
-    alt="{{ license_text }}" />
+    alt="{{ book.digital_edition.license_label }}" />
     <a class="item-license__link" href="{{ book.digital_edition.license }}"><span class="arrow_icon">→</span> Learn More</a>
 </footer>
 {% endif %}

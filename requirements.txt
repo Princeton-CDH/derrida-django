@@ -11,12 +11,10 @@ attrdict
 unidecode
 pucas>=0.5
 piffle>=0.3
-djiffy>=0.4.1
+djiffy>=0.5
 annotator_store>=0.6
 viapy
 django-haystack>=2.7
-# haystack from github required for django 1.11 support; should be 2.7 when released
-#git+https://github.com/django-haystack/django-haystack.git@master#egg=django-haystack
 pysolr
 django-widget-tweaks
 django-markdownify
