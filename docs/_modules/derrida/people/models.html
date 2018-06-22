@@ -1,0 +1,227 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>derrida.people.models &#8212; Derrida 1.1.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for derrida.people.models</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">django.db</span> <span class="k">import</span> <span class="n">models</span>
+<span class="kn">from</span> <span class="nn">viapy.api</span> <span class="k">import</span> <span class="n">ViafEntity</span>
+
+<span class="kn">from</span> <span class="nn">derrida.common.models</span> <span class="k">import</span> <span class="n">Named</span><span class="p">,</span> <span class="n">Notable</span><span class="p">,</span> <span class="n">DateRange</span>
+<span class="kn">from</span> <span class="nn">derrida.places.models</span> <span class="k">import</span> <span class="n">Place</span>
+
+
+<div class="viewcode-block" id="AliasIntegerField"><a class="viewcode-back" href="../../../codedocs.html#derrida.people.models.AliasIntegerField">[docs]</a><span class="k">class</span> <span class="nc">AliasIntegerField</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">IntegerField</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Alias field adapted from https://djangosnippets.org/snippets/10440/</span>
+<span class="sd">    to allow accessing an existing db field by a different name, both</span>
+<span class="sd">    for user display and in model and queryset use.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+<div class="viewcode-block" id="AliasIntegerField.contribute_to_class"><a class="viewcode-back" href="../../../codedocs.html#derrida.people.models.AliasIntegerField.contribute_to_class">[docs]</a>    <span class="k">def</span> <span class="nf">contribute_to_class</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">virtual_only</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">AliasIntegerField</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">contribute_to_class</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">virtual_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+        <span class="nb">setattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">instance_type</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_column</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__set__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">instance_type</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span></div>
+        <span class="k">return</span> <span class="nb">setattr</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_column</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="Person"><a class="viewcode-back" href="../../../codedocs.html#derrida.people.models.Person">[docs]</a><span class="k">class</span> <span class="nc">Person</span><span class="p">(</span><span class="n">Notable</span><span class="p">,</span> <span class="n">DateRange</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Person&#39;&#39;&#39;</span>
+    <span class="n">authorized_name</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">255</span><span class="p">)</span>
+    <span class="n">viaf_id</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">URLField</span><span class="p">(</span><span class="s1">&#39;VIAF id&#39;</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">blank</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1"># alias start/end year from DateRange to be more readable and semantic</span>
+    <span class="n">birth</span> <span class="o">=</span> <span class="n">AliasIntegerField</span><span class="p">(</span><span class="n">db_column</span><span class="o">=</span><span class="s1">&#39;start_year&#39;</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">blank</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">death</span> <span class="o">=</span> <span class="n">AliasIntegerField</span><span class="p">(</span><span class="n">db_column</span><span class="o">=</span><span class="s1">&#39;end_year&#39;</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">blank</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">sort_name</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">255</span><span class="p">,</span> <span class="n">blank</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">family_group</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">255</span><span class="p">,</span> <span class="n">blank</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">relationships</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ManyToManyField</span><span class="p">(</span><span class="s1">&#39;self&#39;</span><span class="p">,</span> <span class="n">through</span><span class="o">=</span><span class="s1">&#39;Relationship&#39;</span><span class="p">,</span>
+        <span class="n">related_name</span><span class="o">=</span><span class="s1">&#39;related_to&#39;</span><span class="p">,</span> <span class="n">symmetrical</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="c1"># NOTE: django doesn&#39;t allow many-to-many to self with a through</span>
+    <span class="c1"># table to be symmetrical</span>
+
+    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">verbose_name_plural</span> <span class="o">=</span> <span class="s1">&#39;People&#39;</span>
+        <span class="c1"># should this sort on sort_name first before authorized name?</span>
+        <span class="c1"># if not, why do we have it?</span>
+        <span class="n">ordering</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;authorized_name&#39;</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">authorized_name</span>
+
+<div class="viewcode-block" id="Person.save"><a class="viewcode-back" href="../../../codedocs.html#derrida.people.models.Person.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Adds birth and death dates from VIAF if they aren&#39;t set</span>
+<span class="sd">        and there&#39;s a viaf id for the record&#39;&#39;&#39;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">viaf_id</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">birth</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">death</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_birth_death_years</span><span class="p">()</span>
+</div>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Person</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">viaf</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;:class:`viapy.api.ViafEntity` for this record if :attr:`viaf_id`</span>
+<span class="sd">        is set.&#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">viaf_id</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">ViafEntity</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">viaf_id</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Person.set_birth_death_years"><a class="viewcode-back" href="../../../codedocs.html#derrida.people.models.Person.set_birth_death_years">[docs]</a>    <span class="k">def</span> <span class="nf">set_birth_death_years</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Set local birth and death dates based on information from VIAF&#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">viaf_id</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">birth</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">viaf</span><span class="o">.</span><span class="n">birthyear</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">death</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">viaf</span><span class="o">.</span><span class="n">deathyear</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">firstname_last</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Authorized name in &#39;firstname lastname&#39; format for display&#39;&#39;&#39;</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">authorized_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;, &#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="n">names</span><span class="p">))</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">lastname</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Last name, as extracted from authorized name&#39;&#39;&#39;</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">authorized_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;, &#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="Residence"><a class="viewcode-back" href="../../../codedocs.html#derrida.people.models.Residence">[docs]</a><span class="k">class</span> <span class="nc">Residence</span><span class="p">(</span><span class="n">Notable</span><span class="p">,</span> <span class="n">DateRange</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;A residence where a person lived at some point in time&#39;&#39;&#39;</span>
+    <span class="n">person</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">Person</span><span class="p">)</span>
+    <span class="n">place</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">Place</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">dates</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dates</span><span class="p">:</span>
+            <span class="n">dates</span> <span class="o">=</span> <span class="s1">&#39; (</span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">dates</span></div>
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> </span><span class="si">%s%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">person</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">place</span><span class="p">,</span> <span class="n">dates</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="RelationshipType"><a class="viewcode-back" href="../../../codedocs.html#derrida.people.models.RelationshipType">[docs]</a><span class="k">class</span> <span class="nc">RelationshipType</span><span class="p">(</span><span class="n">Named</span><span class="p">,</span> <span class="n">Notable</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Types of relationships between people&#39;&#39;&#39;</span></div>
+    <span class="n">is_symmetric</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">BooleanField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Relationship"><a class="viewcode-back" href="../../../codedocs.html#derrida.people.models.Relationship">[docs]</a><span class="k">class</span> <span class="nc">Relationship</span><span class="p">(</span><span class="n">Notable</span><span class="p">,</span> <span class="n">DateRange</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;A specific relationship between two people.&#39;&#39;&#39;</span>
+    <span class="n">from_person</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">Person</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">&#39;from_relationships&#39;</span><span class="p">)</span>
+    <span class="n">to_person</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">Person</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">&#39;to_relationships&#39;</span><span class="p">)</span>
+    <span class="n">relationship_type</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">RelationshipType</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">from_person</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">relationship_type</span><span class="p">,</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">to_person</span><span class="p">)</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">Derrida</a></h1>
+
+
+
+<p class="blurb">Django web application for "Derrida's Margins" CDH project</p>
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=Princeton-CDH&repo=derrida-django&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+    
+
+<p>
+<a href="https://travis-ci.org/Princeton-CDH/derrida-django">
+    <img
+        alt="https://secure.travis-ci.org/Princeton-CDH/derrida-django.svg?branch=master"
+        src="https://secure.travis-ci.org/Princeton-CDH/derrida-django.svg?branch=master"
+    />
+</a>
+</p>
+
+
+
+
+    
+
+<p>
+<a href="https://codecov.io/github/Princeton-CDH/derrida-django">
+    <img
+    alt="https://codecov.io/github/Princeton-CDH/derrida-django/coverage.svg?branch=master"
+    src="https://codecov.io/github/Princeton-CDH/derrida-django/coverage.svg?branch=master"
+    />
+</a>
+</p>
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../architecture.html">Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../codedocs.html">Code Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Change Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../deploynotes.html">Deploy and Upgrade notes</a></li>
+</ul>
+
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, CDH @ Princeton & Trustees of Princeton University.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

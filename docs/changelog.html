@@ -1,0 +1,411 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>CHANGELOG &#8212; Derrida 1.1.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Deploy and Upgrade notes" href="deploynotes.html" />
+    <link rel="prev" title="Code Documentation" href="codedocs.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="changelog">
+<span id="id1"></span><h1>CHANGELOG<a class="headerlink" href="#changelog" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="id2">
+<h2>1.1<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Add license to README and document Princeton docket # for permissions</li>
+<li>Adjust homepage styles for mobile</li>
+<li>Set content pages to use the same style as Outwork posts</li>
+<li>Display page description as lead text if not auto-generated</li>
+<li>Refine license text logic to use label from manifest if possible;
+include on both library detail and canvas detail pages</li>
+<li>Revise banner images metadata preview handling</li>
+<li>Remove static urls for testing 404/500 pages</li>
+<li>Don’t display “None” on library book detail page for no publication date</li>
+<li>Update deploy scripts with missing environment variables, and adjust
+logic for deploy symlink and previous/current symlinks</li>
+<li>bugfix: 404 on attempt to get image for a work instance with no
+digital edition</li>
+<li>bugfix: Correct reference card thumbnail display and instance title logic</li>
+</ul>
+</div>
+<div class="section" id="id3">
+<h2>1.0.1<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>bugfix: use license text label from local manifest data if possible;
+avoids issue with current logic for retrieving labels from
+rightsstatements.org causing a 500 error.</li>
+</ul>
+</div>
+<div class="section" id="id4">
+<h2>1.0<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h2>
+<p>Numerous design and accessibility fixes, including:</p>
+<ul class="simple">
+<li>Improved keyboard and screen reader navigation</li>
+<li>Image alt text throughout the site</li>
+<li>Navigation and accessibility improvements for the reference visualization,
+including screen reader content, readable reference labels, escape
+to close reference card, etc</li>
+<li>Accessibility improvements to annotation page view, including OCR
+text for pages when available</li>
+<li>Language codes for reference anchor text, intervention anchor
+text and annotation text, and book titles on bibligraphic detail page.</li>
+<li>Basic XML sitemaps for public site content</li>
+</ul>
+</div>
+<div class="section" id="library-works-references-interventions">
+<h2>0.9 Library works, references, interventions<a class="headerlink" href="#library-works-references-interventions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="library-works">
+<h3>Library works<a class="headerlink" href="#library-works" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>As a record editor, I want to mark a copy of edition in order to differentiate when two exact copies were in Derrida’s library.</li>
+<li>As a user, I want to view a paginated list of books in Derrida’s library that are cited in Derrida’s works so that I can engage with the materials he referenced in his writing.</li>
+<li>As a user, I want to filter the list of books cited in Derrida’s works so that I can narrow the list based on my interests.</li>
+<li>As a user, I want to see an indication of which library books in the list are annotated so I can easily identify books with annotations.</li>
+<li>As a user, I want to change how the list of books is sorted so that I can browse the list in different ways.</li>
+<li>As a user, I want to see the bibliographic details for a single book in Derrida’s library so I can see what edition it is and where to get it.</li>
+<li>As a user looking at a single book in the library, I want to see a list of other copies and editions of the same work so that I can see all the versions Derrida cited.</li>
+<li>As a user looking at a single book in the library, I want to see a gallery of images for that book so that I see what it looks like and see sample annotated pages.</li>
+<li>As a user I want to see a larger view of book images with any captured annotations so that I can see images in more detail.</li>
+<li>As a user, I should only see large images of annotated pages, overview images, and insertions because the material is still under copyright.</li>
+</ul>
+</div>
+<div class="section" id="references">
+<h3>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>As a user, I want to view a paginated list of references in Derrida’s works so that I can see the extent and range of references he made to materials in his library</li>
+<li>As a user, I want to filter the list of references so that I can narrow the results based on my interests.</li>
+<li>As a user, I want to change how the list of references is sorted so that I can browse the list in different ways.</li>
+<li>As a record editor, I want to document page ranges for chapters in Derrida’s works so that references on the site can be displayed by chapter.</li>
+<li>As a user, I want to see a visualization of references by chapter in Derrida’s work so that I can get a sense of how references are distributed through the work.</li>
+<li>As a user, I want to see a visualization of references by author of referenced work so that I can get a sense of distribution by cited author.</li>
+<li>As a user looking at a single book, I want to see the references to that work so I can get a sense of how Derrida used it.</li>
+<li>As a user looking at a single book, I want the option to sort references by page order in Derrida work or referenced book so that I can see them in either order.</li>
+</ul>
+</div>
+<div class="section" id="interventions">
+<h3>Interventions<a class="headerlink" href="#interventions" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>As a user, I want to filter intervention search results so that I can narrow the results by aspects of the annotation or annotated work.</li>
+<li>As a user, I want to search across interventions so I can see the kinds of marks and other interventions made in Derrida’s Library.</li>
+<li>As a user, I want to filter intervention search results so that I can narrow the results by aspects of the annotation or annotated work.</li>
+<li>As a user, I want the option to sort interventions by author or title of annotated work so I can look at them in different ways.</li>
+<li>As a user, I want a way to link directly to a specific annotation so that I can cite or share that annotation.</li>
+</ul>
+</div>
+<div class="section" id="search">
+<h3>Search<a class="headerlink" href="#search" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>As a user searching across all site materials, I want to access all results for a single kind of item so that I can see more results.</li>
+<li>As a user, I want to optionally select one content type so that I can restrict my search to a single set of materials on the site.</li>
+<li>As a user, I want to search across library works, references, interventions, and essays so that I can find content that interests me across types of material.</li>
+<li>As a user, I want to be able to search on French terms with or without accents so that I can easily find items with French text.</li>
+<li>As a user I want to visualize and filter years by range so I can get an idea of the distribution and filter items by ranges of years.</li>
+</ul>
+</div>
+<div class="section" id="administrative-functionality">
+<h3>Administrative functionality<a class="headerlink" href="#administrative-functionality" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>As an admin I need a way to take down book or page images so that I can comply quickly with any requests from copyright holders.</li>
+<li>As an admin, I want to edit content pages so that I can manage and update site content without developer assistance.</li>
+<li>As an admin, I want to edit descriptions for dynamic list pages so that I can update wording without developer intervention.</li>
+<li>As an admin, I want to manage pages in site navigation so I can update order and labels without developer intervention.</li>
+<li>As an admin, I want to create and edit outwork content so that I can post essays and other content on the site.</li>
+</ul>
+</div>
+<div class="section" id="other-improvements">
+<h3>Other improvements<a class="headerlink" href="#other-improvements" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>IIIF Manifest and Canvas URIs have been migrated from Plum to Figgy (new PUL system)</li>
+<li>Library work instances have been updated with a data migration to reassociate
+collection references with book section based on page numbers</li>
+<li>IIIF images used on the site are displayed based on nearest pre-generated size
+available from IIIF server where possible</li>
+</ul>
+</div>
+</div>
+<div class="section" id="id5">
+<h2>0.8.1<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h2>
+<p>Maintenance release to provide needed migration</p>
+</div>
+<div class="section" id="interventions-phase-i">
+<h2>0.8 (Interventions Phase I)<a class="headerlink" href="#interventions-phase-i" title="Permalink to this headline">¶</a></h2>
+<p>Release implementing the first part of the interventions interface, allowing
+data editors to note Derrida’s annotation-style interventions on digital editions
+of his library works.</p>
+<div class="section" id="access">
+<h3>Access<a class="headerlink" href="#access" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>As a record editor, I can only view digitized materials from Derrida’s library when I am logged in so that copyrighted materials are not exposed to the general public.</li>
+<li>As a logged in record editor, I should be able to create an intervention record so that I can document Derrida’s interventions in the works in his library.</li>
+<li>As a logged in record editor, I should be able to view, edit, and delete all intervention records (no matter who created them) so that I can manage all documented interventions in Derrida’s library.</li>
+<li>Logged in record editors or anyone with greater permissions should be able to view the books; anonymous users or logged in users without those permissions should not.</li>
+<li>As an admin, I want to see the history of all edits to an intervention, including edits made via the canvas image interface, so that I can track who has contributed and made changes to the data.</li>
+</ul>
+</div>
+<div class="section" id="books">
+<h3>Books<a class="headerlink" href="#books" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>As a record editor, when I’m editing a book record I want to see a list of all the interventions (annotations and insertions) associated with that book so that I can review and update interventions by related book.</li>
+<li>As a record editor, when I’m editing a book I want to be able to view the associated digitized materials so I can see pictures of the book, annotations, insertions, and other relevant markings.</li>
+<li>As a record editor, I want to see an indicator if a library instance has a digital edition associated and be able to sort on the presence of a digital edition so that I can easily get to volumes that have been digitized.</li>
+</ul>
+</div>
+<div class="section" id="citations">
+<h3>Citations<a class="headerlink" href="#citations" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>As a record editor, I want to be able to associate a citation with one or more interventions (annotations or insertions) so that I can identify instances where citations relate in an explicit way to interventions (for example, a passage is quoted in the Derrida text and underlined in the book from the library).</li>
+<li>As a record editor, when editing this field in the Django admin, I want it to automatically filter to only those intervetions associated with the digital edition of the book (i.e. if a reference is set to BookA, only interventions associated with BookA show up).</li>
+</ul>
+</div>
+<div class="section" id="id6">
+<h3>Interventions<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>As an intervention data editor, I want the option of leaving all fields blank so that I can accurately describe non-verbal interventions or interventions that don’t relate to anchor text.</li>
+<li>As an intervention data editor, I want to be able to add and edit the color if the ink type is “pen,” so that I can see if there are patterns in Derrida’s pen usage and whether he revisited the same text.</li>
+<li>As an interventions data editor, I want to select non-verbal interventions (underlining, circling, etc.) on a page image so I can transcribe anchor text and document the intervention and where it occurs.</li>
+<li>As an intervention data editor, I want to edit any of the text fields (transcription, translation, anchor text, tags etc) so that I can correct mistakes or make updates.</li>
+<li>As an intervention data editor, I want to select verbal interventions on a page image and enter a transcription of the text so I can document the intervention and where it occurs.</li>
+<li>As a data editor, I want to see an indicator on the Django admin site that shows whether an intervention is verbal or non-verbal, so I can more easily distinguish these important categories.</li>
+<li>As an intervention data editor, I would like to be able to tag part or all of transcribed verbal intervention text as “uncertain.”</li>
+<li>As an intervention data editor, I would like to be able to tag a verbal intervention as “illegible” so that I can clearly indicate when the text is unreadable.</li>
+<li>As an interventions data editor, I want the option to enter a translation of verbal intervention text so that I can provide an English version when the original is in another language.</li>
+<li>As an interventions data editor, I want to associate an intervention with the person who wrote it so that I can document the author when that information is known; I want “Derrida, Jacques” to be the default intervention author, and I want to be able to add or edit this information.</li>
+<li>As an interventions data editor, I want to document the language of anchor text and annotation text so that I can track use of languages across interventions.</li>
+<li>As an intervention data editor, I want to transcribe the anchor text (if there is any) for an annotation so I can document the text the intervener is referencing.</li>
+<li>As an intervention data editor, I want to tag interventions from a pre-defined list so that I can describe the characteristics and type of intervention.</li>
+<li>As a record editor I want to view, edit, and create tags to describe and annotations and insertions so that I can manage the tags available for interventions.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="id7">
+<h2>0.7<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h2>
+<p>Maintenance release to clean up obsolete models and code after
+the refactor in 0.6.</p>
+<ul class="simple">
+<li>Fix footnote object lookup so it is restricted to models that can
+be listed in Django admin.</li>
+<li>Remove obsolete code (Book models, Zotero book import) and dependencies,
+and squash book migrations</li>
+</ul>
+</div>
+<div class="section" id="bibliographic-enhancements">
+<h2>0.6 Bibliographic Enhancements<a class="headerlink" href="#bibliographic-enhancements" title="Permalink to this headline">¶</a></h2>
+<p>Refactor books into works and instances; update citation admin functionality to support capturing citation anchor text with minimal formatting.</p>
+<ul class="simple">
+<li>As a record editor, I want to be able to add new or edit citation anchor text in both French and English.</li>
+<li>As an data editor, I want to be able to add the anchor text of a citation along with basic markdown formatting (bold, italic) so that I can accurately capture Derrida’s citations.</li>
+<li>As a record editor, I want to add and edit bibliographic data for works and instances of works so I can document shared metadata and group different copies and editions of the same work.</li>
+<li>As a record editor, I want to document the print date for a book, including month and year when available, so that I can check if a given copy was available to Derrida when he was writing a text.</li>
+</ul>
+</div>
+<div class="section" id="bio-bibliographical-admin-interface">
+<h2>0.5 Bio/Bibliographical Admin interface<a class="headerlink" href="#bio-bibliographical-admin-interface" title="Permalink to this headline">¶</a></h2>
+<p>Initial project release implements the bio/bibliographical portion of
+the database and customized Django admin interface for data import
+and management of biographical and bibliographic data.</p>
+<p>Features are expressed as user stories as written by the development and
+project teams.</p>
+<div class="section" id="book-metadata">
+<h3>Book Metadata<a class="headerlink" href="#book-metadata" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>As a record editor, I want to add a new or edit an existing book so that I can document the publication data, annotation data, citations, and other relevant details.</li>
+<li>As a record editor, I want to add new data in or edit the following fields so that I can document them in a standard way. See <a class="reference external" href="https://github.com/Princeton-CDH/derrida-django/issues/2">#2</a>.</li>
+<li>As a record editor, I want to be able to add a work’s original date, its copyright date, and its date d’impression (date of publication).</li>
+<li>As a record editor, when I’m editing a book I want to be able to associate people involved in creating the book so that I can document information about authors, translators, and editors.</li>
+<li>As a record editor, when I’m editing a book I want to be able to associate the book to all instances of citation related to that book.</li>
+<li>As a record editor, when I’m editing a book I want to be able to associate the book to a referent book (i.e., the text by Derrida in which the book is cited – always DG at this phase).</li>
+<li>As a record editor, when I’m browsing the list of books I want to see the author, short title, publication year, owning institution call number, and whether a book is extant, annotated, and/or digitized so that I can get a quick overview of volumes.</li>
+<li>As a record editor, when I search for books in the admin interface I want to search on title, author, and notes so that I can find specific items.</li>
+<li>As a record editor, when I’m editing a book I want to be able to add notes about the book.</li>
+</ul>
+</div>
+<div class="section" id="biographic-data-people">
+<h3>Biographic Data (People)<a class="headerlink" href="#biographic-data-people" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>As a record editor, I want to add a new or edit an existing person so that I can document people associated with the Derrida Library.</li>
+<li>As a record editor, I want to add a new or edit an existing role type so that I can document the kinds of roles played by people associated with the Derrida Library.</li>
+<li>As a record editor, I want to add a new or edit an existing relationship type so that I can document the kinds of relationships between people associated with the Derrida Library.</li>
+<li>As a record editor, I want to be able to associate roles and relationships to people so that I can document how they interacted with each other and the Derrida Library.</li>
+<li>As a record editor, I want to be able to automatically associate authors with their VIAF URI, so that I can better document individuals associated with Derrida Library.</li>
+</ul>
+</div>
+<div class="section" id="footnotes">
+<h3>Footnotes<a class="headerlink" href="#footnotes" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>As a data editor, I want to add a new or edit an existing source type so that I can track the kinds of source documents used as evidence in the system.</li>
+<li>As a data editor, I want to add a new or edit an existing footnote and associate it with any other kind of record in the system so that I can document evidence related to assertions made elsewhere in the data.</li>
+<li>As a data editor, when I’m editing a book or a book-person relationship, I want to be able to add footnotes on the same page so that I can add documentation on the same page.</li>
+</ul>
+</div>
+<div class="section" id="user-management">
+<h3>User Management<a class="headerlink" href="#user-management" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>As a project team member, I want to login with my Princeton CAS account so that I can use existing my existing credentials and not have to keep track of a separate username and password.</li>
+<li>As an admin, I want to edit user and group permissions so I can manage project team member access within the system.</li>
+<li>As an admin, I want to edit user and group permissions so I can manage project team member access within the system.</li>
+</ul>
+</div>
+<div class="section" id="zotero-import">
+<h3>Zotero Import<a class="headerlink" href="#zotero-import" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>As a record editor, I want a one-time import of Books from Zotero data into the system so that I can refine and augment the initial data that’s already been collected.</li>
+<li>As a record editor, I want a one-time import of People from Zotero data into the system so that I can refine and augment the initial data that’s already been collected.</li>
+<li>As a record editor, I want publishing places associated with their GeoNames ID so that I can document publishing locations more clearly.</li>
+<li>As a record editor, I want citations imported and associated with their works based on the tagging system implemented by the team.</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Derrida</a></h1>
+
+
+
+<p class="blurb">Django web application for "Derrida's Margins" CDH project</p>
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=Princeton-CDH&repo=derrida-django&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+    
+
+<p>
+<a href="https://travis-ci.org/Princeton-CDH/derrida-django">
+    <img
+        alt="https://secure.travis-ci.org/Princeton-CDH/derrida-django.svg?branch=master"
+        src="https://secure.travis-ci.org/Princeton-CDH/derrida-django.svg?branch=master"
+    />
+</a>
+</p>
+
+
+
+
+    
+
+<p>
+<a href="https://codecov.io/github/Princeton-CDH/derrida-django">
+    <img
+    alt="https://codecov.io/github/Princeton-CDH/derrida-django/coverage.svg?branch=master"
+    src="https://codecov.io/github/Princeton-CDH/derrida-django/coverage.svg?branch=master"
+    />
+</a>
+</p>
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codedocs.html">Code Documentation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Change Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="deploynotes.html">Deploy and Upgrade notes</a></li>
+</ul>
+
+
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">CHANGELOG</a><ul>
+<li><a class="reference internal" href="#id2">1.1</a></li>
+<li><a class="reference internal" href="#id3">1.0.1</a></li>
+<li><a class="reference internal" href="#id4">1.0</a></li>
+<li><a class="reference internal" href="#library-works-references-interventions">0.9 Library works, references, interventions</a><ul>
+<li><a class="reference internal" href="#library-works">Library works</a></li>
+<li><a class="reference internal" href="#references">References</a></li>
+<li><a class="reference internal" href="#interventions">Interventions</a></li>
+<li><a class="reference internal" href="#search">Search</a></li>
+<li><a class="reference internal" href="#administrative-functionality">Administrative functionality</a></li>
+<li><a class="reference internal" href="#other-improvements">Other improvements</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id5">0.8.1</a></li>
+<li><a class="reference internal" href="#interventions-phase-i">0.8 (Interventions Phase I)</a><ul>
+<li><a class="reference internal" href="#access">Access</a></li>
+<li><a class="reference internal" href="#books">Books</a></li>
+<li><a class="reference internal" href="#citations">Citations</a></li>
+<li><a class="reference internal" href="#id6">Interventions</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id7">0.7</a></li>
+<li><a class="reference internal" href="#bibliographic-enhancements">0.6 Bibliographic Enhancements</a></li>
+<li><a class="reference internal" href="#bio-bibliographical-admin-interface">0.5 Bio/Bibliographical Admin interface</a><ul>
+<li><a class="reference internal" href="#book-metadata">Book Metadata</a></li>
+<li><a class="reference internal" href="#biographic-data-people">Biographic Data (People)</a></li>
+<li><a class="reference internal" href="#footnotes">Footnotes</a></li>
+<li><a class="reference internal" href="#user-management">User Management</a></li>
+<li><a class="reference internal" href="#zotero-import">Zotero Import</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, CDH @ Princeton & Trustees of Princeton University.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/changelog.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
