@@ -11,8 +11,7 @@ a `DH project sponsored by CDH <https://cdh.princeton.edu/projects/derridas-marg
    :alt: Build status
 
 .. image:: https://landscape.io/github/Princeton-CDH/derrida-django/master/landscape.svg?style=flat
-  :target: https://landscape.io/github/Princeton-CDH/derrida-django/
-master
+  :target: https://landscape.io/github/Princeton-CDH/derrida-django/master
   :alt: Code Health
 
 .. image:: https://codecov.io/gh/Princeton-CDH/derrida-django/branch/master/graph/badge.svg
@@ -20,8 +19,7 @@ master
    :alt: Code coverage
 
 .. image:: https://requires.io/github/Princeton-CDH/derrida-django/requirements.svg?branch=master
-   :target: https://requires.io/github/Princeton-CDH/derrida-django/requirements/?branch=
-  master
+   :target: https://requires.io/github/Princeton-CDH/derrida-django/requirements/?branch=master
    :alt: Requirements Status
 
 `Current release documentation <https://princeton-cdh.github.io/derrida-django/>`_.
