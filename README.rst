@@ -6,6 +6,10 @@ derrida-django
 Django web application for `Derrida's Margins <https://derridas-margins.princeton.edu/>`_
 a `DH project sponsored by CDH <https://cdh.princeton.edu/projects/derridas-margins/>`_.
 
+.. image:: https://zenodo.org/badge/83320273.svg
+   :target: https://zenodo.org/badge/latestdoi/83320273
+   :alt: DOI: 10.5281/zenodo.1299972
+
 .. image:: https://travis-ci.org/Princeton-CDH/derrida-django.svg?branch=master
    :target: https://travis-ci.org/Princeton-CDH/derrida-django
    :alt: Build status
