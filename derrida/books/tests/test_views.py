@@ -265,7 +265,8 @@ class TestInstanceViews(TestCase):
         assert response.url == cover_image_url
 
     @patch('derrida.books.views.get_iiif_url')
-    def test_canvas_detail_view(self, mockiiifurl):
+    @patch('derrida.books.views.logger')
+    def test_canvas_detail_view(self, mocklogger, mockiiifurl):
         # get an instance with a digital edition
         item = Instance.objects.filter(digital_edition__isnull=False).first()
         # add logo and license to manifest
@@ -345,8 +346,18 @@ class TestInstanceViews(TestCase):
         mockresponse.status_code = 403
         response = self.client.get(p23_detail_url)
         self.assertNotContains(response, mockresponse.text)
-
-
+        # simulate a raised ConnectionError
+        mockiiifurl.side_effect = ConnectionError
+        response = self.client.get(p23_detail_url)
+        # page should still be rendered
+        assert response.status_code == 200
+        # OCR text should not be present
+        self.assertNotContains(response, mockresponse.text)
+        # logger exception should have been called
+        assert mocklogger.exception.called
+        mocklogger.exception\
+            .assert_called_with("Connection error getting OCR text for %s"
+                                % response.request['PATH_INFO'])
         # annotated page should be listed in nav on other pages
         response = self.client.get(cover_detail_url)
         self.assertContains(response, p23.label)

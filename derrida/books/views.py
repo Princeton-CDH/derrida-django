@@ -1,5 +1,6 @@
 import datetime
 import json
+import logging
 
 from dal import autocomplete
 from django.contrib import messages
@@ -27,6 +28,8 @@ from derrida.common.solr_backend import facet_sort_ignoreaccents
 from derrida.interventions.models import Intervention
 from derrida.outwork.models import Outwork
 
+
+logger = logging.getLogger(__name__)
 
 class PublisherAutocomplete(autocomplete.Select2QuerySetView):
     '''Basic publisher autocomplete lookup, for use with
@@ -495,12 +498,19 @@ class CanvasDetail(DetailView):
         context = super(CanvasDetail, self).get_context_data(*args, **kwargs)
         # If there is a plain_text_url in info, use a Djiffy method to get the
         # text from Figgy and pass it to the view, default ocr_text to None
-        ocr_text = None
+        ocr_text = res = None
+        # Make sure we have a variable to test against in case of a connect error
         if self.object.plain_text_url:
             # get the text
-            res = get_iiif_url(self.object.plain_text_url)
+            try:
+                res = get_iiif_url(self.object.plain_text_url)
+            except ConnectionError:
+                # log the stack trace using exception handler and
+                # provide the url where the error happened to the log
+                logger.exception('Connection error getting OCR text for %s'
+                                 % self.request.get_full_path('?'))
             # check that we got a valid response and set ocr_text if so.
-            if res.status_code == 200:
+            if res and res.status_code == 200:
                 ocr_text = res.text
         context.update({
             'instance': self.instance,
