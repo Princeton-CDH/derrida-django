@@ -117,6 +117,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('books', '0008_instance_work_year_copy_unique_together'),
+        ('djiffy', '0003_extra_data_revisions'),
     ]
 
     operations = [
