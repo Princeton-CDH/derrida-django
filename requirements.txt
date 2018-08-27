@@ -3,7 +3,8 @@ mysqlclient
 django-compressor
 django-compressor-autoprefixer
 django-grappelli
-django-autocomplete-light
+#django-autocomplete-light
+django-autocomplete-light<3.3
 requests
 rdflib
 django-sortedm2m
