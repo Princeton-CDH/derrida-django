@@ -187,10 +187,33 @@ class InterventionListView(ListView):
                 form_opts.setdefault(key, val)
         self.form = self.form_class(form_opts)
 
+        # request facet counts and filter for solr
+        # form handles the solr name for the fields, but in the lookup below
+        # if it's a mapped field, i.e. instance_author ->
+        # instance, then map for the field value lookup (but not for solr fq).
         for facet_field in self.form.facet_fields:
+            form_field = facet_field
+            if facet_field in self.form.solr_facet_fields:
+                form_field = self.form.solr_facet_fields[facet_field]
+            field_values = form_opts.getlist(form_field, None)
+            # if the field has a value
+            if field_values:
+                # narrow adds to fq but not q and creates a tag to use
+                # in excluding later
+                sqs = sqs.narrow(
+                    '{!tag=%s}%s_exact:(%s)' %
+                    (
+                        facet_field,
+                        facet_field,
+                        ' OR '.join('"%s"' % val for val in field_values)
+                    )
+                )
             # sort by alpha instead of solr default of count
-            sqs = sqs.facet(facet_field, sort='index')
-
+            # facet adds to the list of generate facets but excludes
+            # so that OR behavior exists for counts within a filter rather
+            # than and
+            sqs = sqs.facet('{!ex=%s}%s_exact' % (
+                            facet_field, facet_field), sort='index')
         # form shouldn't normally be invalid since no fields are
         # required, but cleaned data isn't available until we validate
         if self.form.is_valid():
@@ -202,14 +225,6 @@ class InterventionListView(ListView):
         # filter solr query based on search options
         if search_opts.get('query', None):
             sqs = sqs.filter(text=search_opts['query'])
-
-        for facet in self.form.facet_inputs:
-            # check if a value is set for this facet
-            if facet in search_opts and search_opts[facet] and search_opts[facet][0]:
-                solr_facet = self.form.solr_field(facet)
-                # filter the query: facet matches any of the terms
-                sqs = sqs.filter(**{'%s__in' % solr_facet: search_opts[facet]})
-
         # request range facets
         # get max/min from database to specify range start & end values
         # set the aggregate queries for this particular query and their
