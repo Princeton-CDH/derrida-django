@@ -130,7 +130,6 @@ class InstanceListView(ListView):
         # filter solr query based on search options
         if search_opts.get('query', None):
             sqs = sqs.filter(content=Clean(search_opts['query']))
-        # no is extant filter for library; already restricted to extant items
         if search_opts.get('is_annotated', None):
             sqs = sqs.filter(is_annotated=search_opts['is_annotated'])
         if search_opts.get('is_extant', None):
