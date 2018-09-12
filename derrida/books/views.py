@@ -136,13 +136,6 @@ class InstanceListView(ListView):
             # than and
             sqs = sqs.facet('{!ex=%s}%s_exact' % (
                             facet_field, facet_field), sort='index')
-                            
-            # sort by alpha instead of solr default of count
-            # facet adds to the list of generate facets but excludes
-            # so that OR behavior exists for counts within a filter rather
-            # than and
-            sqs = sqs.facet('{!ex=%s}%s_exact' % (
-                            facet_field, facet_field), sort='index')
 
         # form shouldn't normally be invalid since no fields are
         # required, but cleaned data isn't available until we validate
