@@ -34,7 +34,17 @@ $(function() {
             return !this.value;
         })
         .prop('name', '');
-  });
+
+    $('.mdl-switch__input').each(function(i, element) {
+        if (!element.checked) {
+            var falseInput = $(element).clone().prop('checked', true).val('false')
+            $(".page-filter__form").append(falseInput)
+        }
+    })
+  })
+
+  // Submit the form immediately when a toggle filter is switched
+  $('.filter__section--toggles .mdl-switch__input').change(submitFilterForm)
 
   function initPageFilter() {
     var $pageFilter = $(".page-filter");
