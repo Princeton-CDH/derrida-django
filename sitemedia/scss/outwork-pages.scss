@@ -131,6 +131,8 @@
 }
 
 .outwork-list {
+  flex-direction: column;
+
   .collection__item.outwork {
     @include grid-column(4);
 
