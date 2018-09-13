@@ -517,6 +517,7 @@ class TestInterventionSolrViews(TestCase):
         response = self.client.get(intervention_list_url)
         assert response.status_code == 200
         assert 'object_list' in response.context
+        assert response.context['facets']
         assert isinstance(response.context['object_list'][0], SearchResult)
         assert len(response.context['object_list']) == \
             Intervention.objects.count()
@@ -561,6 +562,16 @@ class TestInterventionSolrViews(TestCase):
         # filter by annotated work author
         response = self.client.get(intervention_list_url, {'hand': ['Jacques Derrida']})
         assert len(response.context['object_list']) == 1
+
+        # filters should join choices using OR
+        # annotation_author has no zero counts, so if any are, then the join
+        # has been done using AND (and therefore only selecte authors) have
+        # counts
+        #
+        # counts are given as tuples of (name, count)
+        author = response.context['facets']['fields']['annotation_author']
+        for item in author:
+            assert item[1] != 0
 
         # filter by ink
         response = self.client.get(intervention_list_url, {'ink': ['blue ink']})

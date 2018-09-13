@@ -120,8 +120,16 @@ class TestInstanceViews(TestCase):
             extant_bks.filter(is_annotated=True).count()
         # multiple facets should return both
         response = self.client.get(list_view_url, {'pub_place': ['Paris', 'Pfullingen']})
-        # fixture has 12 published in Paris and 1 in Pfulligen
+        # fixture has 13 published in Paris and 1 in Pfulligen
         assert len(response.context['object_list']) == 14
+
+        # multiple facets should also return counts that are joined by OR within
+        # the same facet, if any of these are 0, it means the facets
+        # within the same field used AND logic
+        # all pub place counts are at least 1 and come as tuples of (name, count)
+        pub_place = response.context['facets']['fields']['pub_place']
+        for item in pub_place:
+            assert item[1] != 0
 
         # search for non-cited volume
         response = self.client.get(list_view_url, {'query': 'gelb', 'is_extant': True})
@@ -520,6 +528,8 @@ class TestReferenceViews(TestCase):
         assert response.context['total'] == 20
         self.assertContains(response, '20 Results',
             msg_prefix='total number of results displayed')
+        # facets should be set
+        assert response.context['facets']
         # reference details that should be present in the template
         ref = Reference.objects.first()
         # spot check template (tested more thoroughly in reference detail below)
@@ -577,6 +587,17 @@ class TestReferenceViews(TestCase):
         response = self.client.get(reference_list_url, {'author': authors})
         assert len(response.context['object_list']) == \
             Reference.objects.filter(instance__work__authors__authorized_name__in=authors).count()
+
+        # verify that author counts are being tallied within filter using
+        # OR not AND
+        # instance_author has no zero counts, so if any are, then the join
+        # has been done using AND (and therefore only selecte authors) have
+        # counts
+        #
+        # counts are given as tuples of (name, count)
+        instance_author = response.context['facets']['fields']['instance_author']
+        for item in instance_author:
+            assert item[1] != 0
 
         # sort by cited item title
         response = self.client.get(reference_list_url, {'order_by': 'cited_title'})

@@ -114,10 +114,28 @@ class InstanceListView(ListView):
                 form_opts.setdefault(key, val)
         self.form = self.form_class(form_opts)
 
-        # request facet counts from solr
+        # request facet counts and filter for solr
+        # form handles the solr name for the fields
         for facet_field in self.form.facet_fields:
+            field_values = form_opts.getlist(facet_field, None)
+            # if the field has a value
+            if field_values:
+                # narrow adds to fq but not q and creates a tag to use
+                # in excluding later
+                sqs = sqs.narrow(
+                    '{!tag=%s}%s_exact:(%s)' %
+                    (
+                        facet_field,
+                        facet_field,
+                        ' OR '.join('"%s"' % val for val in field_values)
+                    )
+                )
             # sort by alpha instead of solr default of count
-            sqs = sqs.facet(facet_field, sort='index')
+            # facet adds to the list of generate facets but excludes
+            # so that OR behavior exists for counts within a filter rather
+            # than and
+            sqs = sqs.facet('{!ex=%s}%s_exact' % (
+                            facet_field, facet_field), sort='index')
 
         # form shouldn't normally be invalid since no fields are
         # required, but cleaned data isn't available until we validate
@@ -135,14 +153,6 @@ class InstanceListView(ListView):
         if search_opts.get('is_extant', None):
             sqs = sqs.filter(is_extant=search_opts['is_extant'])
 
-        for facet in self.form.facet_inputs:
-            # check if a value is set for this facet
-            # NOTE: check if facet is set *and* if first value is non-empty,
-            # because a list with an empty string [''] evaluates as true
-            if facet in search_opts and search_opts[facet] and search_opts[facet][0]:
-                solr_facet = self.form.solr_field(facet)
-                # filter the query: facet matches any of the terms
-                sqs = sqs.filter(**{'%s__in' % solr_facet: search_opts[facet]})
 
         # request range facets
         # get max/min from database to specify range start & end values
@@ -248,10 +258,38 @@ class ReferenceListView(ListView):
 
         self.form = self.form_class(form_opts)
 
-        for facet_field in self.form.facet_fields:
-            # sort by alpha instead of solr default of count
-            sqs = sqs.facet(facet_field, sort='index')
+        # add facet fields to filter query and tag for exclusion in generating
+        # facets
 
+        # form handles the solr name for the fields, but in the lookup below
+        # if it's a mapped field, i.e. instance_author ->
+        # instance, then map for the field value lookup (but not for solr fq).
+        for facet_field in self.form.facet_fields:
+            form_field = facet_field
+            if facet_field in self.form.solr_facet_fields:
+                form_field = self.form.solr_facet_fields[facet_field]
+            field_values = form_opts.getlist(form_field, None)
+
+            # if the field has a value
+            if field_values:
+                # narrow adds to fq but not q and creates a tag to use
+                # in excluding later
+                sqs = sqs.narrow(
+                    '{!tag=%s}%s_exact:(%s)' %
+                    (
+                        facet_field,
+                        facet_field,
+                        ' OR '.join('"%s"' % val for val in field_values)
+                    )
+                )
+            # sort by alpha instead of solr default of count
+            # facet adds to the list of generate facets but excludes
+            # so that OR behavior exists for counts within a filter rather
+            # than and
+            sqs = sqs.facet('{!ex=%s}%s_exact' % (
+                            facet_field, facet_field), sort='index')
+
+        # request facet counts and filter for solr
         # form shouldn't normally be invalid since no fields are
         # required, but cleaned data isn't available until we validate
         if self.form.is_valid():
@@ -270,14 +308,6 @@ class ReferenceListView(ListView):
             sqs = sqs.filter(instance_is_annotated=search_opts['is_annotated'])
         if search_opts.get('corresponding_intervention', None):
             sqs = sqs.filter(corresponding_intervention=search_opts['corresponding_intervention'])
-
-        # look over form fields that map to facets
-        for facet in self.form.facet_inputs:
-            # check if a value is set for this facet
-            if facet in search_opts and search_opts[facet] and search_opts[facet][0]:
-                solr_facet = self.form.solr_field(facet)
-                # filter the query: facet matches any of the terms
-                sqs = sqs.filter(**{'%s__in' % solr_facet: search_opts[facet]})
         # request range facets for References, adapated from logic
         # above for Instances
         # get max/min from database to specify range start & end values
