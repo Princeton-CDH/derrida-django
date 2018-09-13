@@ -35,6 +35,11 @@ $(function() {
         })
         .prop('name', '');
 
+    /**
+     * If the switch inputs are toggled off, create a fake input to send that
+     * information to the backend - otherwise it won't be sent, as they are
+     * checkboxes
+     */
     $('.mdl-switch__input').each(function(i, element) {
         if (!element.checked) {
             var falseInput = $(element).clone().prop('checked', true).val('false')
