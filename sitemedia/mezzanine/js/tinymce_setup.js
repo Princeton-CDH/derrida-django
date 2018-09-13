@@ -72,7 +72,7 @@
         // because the base .scss file is sitemedia/scss/style.scss.
         var mainSheet;
         $.each(document.styleSheets, function(_, sheet) {
-            if (sheet.href && sheet.href.match(/style/g)) {
+            if (sheet.href && sheet.href.match(/style\.(.*)\.css/)) {
                 mainSheet = sheet;
             }
         })
