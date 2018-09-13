@@ -497,7 +497,6 @@ $component-padding: 4rem;
     font-size: 10px;
     line-height: 1;
     margin-top: 3px;
-    @include faded-link($medium-grey);
 
     &::after {
         content: "";
