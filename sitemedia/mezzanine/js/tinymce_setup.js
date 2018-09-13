@@ -68,11 +68,10 @@
     // (templates/admin/change_form.html).
     function get_editor_stylesheet() {
         // We don't know what the name of the compressed stylesheet will be,
-        // but we know it will have "style" somewhere in the href attribute,
-        // because the base .scss file is sitemedia/scss/style.scss.
+        // but we know it will have "CACHE" somewhere in the href attribute.
         var mainSheet;
         $.each(document.styleSheets, function(_, sheet) {
-            if (sheet.href && sheet.href.match(/style\.(.*)\.css/)) {
+            if (sheet.href && sheet.href.match(/CACHE/g)) {
                 mainSheet = sheet;
             }
         })

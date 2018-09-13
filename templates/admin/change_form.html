@@ -19,7 +19,7 @@
     */
     (function($) {
         $.each(document.styleSheets, function(_, sheet) {
-            if (sheet.href && sheet.href.match(/style\.(.*)\.css/)) sheet.disabled = true
+            if (sheet.href && sheet.href.match(/CACHE/g)) sheet.disabled = true
         })
     })(window.django ? django.jQuery : jQuery);
     </script>
