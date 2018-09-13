@@ -119,6 +119,7 @@ class TestInstanceViews(TestCase):
         assert len(response.context['object_list']) == \
             extant_bks.filter(is_annotated=True).count()
         # multiple facets should return both
+        response = self.client.get(list_view_url, {'pub_place': ['Paris', 'Pfullingen']})
         # fixture has 13 published in Paris and 1 in Pfulligen
         assert len(response.context['object_list']) == 14
 
