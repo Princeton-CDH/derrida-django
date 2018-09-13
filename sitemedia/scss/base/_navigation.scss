@@ -5,6 +5,19 @@
   background-color: $header-background-color;
   color: $header-text-color;
   z-index: 10;
+  position: fixed;
+
+  & ~ main {
+      margin-top: 56px;
+  }
+
+  @media screen and (min-width: $medium-breakpoint) {
+      position: relative;
+
+      & ~ main {
+          margin-top: 0;
+      }
+  }
 
   @include grid-media($xlarge-viewport-grid) {
     position: fixed;
