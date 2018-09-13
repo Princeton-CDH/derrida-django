@@ -50,6 +50,12 @@ $(function() {
 
   // Submit the form immediately when a toggle filter is switched
   $('.filter__section--toggles .mdl-switch__input').change(submitFilterForm)
+  
+  // Make floating labels for filters clickable
+  $('.mdl-textfield--floating-label').click(function(e) {
+      e.stopPropagation()
+      $(e.currentTarget).find('.mdl-textfield__input').focus()
+  })
 
   function initPageFilter() {
     var $pageFilter = $(".page-filter");
