@@ -123,6 +123,7 @@
         var $annotationSwitch = $("#annotations-switch"),
             $zoomSwitch = $("#zoom-switch"),
             $annotationCards = $(".annotation-cards"),
+            $sideBar = $(".gallery-image-view__header"),
             $container = $(".gallery-image-view");
         if (value === "annotations") {
           $annotationSection.removeClass("is-hidden");
@@ -133,6 +134,9 @@
           $zoomSwitch.removeClass("is-checked");
           $annotationSwitch.addClass("is-checked");
 
+          // bring back the sidebar if hidden when switching to annotations
+          if ($sideBar.hasClass('is-hidden')) toggleSideBarFn($toggle);
+
         } else if (value === "zoom") {
           $annotationSection.addClass("is-hidden");
           $annotationCards.addClass("is-hidden");
@@ -142,10 +146,12 @@
           $annotationSwitch.removeClass("is-checked");
           $zoomSwitch.addClass("is-checked");
 
+          // put the sidebar away by default when switching to deep zoom
+          if (!$sideBar.hasClass('is-hidden')) toggleSideBarFn($toggle);
+
         } else {
           return false;
         }
-        toggleSideBarFn($toggle); // put the sidebar away by default when switching to deep zoom
       }
 
       setTimeout(toggleViews, 100);
