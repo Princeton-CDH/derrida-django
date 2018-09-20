@@ -23,7 +23,8 @@ class Outwork(Page, RichText):
             year = self.publish_date.year
         else:
             year = self.created.year
-        return '/'.join(['outwork', str(year), slug])
+        # remove the extra '/outwork/' if a child of the outwork page
+        return '/'.join(['outwork', str(year), slug]).replace('/outwork/', '/')
 
     def is_published(self):
         '''Return whether the :class:`Outwork` is published.'''
