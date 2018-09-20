@@ -1,0 +1,26 @@
+{% extends "admin/change_form.html" %}
+{% load static compress %}
+
+{% block extrastyle %}
+    {% compress css %}
+        <link type="text/x-scss" rel="stylesheet" href="{% static 'scss/style.scss' %}" charset="utf-8"/>
+    {% endcompress %}
+{% endblock %}
+
+{% block extrahead %}
+    <script>
+    /*
+    We use "compress" above because we need django-compressor to generate a
+    stylesheet for us to apply to the tinyMCE preview. Once that happens, we
+    need to target the stylesheet and turn it off - we are only interested
+    in its href attribute, not in applying it to the whole page.
+    According to MDN, setting the "disabled" attr directly is not
+    recommended, so we use js to disable it immediately.
+    */
+    (function($) {
+        $.each(document.styleSheets, function(_, sheet) {
+            if (sheet.href && sheet.href.match(/CACHE/g)) sheet.disabled = true
+        })
+    })(window.django ? django.jQuery : jQuery);
+    </script>
+{% endblock %}
