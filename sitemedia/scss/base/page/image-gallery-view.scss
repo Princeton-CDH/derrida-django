@@ -5,7 +5,6 @@
     min-height: 54px; // override material design 64px
 
     @include grid-media($large-medium-viewport-grid) {
-      background: linear-gradient(to right, $white 0%, $white 300px, transparentize($white, 1) 300px, transparentize($white, 1) 100%);
       background-position: -300px;
       @include transition(background-position 20ms $base-timing);
 
@@ -88,7 +87,6 @@
 
     @include grid-media($large-medium-viewport-grid) {
       text-align: right;
-      padding-right: 10%;
     }
   }
 
