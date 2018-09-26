@@ -78,6 +78,11 @@ class Person(Notable, DateRange):
         '''Last name, as extracted from authorized name'''
         return self.authorized_name.split(', ', 1)[0]
 
+    @property
+    def firstname(self):
+        '''First name, as extracted from authorized name'''
+        return self.authorized_name.split(',', 1)[1].strip() if ',' in self.authorized_name else ''
+
 
 class Residence(Notable, DateRange):
     '''A residence where a person lived at some point in time'''

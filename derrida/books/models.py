@@ -1,17 +1,18 @@
 import json
-import re
 import string
 
 from django.db import models
+from django.conf import settings
 from django.contrib.contenttypes.fields import GenericRelation
 from django.core.validators import RegexValidator
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, ImproperlyConfigured
 from django.urls import reverse
 from django.utils.safestring import mark_safe
 from django.utils.text import slugify
 from djiffy.models import Canvas, Manifest
 from sortedm2m.fields import SortedManyToManyField
 from unidecode import unidecode
+from pyzotero import zotero
 
 from derrida.common.models import Named, Notable, DateRange
 from derrida.places.models import Place
@@ -186,15 +187,7 @@ class Instance(Notable):
     pub_place = SortedManyToManyField(Place,
         verbose_name='Place(s) of Publication', blank=True)
     #: Zotero identifier
-    zotero_id = models.CharField(
-        max_length=255,
-        # Add validator for any Zotero IDs entered manually by form.
-        validators=[RegexValidator(
-                        r'\W',
-                        inverse_match=True,
-                        message='Zotero IDs must be alphanumeric.'
-                    )]
-    )
+    zotero_id = models.CharField(max_length=8, default='', blank=True)
     # identifying slug for use in get_absolute_url, indexed for speed
     slug = models.SlugField(max_length=255,
                             unique=True,
@@ -565,6 +558,69 @@ class Instance(Notable):
                        .exclude(pk=self.pk) \
                        .exclude(digital_edition__isnull=True)
 
+    def as_zotero_item(self, library):
+        '''Serialize the instance as an item suitable for export to a Zotero
+        library. Requires a :class:`pyzotero.zotero.Zotero` instance for API
+        calls to retrieve item type templates.'''
+        # get the item template based on type & add some specific metadata
+        if self.item_type == 'Journal Article':
+            template = library.item_template('journalArticle')
+            template['publicationTitle'] = self.journal.name
+        elif self.item_type == 'Book Section':
+            template = library.item_template('bookSection')
+            template['bookTitle'] = self.work.short_title
+        else:
+            template = library.item_template('book')
+        # zotero id, if set (API will reject if it's set to an empty string)
+        if self.zotero_id:
+            template['key'] = self.zotero_id
+        # metadata from related work
+        template['title'] = self.alternate_title or self.work.primary_title
+        template['shortTitle'] = self.work.short_title
+        template['date'] = self.copyright_year if self.copyright_year else ''
+        template['creators'] = [] # clear out the default one first
+        for author in self.work.authors.all():
+            template['creators'].append({
+                'creatorType': 'author',
+                'firstName': author.firstname,
+                'lastName': author.lastname
+            })
+        # TODO add editors & translators
+        # retrieve collection zotero ids
+        template['collections'] = [derrida_work.zotero_id for derrida_work in self.cited_in.all()]
+        # metadata from instance
+        template['publisher'] = self.publisher.name if self.publisher else ''
+        # page range
+        if self.start_page and self.end_page:
+            template['pages'] = '-'.join((self.start_page, self.end_page))
+        # add boolean fields as tags
+        if self.is_extant:
+            template['tags'].append({
+                'tag': 'in library'
+            })
+        if self.is_annotated:
+            template['tags'].append({
+                'tag': 'annotated'
+            })
+        if self.is_translation:
+            template['tags'].append({
+                'tag': 'translation'
+            })
+        if self.has_dedication:
+            template['tags'].append({
+                'tag': 'dedication'
+            })
+        if self.has_insertions:
+            template['tags'].append({
+                'tag': 'insertions'
+            })
+        # try to use primary language, otherwise pick first language
+        language = self.languages.filter(instancelanguage__is_primary=True).first()
+        if not language and self.languages.exists():
+            language = self.languages.first()
+        template['language'] = language.code if language else ''
+        return template
+
 
 class WorkSubject(Notable):
     '''Through-model for work-subject relationship, to allow designating
@@ -697,6 +753,8 @@ class DerridaWork(Notable):
     #: slug for use in URLs
     slug = models.SlugField(
         help_text='slug for use in URLs (changing after creation will break URLs)')
+    #: zotero collection ID for use in populating library
+    zotero_id = models.CharField(max_length=8, default='', blank=True)
 
     def __str__(self):
         return self.short_title
