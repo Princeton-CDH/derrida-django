@@ -1,11 +1,14 @@
-from unittest.mock import patch
 from io import StringIO
+from unittest.mock import MagicMock, patch
 
-from django.test import TestCase
+from django.core.management.base import CommandError
+from django.db.models import QuerySet
+from django.test import TestCase, override_settings
 from djiffy.models import Manifest
+from pytest import raises
 
-from derrida.books.models import Instance
-from derrida.books.management.commands import import_digitaleds
+from derrida.books.management.commands import export_zotero, import_digitaleds
+from derrida.books.models import DerridaWork, Instance
 
 
 class TestManifestImporter(TestCase):
@@ -62,7 +65,7 @@ class TestImportDigitalEds(TestCase):
 
     def setUp(self):
         self.cmd = import_digitaleds.Command()
-        self. cmd.stdout = StringIO()
+        self.cmd.stdout = StringIO()
 
     def test_command(self, mockimporter):
         # normal file/uri
@@ -99,3 +102,59 @@ class TestImportDigitalEds(TestCase):
         self.cmd.summarize({'urls': 3, 'manifests': 2, 'nomatch': 1})
         output = self.cmd.stdout.getvalue()
         assert 'Manifests not matched to library work instances: 1' in output
+
+@patch('pyzotero.zotero.Zotero')
+@override_settings(ZOTERO_API_KEY='foo', ZOTERO_LIBRARY_ID='bar')
+class TestExportZotero(TestCase):
+    fixtures = ['sample_work_data.json']
+    
+    def setUp(self):
+        self.cmd = export_zotero.Command()
+        self.cmd.stdout = StringIO()
+
+    def test_handle(self, zotero):
+        self.cmd.create_collections = MagicMock()
+        self.cmd.create_items = MagicMock()
+        # API key is required
+        with self.settings(ZOTERO_API_KEY=None):
+            with raises(CommandError):
+                self.cmd.handle()
+                output = self.cmd.stdout.getvalue()
+                assert 'API key must be set' in output
+        # Zotero library ID is required
+        with self.settings(ZOTERO_API_KEY='foo', ZOTERO_LIBRARY_ID=None):
+            with raises(CommandError):
+                self.cmd.handle()
+                output = self.cmd.stdout.getvalue()
+                assert 'library ID must be set' in output
+        # Should initialize a library with provided values
+        self.cmd.handle()
+        assert zotero.called_once_with(('foo', 'group', 'bar'))
+        # Should call create_collections with new works
+        dlg = DerridaWork.objects.get(pk=1) # no zotero id ("new")
+        assert self.cmd.create_collections.called_once_with(QuerySet(dlg))
+        # Should call create_items with all cited instances
+        assert self.cmd.create_items.called_once_with(Instance.objects.all())
+    
+    def test_create_collections(self, zotero):
+        # Should report if nothing in queryset
+        self.cmd.create_collections(DerridaWork.objects.none())
+        output = self.cmd.stdout.getvalue()
+        assert 'No collections' in output
+        # Should output how many new works were provided
+        self.cmd.library = MagicMock()
+        self.cmd.create_collections(DerridaWork.objects.all())
+        output = self.cmd.stdout.getvalue()
+        assert 'Found 2 new Derrida works' in output
+        # Should call create_collections with new work data
+        # Should save returned zotero IDs to the works
+
+    @override_settings(ZOTERO_API_KEY='foo', ZOTERO_LIBRARY_ID='bar')
+    def test_create_items(self, zotero):
+        # Should report if nothing in queryset
+        # Should output how many instances were provided
+        # Should convert instances to zotero items
+        # Should call create_items with the item data
+        # Should save returned zotero IDs to the instances
+        # Should output run statistics
+        pass

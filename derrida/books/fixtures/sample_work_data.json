@@ -98,6 +98,18 @@
         }
     },
     {
+        "model": "books.derridawork",
+        "pk": 2,
+        "fields": {
+            "notes": "fake derrida work for testing",
+            "short_title": "De la grammatologie 2",
+            "full_citation": "Placeholder citation",
+            "is_primary": false,
+            "slug": "de-la-grammatologie-2",
+            "zotero_id": "GHIJKL"
+        }
+    },
+    {
         "model": "books.work",
         "pk": 1,
         "fields": {
