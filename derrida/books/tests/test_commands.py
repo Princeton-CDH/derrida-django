@@ -4,7 +4,7 @@ from io import StringIO
 from django.test import TestCase
 from djiffy.models import Manifest
 
-from derrida.books.models import Instance
+from derrida.books.models import Instance, Reference
 from derrida.books.management.commands import import_digitaleds, \
     reference_data
 
@@ -103,6 +103,7 @@ class TestImportDigitalEds(TestCase):
 
 
 class TestReferenceData(TestCase):
+    fixtures = ['test_references']
 
     def setUp(self):
         self.cmd = reference_data.Command()
@@ -130,3 +131,24 @@ class TestReferenceData(TestCase):
         assert 'page label' in flat_nested
         assert flat_nested['page id'] == nested['page']['id']
         assert flat_nested['page label'] == nested['page']['label']
+
+    def test_reference_data(self):
+        # reference with no corresponding intervention
+        ref = Reference.objects.filter(interventions__isnull=True).first()
+        refdata = self.cmd.reference_data(ref)
+        assert refdata['page'] == ref.derridawork_page
+        assert refdata['page location'] == ref.derridawork_pageloc
+        assert refdata['book']['id'] == ref.instance.id  # TEMPORARY
+        assert refdata['book']['title'] == ref.instance.display_title()
+        assert refdata['book']['page'] == ref.book_page
+        assert refdata['type'] == str(ref.reference_type)
+        assert refdata['anchor text'] == ref.anchor_text
+        assert not refdata['interventions']
+
+        # reference *with* corresponding intervention
+        ref = Reference.objects.filter(interventions__isnull=False).first()
+        refdata = self.cmd.reference_data(ref)
+        # should be referenced by uri
+        for intervention in ref.interventions.all():
+            assert intervention.get_uri() in refdata['interventions']
+

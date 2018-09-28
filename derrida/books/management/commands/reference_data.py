@@ -20,29 +20,12 @@ class Command(BaseCommand):
 
             # aggregate reference data to be exported for use in generating
             # CSV and JSON output
-            refdata = []
-            for reference in derrida_work.reference_set.all():
-                refdata.append({
-                    'page': reference.derridawork_page,
-                    'page location': reference.derridawork_pageloc,
-                    'book': {
-                        'id': reference.instance.id, ## provisional; needs URI
-                        'title': reference.instance.display_title(),
-                        'page': reference.book_page,
-                    },
-                    'type': str(reference.reference_type),
-                    'anchor text': reference.anchor_text,
-                    # use intervention URI as identifier
-                    'interventions': [
-                        intervention.get_uri()
-                        for intervention in reference.interventions.all()
-                    ]
-                })
+            refdata = [self.reference_data(ref)
+                       for ref in derrida_work.reference_set.all()]
 
             # list of dictionaries can be output as is for JSON export
             with open('{}.json'.format(base_filename), 'w') as jsonfile:
                 json.dump(refdata, jsonfile, indent=2)
-
 
             # generate CSV export
             with open('{}.csv'.format(base_filename), 'w') as csvfile:
@@ -59,6 +42,26 @@ class Command(BaseCommand):
 
                 for reference in refdata:
                     csvwriter.writerow(self.flatten_dict(reference))
+
+    def reference_data(self, reference):
+        '''Generate a dictionary of data to export for a single
+         :class:`~derrida.books.models.Reference` object'''
+        return {
+            'page': reference.derridawork_page,
+            'page location': reference.derridawork_pageloc,
+            'book': {
+                'id': reference.instance.id, ## provisional; needs URI
+                'title': reference.instance.display_title(),
+                'page': reference.book_page,
+            },
+            'type': str(reference.reference_type),
+            'anchor text': reference.anchor_text,
+            # use intervention URI as identifier
+            'interventions': [
+                intervention.get_uri()
+                for intervention in reference.interventions.all()
+            ]
+        }
 
     def flatten_dict(self, data):
         '''Flatten a dictionary with nested dictionaries or lists into a
