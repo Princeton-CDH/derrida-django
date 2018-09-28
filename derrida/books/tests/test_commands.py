@@ -1,10 +1,16 @@
-from unittest.mock import patch
+import codecs
+import csv
 from io import StringIO
+import json
+from unittest.mock import patch
+import os.path
+import tempfile
 
+from django.core.management import call_command
 from django.test import TestCase
 from djiffy.models import Manifest
 
-from derrida.books.models import Instance, Reference
+from derrida.books.models import Instance, Reference, DerridaWork
 from derrida.books.management.commands import import_digitaleds, \
     reference_data
 
@@ -152,3 +158,47 @@ class TestReferenceData(TestCase):
         for intervention in ref.interventions.all():
             assert intervention.get_uri() in refdata['interventions']
 
+    def test_command_line(self):
+        # test calling via command line with args
+
+        # generate output in a temporary directory
+        with tempfile.TemporaryDirectory(prefix='derrida-refs-') as outputdir:
+            stdout = StringIO()
+            call_command('reference_data', directory=outputdir, stdout=stdout)
+
+            derrida_work = DerridaWork.objects.first()
+            references = Reference.objects.filter(derridawork__id=derrida_work.id)
+
+            base_filename = os.path.join(outputdir,
+                                         '%s_references' % derrida_work.slug)
+
+            # inspect JSON output
+            with open('{}.json'.format(base_filename)) as jsonfile:
+                jsondata = json.load(jsonfile)
+                # should be one entry for each reference
+                assert len(jsondata) == references.count()
+                # spot check the data included
+                assert jsondata[0]['page'] == references[0].derridawork_page
+                assert jsondata[0]['page location'] == references[0].derridawork_pageloc
+                assert jsondata[3]['page'] == references[3].derridawork_page
+                assert jsondata[3]['page location'] == references[3].derridawork_pageloc
+
+            # inspect CSV output
+            with open('{}.csv'.format(base_filename)) as csvfile:
+                # first byte shoudl be UTF-8 byte order mark
+                assert csvfile.read(1) == codecs.BOM_UTF8.decode()
+
+                # then read as CSV
+                csvreader = csv.reader(csvfile)
+
+                rows = [row for row in csvreader]
+                # row count should be number of refs + header
+                assert len(rows) == references.count() + 1
+                assert rows[0] == self.cmd.csv_fields
+                # spot check the data
+                assert str(references[0].derridawork_page) in rows[1]
+                assert references[0].derridawork_pageloc in rows[1]
+                assert references[0].instance.display_title() in rows[1]
+                assert str(references[0].book_page) in rows[1]
+                assert references[0].anchor_text in rows[1]
+                assert str(references[0].reference_type) in rows[1]

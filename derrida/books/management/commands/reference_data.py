@@ -1,6 +1,7 @@
 import codecs
 import csv
 import json
+import os.path
 
 from django.core.management.base import BaseCommand
 
@@ -11,10 +12,25 @@ class Command(BaseCommand):
     '''Export reference data for each Derrida Work as CSV and JSON'''
     help = __doc__
 
+    #: fields for CSV output
+    csv_fields = [
+        'page', 'page location', 'book title', 'book id',
+        'book page', 'type',
+        'anchor text', 'interventions'
+    ]
+
+    def add_arguments(self, parser):
+        parser.add_argument(
+            '-d', '--directory',
+            help='Specify the directory where files should be generated')
+
     def handle(self, *args, **kwargs):
 
         for derrida_work in DerridaWork.objects.all():
             base_filename = '%s_references' % derrida_work.slug
+            if kwargs['directory']:
+                base_filename = os.path.join(kwargs['directory'], base_filename)
+
             # generate filenames based on slug ?
             # Can we use the same data to generate both CSV and JSON?
 
@@ -32,12 +48,7 @@ class Command(BaseCommand):
                 # write utf-8 byte order mark at the beginning of the file
                 csvfile.write(codecs.BOM_UTF8.decode())
 
-                fieldnames = [
-                    'page', 'page location', 'book title', 'book id',
-                    'book page', 'type',
-                    'anchor text', 'interventions'
-                ]
-                csvwriter = csv.DictWriter(csvfile, fieldnames=fieldnames)
+                csvwriter = csv.DictWriter(csvfile, fieldnames=self.csv_fields)
                 csvwriter.writeheader()
 
                 for reference in refdata:
