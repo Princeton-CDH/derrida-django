@@ -559,8 +559,8 @@ class Instance(Notable):
     def as_zotero_item(self, library):
         '''Serialize the instance as an item suitable for export to a Zotero
         library. Requires a :class:`pyzotero.zotero.Zotero` instance for API
-        calls to retrieve item type templates.'''
-        # get the item template based on type & add some specific metadata
+        calls to retrieve item type templates and creator types.'''
+        # get the item template/creator types based on item type
         if self.item_type == 'Journal Article':
             template = library.item_template('journalArticle')
             creator_types = library.item_creator_types('journalArticle')
@@ -594,7 +594,7 @@ class Instance(Notable):
         # all creators that are not authors
         for creator in self.instancecreator_set.exclude(creator_type=author):
             # match on localized name, because we use it
-            if creator.creator_type.name in type_names: 
+            if creator.creator_type.name in type_names:
                 template['creators'].append({
                     # ...but send the "type name" (not localized)
                     'creatorType': type_names[creator.creator_type.name],

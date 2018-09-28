@@ -26,3 +26,4 @@ django-fullurl
 django-apptemplates
 roman
 pyzotero
+progressbar2
