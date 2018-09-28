@@ -1,242 +1,509 @@
 [
-{
-  "model": "books.language",
-  "pk": 1,
-  "fields": {
-    "name": "French",
-    "notes": "",
-    "uri": ""
-  }
-},
-{
-  "model": "books.language",
-  "pk": 2,
-  "fields": {
-    "name": "German",
-    "notes": "",
-    "uri": ""
-  }
-},
-{
-  "model": "books.language",
-  "pk": 3,
-  "fields": {
-    "name": "English",
-    "notes": "",
-    "uri": ""
-  }
-},
-{
-  "model": "books.publisher",
-  "pk": 1,
-  "fields": {
-    "name": "Presses universitaires de France",
-    "notes": ""
-  }
-},
-{
-  "model": "books.publisher",
-  "pk": 2,
-  "fields": {
-    "name": "PUF",
-    "notes": ""
-  }
-},
-{
-  "model": "books.publisher",
-  "pk": 3,
-  "fields": {
-    "name": "Baconni\u00e8re",
-    "notes": ""
-  }
-},
-{
-  "model": "books.owninginstitution",
-  "pk": 1,
-  "fields": {
-    "name": "",
-    "notes": "",
-    "short_name": "PUL",
-    "contact_info": "http://library.princeton.edu/help/contact-us",
-    "place": 1
-  }
-},
-{
-  "model": "books.journal",
-  "pk": 1,
-  "fields": {
-    "name": "Critique",
-    "notes": ""
-  }
-},
-{
-  "model": "books.work",
-  "pk": 1,
-  "fields": {
-    "notes": "",
-    "primary_title": "La vie familiale et sociale des Indiens Nambikwara",
-    "short_title": "La vie familiale",
-    "year": 1948,
-    "uri": "",
-    "authors": [
-      44
-    ]
-  }
-},
-{
-  "model": "books.instance",
-  "pk": 1,
-  "fields": {
-    "notes": "",
-    "work": 1,
-    "alternate_title": "",
-    "publisher": null,
-    "zotero_id": "",
-    "is_extant": false,
-    "is_annotated": false,
-    "is_translation": false,
-    "dimensions": "",
-    "copyright_year": 1948,
-    "journal": null,
-    "print_date": null,
-    "print_date_day_known": true,
-    "print_date_month_known": true,
-    "print_date_year_known": true,
-    "uri": "http://findingaids.princeton.edu/collections/RBD1/c9157",
-    "has_dedication": false,
-    "has_insertions": false,
-    "start_page": null,
-    "end_page": null,
-    "collected_in": null,
-    "pub_place": [],
-    "cited_in": [],
-    "slug": "levi-strauss-la-vie-familiale-et-sociale-des-indiens-nambikwara-1948"
-  }
-},
-{
-  "model": "books.instancecatalogue",
-  "pk": 1,
-  "fields": {
-    "notes": "",
-    "start_year": null,
-    "end_year": null,
-    "institution": 1,
-    "instance": 1,
-    "is_current": true,
-    "call_number": null
-  }
-},
-{
-  "model": "books.creatortype",
-  "pk": 1,
-  "fields": {
-    "name": "Author",
-    "notes": "",
-    "uri": null
-  }
-},
-{
-  "model": "books.creatortype",
-  "pk": 2,
-  "fields": {
-    "name": "Editor",
-    "notes": "",
-    "uri": null
-  }
-},
-{
-  "model": "books.creatortype",
-  "pk": 3,
-  "fields": {
-    "name": "Series Editor",
-    "notes": "",
-    "uri": null
-  }
-},
-{
-  "model": "books.creatortype",
-  "pk": 4,
-  "fields": {
-    "name": "Translator",
-    "notes": "",
-    "uri": null
-  }
-},
-{
-  "model": "books.referencetype",
-  "pk": 1,
-  "fields": {
-    "name": "Citation",
-    "notes": ""
-  }
-},
-{
-  "model": "books.referencetype",
-  "pk": 2,
-  "fields": {
-    "name": "Quotation",
-    "notes": ""
-  }
-},
-{
-  "model": "books.referencetype",
-  "pk": 3,
-  "fields": {
-    "name": "Epigraph",
-    "notes": ""
-  }
-},
-{
-  "model": "books.referencetype",
-  "pk": 4,
-  "fields": {
-    "name": "Footnote",
-    "notes": ""
-  }
-},
-{
-  "model": "books.referencetype",
-  "pk": 5,
-  "fields": {
-    "name": "Unset",
-    "notes": ""
-  }
-},
-{
-  "model": "places.place",
-  "pk": 1,
-  "fields": {
-    "name": "Princeton, NJ",
-    "notes": "",
-    "geonames_id": "http://sws.geonames.org/5102922/",
-    "latitude": 40.34872,
-    "longitude": -74.65905
-  }
-},
-{
-  "model": "people.person",
-  "pk": 1,
-  "fields": {
-    "notes": "",
-    "start_year": null,
-    "end_year": null,
-    "authorized_name": "Derrida, Jacques",
-    "viaf_id": "https://viaf.org/viaf/88958529/",
-    "sort_name": "",
-    "family_group": ""
-  }
-},
-{
-  "model": "people.person",
-  "pk": 44,
-  "fields": {
-    "notes": "",
-    "start_year": null,
-    "end_year": null,
-    "authorized_name": "L\u00e9vi-Strauss",
-    "viaf_id": "https://viaf.org/viaf/102346347/",
-    "sort_name": "",
-    "family_group": ""
-  }
-}
+    {
+        "model": "books.language",
+        "pk": 1,
+        "fields": {
+            "name": "French",
+            "notes": "",
+            "uri": "",
+            "code": "fr"
+        }
+    },
+    {
+        "model": "books.language",
+        "pk": 2,
+        "fields": {
+            "name": "German",
+            "notes": "",
+            "uri": ""
+        }
+    },
+    {
+        "model": "books.language",
+        "pk": 3,
+        "fields": {
+            "name": "English",
+            "notes": "",
+            "uri": ""
+        }
+    },
+    {
+        "model": "books.publisher",
+        "pk": 1,
+        "fields": {
+            "name": "Presses universitaires de France",
+            "notes": ""
+        }
+    },
+    {
+        "model": "books.publisher",
+        "pk": 2,
+        "fields": {
+            "name": "PUF",
+            "notes": ""
+        }
+    },
+    {
+        "model": "books.publisher",
+        "pk": 3,
+        "fields": {
+            "name": "Baconni\u00e8re",
+            "notes": ""
+        }
+    },
+    {
+        "model": "books.publisher",
+        "pk": 6,
+        "fields": {
+            "name": "Armand Colin",
+            "notes": ""
+        }
+    },
+    {
+        "model": "books.publisher",
+        "pk": 10,
+        "fields": {
+            "name": "Plon",
+            "notes": ""
+        }
+    },
+    {
+        "model": "books.owninginstitution",
+        "pk": 1,
+        "fields": {
+            "name": "",
+            "notes": "",
+            "short_name": "PUL",
+            "contact_info": "http://library.princeton.edu/help/contact-us",
+            "place": 1
+        }
+    },
+    {
+        "model": "books.journal",
+        "pk": 1,
+        "fields": {
+            "name": "Critique",
+            "notes": ""
+        }
+    },
+    {
+        "model": "books.derridawork",
+        "pk": 1,
+        "fields": {
+            "notes": "",
+            "short_title": "De la grammatologie",
+            "full_citation": "Placeholder citation",
+            "is_primary": false,
+            "slug": "de-la-grammatologie"
+        }
+    },
+    {
+        "model": "books.work",
+        "pk": 1,
+        "fields": {
+            "notes": "",
+            "primary_title": "La vie familiale et sociale des Indiens Nambikwara",
+            "short_title": "La vie familiale",
+            "year": 1948,
+            "uri": "",
+            "authors": [
+                44
+            ]
+        }
+    },
+    {
+        "model": "books.work",
+        "pk": 166,
+        "fields": {
+            "notes": "In Diog\u00e8ne, LI, p. 42",
+            "primary_title": "Le Mot",
+            "short_title": "Le Mot",
+            "year": 1965,
+            "uri": "",
+            "authors": [
+                23
+            ]
+        }
+    },
+    {
+        "model": "books.work",
+        "pk": 134,
+        "fields": {
+            "notes": "",
+            "primary_title": "Tristes Tropiques",
+            "short_title": "Tristes Tropiques",
+            "year": 1955,
+            "uri": "",
+            "authors": [
+                44
+            ]
+        }
+    },
+    {
+        "model": "books.work",
+        "pk": 2,
+        "fields": {
+            "notes": "",
+            "primary_title": "L'Ecriture et la psychologie des peuples: actes de colloque",
+            "short_title": "L'Ecriture et la psychologie des peuples: actes de colloque",
+            "year": 1963,
+            "uri": "",
+            "authors": [
+                152,
+                157,
+                151,
+                150,
+                148,
+                143,
+                145,
+                147,
+                158,
+                153,
+                155,
+                146,
+                142,
+                149,
+                144,
+                154,
+                156
+            ]
+        }
+    },
+    {
+        "model": "books.instance",
+        "pk": 1,
+        "fields": {
+            "notes": "",
+            "work": 1,
+            "alternate_title": "",
+            "publisher": null,
+            "zotero_id": "",
+            "is_extant": false,
+            "is_annotated": false,
+            "is_translation": false,
+            "dimensions": "",
+            "copyright_year": 1948,
+            "journal": null,
+            "print_date": null,
+            "print_date_day_known": true,
+            "print_date_month_known": true,
+            "print_date_year_known": true,
+            "uri": "http://findingaids.princeton.edu/collections/RBD1/c9157",
+            "has_dedication": false,
+            "has_insertions": false,
+            "start_page": null,
+            "end_page": null,
+            "collected_in": null,
+            "pub_place": [],
+            "cited_in": [],
+            "slug": "levi-strauss-la-vie-familiale-et-sociale-des-indiens-nambikwara-1948"
+        }
+    },
+    {
+        "model": "books.instancecatalogue",
+        "pk": 1,
+        "fields": {
+            "notes": "",
+            "start_year": null,
+            "end_year": null,
+            "institution": 1,
+            "instance": 1,
+            "is_current": true,
+            "call_number": null
+        }
+    },
+    {
+        "model": "books.creatortype",
+        "pk": 1,
+        "fields": {
+            "name": "Author",
+            "notes": "",
+            "uri": null
+        }
+    },
+    {
+        "model": "books.creatortype",
+        "pk": 2,
+        "fields": {
+            "name": "Editor",
+            "notes": "",
+            "uri": null
+        }
+    },
+    {
+        "model": "books.creatortype",
+        "pk": 3,
+        "fields": {
+            "name": "Series Editor",
+            "notes": "",
+            "uri": null
+        }
+    },
+    {
+        "model": "books.creatortype",
+        "pk": 4,
+        "fields": {
+            "name": "Translator",
+            "notes": "",
+            "uri": null
+        }
+    },
+    {
+        "model": "books.referencetype",
+        "pk": 1,
+        "fields": {
+            "name": "Citation",
+            "notes": ""
+        }
+    },
+    {
+        "model": "books.referencetype",
+        "pk": 2,
+        "fields": {
+            "name": "Quotation",
+            "notes": ""
+        }
+    },
+    {
+        "model": "books.referencetype",
+        "pk": 3,
+        "fields": {
+            "name": "Epigraph",
+            "notes": ""
+        }
+    },
+    {
+        "model": "books.referencetype",
+        "pk": 4,
+        "fields": {
+            "name": "Footnote",
+            "notes": ""
+        }
+    },
+    {
+        "model": "books.referencetype",
+        "pk": 5,
+        "fields": {
+            "name": "Unset",
+            "notes": ""
+        }
+    },
+    {
+        "model": "places.place",
+        "pk": 1,
+        "fields": {
+            "name": "Princeton, NJ",
+            "notes": "",
+            "geonames_id": "http://sws.geonames.org/5102922/",
+            "latitude": 40.34872,
+            "longitude": -74.65905
+        }
+    },
+    {
+        "model": "people.person",
+        "pk": 1,
+        "fields": {
+            "notes": "",
+            "start_year": null,
+            "end_year": null,
+            "authorized_name": "Derrida, Jacques",
+            "viaf_id": "https://viaf.org/viaf/88958529/",
+            "sort_name": "",
+            "family_group": ""
+        }
+    },
+    {
+        "model": "people.person",
+        "pk": 44,
+        "fields": {
+            "notes": "",
+            "start_year": null,
+            "end_year": null,
+            "authorized_name": "L\u00e9vi-Strauss",
+            "viaf_id": "https://viaf.org/viaf/102346347/",
+            "sort_name": "",
+            "family_group": ""
+        }
+    },
+    {
+        "model": "books.journal",
+        "pk": 2,
+        "fields": {
+            "name": "Diog\u00e8ne",
+            "notes": ""
+        }
+    },
+    {
+        "model": "books.instance",
+        "pk": 166,
+        "fields": {
+            "notes": "",
+            "work": 166,
+            "alternate_title": "",
+            "publisher": null,
+            "zotero_id": "",
+            "slug": "martinet-le-mot-1965",
+            "is_extant": false,
+            "is_annotated": false,
+            "is_translation": false,
+            "dimensions": "",
+            "copyright_year": 1965,
+            "journal": 2,
+            "print_date": null,
+            "print_date_day_known": false,
+            "print_date_month_known": false,
+            "print_date_year_known": false,
+            "uri": "",
+            "has_dedication": false,
+            "has_insertions": false,
+            "start_page": "39",
+            "end_page": "53",
+            "copy": "",
+            "collected_in": null,
+            "digital_edition": null,
+            "suppress_all_images": false,
+            "pub_place": [],
+            "cited_in": [
+                1
+            ],
+            "suppressed_images": []
+        }
+    },
+    {
+        "model": "people.person",
+        "pk": 23,
+        "fields": {
+            "notes": "",
+            "start_year": 1908,
+            "end_year": 1999,
+            "authorized_name": "Martinet, Andr\u00e9",
+            "viaf_id": "https://viaf.org/viaf/100176718/",
+            "sort_name": "",
+            "family_group": ""
+        }
+    },
+    {
+        "model": "books.work",
+        "pk": 92,
+        "fields": {
+            "notes": "",
+            "primary_title": "La grande invention de l'\u00e9criture",
+            "short_title": "La grande invention de l'\u00e9criture",
+            "year": 1958,
+            "uri": "",
+            "authors": [
+                80
+            ]
+        }
+    },
+    {
+        "model": "books.instance",
+        "pk": 92,
+        "fields": {
+            "notes": "",
+            "work": 92,
+            "alternate_title": "",
+            "publisher": null,
+            "zotero_id": "",
+            "slug": "cohen-la-grande-invention-de-lecriture-1958",
+            "is_extant": true,
+            "is_annotated": false,
+            "is_translation": false,
+            "dimensions": "",
+            "copyright_year": 1958,
+            "journal": null,
+            "print_date": null,
+            "print_date_day_known": true,
+            "print_date_month_known": true,
+            "print_date_year_known": true,
+            "uri": "http://findingaids.princeton.edu/collections/RBD1.1/c13577",
+            "has_dedication": false,
+            "has_insertions": false,
+            "start_page": null,
+            "end_page": null,
+            "copy": "",
+            "collected_in": 2,
+            "digital_edition": null,
+            "pub_place": [],
+            "cited_in": [1]
+        }
+    },
+    {
+        "model": "books.instance",
+        "pk": 134,
+        "fields": {
+            "notes": "",
+            "work": 134,
+            "alternate_title": "",
+            "publisher": 10,
+            "zotero_id": "",
+            "slug": "levi-strauss-tristes-tropiques-1955",
+            "is_extant": true,
+            "is_annotated": true,
+            "is_translation": false,
+            "dimensions": "",
+            "copyright_year": 1955,
+            "journal": null,
+            "print_date": null,
+            "print_date_day_known": true,
+            "print_date_month_known": true,
+            "print_date_year_known": true,
+            "uri": "http://findingaids.princeton.edu/collections/RBD1/c9179",
+            "has_dedication": false,
+            "has_insertions": false,
+            "start_page": null,
+            "end_page": null,
+            "copy": "",
+            "collected_in": null,
+            "digital_edition": null,
+            "pub_place": [
+                3
+            ],
+            "cited_in": [1]
+        }
+    },
+    {
+        "model": "books.instance",
+        "pk": 2,
+        "fields": {
+            "notes": "P. 87\r\nContains: - Alfred M\u00e9traux: Les primitifs, signaux et symboles, pictogrammes et proto\u00e9criture, 9-28 - Jacques Gernet: La Chine, Aspects et fonctions psychologiques de l'\u00e9criture, 29-50 - Jean Sainte Fare Garnot: Les hi\u00e9roglyphes, l'\u00e9volution des \u00e9critures \u00e9gyptiennes, 51-72 - Ren\u00e9 Labat: L'\u00e9criture cun\u00e9iforme et la civilisation m\u00e9sopotamienne, 73-92 - Olivier Masson: La civilisation \u00e9g\u00e9enne, 93-102 - Emmanuel Laroche: L'Asie Mineure, 103-116 - James F\u00e9vrier: Les S\u00e9mites et l'alphabet, 117-130 - Maxime Rodinson: Les S\u00e9mites et l'alphabet, 131-146 - Jean Filliozat, Les Ecritures indiennes, 147-166 -Alphonse Dain, L'Ecriture grecque..., 167-182 - Raymond Bloch, Etrusques et Romains, 183-198 -Robert Marichal, L'\u00e9riture latine..., 199-148 - Janine Sourdel-Thomine, L'ecriture arabe et son \u00e9volution ornementale, 249-262 - Maxime Rodinson, Le monde islamique et l'\u00e9criture arabe, 263-278 - Henri-Jean Martin, L'Imprimerie, 279-300 - Andr\u00e9 Vaillant, L'\u00e9criture  cyrillique..., 301-312 - Marcel Cohen, Les \u00e9critures latines, 313-325 - Henri Levy-Bruhl,  L'ecriture et le droit, 325-334 - Confrontations et conclusions, 335-360",
+            "work": 2,
+            "alternate_title": "",
+            "publisher": 6,
+            "zotero_id": "",
+            "slug": "bloch-lecriture-et-la-psychologie-des-peuples-actes-de-colloque-1963",
+            "is_extant": true,
+            "is_annotated": true,
+            "is_translation": false,
+            "dimensions": "",
+            "copyright_year": 1963,
+            "journal": null,
+            "print_date": null,
+            "print_date_day_known": true,
+            "print_date_month_known": true,
+            "print_date_year_known": true,
+            "uri": "http://findingaids.princeton.edu/collections/RBD1.1/c13577",
+            "has_dedication": false,
+            "has_insertions": false,
+            "start_page": null,
+            "end_page": null,
+            "copy": "",
+            "collected_in": null,
+            "digital_edition": null,
+            "pub_place": [
+                3
+            ],
+            "cited_in": [1]
+        }
+    },
+    {
+        "model": "books.instancelanguage",
+        "pk": 106,
+        "fields": {
+            "notes": "",
+            "language": 1,
+            "instance": 134,
+            "is_primary": false
+        }
+    }
 ]

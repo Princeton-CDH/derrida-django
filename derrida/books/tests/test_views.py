@@ -784,7 +784,7 @@ class TestBookViews(TestCase):
         assert response.status_code == 200
         data = json.loads(response.content.decode('utf-8'))
         assert 'results' in data
-        assert data['results'][0]['text'] == 'Baconnière'
+        assert data['results'][0]['text'] == 'Armand Colin'
 
     def test_language_autocomplete(self):
         # Not accessible to anonymous user

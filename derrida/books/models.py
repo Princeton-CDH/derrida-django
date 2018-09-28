@@ -1,23 +1,21 @@
 import json
 import string
 
-from django.db import models
-from django.conf import settings
 from django.contrib.contenttypes.fields import GenericRelation
+from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
-from django.core.exceptions import ValidationError, ImproperlyConfigured
+from django.db import models
 from django.urls import reverse
 from django.utils.safestring import mark_safe
 from django.utils.text import slugify
 from djiffy.models import Canvas, Manifest
 from sortedm2m.fields import SortedManyToManyField
 from unidecode import unidecode
-from pyzotero import zotero
 
-from derrida.common.models import Named, Notable, DateRange
-from derrida.places.models import Place
-from derrida.people.models import Person
+from derrida.common.models import DateRange, Named, Notable
 from derrida.footnotes.models import Footnote
+from derrida.people.models import Person
+from derrida.places.models import Place
 
 Q = models.Q
 
@@ -565,11 +563,14 @@ class Instance(Notable):
         # get the item template based on type & add some specific metadata
         if self.item_type == 'Journal Article':
             template = library.item_template('journalArticle')
+            creator_types = library.item_creator_types('journalArticle')
             template['publicationTitle'] = self.journal.name
         elif self.item_type == 'Book Section':
             template = library.item_template('bookSection')
+            creator_types = library.item_creator_types('bookSection')
             template['bookTitle'] = self.work.short_title
         else:
+            creator_types = library.item_creator_types('book')
             template = library.item_template('book')
         # zotero id, if set (API will reject if it's set to an empty string)
         if self.zotero_id:
@@ -578,22 +579,38 @@ class Instance(Notable):
         template['title'] = self.alternate_title or self.work.primary_title
         template['shortTitle'] = self.work.short_title
         template['date'] = self.copyright_year if self.copyright_year else ''
+        # author
         template['creators'] = [] # clear out the default one first
-        for author in self.work.authors.all():
+        for author in self.work.authors.all(): # authors come from work
             template['creators'].append({
                 'creatorType': 'author',
                 'firstName': author.firstname,
                 'lastName': author.lastname
             })
-        # TODO add editors & translators
+        # other creators
+        # dict of zotero's localized creator type names for matching
+        type_names = {c['localized']: c['creatorType'] for c in creator_types} 
+        author = CreatorType.objects.get(name='Author')
+        # all creators that are not authors
+        for creator in self.instancecreator_set.exclude(creator_type=author):
+            # match on localized name, because we use it
+            if creator.creator_type.name in type_names: 
+                template['creators'].append({
+                    # ...but send the "type name" (not localized)
+                    'creatorType': type_names[creator.creator_type.name],
+                    'firstName': creator.person.firstname,
+                    'lastName': creator.person.lastname
+                })
         # retrieve collection zotero ids
-        template['collections'] = [derrida_work.zotero_id for derrida_work in self.cited_in.all()]
+        template['collections'] = [derrida_work.zotero_id for derrida_work in \
+                                   self.cited_in.all()]
         # metadata from instance
         template['publisher'] = self.publisher.name if self.publisher else ''
         # page range
         if self.start_page and self.end_page:
             template['pages'] = '-'.join((self.start_page, self.end_page))
         # add boolean fields as tags
+        template['tags'] = []
         if self.is_extant:
             template['tags'].append({
                 'tag': 'in library'
