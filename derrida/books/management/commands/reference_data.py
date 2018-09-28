@@ -8,7 +8,7 @@ from derrida.books.models import DerridaWork
 
 
 class Command(BaseCommand):
-    '''Export reference data'''
+    '''Export reference data for each Derrida Work as CSV and JSON'''
     help = __doc__
 
     def handle(self, *args, **kwargs):
@@ -67,9 +67,11 @@ class Command(BaseCommand):
         delimited strings.'''
         flat_data = {}
         for key, val in data.items():
+            # for a nested subdictionary, combine key and nested key
             if isinstance(val, dict):
                 for subkey, subval in val.items():
                     flat_data[' '.join([key, subkey])] = subval
+            # convert list to a delimited string
             elif isinstance(val, list):
                 flat_data[key] = ';'.join(val)
             else:

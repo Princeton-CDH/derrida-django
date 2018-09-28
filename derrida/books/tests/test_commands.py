@@ -5,7 +5,8 @@ from django.test import TestCase
 from djiffy.models import Manifest
 
 from derrida.books.models import Instance
-from derrida.books.management.commands import import_digitaleds
+from derrida.books.management.commands import import_digitaleds, \
+    reference_data
 
 
 class TestManifestImporter(TestCase):
@@ -62,7 +63,7 @@ class TestImportDigitalEds(TestCase):
 
     def setUp(self):
         self.cmd = import_digitaleds.Command()
-        self. cmd.stdout = StringIO()
+        self.cmd.stdout = StringIO()
 
     def test_command(self, mockimporter):
         # normal file/uri
@@ -99,3 +100,33 @@ class TestImportDigitalEds(TestCase):
         self.cmd.summarize({'urls': 3, 'manifests': 2, 'nomatch': 1})
         output = self.cmd.stdout.getvalue()
         assert 'Manifests not matched to library work instances: 1' in output
+
+
+class TestReferenceData(TestCase):
+
+    def setUp(self):
+        self.cmd = reference_data.Command()
+        self.cmd.stdout = StringIO()
+
+    def test_flatten_dict(self):
+        # flat dict should not be changed
+        flat = {'one': 'a', 'two': 'b'}
+        assert flat == self.cmd.flatten_dict(flat)
+
+        # list should be converted to string
+        listed = {'one': ['a', 'b']}
+        flat_listed = self.cmd.flatten_dict(listed)
+        assert flat_listed['one'] == 'a;b'
+
+        # nested dict should have keys combined and be flatted
+        nested = {
+            'page': {
+                'id': 'p1',
+                'label': 'one'
+            }
+        }
+        flat_nested = self.cmd.flatten_dict(nested)
+        assert 'page id' in flat_nested
+        assert 'page label' in flat_nested
+        assert flat_nested['page id'] == nested['page']['id']
+        assert flat_nested['page label'] == nested['page']['label']
