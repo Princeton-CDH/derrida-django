@@ -75,9 +75,12 @@ class InstanceURIView(DetailView):
         # NOTE: not sure why get_object isn't called automatically
         self.object = self.get_object()
         redirect_url = search_slug = None
+        found = False
 
         if self.object.digital_edition:
             redirect_url = self.object.get_absolute_url()
+            # 1-for-1 relationship, this is not a see other redirect
+            found = True
         # if this is a section of a book with a digital edition,
         # redirect to book detail view, and jump to book section anchor
         elif self.object.collected_in and self.object.collected_in.digital_edition:
@@ -99,8 +102,10 @@ class InstanceURIView(DetailView):
 
         if redirect_url:
             response = HttpResponseRedirect(redirect_url)
-            # set redirect code to See Other
-            response.status_code = 303
+            # set redirect code to See Other unless redirecting to
+            # the detail display for *this* item exactly
+            if not found:
+                response.status_code = 303
             return response
 
         # otherwise: (i.e., for journal articles), there is no meaningful

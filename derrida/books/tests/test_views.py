@@ -13,14 +13,15 @@ from django.core.management import call_command
 from django.db.models import Min, Max
 from django.http import Http404
 from django.test import TestCase, override_settings
-from django.urls import reverse
+from django.urls import reverse, resolve
 from django.utils.html import escape
 from djiffy.models import Manifest, Canvas
 from haystack.models import SearchResult
 
 from derrida.books import views
 from derrida.books.forms import RangeWidget, RangeField
-from derrida.books.models import Instance, Reference, DerridaWorkSection
+from derrida.books.models import Instance, Reference, DerridaWorkSection, \
+    Work, Journal
 from derrida.interventions.models import Intervention, INTERVENTION_TYPES
 from derrida.outwork.models import Outwork
 
@@ -61,7 +62,6 @@ class TestInstanceViews(TestCase):
         response = self.client.get(saussure.get_absolute_url())
         # license label from edm rights should be set in alt text
         self.assertContains(response, 'alt="In Copyright"')
-
 
     @pytest.mark.haystack
     def test_instance_list_view(self):
@@ -473,6 +473,64 @@ class TestInstanceViews(TestCase):
         # get fresh copy of item from db
         item = Instance.objects.get(pk=item.pk)
         assert item.suppress_all_images
+
+    def test_instance_uri_view(self):
+        # redirect view for titles
+
+        # book with no digital edition
+        la_vie = Instance.objects.filter(work__primary_title__icontains='la vie').first()
+
+        response = self.client.get(reverse('books:instance', args=[la_vie.pk]))
+        assert response.status_code == 303  # see other
+        # no associated digital edition, so should link to search
+        # split into base url and query string
+        redirect_url, querystring = response['Location'].split('?')
+        resolved_url = resolve(redirect_url)
+        assert resolved_url.namespace == 'books'
+        assert resolved_url.url_name == 'list'
+        assert 'query={}'.format(la_vie.slug) in querystring
+        assert 'is_extant=false' in querystring
+
+        # associate a manifest as a digital edition
+        manif = Manifest.objects.create()
+        la_vie.digital_edition = manif
+        la_vie.save()
+
+        response = self.client.get(reverse('books:instance', args=[la_vie.pk]))
+        assert response.status_code == 302  # found
+        assert response['location'] == reverse('books:detail', args=[la_vie.slug])
+
+        # book section of a work with digital edition
+        # create a book section in la vie to test
+        bk_section = Instance.objects.create(collected_in=la_vie, work=Work.objects.first())
+        response = self.client.get(reverse('books:instance', args=[bk_section.pk]))
+        assert response.status_code == 303  # see other
+        redirect_url, anchor = response['Location'].split('#')
+        # should redirect to collected in book page
+        assert redirect_url == reverse('books:detail', args=[la_vie.slug])
+        assert anchor == 'sections'
+
+        # book section of a work with no digital edition
+        la_vie.digital_edition = None
+        la_vie.save()
+        response = self.client.get(reverse('books:instance', args=[bk_section.pk]))
+        assert response.status_code == 303  # see other
+        # should link to library search for the book this section belongs to
+        redirect_url, querystring = response['Location'].split('?')
+        resolved_url = resolve(redirect_url)
+        assert resolved_url.namespace == 'books'
+        assert resolved_url.url_name == 'list'
+        assert 'query={}'.format(la_vie.slug) in querystring
+        assert 'is_extant=false' in querystring
+
+        # journal article - no meaningful place to redirect; displays minimal page
+        journal = Journal.objects.create(name='Interational Journal of Things')
+        article = Instance.objects.create(work=Work.objects.first(), journal=journal,
+            alternate_title='An Essay on some things')
+        response = self.client.get(reverse('books:instance', args=[article.pk]))
+        assert response.status_code == 200  # ok
+        self.assertContains(response, article.alternate_title)
+        self.assertContains(response, journal.name)
 
 
 @USE_TEST_HAYSTACK
