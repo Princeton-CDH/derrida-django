@@ -10,7 +10,7 @@ from django.core.cache import cache
 from django.db.models import Max, Min
 from django.template.loader import get_template
 from django.test import TestCase, override_settings
-from django.urls import reverse
+from django.urls import reverse, resolve
 from djiffy.models import Canvas, Manifest
 from haystack.models import SearchResult
 import pytest
@@ -313,7 +313,7 @@ class TestIntervention(TestCase):
         assert set(note.annotation_type) == \
             set(['line', 'nonverbal annotation'])
 
-    def test_inke(self):
+    def test_ink(self):
         note = Intervention.objects.create()
         # no tags
         assert note.ink == []
@@ -332,6 +332,14 @@ class TestIntervention(TestCase):
             Tag.objects.get(name='black ink')
         ])
         assert set(note.ink) == set(['black ink', 'pencil'])
+
+    def test_get_uri(self):
+        note = Intervention.objects.create()
+        uri = note.get_uri()
+        # should be absolute
+        assert uri.startswith('http')
+        # should link to intervention detail view
+        assert reverse('interventions:view', args=[note.id]) in uri
 
 
 class TestInterventionQuerySet(TestCase):
@@ -373,6 +381,7 @@ class TestInterventionQuerySet(TestCase):
 
 
 class TestInterventionViews(TestCase):
+    fixtures = ['test_instances']
 
     def setUp(self):
         # create an admin user to test autocomplete views
@@ -504,6 +513,34 @@ class TestInterventionViews(TestCase):
         self.assertContains(response,
             reverse('books:language-autocomplete'),
             msg_prefix='annotator init includes language autocomplete url')
+
+    def test_intervention_view(self):
+        note = Intervention.objects.create()
+        note_url = reverse('interventions:view', args=[note.id])
+        response = self.client.get(note_url)
+        assert response.status_code == 303
+        # no associated canvas, so should link to search
+        # split into base url and query string
+        redirect_url, querystring = response['Location'].split('?')
+        resolved_url = resolve(redirect_url)
+        assert resolved_url.namespace == 'interventions'
+        assert resolved_url.url_name == 'list'
+        assert querystring == 'query={}'.format(note.id)
+
+        # add canvas association
+        instance = Instance.objects.first()
+        note.canvas = Canvas.objects.create(
+            short_id='bar', manifest=instance.digital_edition, order=0)
+        note.save()
+        # redirect should go annotation on to canvas detail page
+        response = self.client.get(note_url)
+        redirect_url, anchor = response['Location'].split('#')
+        resolved_url = resolve(redirect_url)
+        assert resolved_url.namespace == 'books'
+        assert resolved_url.url_name == 'canvas-detail'
+        assert resolved_url.kwargs['slug'] == instance.slug
+        assert resolved_url.kwargs['short_id'] == note.canvas.short_id
+        assert anchor == 'annotations/{}'.format(note.id)
 
 
 #: override_settings and use test haystack connection
