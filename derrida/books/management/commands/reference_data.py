@@ -57,6 +57,7 @@ class Command(BaseCommand):
         '''Generate a dictionary of data to export for a single
          :class:`~derrida.books.models.Reference` object'''
         return {
+        # FIXME: should reference have id also?
             'page': reference.derridawork_page,
             'page location': reference.derridawork_pageloc,
             'book': {

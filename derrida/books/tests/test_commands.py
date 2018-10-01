@@ -185,7 +185,7 @@ class TestReferenceData(TestCase):
 
             # inspect CSV output
             with open('{}.csv'.format(base_filename)) as csvfile:
-                # first byte shoudl be UTF-8 byte order mark
+                # first byte should be UTF-8 byte order mark
                 assert csvfile.read(1) == codecs.BOM_UTF8.decode()
 
                 # then read as CSV

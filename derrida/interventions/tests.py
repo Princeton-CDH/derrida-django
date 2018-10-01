@@ -1,12 +1,18 @@
 # -*- coding: utf-8 -*-
+import codecs
+import csv
 import datetime
+from io import StringIO
 import json
+import os
+import tempfile
 from unittest.mock import Mock, patch
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
 from django.core.cache import cache
+from django.core.management import call_command
 from django.db.models import Max, Min
 from django.template.loader import get_template
 from django.test import TestCase, override_settings
@@ -20,6 +26,8 @@ from derrida.people.models import Person
 from derrida.interventions.models import Tag, INTERVENTION_TYPES, \
     Intervention, get_default_intervener
 from derrida.interventions.search_indexes import InterventionIndex
+from derrida.interventions.management.commands import intervention_data
+
 
 
 class TestTagQuerySet(TestCase):
@@ -928,3 +936,83 @@ class TestInterventionSearchIndex(TestCase):
         note = Intervention.objects.create(uri=self.canvas.uri, canvas=self.canvas)
         assert inter_index.prepare_annotation_author(note) == \
             note.author.firstname_last
+
+
+class TestInterventionsData(TestCase):
+    fixtures = ['test_interventions', 'interventions_with_text']
+
+    def setUp(self):
+        self.cmd = intervention_data.Command()
+        self.cmd.stdout = StringIO()
+
+    def test_intervention_data(self):
+        # intervention with no text or quote
+        annotation = Intervention.objects.filter(text='', quote='').first()
+        data = self.cmd.intervention_data(annotation)
+        assert data['id'] == annotation.get_uri()
+        assert data['book']['id'] == annotation.work_instance.get_uri()
+        assert data['book']['title'] == annotation.work_instance.display_title()
+        assert data['page'] == annotation.canvas.label
+        assert data['tags'] == [tag.name for tag in annotation.tags.all()]
+        assert data['annotator'] == annotation.author.authorized_name
+        # text and quote not included
+        assert 'text' not in data
+        assert 'quote' not in data
+
+        # intervention with text content and text language
+        annotation = Intervention.objects.exclude(text='') \
+            .filter(text_language__isnull=False).first()
+        data = self.cmd.intervention_data(annotation)
+        assert data['text']['content'] == annotation.text
+        assert data['text']['language'] == annotation.text_language.name
+        assert data['text']['language code'] == annotation.text_language.code
+
+        # intervention with quote content and language set
+        annotation = Intervention.objects \
+            .exclude(quote='', quote_language__isnull=True).first()
+        data = self.cmd.intervention_data(annotation)
+        assert data['quote']['content'] == annotation.quote
+        assert data['quote']['language'] == annotation.quote_language.name
+        assert data['quote']['language code'] == annotation.quote_language.code
+
+        # intervention with annotator unknown
+        annotation = Intervention.objects.filter(author__isnull=True).first()
+        data = self.cmd.intervention_data(annotation)
+        assert 'annotator' not in data
+
+    def test_command_line(self):
+        # test calling via command line with args
+
+        # generate output in a temporary directory
+        with tempfile.TemporaryDirectory(prefix='derrida-interventions-') as outputdir:
+            stdout = StringIO()
+            call_command('intervention_data', directory=outputdir, stdout=stdout)
+
+            annotations = Intervention.objects.all()
+            base_filename = os.path.join(outputdir, self.cmd.base_filename)
+
+            # inspect JSON output
+            with open('{}.json'.format(base_filename)) as jsonfile:
+                jsondata = json.load(jsonfile)
+                # should be one entry for each reference
+                assert len(jsondata) == annotations.count()
+                # spot check the data included
+                assert jsondata[0]['id'] == annotations[0].get_uri()
+                assert jsondata[3]['id'] == annotations[3].get_uri()
+
+            # inspect CSV output
+            with open('{}.csv'.format(base_filename)) as csvfile:
+                # first byte should be UTF-8 byte order mark
+                assert csvfile.read(1) == codecs.BOM_UTF8.decode()
+
+                # then read as CSV
+                csvreader = csv.reader(csvfile)
+
+                rows = [row for row in csvreader]
+                # row count should be number of annotations + header
+                assert len(rows) == annotations.count() + 1
+                assert rows[0] == self.cmd.csv_fields
+                # spot check the data
+                assert annotations[0].get_uri() in rows[1]
+                assert annotations[0].canvas.label in rows[1]
+
