@@ -144,7 +144,7 @@ class TestReferenceData(TestCase):
         refdata = self.cmd.reference_data(ref)
         assert refdata['page'] == ref.derridawork_page
         assert refdata['page location'] == ref.derridawork_pageloc
-        assert refdata['book']['id'] == ref.instance.id  # TEMPORARY
+        assert refdata['book']['id'] == ref.instance.get_uri()
         assert refdata['book']['title'] == ref.instance.display_title()
         assert refdata['book']['page'] == ref.book_page
         assert refdata['type'] == str(ref.reference_type)

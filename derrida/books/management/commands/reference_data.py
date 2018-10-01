@@ -14,9 +14,8 @@ class Command(BaseCommand):
 
     #: fields for CSV output
     csv_fields = [
-        'page', 'page location', 'book title', 'book id',
-        'book page', 'type',
-        'anchor text', 'interventions'
+        'page', 'page location', 'type', 'book title', 'book id',
+        'book page', 'book type', 'anchor text', 'interventions'
     ]
 
     def add_arguments(self, parser):
@@ -61,9 +60,10 @@ class Command(BaseCommand):
             'page': reference.derridawork_page,
             'page location': reference.derridawork_pageloc,
             'book': {
-                'id': reference.instance.id, ## provisional; needs URI
+                'id': reference.instance.get_uri(),
                 'title': reference.instance.display_title(),
                 'page': reference.book_page,
+                'type': reference.book.item_type,
             },
             'type': str(reference.reference_type),
             'anchor text': reference.anchor_text,

@@ -1,4 +1,5 @@
 {# work instance text for generic keyword search across all fields #}
+{{ object.slug }} {# support find by slug for title URI redirect #}}
 {{ object.display_title }}
 {{ object.item_type }}
 {% for author in object.work.authors.all %}

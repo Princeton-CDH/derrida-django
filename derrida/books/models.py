@@ -14,11 +14,10 @@ from sortedm2m.fields import SortedManyToManyField
 from unidecode import unidecode
 
 from derrida.common.models import Named, Notable, DateRange
+from derrida.common.utils import absolutize_url
 from derrida.places.models import Place
 from derrida.people.models import Person
 from derrida.footnotes.models import Footnote
-
-Q = models.Q
 
 
 # TODO: could work/instance count be refactored for more general use?
@@ -316,12 +315,17 @@ class Instance(Notable):
 
     def __str__(self):
         return '%s (%s%s)' % (self.display_title(),
-            self.copyright_year or 'n.d.',
-            ' %s' % self.copy if self.copy else '')
+                              self.copyright_year or 'n.d.',
+                              ' %s' % self.copy if self.copy else '')
 
     def get_absolute_url(self):
         '''URL for this :class:`Instance` on the website.'''
         return reverse('books:detail', kwargs={'slug': self.slug})
+
+    def get_uri(self):
+        '''public URI for this instance to be used as an identifier'''
+        return absolutize_url(reverse('books:instance', args=[self.id]))
+
 
     def generate_base_slug(self):
         '''Generate a slug based on first author, work title, and year.
