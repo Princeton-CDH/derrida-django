@@ -14,7 +14,7 @@ class Command(BaseCommand):
 
     #: fields for CSV output
     csv_fields = [
-        'page', 'page location', 'type', 'book title', 'book id',
+        'id', 'page', 'page location', 'type', 'book title', 'book id',
         'book page', 'book type', 'anchor text', 'interventions'
     ]
 
@@ -57,7 +57,7 @@ class Command(BaseCommand):
         '''Generate a dictionary of data to export for a single
          :class:`~derrida.books.models.Reference` object'''
         return {
-        # FIXME: should reference have id also?
+            'id': reference.get_absolute_url(),
             'page': reference.derridawork_page,
             'page location': reference.derridawork_pageloc,
             'book': {

@@ -266,21 +266,21 @@
 }
 
 #citations-list,
-#interventions-list {
+#interventions-list, #citations-detail {
   .collection .collection__item {
 
     display: grid;
     grid-template-columns: repeat(6, 1fr);
     grid-template-areas: "body body body body image image";
     grid-gap: 30px;
-  
 
-  
+
+
     .item__image {
       grid-area: image;
       width: 100%;
     }
-  
+
     .item__body {
       grid-area: body;
       width: 100%;
@@ -302,7 +302,7 @@
 #books-detail {
   .collection .collection__item {
     display: grid;
-    
+
     &.reference { // references tab
       width: 100%;
       grid-template-columns: repeat(9, 1fr);
@@ -313,7 +313,7 @@
         grid-area: image;
         width: 100%;
       }
-    
+
       .item__body {
         grid-area: body;
         width: 100%;
@@ -328,7 +328,7 @@
         grid-area: image;
         width: 100%;
       }
-    
+
       .item__body {
         grid-area: body;
         width: 100%;

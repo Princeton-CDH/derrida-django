@@ -142,6 +142,7 @@ class TestReferenceData(TestCase):
         # reference with no corresponding intervention
         ref = Reference.objects.filter(interventions__isnull=True).first()
         refdata = self.cmd.reference_data(ref)
+        assert refdata['id'] == ref.get_absolute_url()
         assert refdata['page'] == ref.derridawork_page
         assert refdata['page location'] == ref.derridawork_pageloc
         assert refdata['book']['id'] == ref.instance.get_uri()
@@ -178,6 +179,7 @@ class TestReferenceData(TestCase):
                 # should be one entry for each reference
                 assert len(jsondata) == references.count()
                 # spot check the data included
+                assert jsondata[0]['id'] == references[0].get_absolute_url()
                 assert jsondata[0]['page'] == references[0].derridawork_page
                 assert jsondata[0]['page location'] == references[0].derridawork_pageloc
                 assert jsondata[3]['page'] == references[3].derridawork_page

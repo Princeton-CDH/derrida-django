@@ -479,9 +479,19 @@ class ReferenceDetailView(DetailView):
     # reference detail view for loading via ajax
 
     model = Reference
-    template_name = 'components/citation-list-item.html'
+    ajax_template_name = 'components/citation-list-item.html'
+    template_name = 'books/reference_detail.html'
+
+    def get_template_names(self):
+        # when queried via ajax, return partial html for pop-up display
+        # in the visualization
+        # (don't render the form or base template)
+        if self.request.is_ajax():
+            return self.ajax_template_name
+        return self.template_name
 
     def get_object(self, queryset=None):
+
         if queryset is None:
             queryset = self.get_queryset()
         # NOTE: this is returning two results for some cases

@@ -734,9 +734,12 @@ class TestReferenceViews(TestCase):
 
     def test_reference_detail(self):
         ref = Reference.objects.exclude(book_page='').first()
-        response = self.client.get(ref.get_absolute_url())
+        # simulate ajax request, i.e. for visualization
+        response = self.client.get(ref.get_absolute_url(),
+                                   HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         assert response.status_code == 200
         self.assertTemplateUsed('components/citation-list-item.html')
+        self.assertTemplateNotUsed('books/reference_detail.html')
         # check for details that should be displayed
         # - reference type
         self.assertContains(response, ref.reference_type.name,
@@ -775,6 +778,23 @@ class TestReferenceViews(TestCase):
         response = self.client.get(ref.get_absolute_url())
         self.assertContains(response, 'pp. %s' % ref.book_page,
             msg_prefix='display reference page number with pp. for ranges')
+
+        # non-ajax request
+        response = self.client.get(ref.get_absolute_url())
+        assert response.status_code == 200
+        self.assertTemplateUsed('books/reference_detail.html')
+        # spot-check that the same details are displayed
+        # - reference type
+        self.assertContains(response, ref.reference_type.name,
+            msg_prefix='should display reference type')
+        # - link to cited book
+        self.assertContains(response, ref.instance.get_absolute_url(),
+            msg_prefix='should include link to work instance detail page')
+        # - cited book title
+        self.assertContains(response, escape(ref.instance.display_title()),
+            msg_prefix='should include work instance title')
+        # should also link to reference list
+        self.assertContains(response, reverse('books:reference-list'))
 
     def test_reference_histogram(self):
         # default: reference by author of referenced book
