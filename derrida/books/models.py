@@ -547,7 +547,6 @@ class Instance(Notable):
         same author.  For a work that collects item, include
         work by any book section authors.'''
         authors = list(self.work.authors.all())
-        exclude = [self.pk]
         if self.collected_set.exists():
             for instance in self.collected_set.all():
                 authors.extend(instance.work.authors.all())
@@ -556,26 +555,35 @@ class Instance(Notable):
                        .exclude(pk=self.pk) \
                        .exclude(digital_edition__isnull=True)
 
+    #: map local :attr:`item_type` to equivalent zotero template name
+    zotero_template_by_itemtype = {
+        'Book': 'book',
+        'Book Section': 'bookSection',
+        'Journal Article': 'journalArticle'
+    }
+
     def as_zotero_item(self, library):
         '''Serialize the instance as an item suitable for export to a Zotero
         library. Requires a :class:`pyzotero.zotero.Zotero` instance for API
         calls to retrieve item type templates and creator types.'''
         # get the item template/creator types based on item type
-        if self.item_type == 'Journal Article':
-            template = library.item_template('journalArticle')
-            creator_types = library.item_creator_types('journalArticle')
-            template['publicationTitle'] = self.journal.name
-        elif self.item_type == 'Book Section':
-            template = library.item_template('bookSection')
-            creator_types = library.item_creator_types('bookSection')
-            template['bookTitle'] = self.work.short_title
-        else:
-            creator_types = library.item_creator_types('book')
-            template = library.item_template('book')
+
+        # retrieve appropriate item and creator templates based on item type
+        zotero_template = self.zotero_template_by_itemtype[self.item_type]
+        template = library.item_template(zotero_template)
+        creator_types = library.item_creator_types(zotero_template)
+
+        # set common properties
         # zotero id, if set (API will reject if it's set to an empty string)
         if self.zotero_id:
             template['key'] = self.zotero_id
-        # metadata from related work
+
+        # use local instance URI for zotero url, for compatibility
+        # with other data exports
+        # TODO: after update from develop
+        # template['url'] = self.get_uri()
+
+        # metadata
         template['title'] = self.alternate_title or self.work.primary_title
         template['shortTitle'] = self.work.short_title
         template['date'] = self.copyright_year if self.copyright_year else ''
@@ -587,9 +595,11 @@ class Instance(Notable):
                 'firstName': author.firstname,
                 'lastName': author.lastname
             })
+
+
         # other creators
         # dict of zotero's localized creator type names for matching
-        type_names = {c['localized']: c['creatorType'] for c in creator_types} 
+        type_names = {c['localized']: c['creatorType'] for c in creator_types}
         author = CreatorType.objects.get(name='Author')
         # all creators that are not authors
         for creator in self.instancecreator_set.exclude(creator_type=author):
@@ -601,9 +611,10 @@ class Instance(Notable):
                     'firstName': creator.person.firstname,
                     'lastName': creator.person.lastname
                 })
-        # retrieve collection zotero ids
+        # add to collections based on derrida works that cited this item;
+        # use collection zotero id from DerridaWork
         template['collections'] = [derrida_work.zotero_id for derrida_work in \
-                                   self.cited_in.all()]
+                                   self.cited_in.filter(zotero_id__isnull=False)]
         # metadata from instance
         template['publisher'] = self.publisher.name if self.publisher else ''
         # page range
@@ -636,6 +647,18 @@ class Instance(Notable):
         if not language and self.languages.exists():
             language = self.languages.first()
         template['language'] = language.code if language else ''
+
+        # use catalogue for location in archive / library catalog?
+        # print(self.instancecatalogue_set.values('institution', 'call_number'))
+
+        # item-type specific metadata
+        if self.item_type == 'Book Section':
+            template['bookTitle'] = self.collected_in.display_title()
+
+        if self.item_type == 'Journal Article':
+            template['publicationTitle'] = self.journal.name
+
+
         return template
 
 

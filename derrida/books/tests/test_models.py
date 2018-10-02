@@ -661,73 +661,92 @@ class TestInstance(TestCase):
         # primary work language used
         assert la_vie.primary_language() == lang_fr
 
-
     def test_as_zotero_item(self):
-        # mock a zotero library instance
+        # mock a zotero library instance, since api call is required
+        # to retrieve item template
         library = Mock()
-        library.item_template.side_effect = [{}, {}, {}] # FIXME need to return 3 fresh dicts
+        # return an empty dictionary for zotero template
+        def get_template(*args, **kwargs):
+            return dict()
+
+        library.item_template.side_effect = get_template
         library.item_creator_types.return_value = [ # example creator types
             {'creatorType': 'author', 'localized': 'Author'},
             {'creatorType': 'editor', 'localized': 'Editor'},
             {'creatorType': 'translator', 'localized': 'Translator'}
         ]
-        # give "of grammatology" a zotero_id so that it can be referenced as a collection
+        # set zotero id on "of grammatology" so it can be used as a collection
         grammatology = DerridaWork.objects.get(pk=1)
         grammatology.zotero_id = 'ABCDEF'
         grammatology.save()
-        # get some example instances (book, journal article, book section)
+
+        # test against each kind of item (book, journal article, book section)
+
+        # ** book
         tropiques = Instance.objects.get(pk=134) # levi-strauss 'triste tropiques' 1955; book
-        lecriture = Instance.objects.get(pk=92) # cohen 'la grande invention de lecriture' 1958; book section
-        lemot = Instance.objects.get(pk=166) # martinet 'le mot' 1965; journal article in 'diogene'
-        # add some extra creators to the instances for testing
+        # add extra creators to the instances for testing
         editor = CreatorType.objects.get(name='Editor')
         translator = CreatorType.objects.get(name='Translator')
         bob = Person.objects.create(authorized_name='Smith, Bob')
         InstanceCreator.objects.create(instance=tropiques, creator_type=editor, person=bob)
-        InstanceCreator.objects.create(instance=lecriture, creator_type=translator, person=bob)
-        # test that the right item type template and creator types are retrieved
         tropiques_z = tropiques.as_zotero_item(library)
+        # test that the right item type template and creator types are retrieved
         library.item_template.assert_called_with('book')
         library.item_creator_types.assert_called_with('book')
+        # check zotero item properties
+        assert tropiques_z['publisher'] == 'Plon'
+        assert tropiques_z['language'] == 'fr'
+        assert {
+            'creatorType': 'editor',
+            'firstName': 'Bob',
+            'lastName': 'Smith'
+        } in tropiques_z['creators']
+        # check tags are set
+        assert {'tag': 'annotated'} in tropiques_z['tags']
+        assert {'tag': 'in library'} in tropiques_z['tags']
+        assert tropiques_z['title'] == tropiques.work.primary_title
+        assert tropiques_z['shortTitle'] == tropiques.work.short_title
+        # cited in 'of grammatology'
+        assert grammatology.zotero_id in tropiques_z['collections'] # all cited in 'of grammatology'
+
+        # ** book section
+        lecriture = Instance.objects.get(pk=92) # cohen 'la grande invention de lecriture' 1958; book section
+        InstanceCreator.objects.create(instance=lecriture, creator_type=translator, person=bob)
         lecriture_z = lecriture.as_zotero_item(library)
+        # test that the right item type template and creator types are retrieved
         library.item_template.assert_called_with('bookSection')
         library.item_creator_types.assert_called_with('bookSection')
+        assert lecriture_z['title'] == lecriture.work.primary_title
+        assert lecriture_z['shortTitle'] == lecriture.work.short_title
+        assert lecriture_z['bookTitle'] == lecriture.collected_in.display_title()
+        assert lecriture_z['date'] == 1958
+        assert {
+            'creatorType': 'translator',
+            'firstName': 'Bob',
+            'lastName': 'Smith'
+        } in lecriture_z['creators']
+        # check tags are set
+        assert {'tag': 'in library'} in lecriture_z['tags']
+        # cited in 'of grammatology'
+        assert grammatology.zotero_id in lecriture_z['collections']
+
+        # ** journal article
+        lemot = Instance.objects.get(pk=166) # martinet 'le mot' 1965; journal article in 'diogene'
         lemot_z = lemot.as_zotero_item(library)
+        # test that the right item type template and creator types are retrieved
         library.item_template.assert_called_with('journalArticle')
         library.item_creator_types.assert_called_with('journalArticle')
-        # check that some item-specific properties are present
-        assert lecriture_z['bookTitle'] == "La grande invention de l'\u00e9criture"
+        # check that item-specific properties are present
         assert lemot_z['publicationTitle'] == "Diog\u00e8ne"
         assert lemot_z['pages'] == '39-53'
-        assert tropiques_z['publisher'] == 'Plon'
-        assert lecriture_z['date'] == 1958
-        assert tropiques_z['language'] == 'fr'
         # check that some creators are present
         assert {
             'creatorType': 'author',
             'firstName': 'Andr\u00e9',
             'lastName': 'Martinet',
         } in lemot_z['creators']
-        assert {
-            'creatorType': 'editor',
-            'firstName': 'Bob',
-            'lastName': 'Smith'
-        } in tropiques_z['creators']
-        assert {
-            'creatorType': 'translator',
-            'firstName': 'Bob',
-            'lastName': 'Smith'
-        } in lecriture_z['creators']
-        # check that some tags are present
-        assert {'tag': 'annotated'} in tropiques_z['tags']
-        assert {'tag': 'in library'} in tropiques_z['tags']
-        assert {'tag': 'in library'} in lecriture_z['tags']
-        # check that some generic properties are present
-        for item in [tropiques_z, lecriture_z, lemot_z]:
-            assert item['title']
-            assert item['shortTitle']
-            assert grammatology.zotero_id in item['collections'] # all cited in 'of grammatology'
-
+        # cited in 'of grammatology'
+        assert grammatology.zotero_id in lemot_z['collections']
 
 class TestInstanceQuerySet(TestCase):
     fixtures = ['sample_work_data.json']
