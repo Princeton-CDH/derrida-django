@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block page-subtitle %}{{ reference.reference_type }} from {{ reference.derridawork.short_title }}, {{ reference.derridawork_page }} ‖ {% endblock %}
+
+{% block page-context-id %}citations-detail{% endblock %}
+
+{% block content %}
+  <header class="page-header page-header--link">
+    <div class="container">
+      <h1 class="page-header__heading"><a class="page-header__link" href="{% url 'books:reference-list' %}"><span class="arrow_icon">⟵</span> References</a></h1>
+    </div>
+  </header>
+  <article class="item">
+    <div class="container">
+      <article class="collection">
+      {% include 'components/citation-list-item.html' with book=instance %}
+  </article>
+    </div>
+  </article>
+{% endblock %}

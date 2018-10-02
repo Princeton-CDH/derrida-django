@@ -1,14 +1,21 @@
+import codecs
+import csv
 from io import StringIO
+import json
+import os.path
+import tempfile
 from unittest.mock import MagicMock, patch
 
+from django.core.management import call_command
 from django.core.management.base import CommandError
 from django.db.models import QuerySet
 from django.test import TestCase, override_settings
 from djiffy.models import Manifest
 from pytest import raises
 
-from derrida.books.management.commands import export_zotero, import_digitaleds
-from derrida.books.models import DerridaWork, Instance
+from derrida.books.models import Instance, Reference, DerridaWork
+from derrida.books.management.commands import import_digitaleds, \
+    reference_data, export_zotero
 
 
 class TestManifestImporter(TestCase):
@@ -107,7 +114,7 @@ class TestImportDigitalEds(TestCase):
 @override_settings(ZOTERO_API_KEY='foo', ZOTERO_LIBRARY_ID='bar')
 class TestExportZotero(TestCase):
     fixtures = ['sample_work_data.json']
-    
+
     def setUp(self):
         self.cmd = export_zotero.Command()
         self.cmd.stdout = StringIO()
@@ -135,7 +142,7 @@ class TestExportZotero(TestCase):
         assert self.cmd.create_collections.called_once_with(QuerySet(dlg))
         # Should call create_items with all cited instances
         assert self.cmd.create_items.called_once_with(Instance.objects.all())
-    
+
     def test_create_collections(self, zotero):
         # Should report if nothing in queryset
         self.cmd.create_collections(DerridaWork.objects.none())
@@ -158,3 +165,101 @@ class TestExportZotero(TestCase):
         # Should save returned zotero IDs to the instances
         # Should output run statistics
         pass
+
+
+class TestReferenceData(TestCase):
+    fixtures = ['test_references']
+
+    def setUp(self):
+        self.cmd = reference_data.Command()
+        self.cmd.stdout = StringIO()
+
+    def test_flatten_dict(self):
+        # flat dict should not be changed
+        flat = {'one': 'a', 'two': 'b'}
+        assert flat == self.cmd.flatten_dict(flat)
+
+        # list should be converted to string
+        listed = {'one': ['a', 'b']}
+        flat_listed = self.cmd.flatten_dict(listed)
+        assert flat_listed['one'] == 'a;b'
+
+        # nested dict should have keys combined and be flatted
+        nested = {
+            'page': {
+                'id': 'p1',
+                'label': 'one'
+            }
+        }
+        flat_nested = self.cmd.flatten_dict(nested)
+        assert 'page id' in flat_nested
+        assert 'page label' in flat_nested
+        assert flat_nested['page id'] == nested['page']['id']
+        assert flat_nested['page label'] == nested['page']['label']
+
+    def test_reference_data(self):
+        # reference with no corresponding intervention
+        ref = Reference.objects.filter(interventions__isnull=True).first()
+        refdata = self.cmd.reference_data(ref)
+        assert refdata['id'] == ref.get_uri()
+        assert refdata['page'] == ref.derridawork_page
+        assert refdata['page location'] == ref.derridawork_pageloc
+        assert refdata['book']['id'] == ref.instance.get_uri()
+        assert refdata['book']['title'] == ref.instance.display_title()
+        assert refdata['book']['page'] == ref.book_page
+        assert refdata['type'] == str(ref.reference_type)
+        assert refdata['anchor text'] == ref.anchor_text
+        assert not refdata['interventions']
+
+        # reference *with* corresponding intervention
+        ref = Reference.objects.filter(interventions__isnull=False).first()
+        refdata = self.cmd.reference_data(ref)
+        # should be referenced by uri
+        for intervention in ref.interventions.all():
+            assert intervention.get_uri() in refdata['interventions']
+
+    def test_command_line(self):
+        # test calling via command line with args
+
+        # generate output in a temporary directory
+        with tempfile.TemporaryDirectory(prefix='derrida-refs-') as outputdir:
+            stdout = StringIO()
+            call_command('reference_data', directory=outputdir, stdout=stdout)
+
+            derrida_work = DerridaWork.objects.first()
+            references = Reference.objects.filter(derridawork__id=derrida_work.id)
+
+            base_filename = os.path.join(outputdir,
+                                         '%s_references' % derrida_work.slug)
+
+            # inspect JSON output
+            with open('{}.json'.format(base_filename)) as jsonfile:
+                jsondata = json.load(jsonfile)
+                # should be one entry for each reference
+                assert len(jsondata) == references.count()
+                # spot check the data included
+                assert jsondata[0]['id'] == references[0].get_uri()
+                assert jsondata[0]['page'] == references[0].derridawork_page
+                assert jsondata[0]['page location'] == references[0].derridawork_pageloc
+                assert jsondata[3]['page'] == references[3].derridawork_page
+                assert jsondata[3]['page location'] == references[3].derridawork_pageloc
+
+            # inspect CSV output
+            with open('{}.csv'.format(base_filename)) as csvfile:
+                # first byte should be UTF-8 byte order mark
+                assert csvfile.read(1) == codecs.BOM_UTF8.decode()
+
+                # then read as CSV
+                csvreader = csv.reader(csvfile)
+
+                rows = [row for row in csvreader]
+                # row count should be number of refs + header
+                assert len(rows) == references.count() + 1
+                assert rows[0] == self.cmd.csv_fields
+                # spot check the data
+                assert str(references[0].derridawork_page) in rows[1]
+                assert references[0].derridawork_pageloc in rows[1]
+                assert references[0].instance.display_title() in rows[1]
+                assert str(references[0].book_page) in rows[1]
+                assert references[0].anchor_text in rows[1]
+                assert str(references[0].reference_type) in rows[1]

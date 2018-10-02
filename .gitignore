@@ -76,6 +76,7 @@ local_settings.py
 sphinx-docs/_build/
 sphinx-docs/html/
 sphinx-docs/doctrees/
+sphinx-docs/coverage/
 # ignore built documentation (*except* on master branch for github pages)
 docs
 

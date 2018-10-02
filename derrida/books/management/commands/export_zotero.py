@@ -41,7 +41,7 @@ class Command(BaseCommand):
         if not getattr(settings, 'ZOTERO_LIBRARY_ID', None):
             raise CommandError('Zotero library ID must be set.')
 
-        self.verbosity = kwargs['verbosity']
+        self.verbosity = kwargs.get('verbosity', self.v_normal)
 
         # initialize the library
         self.library = zotero.Zotero(settings.ZOTERO_LIBRARY_ID, 'group',

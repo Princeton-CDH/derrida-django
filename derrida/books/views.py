@@ -52,7 +52,7 @@ class LanguageAutocomplete(autocomplete.Select2QuerySetView):
 class InstanceDetailView(DetailView):
     ''':class:`~django.views.generic.DetailView` for
     :class:`~derrida.books.models.Instance`. Returns only Instances that have
-    digtial editions set.'''
+    digital editions set.'''
 
     model = Instance
     slug_field = 'slug'
@@ -60,6 +60,67 @@ class InstanceDetailView(DetailView):
     def get_queryset(self):
         instances = super(InstanceDetailView, self).get_queryset()
         return instances.filter(digital_edition__isnull=False)
+
+
+class InstanceURIView(DetailView):
+    '''Generic view for Instance by URI identifier.  Redirects
+    to the best view for that item.'''
+
+    model = Instance
+
+    def get(self, *args, **kwargs):
+        # if this instance is a book with a digital edition, redirect
+        # to the book detail view
+
+        # NOTE: not sure why get_object isn't called automatically
+        self.object = self.get_object()
+        redirect_url = search_slug = None
+        found = False
+
+        if self.object.digital_edition:
+            redirect_url = self.object.get_absolute_url()
+            # 1-for-1 relationship, this is not a see other redirect
+            found = True
+        # if this is a section of a book with a digital edition,
+        # redirect to book detail view, and jump to book section anchor
+        elif self.object.collected_in and self.object.collected_in.digital_edition:
+            redirect_url = '{}#sections'.format(
+                self.object.collected_in.get_absolute_url())
+
+        # if this is a book, link to a library search for this item
+        # (or book section)
+
+        if redirect_url is None:
+            if self.object.item_type == 'Book':
+                search_slug = self.object.slug
+            elif self.object.item_type == 'Book Section':
+                search_slug = self.object.collected_in.slug
+
+            if search_slug:
+                redirect_url = '{}?query={}&is_extant=false'.format(
+                    reverse('books:list'), search_slug)
+
+        if redirect_url:
+            response = HttpResponseRedirect(redirect_url)
+            # set redirect code to See Other unless redirecting to
+            # the detail display for *this* item exactly
+            if not found:
+                response.status_code = 303
+            return response
+
+        # otherwise: (i.e., for journal articles), there is no meaningful
+        # view to redirect to, so display a minimal page
+        # (fall through to template display)
+        return super().get(*args, **kwargs)
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context.update({
+            'hide_placeholder': True,
+            'hide_nav': True
+        })
+        return context
+
 
 class InstanceReferenceDetailView(InstanceDetailView):
 
@@ -80,8 +141,6 @@ class InstanceReferenceDetailView(InstanceDetailView):
 
         context['references'] = refs
         return context
-
-
 
 
 class InstanceListView(ListView):
@@ -420,9 +479,19 @@ class ReferenceDetailView(DetailView):
     # reference detail view for loading via ajax
 
     model = Reference
-    template_name = 'components/citation-list-item.html'
+    ajax_template_name = 'components/citation-list-item.html'
+    template_name = 'books/reference_detail.html'
+
+    def get_template_names(self):
+        # when queried via ajax, return partial html for pop-up display
+        # in the visualization
+        # (don't render the form or base template)
+        if self.request.is_ajax():
+            return self.ajax_template_name
+        return self.template_name
 
     def get_object(self, queryset=None):
+
         if queryset is None:
             queryset = self.get_queryset()
         # NOTE: this is returning two results for some cases
