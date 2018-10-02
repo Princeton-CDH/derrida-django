@@ -326,7 +326,6 @@ class Instance(Notable):
         '''public URI for this instance to be used as an identifier'''
         return absolutize_url(reverse('books:instance', args=[self.id]))
 
-
     def generate_base_slug(self):
         '''Generate a slug based on first author, work title, and year.
         Not guaranteed to be unique if there are multiple copies of
@@ -798,6 +797,10 @@ class Reference(models.Model):
             'page': self.derridawork_page,
             'pageloc': self.derridawork_pageloc
         })
+
+    def get_uri(self):
+        '''public URI for this instance to be used as an identifier'''
+        return absolutize_url(self.get_absolute_url())
 
     def anchor_text_snippet(self):
         '''Anchor text snippet, for admin display'''

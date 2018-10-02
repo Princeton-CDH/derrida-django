@@ -57,7 +57,7 @@ class Command(BaseCommand):
         '''Generate a dictionary of data to export for a single
          :class:`~derrida.books.models.Reference` object'''
         return {
-            'id': reference.get_absolute_url(),
+            'id': reference.get_uri(),
             'page': reference.derridawork_page,
             'page location': reference.derridawork_pageloc,
             'book': {
