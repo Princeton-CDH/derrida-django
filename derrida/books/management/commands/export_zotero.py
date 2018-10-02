@@ -6,6 +6,7 @@ Zotero library.
 Command assumes that the target Zotero library ID and a Zotero API key are
 populated in local_settings.py.
 '''
+from collections import defaultdict
 from itertools import islice
 
 import progressbar
@@ -22,16 +23,30 @@ class Command(BaseCommand):
     help = __doc__
     library = None
 
+    #: normal verbosity level
+    v_normal = 1
+    #: output verbosity
+    verbosity = v_normal
+
+    #: number of items to send to Zotero API per request; Zotero only allows 50
+    chunk_size = 50
+
+    # NOTE: options to validate (using pyzotero check_items) and run in
+    # no-act mode might be useful
+
     def handle(self, *args, **kwargs):
         # check for secrets
         if not getattr(settings, 'ZOTERO_API_KEY', None):
             raise CommandError('Zotero API key must be set.')
         if not getattr(settings, 'ZOTERO_LIBRARY_ID', None):
             raise CommandError('Zotero library ID must be set.')
+
+        self.verbosity = kwargs['verbosity']
+
         # initialize the library
         self.library = zotero.Zotero(settings.ZOTERO_LIBRARY_ID, 'group',
                                      settings.ZOTERO_API_KEY)
-        # create new collections for any newly added derrida works (no zotero ID)
+        # create new collections for any derrida works with a zotero id
         self.create_collections(DerridaWork.objects.filter(zotero_id=''))
         # create/update all items cited in a derrida work
         self.create_items(Instance.objects.filter(cited_in__isnull=False))
@@ -43,14 +58,16 @@ class Command(BaseCommand):
         '''
         new = works.count()
         if new > 0:
-            self.stdout.write('Found {} new Derrida works.')
+            self.stdout.write('Found {} new Derrida work{}.'.format(
+                new, '' if new == 1 else 's'))
             res = self.library.create_collections([{'name': work.short_title} for work in works])
             # zotero returns a dict with index (as string) as key and collection id as value
             for index, value in res['success'].items():
                 works[int(index)].zotero_id = value
                 works[int(index)].save()
         else:
-            self.stdout.write('No collections to create.')
+            if self.verbosity > self.v_normal:
+                self.stdout.write('No collections to create.')
 
     def create_items(self, instances: QuerySet):
         '''
@@ -59,44 +76,65 @@ class Command(BaseCommand):
         have an id
         '''
         total = instances.count()
-        if total > 0:
-            self.stdout.write('Exporting {} instances.'.format(total))
-            progbar = progressbar.ProgressBar(redirect_stdout=True, max_value=total)
-            instances = instances.iterator()
-            chunk_size = 50
-            chunk = list(islice(instances, chunk_size))
-            count = 0
-            initial_items = self.library.count_items()
-            stats = {
-                'created': 0,
-                'updated': 0,
-                'unchanged': 0,
-                'failed': 0,
-                'total': total
-            }
-            while chunk:
-                # convert the instances to zotero items
-                items = [instance.as_zotero_item(self.library) for instance in chunk]
-                # get the last modified version of the library to send as header
-                l_m = self.library.last_modified_version()
-                # create_items will automatically update the item if 'key' is passed
-                res = self.library.create_items(items, last_modified=l_m)
-                progbar.update(count)
-                stats['updated'] += len(res['success'])
-                stats['unchanged'] += len(res['unchanged'])
-                stats['failed'] += len(res['failed'])
-                count += chunk_size
-                # save any generated zotero ids to the items
-                for index, value in res['success'].items():
-                    chunk[int(index)].zotero_id = value
-                    chunk[int(index)].save()
-                chunk = list(islice(instances, chunk_size))
-            final_items = self.library.count_items()
-            stats['created'] = final_items - initial_items
-            summary = '\nExport complete. \n    \
-            Created {:,d}; updated {:,d}; unchanged {:,d}; failed {:,d}.'
-            summary = summary.format(stats['created'], stats['updated'],
-                                     stats['unchanged'], stats['failed'])
-            self.stdout.write(summary)
-        else:
-            self.stdout.write('No items to create.')
+        stats = defaultdict(int)
+
+        # nothing to do; bail out
+        if not total:
+            if self.verbosity > self.v_normal:
+                self.stdout.write('No items to create.')
+            return
+
+        self.stdout.write('Exporting {} instances.'.format(total))
+        progbar = progressbar.ProgressBar(redirect_stdout=True, max_value=total)
+        instances = instances.iterator()
+
+
+        # store initial count to determine how many are added
+        initial_count = self.library.count_items()
+        count = 0
+
+        # iterate over the queryset in chunks, since Zotero API
+        # only allows sending in sets of 50
+        chunk = list(islice(instances, self.chunk_size))
+
+        while chunk:
+            # using create items with existing zotero id to update requires a
+            # last modified; get last modified version of the library.
+            # NOTE: must be done for each chunk
+            last_mod = self.library.last_modified_version()
+
+            # convert the instances to zotero items
+            items = [instance.as_zotero_item(self.library) for instance in chunk]
+            res = self.library.create_items(items, last_modified=last_mod)
+            progbar.update(count)
+            stats['updated'] += len(res['success'])
+            stats['unchanged'] += len(res['unchanged'])
+            stats['failed'] += len(res['failed'])
+
+            # report any failures
+            if res['failed']:
+                for index, error in res['failed'].items():
+                    self.stderr.write('\nError %s: %s' % \
+                        (chunk[int(index)], error['message']))
+
+            count += self.chunk_size
+
+            # save newly generated zotero ids to the items in the database
+            for index, value in res['success'].items():
+                chunk[int(index)].zotero_id = value
+                chunk[int(index)].save()
+
+            # get the next chunk of items
+            chunk = list(islice(instances, self.chunk_size))
+
+        progbar.finish()
+
+        # Determine number of items newly created based on library count.
+        stats['created'] = self.library.count_items() - initial_count
+        # TODO: success includes created; subtract created from updated?
+        summary = '\nExport complete. \n    \
+        Created {:,d}; updated {:,d}; unchanged {:,d}; failed {:,d}.'
+        summary = summary.format(stats['created'], stats['updated'],
+                                 stats['unchanged'], stats['failed'])
+        self.stdout.write(summary)
+
