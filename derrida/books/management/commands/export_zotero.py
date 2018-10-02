@@ -49,7 +49,10 @@ class Command(BaseCommand):
         # create new collections for any derrida works with a zotero id
         self.create_collections(DerridaWork.objects.filter(zotero_id=''))
         # create/update all items cited in a derrida work
-        self.create_items(Instance.objects.filter(cited_in__isnull=False))
+        stats = self.create_items(Instance.objects.filter(cited_in__isnull=False))
+        summary = '\nExport complete. \n    \
+        Created {created:,d}; updated {updated:,d}; unchanged {unchanged:,d}; failed {failed:,d}.'.format(**stats)
+        self.stdout.write(summary)
 
     def create_collections(self, works: QuerySet):
         '''
@@ -87,7 +90,6 @@ class Command(BaseCommand):
         self.stdout.write('Exporting {} instances.'.format(total))
         progbar = progressbar.ProgressBar(redirect_stdout=True, max_value=total)
         instances = instances.iterator()
-
 
         # store initial count to determine how many are added
         initial_count = self.library.count_items()
@@ -132,9 +134,4 @@ class Command(BaseCommand):
         # Determine number of items newly created based on library count.
         stats['created'] = self.library.count_items() - initial_count
         # TODO: success includes created; subtract created from updated?
-        summary = '\nExport complete. \n    \
-        Created {:,d}; updated {:,d}; unchanged {:,d}; failed {:,d}.'
-        summary = summary.format(stats['created'], stats['updated'],
-                                 stats['unchanged'], stats['failed'])
-        self.stdout.write(summary)
-
+        return stats

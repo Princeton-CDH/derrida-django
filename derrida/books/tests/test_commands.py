@@ -1,10 +1,11 @@
 import codecs
+from collections import defaultdict
 import csv
 from io import StringIO
 import json
 import os.path
 import tempfile
-from unittest.mock import MagicMock, patch
+from unittest.mock import Mock, MagicMock, patch
 
 from django.core.management import call_command
 from django.core.management.base import CommandError
@@ -111,7 +112,7 @@ class TestImportDigitalEds(TestCase):
         assert 'Manifests not matched to library work instances: 1' in output
 
 @patch('pyzotero.zotero.Zotero')
-@override_settings(ZOTERO_API_KEY='foo', ZOTERO_LIBRARY_ID='bar')
+@override_settings(ZOTERO_API_KEY='z_apikey', ZOTERO_LIBRARY_ID='z_group')
 class TestExportZotero(TestCase):
     fixtures = ['sample_work_data.json']
 
@@ -120,28 +121,37 @@ class TestExportZotero(TestCase):
         self.cmd.stdout = StringIO()
 
     def test_handle(self, zotero):
-        self.cmd.create_collections = MagicMock()
-        self.cmd.create_items = MagicMock()
-        # API key is required
-        with self.settings(ZOTERO_API_KEY=None):
-            with raises(CommandError):
+        with patch.object(self.cmd, 'create_collections') as mock_create_collections:
+            with patch.object(self.cmd, 'create_items') as mock_create_items:
+
+                mock_create_items.return_value = {'created': 0, 'updated': 0,
+                    'unchanged': 0, 'failed': 0}
+
+                # API key is required
+                with self.settings(ZOTERO_API_KEY=None):
+                    with raises(CommandError):
+                        self.cmd.handle()
+                        output = self.cmd.stdout.getvalue()
+                        assert 'API key must be set' in output
+
+                        mock_create_collections.assert_not_called()
+                        mock_create_items.assert_not_called()
+
+                # Zotero library ID is required
+                with self.settings(ZOTERO_LIBRARY_ID=None):
+                    with raises(CommandError):
+                        self.cmd.handle()
+                        output = self.cmd.stdout.getvalue()
+                        assert 'library ID must be set' in output
+
+                # Should initialize a library with provided values
                 self.cmd.handle()
-                output = self.cmd.stdout.getvalue()
-                assert 'API key must be set' in output
-        # Zotero library ID is required
-        with self.settings(ZOTERO_API_KEY='foo', ZOTERO_LIBRARY_ID=None):
-            with raises(CommandError):
-                self.cmd.handle()
-                output = self.cmd.stdout.getvalue()
-                assert 'library ID must be set' in output
-        # Should initialize a library with provided values
-        self.cmd.handle()
-        assert zotero.called_once_with(('foo', 'group', 'bar'))
-        # Should call create_collections with new works
-        dlg = DerridaWork.objects.get(pk=1) # no zotero id ("new")
-        assert self.cmd.create_collections.called_once_with(QuerySet(dlg))
-        # Should call create_items with all cited instances
-        assert self.cmd.create_items.called_once_with(Instance.objects.all())
+                assert zotero.called_once_with(('z_apikey', 'group', 'z_group'))
+                # Should call create_collections with new works
+                dlg = DerridaWork.objects.get(pk=1) # no zotero id ("new")
+                assert self.cmd.create_collections.called_once_with(QuerySet(dlg))
+                # Should call create_items with all cited instances
+                assert self.cmd.create_items.called_once_with(Instance.objects.all())
 
     def test_create_collections(self, zotero):
         # Should report if nothing in queryset
@@ -157,12 +167,27 @@ class TestExportZotero(TestCase):
         assert 'No collections' in output
 
         # Should output how many new works were provided
-        self.cmd.library = MagicMock()
+        self.cmd.library = Mock()
+        zotero_id = '12345'
+        zotero_id2 = '67890'
+        # zotero returns a dict
+        self.cmd.library.create_collections.return_value = {
+            'success': {'0': zotero_id, '1': zotero_id2}
+        }
         self.cmd.create_collections(DerridaWork.objects.all())
         output = self.cmd.stdout.getvalue()
         assert 'Found 2 new Derrida works' in output
+
+        derridaworks = DerridaWork.objects.all()
+
         # Should call create_collections with new work data
-        # Should save returned zotero IDs to the works
+        args = self.cmd.library.create_collections.call_args[0]
+        # first arg should be the list of collection names
+        for dwork in derridaworks:
+            assert {'name': dwork.short_title} in args[0]
+        # Should save returned zotero IDs in the database
+        assert derridaworks[0].zotero_id == zotero_id
+        assert derridaworks[1].zotero_id == zotero_id2
 
     def test_create_items(self, zotero):
         # Should report if nothing in queryset
