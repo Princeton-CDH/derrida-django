@@ -145,9 +145,17 @@ class TestExportZotero(TestCase):
 
     def test_create_collections(self, zotero):
         # Should report if nothing in queryset
+        # not in verbose mode; should not report anything
+        self.cmd.create_collections(DerridaWork.objects.none())
+        output = self.cmd.stdout.getvalue()
+        assert not output
+
+        # should report nothing to do when verbosity is higher
+        self.cmd.verbosity = 2
         self.cmd.create_collections(DerridaWork.objects.none())
         output = self.cmd.stdout.getvalue()
         assert 'No collections' in output
+
         # Should output how many new works were provided
         self.cmd.library = MagicMock()
         self.cmd.create_collections(DerridaWork.objects.all())
@@ -156,7 +164,6 @@ class TestExportZotero(TestCase):
         # Should call create_collections with new work data
         # Should save returned zotero IDs to the works
 
-    @override_settings(ZOTERO_API_KEY='foo', ZOTERO_LIBRARY_ID='bar')
     def test_create_items(self, zotero):
         # Should report if nothing in queryset
         # Should output how many instances were provided
