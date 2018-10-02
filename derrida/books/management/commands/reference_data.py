@@ -1,4 +1,5 @@
 import codecs
+from collections import OrderedDict
 import csv
 import json
 import os.path
@@ -56,24 +57,24 @@ class Command(BaseCommand):
     def reference_data(self, reference):
         '''Generate a dictionary of data to export for a single
          :class:`~derrida.books.models.Reference` object'''
-        return {
-            'id': reference.get_uri(),
-            'page': reference.derridawork_page,
-            'page location': reference.derridawork_pageloc,
-            'book': {
-                'id': reference.instance.get_uri(),
-                'title': reference.instance.display_title(),
-                'page': reference.book_page,
-                'type': reference.book.item_type,
-            },
-            'type': str(reference.reference_type),
-            'anchor text': reference.anchor_text,
+        return OrderedDict([
+            ('id', reference.get_uri()),
+            ('page', reference.derridawork_page),
+            ('page location', reference.derridawork_pageloc),
+            ('book',  OrderedDict([
+                ('id', reference.instance.get_uri()),
+                ('title', reference.instance.display_title()),
+                ('page', reference.book_page),
+                ('type', reference.book.item_type),
+            ])),
+            ('type', str(reference.reference_type)),
+            ('anchor text', reference.anchor_text),
             # use intervention URI as identifier
-            'interventions': [
+            ('interventions', [
                 intervention.get_uri()
                 for intervention in reference.interventions.all()
-            ]
-        }
+            ])
+        ])
 
     def flatten_dict(self, data):
         '''Flatten a dictionary with nested dictionaries or lists into a

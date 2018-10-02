@@ -1,4 +1,5 @@
 import codecs
+from collections import OrderedDict
 import csv
 import json
 import os.path
@@ -57,45 +58,45 @@ class Command(reference_data.Command):
 
     def intervention_data(self, intervention):
         '''Generate a dictionary of data to export for a single
-         :class:`~derrida.books.models.Reference` object'''
-        data = {
-            'id': intervention.get_uri(),
+        :class:`~derrida.books.models.Reference` object'''
+
+        # NOTE: using OrderedDict to ensure JSON output follows logical
+        # order in Python < 3.6, where dict order is not guaranteed
+
+        data = OrderedDict([
+            ('id', intervention.get_uri()),
             # every intervention *should* be associated with a book,
             # but possible that some are not
-            'book': {
-                'id': intervention.work_instance.get_uri() if intervention.work_instance else '',
-                'title': intervention.work_instance.display_title() if intervention.work_instance else '',
-                'type': intervention.work_instance.item_type if intervention.work_instance else ''
-            },
+            ('book', OrderedDict([
+                ('id', intervention.work_instance.get_uri() if intervention.work_instance else ''),
+                ('title', intervention.work_instance.display_title() if intervention.work_instance else ''),
+                ('type', intervention.work_instance.item_type if intervention.work_instance else '')
+            ])),
             # canvas object *should* have a label, but possible it does not
-            'page': intervention.canvas.label if intervention.canvas else '',
-            'tags': [tag.name for tag in intervention.tags.all()]
-        }
+            ('page', intervention.canvas.label if intervention.canvas else ''),
+            ('tags', [tag.name for tag in intervention.tags.all()])
+        ])
 
         # only include text and quote information if we have content
         if intervention.text:
-            text_info = {
+            text_info = OrderedDict({
                 'content': intervention.text
-            }
+            })
             if intervention.text_language:
-                text_info.update({
-                    'language': intervention.text_language.name,
-                    'language code': intervention.text_language.code
-                })
+                text_info['language'] = intervention.text_language.name
+                text_info['language code'] = intervention.text_language.code
             if intervention.text_translation:
                 text_info['translation'] = intervention.text_translation
 
             data['text'] = text_info
 
         if intervention.quote:
-            quote_info = {
+            quote_info = OrderedDict({
                 'content': intervention.quote
-            }
+            })
             if intervention.quote_language:
-                quote_info.update({
-                    'language': intervention.quote_language.name,
-                    'language code': intervention.quote_language.code,
-                })
+                quote_info['language'] = intervention.quote_language.name
+                quote_info['language code'] = intervention.quote_language.code
             data['quote'] = quote_info
 
         if intervention.author:
