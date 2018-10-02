@@ -17,7 +17,7 @@ class Command(reference_data.Command):
 
     #: fields for CSV output
     csv_fields = [
-        'id', 'book id', 'book title', 'page', 'tags', 'text content',
+        'id', 'book id', 'book title', 'book type', 'page', 'tags', 'text content',
         'text language', 'text language code', 'text translation',
         'quote content', 'quote language', 'quote language code', 'annotator'
     ]
@@ -64,7 +64,8 @@ class Command(reference_data.Command):
             # but possible that some are not
             'book': {
                 'id': intervention.work_instance.get_uri() if intervention.work_instance else '',
-                'title': intervention.work_instance.display_title() if intervention.work_instance else ''
+                'title': intervention.work_instance.display_title() if intervention.work_instance else '',
+                'type': intervention.work_instance.item_type if intervention.work_instance else ''
             },
             # canvas object *should* have a label, but possible it does not
             'page': intervention.canvas.label if intervention.canvas else '',
