@@ -586,7 +586,14 @@ class Instance(Notable):
         # metadata
         template['title'] = self.alternate_title or self.work.primary_title
         template['shortTitle'] = self.work.short_title
-        template['date'] = self.copyright_year if self.copyright_year else ''
+        template['date'] = self.copyright_year
+        template['publisher'] = self.publisher.name if self.publisher else ''
+        # place is not valid for journal articles
+        if self.pub_place.count() and not self.item_type == 'Journal Article':
+            template['place'] = '; '.join([place.name for place in self.pub_place.all()])
+
+        # no series, volume, or edition information stored in db
+
         # author
         template['creators'] = [] # clear out the default one first
         for author in self.work.authors.all(): # authors come from work
@@ -595,7 +602,6 @@ class Instance(Notable):
                 'firstName': author.firstname,
                 'lastName': author.lastname
             })
-
 
         # other creators
         # dict of zotero's localized creator type names for matching
@@ -614,49 +620,58 @@ class Instance(Notable):
         # add to collections based on derrida works that cited this item;
         # use collection zotero id from DerridaWork
         template['collections'] = [derrida_work.zotero_id for derrida_work in \
-                                   self.cited_in.filter(zotero_id__isnull=False)]
-        # metadata from instance
-        template['publisher'] = self.publisher.name if self.publisher else ''
-        # page range
+                                   self.cited_in.exclude(zotero_id='')]
+
+        # page range; only stored for book sections and journal articles
         if self.start_page and self.end_page:
             template['pages'] = '-'.join((self.start_page, self.end_page))
-        # add boolean fields as tags
-        template['tags'] = []
-        if self.is_extant:
-            template['tags'].append({
-                'tag': 'in library'
-            })
-        if self.is_annotated:
-            template['tags'].append({
-                'tag': 'annotated'
-            })
-        if self.is_translation:
-            template['tags'].append({
-                'tag': 'translation'
-            })
-        if self.has_dedication:
-            template['tags'].append({
-                'tag': 'dedication'
-            })
-        if self.has_insertions:
-            template['tags'].append({
-                'tag': 'insertions'
-            })
+
+        # convert boolean fields to tags
+        tags = []
+        for attr in ['is_extant', 'is_annotated', 'is_translation',
+                     'has_dedication', 'has_insertions']:
+            if getattr(self, attr):
+                # use attribute name as tag
+                # strip "is_" and convert underscores to spaces
+                tags.append(attr.replace('is_', '').replace('_', ' '))
+        # zotero template requires a list of dictionaries
+        template['tags'] = [{'tag': tagval} for tagval in tags]
+
         # try to use primary language, otherwise pick first language
         language = self.languages.filter(instancelanguage__is_primary=True).first()
         if not language and self.languages.exists():
             language = self.languages.first()
         template['language'] = language.code if language else ''
 
-        # use catalogue for location in archive / library catalog?
-        # print(self.instancecatalogue_set.values('institution', 'call_number'))
+        # use finding aids URL as archive location
+        if self.uri and 'princeton' in self.uri:
+            template['archiveLocation'] = self.uri
+
+            # if we have a princeton URI,
+            # use catalogue for location in archive / library catalog
+            # set archive based on catalogue information (i.e., PUL)
+            # NOTE: only applying to items with princeton urls, because
+            # import seems to have associated all items with princeton
+            # as owning institution, whether they are extant or not
+            current_catalog = self.instancecatalogue_set.filter(is_current=True).first()
+            if current_catalog:
+                template['archive'] = current_catalog.institution.name
 
         # item-type specific metadata
         if self.item_type == 'Book Section':
+            # title of the book this work appears in
             template['bookTitle'] = self.collected_in.display_title()
+            # publication information stored on the book, but don't override
+            # if anything was set on the book section
+            book_metadata = self.collected_in.as_zotero_item(library)
+            for field in ['date', 'publisher', 'place', 'language',
+                          'archive', 'archiveLocation']:
+                if not template.get(field, None) and field in book_metadata:
+                    template[field] = book_metadata[field]
 
         if self.item_type == 'Journal Article':
             template['publicationTitle'] = self.journal.name
+
 
 
         return template

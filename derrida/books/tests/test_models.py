@@ -675,10 +675,6 @@ class TestInstance(TestCase):
             {'creatorType': 'editor', 'localized': 'Editor'},
             {'creatorType': 'translator', 'localized': 'Translator'}
         ]
-        # set zotero id on "of grammatology" so it can be used as a collection
-        grammatology = DerridaWork.objects.get(pk=1)
-        grammatology.zotero_id = 'ABCDEF'
-        grammatology.save()
 
         # test against each kind of item (book, journal article, book section)
 
@@ -694,7 +690,8 @@ class TestInstance(TestCase):
         library.item_template.assert_called_with('book')
         library.item_creator_types.assert_called_with('book')
         # check zotero item properties
-        assert tropiques_z['publisher'] == 'Plon'
+        assert tropiques_z['publisher'] == tropiques.publisher.name
+        assert tropiques_z['place'] == tropiques.pub_place.first().name
         assert tropiques_z['language'] == 'fr'
         assert {
             'creatorType': 'editor',
@@ -702,20 +699,36 @@ class TestInstance(TestCase):
             'lastName': 'Smith'
         } in tropiques_z['creators']
         # check tags are set
-        assert {'tag': 'annotated'} in tropiques_z['tags']
-        assert {'tag': 'in library'} in tropiques_z['tags']
+        tags = [tag['tag'] for tag in tropiques_z['tags']]
+        assert 'annotated' in tags
+        assert 'extant' in tags
+        assert 'translation' not in tags
+        assert 'has dedication' not in tags
+        assert 'has insertions' not in tags
+        # assert {'tag': 'annotated'} in tropiques_z['tags']
+        # assert {'tag': 'extant'} in tropiques_z['tags']
         assert tropiques_z['title'] == tropiques.work.primary_title
         assert tropiques_z['shortTitle'] == tropiques.work.short_title
-        # cited in 'of grammatology'
-        assert grammatology.zotero_id in tropiques_z['collections'] # all cited in 'of grammatology'
+        # cited in of grammatology but derrida work has no zotero id;
+        # should not be not in collections
+        assert not tropiques_z['collections']
+
+        # set zotero id on "of grammatology" so it can be used as a collection
+        grammatology = DerridaWork.objects.get(pk=1)
+        grammatology.zotero_id = 'ABCDEF'
+        grammatology.save()
 
         # ** book section
+        library.reset_mock()
         lecriture = Instance.objects.get(pk=92) # cohen 'la grande invention de lecriture' 1958; book section
         InstanceCreator.objects.create(instance=lecriture, creator_type=translator, person=bob)
         lecriture_z = lecriture.as_zotero_item(library)
         # test that the right item type template and creator types are retrieved
-        library.item_template.assert_called_with('bookSection')
-        library.item_creator_types.assert_called_with('bookSection')
+        # book section also uses book to get book-level metadata
+        library.item_template.assert_any_call('bookSection')
+        library.item_template.assert_any_call('book')
+        library.item_creator_types.assert_any_call('bookSection')
+        library.item_creator_types.assert_any_call('book')
         assert lecriture_z['title'] == lecriture.work.primary_title
         assert lecriture_z['shortTitle'] == lecriture.work.short_title
         assert lecriture_z['bookTitle'] == lecriture.collected_in.display_title()
@@ -726,7 +739,8 @@ class TestInstance(TestCase):
             'lastName': 'Smith'
         } in lecriture_z['creators']
         # check tags are set
-        assert {'tag': 'in library'} in lecriture_z['tags']
+        tags = [tag['tag'] for tag in lecriture_z['tags']]
+        assert 'extant' in tags
         # cited in 'of grammatology'
         assert grammatology.zotero_id in lecriture_z['collections']
 
@@ -739,6 +753,11 @@ class TestInstance(TestCase):
         # check that item-specific properties are present
         assert lemot_z['publicationTitle'] == "Diog\u00e8ne"
         assert lemot_z['pages'] == '39-53'
+        # place not allowed for journal article
+        assert 'place' not in lemot_z
+        tags = [tag['tag'] for tag in lemot_z['tags']]
+        assert 'extant' not in tags
+        assert 'annotated' not in tags
         # check that some creators are present
         assert {
             'creatorType': 'author',

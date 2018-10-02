@@ -312,6 +312,17 @@
         }
     },
     {
+    "model": "places.place",
+    "pk": 3,
+    "fields": {
+        "name": "Paris",
+        "notes": "",
+        "geonames_id": "http://sws.geonames.org/2988507/",
+        "latitude": 48.85341,
+        "longitude": 2.3488
+        }
+    },
+    {
         "model": "people.person",
         "pk": 1,
         "fields": {
