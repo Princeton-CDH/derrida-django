@@ -690,6 +690,7 @@ class TestInstance(TestCase):
         library.item_template.assert_called_with('book')
         library.item_creator_types.assert_called_with('book')
         # check zotero item properties
+        assert tropiques_z['url'] == tropiques.get_uri()
         assert tropiques_z['publisher'] == tropiques.publisher.name
         assert tropiques_z['place'] == tropiques.pub_place.first().name
         assert tropiques_z['language'] == 'fr'

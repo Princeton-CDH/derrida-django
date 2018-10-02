@@ -583,8 +583,7 @@ class Instance(Notable):
 
         # use local instance URI for zotero url, for compatibility
         # with other data exports
-        # TODO: after update from develop
-        # template['url'] = self.get_uri()
+        template['url'] = self.get_uri()
 
         # metadata
         template['title'] = self.alternate_title or self.work.primary_title
