@@ -570,7 +570,6 @@ class Instance(Notable):
         library. Requires a :class:`pyzotero.zotero.Zotero` instance for API
         calls to retrieve item type templates and creator types.'''
         # get the item template/creator types based on item type
-        print("*** as zotero item")
 
         # retrieve appropriate item and creator templates based on item type
         zotero_template = self.zotero_template_by_itemtype[self.item_type]
@@ -633,7 +632,7 @@ class Instance(Notable):
         # convert boolean fields to tags
         tags = []
         for attr in ['is_extant', 'is_annotated', 'is_translation',
-                     'has_dedication', 'has_insertions']:
+                     'has_dedication', 'has_insertions', 'digital_edition']:
             if getattr(self, attr):
                 # use attribute name as tag
                 # strip "is_" and convert underscores to spaces

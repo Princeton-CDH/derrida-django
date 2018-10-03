@@ -743,6 +743,7 @@ class TestInstance(TestCase):
         # check tags are set
         tags = [tag['tag'] for tag in lecriture_z['tags']]
         assert 'extant' in tags
+        assert 'digital edition' not in tags
         # cited in 'of grammatology'
         assert grammatology.zotero_id in lecriture_z['collections']
 
