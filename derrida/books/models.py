@@ -682,6 +682,7 @@ class Instance(Notable):
             notes.append('Copy {}'.format(self.copy))
         # include total reference count
         if self.reference_set.exists():
+            # in future, this should be reference count *per* derrida work
             ref_count = self.reference_set.count()
             notes.append('{} reference{}'.format(
                 ref_count, 's' if ref_count != 1 else ''))

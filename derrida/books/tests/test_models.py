@@ -5,6 +5,7 @@ from unittest.mock import Mock
 
 import pytest
 from django.core.exceptions import ValidationError
+from django.db.models import Count
 from django.test import TestCase
 from django.urls import resolve, reverse
 from djiffy.models import Canvas, Manifest
@@ -265,7 +266,7 @@ class TestWork(TestCase):
 
 
 class TestInstance(TestCase):
-    fixtures = ['sample_work_data.json']
+    fixtures = ['sample_work_data', 'test_references']
 
     def test_display_title(self):
         la_vie = Instance.objects.get(work__short_title__contains="La vie")
@@ -759,7 +760,7 @@ class TestInstance(TestCase):
         tags = [tag['tag'] for tag in lemot_z['tags']]
         assert 'extant' not in tags
         assert 'annotated' not in tags
-        # check that some creators are present
+        # check that creator is present
         assert {
             'creatorType': 'author',
             'firstName': 'Andr\u00e9',
@@ -767,6 +768,43 @@ class TestInstance(TestCase):
         } in lemot_z['creators']
         # cited in 'of grammatology'
         assert grammatology.zotero_id in lemot_z['collections']
+
+        # item with existing zotero id
+        lemot.zotero_id = 'Z12345'
+        zotero_item = lemot.as_zotero_item(library)
+        assert zotero_item['key'] == lemot.zotero_id
+
+        # item with catalogue / owning institution
+        instance = Instance.objects.filter(owning_institutions__isnull=False).first()
+        zotero_item = instance.as_zotero_item(library)
+        assert zotero_item['archive'] == instance.owning_institutions.first().name
+
+        # item with PUL finding aid URL
+        instance = Instance.objects.filter(uri__contains='findingaids').first()
+        zotero_item = instance.as_zotero_item(library)
+        assert zotero_item['archiveLocation'] == instance.uri
+
+        # check notes in abstract
+        # - should include number of references
+        instances_with_refs = Instance.objects.annotate(ref_count=Count('reference'))
+        # get an instance with a single reference
+        instance = instances_with_refs.filter(ref_count=1).first()
+        # set copy information to test inclusion in notes
+        instance.copy = 'B'
+        zotero_item = instance.as_zotero_item(library)
+        assert 'Copy {}'.format(instance.copy) in zotero_item['abstractNote']
+        assert '1 reference' in zotero_item['abstractNote']
+
+        # get an instance with more than one reference
+        instance = instances_with_refs.filter(ref_count__gt=1).first()
+        # set copy information to test inclusion in notes
+        zotero_item = instance.as_zotero_item(library)
+        assert '{} references'.format(instance.reference_set.count()) \
+            in zotero_item['abstractNote']
+
+        # instance with annotations documented - not currently represented
+        # in fixture data
+
 
 class TestInstanceQuerySet(TestCase):
     fixtures = ['sample_work_data.json']
