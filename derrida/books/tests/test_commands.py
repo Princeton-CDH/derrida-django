@@ -189,14 +189,62 @@ class TestExportZotero(TestCase):
         assert derridaworks[0].zotero_id == zotero_id
         assert derridaworks[1].zotero_id == zotero_id2
 
-    def test_create_items(self, zotero):
-        # Should report if nothing in queryset
+    @patch.object(Instance, 'as_zotero_item')
+    def test_create_items(self, mock_as_zotero_item, zotero):
+        # use mock for zotero library instance
+        self.cmd.library = Mock()
+        self.cmd.library.count_items.side_effect = [0, 3]
+        self.cmd.library.last_modified_version.return_value = 'Tuesday'
+        zotero_response = {
+            'success': {
+                '0': 'abc',
+                '1': 'def',
+                '2': 'ghi'
+            },
+            'unchanged': {},
+            'failed': {}
+        }
+        self.cmd.library.create_items.return_value = zotero_response
+
+        # Should report if no items to report
+        # not in verbose mode; should not report anything
+        self.cmd.create_items(Instance.objects.none())
+        output = self.cmd.stdout.getvalue()
+        assert not output
+
+        # should report nothing to do when verbosity is higher
+        self.cmd.verbosity = 2
+        self.cmd.create_items(Instance.objects.none())
+        output = self.cmd.stdout.getvalue()
+        assert 'No items to create' in output
+
+        # test with three records
+        test_instances = Instance.objects.all()[:3]
+
         # Should output how many instances were provided
+        stats = self.cmd.create_items(test_instances)
+        output = self.cmd.stdout.getvalue()
+        assert 'Exporting {} instances.'.format(test_instances.count()) in output
         # Should convert instances to zotero items
+        # convert to zotero called once per item
+        assert mock_as_zotero_item.call_count == test_instances.count()
+        mock_as_zotero_item.assert_called_with(self.cmd.library)
         # Should call create_items with the item data
+        self.cmd.library.create_items.assert_called_with(
+            [mock_as_zotero_item.return_value for i in range(3)],
+            last_modified='Tuesday')
+        # Should return summary statistics
+        assert stats['updated'] == 3
+        assert stats['created'] == 3
+        assert stats['unchanged'] == 0
+        assert stats['failed'] == 0
+
         # Should save returned zotero IDs to the instances
-        # Should output run statistics
-        pass
+        for index, inst in enumerate(test_instances):
+            assert Instance.objects.get(pk=inst.pk).zotero_id == \
+                zotero_response['success'][str(index)]
+
+
 
 
 class TestReferenceData(TestCase):

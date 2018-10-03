@@ -50,8 +50,8 @@ class Command(BaseCommand):
         self.create_collections(DerridaWork.objects.filter(zotero_id=''))
         # create/update all items cited in a derrida work
         stats = self.create_items(Instance.objects.filter(cited_in__isnull=False))
-        summary = '\nExport complete. \n    \
-        Created {created:,d}; updated {updated:,d}; unchanged {unchanged:,d}; failed {failed:,d}.'.format(**stats)
+        summary = '\nExport complete. \n\
+Created {created:,d}; updated {updated:,d}; unchanged {unchanged:,d}; failed {failed:,d}.'.format(**stats)
         self.stdout.write(summary)
 
     def create_collections(self, works: QuerySet):
@@ -116,7 +116,7 @@ class Command(BaseCommand):
             # report any failures
             if res['failed']:
                 for index, error in res['failed'].items():
-                    self.stderr.write('\nError %s: %s' % \
+                    self.stderr.write('\nError on %s: %s' % \
                         (chunk[int(index)], error['message']))
 
             count += self.chunk_size

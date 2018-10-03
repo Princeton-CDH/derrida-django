@@ -570,6 +570,7 @@ class Instance(Notable):
         library. Requires a :class:`pyzotero.zotero.Zotero` instance for API
         calls to retrieve item type templates and creator types.'''
         # get the item template/creator types based on item type
+        print("*** as zotero item")
 
         # retrieve appropriate item and creator templates based on item type
         zotero_template = self.zotero_template_by_itemtype[self.item_type]
