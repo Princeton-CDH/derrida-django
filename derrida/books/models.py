@@ -606,7 +606,8 @@ class Instance(Notable):
             })
 
         # other creators
-        # dict of zotero's localized creator type names for matching
+        # create a lookup dict of zotero's "localized" creator type names
+        # for matching on local creator_type names
         type_names = {c['localized']: c['creatorType'] for c in creator_types}
         author = CreatorType.objects.get(name='Author')
         # all creators that are not authors
@@ -614,7 +615,7 @@ class Instance(Notable):
             # match on localized name, because we use it
             if creator.creator_type.name in type_names:
                 template['creators'].append({
-                    # ...but send the "type name" (not localized)
+                    # lookup on localized name and send the "type name"
                     'creatorType': type_names[creator.creator_type.name],
                     'firstName': creator.person.firstname,
                     'lastName': creator.person.lastname
@@ -674,7 +675,23 @@ class Instance(Notable):
         if self.item_type == 'Journal Article':
             template['publicationTitle'] = self.journal.name
 
-
+        # add notes to abstract field
+        notes = []
+        # include copy information, if present, to indicate multiple copies
+        if self.copy:
+            notes.append('Copy {}'.format(self.copy))
+        # include total reference count
+        if self.reference_set.exists():
+            ref_count = self.reference_set.count()
+            notes.append('{} reference{}'.format(
+                ref_count, 's' if ref_count != 1 else ''))
+        # number of pages with annotations documented
+        annotated_page_count = self.annotated_pages().count()
+        if annotated_page_count:
+            notes.append('{} page{} with documented annotations'.format(
+                annotated_page_count, 's' if annotated_page_count != 1 else ''))
+        if notes:
+            template['abstractNote'] = '\n'.join(notes)
 
         return template
 
