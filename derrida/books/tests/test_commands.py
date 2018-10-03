@@ -125,25 +125,26 @@ class TestExportZotero(TestCase):
         with patch.object(self.cmd, 'create_collections') as mock_create_collections:
             with patch.object(self.cmd, 'create_items') as mock_create_items:
 
-                mock_create_items.return_value = {'created': 0, 'updated': 0,
-                    'unchanged': 0, 'failed': 0}
+                mock_create_items.return_value = {
+                    'created': 0, 'updated': 0,
+                    'unchanged': 0, 'failed': 0
+                }
 
                 # API key is required
-                with self.settings(ZOTERO_API_KEY=None):
-                    with raises(CommandError):
+                with override_settings(ZOTERO_API_KEY=None):
+                    with raises(CommandError) as err:
                         self.cmd.handle()
-                        output = self.cmd.stdout.getvalue()
-                        assert 'API key must be set' in output
+                    assert 'API key must be set' in str(err)
 
-                        mock_create_collections.assert_not_called()
-                        mock_create_items.assert_not_called()
+                    mock_create_collections.assert_not_called()
+                    mock_create_items.assert_not_called()
 
                 # Zotero library ID is required
-                with self.settings(ZOTERO_LIBRARY_ID=None):
-                    with raises(CommandError):
+                with override_settings(ZOTERO_LIBRARY_ID=None):
+                    with raises(CommandError) as err:
                         self.cmd.handle()
-                        output = self.cmd.stdout.getvalue()
-                        assert 'library ID must be set' in output
+
+                    assert 'library ID must be set' in str(err)
 
                 # Should initialize a library with provided values
                 self.cmd.handle()
