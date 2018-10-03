@@ -119,6 +119,7 @@ class TestExportZotero(TestCase):
     def setUp(self):
         self.cmd = export_zotero.Command()
         self.cmd.stdout = StringIO()
+        self.cmd.stderr = StringIO()
 
     def test_handle(self, zotero):
         with patch.object(self.cmd, 'create_collections') as mock_create_collections:
@@ -244,7 +245,23 @@ class TestExportZotero(TestCase):
             assert Instance.objects.get(pk=inst.pk).zotero_id == \
                 zotero_response['success'][str(index)]
 
-
+        # simulate failure; should display message
+        # - set library count to test created logic
+        self.cmd.library.count_items.side_effect = [3, 3]
+        self.cmd.stderr = StringIO()
+        error_message = '"place" is not a valid field for journalArticle'
+        zotero_response['failed'] = {
+            '0': {'message': error_message}
+        }
+        self.cmd.library.create_items.return_value = zotero_response
+        # suppress progressbar to
+        stats = self.cmd.create_items(test_instances)
+        output = self.cmd.stderr.getvalue()
+        assert 'Error on {}'.format(test_instances.first()) in output
+        assert error_message in output
+        assert stats['failed'] == 1
+        # no items created, based on mock library count
+        assert stats['created'] == 0
 
 
 class TestReferenceData(TestCase):
