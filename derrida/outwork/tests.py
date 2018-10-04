@@ -1,15 +1,19 @@
 from django.test import TestCase
+from django.urls import reverse
 from django.utils.timezone import now
+from haystack.models import SearchResult
 from mezzanine.core.models import (CONTENT_STATUS_DRAFT,
                                    CONTENT_STATUS_PUBLISHED)
 from mezzanine.pages.models import Page
 from mezzanine.utils.urls import slugify
+import pytest
 
+from derrida.books.tests.test_views import USE_TEST_HAYSTACK
 from derrida.outwork.models import Outwork
 
 
 class TestOutwork(TestCase):
-    fixtures = ['initial_outwork.json']
+    fixtures = ['initial_outwork']
 
     @classmethod
     def setUpTestData(cls):
@@ -44,3 +48,33 @@ class TestOutwork(TestCase):
         self.culture.status = CONTENT_STATUS_PUBLISHED
         self.culture.save()
         assert self.culture.is_published() is True
+
+
+@USE_TEST_HAYSTACK
+class TestOutworkViews(TestCase):
+    fixtures = ['initial_outwork']
+
+    @pytest.mark.haystack
+    def test_outwork_list(self):
+        outwork_list_url = reverse('outwork:list')
+        response = self.client.get(outwork_list_url)
+        assert response.status_code == 200
+        assert 'object_list' in response.context
+        assert isinstance(response.context['object_list'][0], SearchResult)
+        assert response.context['object_list'][0].model == Outwork
+        self.assertTemplateUsed(response, 'outwork/outwork_list.html')
+        self.assertTemplateUsed(response, 'outwork/components/outwork-list-item.html')
+        # not enough items to paginate
+        self.assertTemplateNotUsed(response, 'components/page-pagination.html')
+
+        # outwork summary details that should be present in the template
+        outwork = Outwork.objects.first()
+        # spot check template (tested more thoroughly in reference detail below)
+        self.assertContains(response, outwork.title,
+            msg_prefix='outwork list should display outwork essay title')
+        self.assertContains(response, outwork.get_absolute_url(),
+            msg_prefix='outwork list should link to essay')
+
+        # keyword search with no match
+        response = self.client.get(outwork_list_url, {'query': 'foo'})
+        self.assertTemplateUsed(response, 'components/search-results-empty.html')
