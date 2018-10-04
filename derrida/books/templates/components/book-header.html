@@ -28,7 +28,7 @@ object for accessing properties to render.
 {% if book.journal %}
 <p class="item-term__value"><i>{{ book.journal }}</i> ({{ book.copyright_year }})</p>
 {% else %}
-<p class="item-term__value">{{ book.copyright_year }}{% if book.copy %} - {{ book.copy }}{% endif %}</p>
+<p class="item-term__value">{{ book.year|default:'' }}{% if book.copy %} - {{ book.copy }}{% endif %}</p>
 {% endif %}
 
 
