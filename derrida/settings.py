@@ -25,7 +25,6 @@ INSTALLED_APPS = [
     'dal',
     'dal_select2',
     # dal and dal_select2 must be added before grappelli
-    'grappelli',
     'compressor',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -87,7 +86,7 @@ MIDDLEWARE = [
 # Store these package names here as they may change in the future since
 # at the moment we are using custom forks of them.
 PACKAGE_NAME_FILEBROWSER = "filebrowser_safe"
-PACKAGE_NAME_GRAPPELLI = "grappelli"
+PACKAGE_NAME_GRAPPELLI = "grappelli_safe"
 
 #########################
 # OPTIONAL APPLICATIONS #
@@ -161,8 +160,6 @@ STATICFILES_FINDERS = (
     'compressor.finders.CompressorFinder',
 )
 
-
-GRAPPELLI_ADMIN_TITLE = 'Derrida Admin'
 
 WSGI_APPLICATION = 'derrida.wsgi.application'
 

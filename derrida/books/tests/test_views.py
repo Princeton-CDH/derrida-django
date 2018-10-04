@@ -920,7 +920,8 @@ class TestBookViews(TestCase):
             msg_prefix='canvas url should be included once for each associated intervention')
         self.assertContains(response, 'Annotation', count=2,
             msg_prefix='intervention type should display for each item')
-        self.assertContains(response, 'Intervention', count=5,
+        # plus 2 for mezzanine sidebar app/model navigation links
+        self.assertContains(response, 'Intervention', count=5 + 2,
             msg_prefix='intervention type should display for each item, once in'
             ' the reference inline, and once in the hidden reference inline, and'
             ' the inline fieldset.')

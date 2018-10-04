@@ -13,7 +13,7 @@ an Instance
 */
 function toggleReferenceAutocompletes() {
   var instancePksArray = []
-  var jsonString = $('.instance_ids_with_digital_editions div div .grp-readonly').text();
+  var jsonString = $('.field-instance_ids_with_digital_editions .readonly').text();
   if (jsonString) {
     instancePksArray = JSON.parse(jsonString);
   }
