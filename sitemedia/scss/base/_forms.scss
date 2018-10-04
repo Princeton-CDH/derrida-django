@@ -55,14 +55,15 @@ section.page-filter {
   .mdl-textfield {
     .expand-icon {
       position: absolute;
-      transition: all 0.5s ease;
+      transition: transform 0.5s ease;
       top: 0;
       right: 0;
       height: 20px;
     }
     &.is-open {
       .expand-icon {
-        transform: rotate(0.5turn)
+        transform: rotate(0.5turn);
+        filter: sepia(100%) hue-rotate(180deg) saturate(5) brightness(.8);
       }
     }
   }

@@ -4,14 +4,21 @@
 
   z-index: 10;
   padding: 0 $gutter-size;
-  height: 4em;
+  height: auto;
   width: 100%;
-  top: 4.3em;
-  position: absolute;
+  top: 4em;
+  position: fixed;
+  transition: background 0.5s ease;
+  background: $base-background-color;
+
+  .background-colored--dark & {
+      background: #fff;
+  }
 
   @include grid-media($xlarge-viewport-grid) {
     .mdl-layout:not(.disable-coordinate-navigation) & {
       position: fixed;
+      height: 4.3em;
       top: 0;
       margin: 0 10%;
       width: 80%;
@@ -20,6 +27,7 @@
 
   &.is-hidden {
     pointer-events: none;
+    background: transparent;
   }
 
   &.is-fixed {
@@ -115,7 +123,7 @@
     align-self: center;
 
     .background-colored--dark & {
-      color: $white;
+      color: $black-0;
       opacity: 0.8;
       border-bottom-color: transparentize($white, 0.2);
     }
@@ -163,7 +171,7 @@
 
   .mdl-selectfield {
     align-self: center;
-    width: 150px;
+    width: 200px;
     padding-bottom: 0;
     padding-top: 0.75em;
     margin-right: 2rem;
@@ -274,6 +282,7 @@
 
     .mdl-textfield__input {
       border-bottom-color: rgba($white, 0.6);
+      color: $grey-500;
     }
 
     &.is-focused .mdl-textfield__label::after {

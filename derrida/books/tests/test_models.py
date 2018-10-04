@@ -1,20 +1,24 @@
 # -*- coding: utf-8 -*-
-from datetime import datetime
-
-from django.core.exceptions import ValidationError
-from django.test import TestCase
-from django.urls import reverse, resolve
-from djiffy.models import Manifest, Canvas
-import pytest
 import json
+from datetime import datetime
+from unittest.mock import Mock
 
-from derrida.places.models import Place
-from derrida.books.models import Publisher, OwningInstitution, \
-    Journal, DerridaWork, DerridaWorkSection, Reference, \
-    ReferenceType, Work, Instance, InstanceCatalogue, WorkLanguage, \
-    InstanceLanguage, Language, WorkSubject, Subject
+import pytest
+from django.core.exceptions import ValidationError
+from django.db.models import Count
+from django.test import TestCase
+from django.urls import resolve, reverse
+from djiffy.models import Canvas, Manifest
+
+from derrida.books.models import (CreatorType, DerridaWork, DerridaWorkSection,
+                                  Instance, InstanceCatalogue, InstanceCreator,
+                                  InstanceLanguage, Journal, Language,
+                                  OwningInstitution, Publisher, Reference,
+                                  ReferenceType, Subject, Work, WorkLanguage,
+                                  WorkSubject)
 from derrida.interventions.models import Intervention
 from derrida.people.models import Person
+from derrida.places.models import Place
 
 
 class TestOwningInstitution(TestCase):
@@ -231,10 +235,13 @@ class TestReferenceQuerySet(TestCase):
         assert ref_values['derridawork__slug'] == ref.derridawork.slug
         assert ref_values['derridawork_page'] == ref.derridawork_page
         assert ref_values['derridawork_pageloc'] == ref.derridawork_pageloc
+        # no author by default
+        assert 'author' not in ref_values
+
+        # author should be included if requested
+        ref_values = self.ref_qs.summary_values(include_author=True).first()
         assert ref_values['author'] == \
             ref.instance.work.authors.first().authorized_name
-
-        # TODO: not actually sure how this works for multi-author items
 
 
 class TestWork(TestCase):
@@ -262,7 +269,7 @@ class TestWork(TestCase):
 
 
 class TestInstance(TestCase):
-    fixtures = ['sample_work_data.json']
+    fixtures = ['sample_work_data', 'test_references']
 
     def test_display_title(self):
         la_vie = Instance.objects.get(work__short_title__contains="La vie")
@@ -657,6 +664,150 @@ class TestInstance(TestCase):
             is_primary=True)
         # primary work language used
         assert la_vie.primary_language() == lang_fr
+
+    def test_as_zotero_item(self):
+        # mock a zotero library instance, since api call is required
+        # to retrieve item template
+        library = Mock()
+        # return an empty dictionary for zotero template
+        def get_template(*args, **kwargs):
+            return dict()
+
+        library.item_template.side_effect = get_template
+        library.item_creator_types.return_value = [ # example creator types
+            {'creatorType': 'author', 'localized': 'Author'},
+            {'creatorType': 'editor', 'localized': 'Editor'},
+            {'creatorType': 'translator', 'localized': 'Translator'}
+        ]
+
+        # test against each kind of item (book, journal article, book section)
+
+        # ** book
+        tropiques = Instance.objects.get(pk=134) # levi-strauss 'triste tropiques' 1955; book
+        # add extra creators to the instances for testing
+        editor = CreatorType.objects.get(name='Editor')
+        translator = CreatorType.objects.get(name='Translator')
+        bob = Person.objects.create(authorized_name='Smith, Bob')
+        InstanceCreator.objects.create(instance=tropiques, creator_type=editor, person=bob)
+        tropiques_z = tropiques.as_zotero_item(library)
+        # test that the right item type template and creator types are retrieved
+        library.item_template.assert_called_with('book')
+        library.item_creator_types.assert_called_with('book')
+        # check zotero item properties
+        assert tropiques_z['url'] == tropiques.get_uri()
+        assert tropiques_z['publisher'] == tropiques.publisher.name
+        assert tropiques_z['place'] == tropiques.pub_place.first().name
+        assert tropiques_z['language'] == 'fr'
+        assert {
+            'creatorType': 'editor',
+            'firstName': 'Bob',
+            'lastName': 'Smith'
+        } in tropiques_z['creators']
+        # check tags are set
+        tags = [tag['tag'] for tag in tropiques_z['tags']]
+        assert 'annotated' in tags
+        assert 'extant' in tags
+        assert 'translation' not in tags
+        assert 'has dedication' not in tags
+        assert 'has insertions' not in tags
+        # assert {'tag': 'annotated'} in tropiques_z['tags']
+        # assert {'tag': 'extant'} in tropiques_z['tags']
+        assert tropiques_z['title'] == tropiques.work.primary_title
+        assert tropiques_z['shortTitle'] == tropiques.work.short_title
+        # cited in of grammatology but derrida work has no zotero id;
+        # should not be not in collections
+        assert not tropiques_z['collections']
+
+        # set zotero id on "of grammatology" so it can be used as a collection
+        grammatology = DerridaWork.objects.get(pk=1)
+        grammatology.zotero_id = 'ABCDEF'
+        grammatology.save()
+
+        # ** book section
+        library.reset_mock()
+        lecriture = Instance.objects.get(pk=92) # cohen 'la grande invention de lecriture' 1958; book section
+        InstanceCreator.objects.create(instance=lecriture, creator_type=translator, person=bob)
+        lecriture_z = lecriture.as_zotero_item(library)
+        # test that the right item type template and creator types are retrieved
+        # book section also uses book to get book-level metadata
+        library.item_template.assert_any_call('bookSection')
+        library.item_template.assert_any_call('book')
+        library.item_creator_types.assert_any_call('bookSection')
+        library.item_creator_types.assert_any_call('book')
+        assert lecriture_z['title'] == lecriture.work.primary_title
+        assert lecriture_z['shortTitle'] == lecriture.work.short_title
+        assert lecriture_z['bookTitle'] == lecriture.collected_in.display_title()
+        assert lecriture_z['date'] == 1958
+        assert {
+            'creatorType': 'translator',
+            'firstName': 'Bob',
+            'lastName': 'Smith'
+        } in lecriture_z['creators']
+        # check tags are set
+        tags = [tag['tag'] for tag in lecriture_z['tags']]
+        assert 'extant' in tags
+        assert 'digital edition' not in tags
+        # cited in 'of grammatology'
+        assert grammatology.zotero_id in lecriture_z['collections']
+
+        # ** journal article
+        lemot = Instance.objects.get(pk=166) # martinet 'le mot' 1965; journal article in 'diogene'
+        lemot_z = lemot.as_zotero_item(library)
+        # test that the right item type template and creator types are retrieved
+        library.item_template.assert_called_with('journalArticle')
+        library.item_creator_types.assert_called_with('journalArticle')
+        # check that item-specific properties are present
+        assert lemot_z['publicationTitle'] == "Diog\u00e8ne"
+        assert lemot_z['pages'] == '39-53'
+        # place not allowed for journal article
+        assert 'place' not in lemot_z
+        tags = [tag['tag'] for tag in lemot_z['tags']]
+        assert 'extant' not in tags
+        assert 'annotated' not in tags
+        # check that creator is present
+        assert {
+            'creatorType': 'author',
+            'firstName': 'Andr\u00e9',
+            'lastName': 'Martinet',
+        } in lemot_z['creators']
+        # cited in 'of grammatology'
+        assert grammatology.zotero_id in lemot_z['collections']
+
+        # item with existing zotero id
+        lemot.zotero_id = 'Z12345'
+        zotero_item = lemot.as_zotero_item(library)
+        assert zotero_item['key'] == lemot.zotero_id
+
+        # item with catalogue / owning institution
+        instance = Instance.objects.filter(owning_institutions__isnull=False).first()
+        zotero_item = instance.as_zotero_item(library)
+        assert zotero_item['archive'] == instance.owning_institutions.first().name
+
+        # item with PUL finding aid URL
+        instance = Instance.objects.filter(uri__contains='findingaids').first()
+        zotero_item = instance.as_zotero_item(library)
+        assert zotero_item['archiveLocation'] == instance.uri
+
+        # check notes in abstract
+        # - should include number of references
+        instances_with_refs = Instance.objects.annotate(ref_count=Count('reference'))
+        # get an instance with a single reference
+        instance = instances_with_refs.filter(ref_count=1).first()
+        # set copy information to test inclusion in notes
+        instance.copy = 'B'
+        zotero_item = instance.as_zotero_item(library)
+        assert 'Copy {}'.format(instance.copy) in zotero_item['abstractNote']
+        assert '1 reference' in zotero_item['abstractNote']
+
+        # get an instance with more than one reference
+        instance = instances_with_refs.filter(ref_count__gt=1).first()
+        # set copy information to test inclusion in notes
+        zotero_item = instance.as_zotero_item(library)
+        assert '{} references'.format(instance.reference_set.count()) \
+            in zotero_item['abstractNote']
+
+        # instance with annotations documented - not currently represented
+        # in fixture data
 
 
 class TestInstanceQuerySet(TestCase):

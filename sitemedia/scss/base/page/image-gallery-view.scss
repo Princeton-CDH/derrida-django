@@ -5,7 +5,6 @@
     min-height: 54px; // override material design 64px
 
     @include grid-media($large-medium-viewport-grid) {
-      background: linear-gradient(to right, $white 0%, $white 300px, transparentize($white, 1) 300px, transparentize($white, 1) 100%);
       background-position: -300px;
       @include transition(background-position 20ms $base-timing);
 
@@ -88,7 +87,6 @@
 
     @include grid-media($large-medium-viewport-grid) {
       text-align: right;
-      padding-right: 10%;
     }
   }
 
@@ -215,7 +213,7 @@ a.gallery-image-view__list-item {
 
 
 .gallery-image-view__list-end {
-  border-color: $medium-grey;
+  border-color: #d8d8d8;
   opacity: 0.8;
 }
 
@@ -499,9 +497,14 @@ $component-padding: 4rem;
     line-height: 1;
     margin-top: 3px;
 
+    &:hover {
+        border-color: $orange-red;
+    }
+
     &::after {
         content: "";
         height: 3px;
+        bottom: -3px;
         width: 0;
         background-color: $orange-red;
         position: absolute;

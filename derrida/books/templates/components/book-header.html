@@ -13,7 +13,9 @@ object for accessing properties to render.
    srcset="{% url 'books:canvas-image' instance.slug book.digital_edition.thumbnail.short_id 'thumbnail' '@2x' %} 2x"
    alt="Thumbnail view of {{ instance.display_title }}" />
 {% else %}
+  {% if not hide_placeholder %}
 <span class="item-header__image img--placeholder"></span>
+  {% endif %}
 {% endif %}
     {# use language code for book title if we know primary language (assumes title is in primary language) #}
 <h1 class="item-title" {% if book.primary_language %}lang="{{ book.primary_language.code }}"{% endif %}>{{ book.display_title }}</h1>
@@ -22,9 +24,16 @@ object for accessing properties to render.
     {{ author.firstname_last }}{% if not forloop.last %}; {% endif %}
   {% endfor %}
 </p>
-<p class="item-term__value">{{ book.copyright_year }}{% if book.copy %} - {{ book.copy }}{% endif %}</p>
+{# handle journal article display #}
+{% if book.journal %}
+<p class="item-term__value"><i>{{ book.journal }}</i> ({{ book.copyright_year }})</p>
+{% else %}
+<p class="item-term__value">{{ book.year|default:'' }}{% if book.copy %} - {{ book.copy }}{% endif %}</p>
+{% endif %}
+
+
 {% if book.start_page %}
-<p class="item-pages">{{book.start_page}}</p>
+<p class="item-pages">{{ book.start_page }}-{{ book.end_page }}</p>
 {% endif %}
 
 {% if hideLicense != True %}

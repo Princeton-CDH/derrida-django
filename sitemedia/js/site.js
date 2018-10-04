@@ -57,6 +57,14 @@ $(function() {
       $(e.currentTarget).find('.mdl-textfield__input').focus()
   })
 
+  // Make expand arrows on fields close them when clicked
+  $('.mdl-textfield--floating-label .expand-icon').click(function(e) {
+      if ($(e.currentTarget).parent().hasClass('is-open')) {
+          e.stopPropagation()
+          $('header').click() // click someplace else to "blur" the field
+      }
+  })
+
   function initPageFilter() {
     var $pageFilter = $(".page-filter");
     if ($pageFilter.length) {

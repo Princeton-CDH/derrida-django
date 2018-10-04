@@ -1,11 +1,10 @@
 import json
-import re
 import string
 
-from django.db import models
 from django.contrib.contenttypes.fields import GenericRelation
-from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
+from django.core.validators import RegexValidator
+from django.db import models
 from django.urls import reverse
 from django.utils.safestring import mark_safe
 from django.utils.text import slugify
@@ -13,12 +12,11 @@ from djiffy.models import Canvas, Manifest
 from sortedm2m.fields import SortedManyToManyField
 from unidecode import unidecode
 
-from derrida.common.models import Named, Notable, DateRange
-from derrida.places.models import Place
-from derrida.people.models import Person
+from derrida.common.models import DateRange, Named, Notable
+from derrida.common.utils import absolutize_url
 from derrida.footnotes.models import Footnote
-
-Q = models.Q
+from derrida.people.models import Person
+from derrida.places.models import Place
 
 
 # TODO: could work/instance count be refactored for more general use?
@@ -186,15 +184,7 @@ class Instance(Notable):
     pub_place = SortedManyToManyField(Place,
         verbose_name='Place(s) of Publication', blank=True)
     #: Zotero identifier
-    zotero_id = models.CharField(
-        max_length=255,
-        # Add validator for any Zotero IDs entered manually by form.
-        validators=[RegexValidator(
-                        r'\W',
-                        inverse_match=True,
-                        message='Zotero IDs must be alphanumeric.'
-                    )]
-    )
+    zotero_id = models.CharField(max_length=8, default='', blank=True)
     # identifying slug for use in get_absolute_url, indexed for speed
     slug = models.SlugField(max_length=255,
                             unique=True,
@@ -316,12 +306,16 @@ class Instance(Notable):
 
     def __str__(self):
         return '%s (%s%s)' % (self.display_title(),
-            self.copyright_year or 'n.d.',
-            ' %s' % self.copy if self.copy else '')
+                              self.copyright_year or 'n.d.',
+                              ' %s' % self.copy if self.copy else '')
 
     def get_absolute_url(self):
         '''URL for this :class:`Instance` on the website.'''
         return reverse('books:detail', kwargs={'slug': self.slug})
+
+    def get_uri(self):
+        '''public URI for this instance to be used as an identifier'''
+        return absolutize_url(reverse('books:instance', args=[self.id]))
 
     def generate_base_slug(self):
         '''Generate a slug based on first author, work title, and year.
@@ -556,7 +550,6 @@ class Instance(Notable):
         same author.  For a work that collects item, include
         work by any book section authors.'''
         authors = list(self.work.authors.all())
-        exclude = [self.pk]
         if self.collected_set.exists():
             for instance in self.collected_set.all():
                 authors.extend(instance.work.authors.all())
@@ -564,6 +557,144 @@ class Instance(Notable):
         return Instance.objects.filter(work__authors__in=authors) \
                        .exclude(pk=self.pk) \
                        .exclude(digital_edition__isnull=True)
+
+    #: map local :attr:`item_type` to equivalent zotero template name
+    zotero_template_by_itemtype = {
+        'Book': 'book',
+        'Book Section': 'bookSection',
+        'Journal Article': 'journalArticle'
+    }
+
+    def as_zotero_item(self, library):
+        '''Serialize the instance as an item suitable for export to a Zotero
+        library. Requires a :class:`pyzotero.zotero.Zotero` instance for API
+        calls to retrieve item type templates and creator types.'''
+        # get the item template/creator types based on item type
+
+        # retrieve appropriate item and creator templates based on item type
+        zotero_template = self.zotero_template_by_itemtype[self.item_type]
+        template = library.item_template(zotero_template)
+        creator_types = library.item_creator_types(zotero_template)
+
+        # set common properties
+        # zotero id, if set (API will reject if it's set to an empty string)
+        if self.zotero_id:
+            template['key'] = self.zotero_id
+
+        # use local instance URI for zotero url, for compatibility
+        # with other data exports
+        template['url'] = self.get_uri()
+
+        # metadata
+        template['title'] = self.alternate_title or self.work.primary_title
+        template['shortTitle'] = self.work.short_title
+        template['date'] = self.copyright_year
+        template['publisher'] = self.publisher.name if self.publisher else ''
+        # place is not valid for journal articles
+        if self.pub_place.count() and not self.item_type == 'Journal Article':
+            template['place'] = '; '.join([place.name for place in self.pub_place.all()])
+
+        # no series, volume, or edition information stored in db
+
+        # author
+        template['creators'] = [] # clear out the default one first
+        for author in self.work.authors.all(): # authors come from work
+            template['creators'].append({
+                'creatorType': 'author',
+                'firstName': author.firstname,
+                'lastName': author.lastname
+            })
+
+        # other creators
+        # create a lookup dict of zotero's "localized" creator type names
+        # for matching on local creator_type names
+        type_names = {c['localized']: c['creatorType'] for c in creator_types}
+        author = CreatorType.objects.get(name='Author')
+        # all creators that are not authors
+        for creator in self.instancecreator_set.exclude(creator_type=author):
+            # match on localized name, because we use it
+            if creator.creator_type.name in type_names:
+                template['creators'].append({
+                    # lookup on localized name and send the "type name"
+                    'creatorType': type_names[creator.creator_type.name],
+                    'firstName': creator.person.firstname,
+                    'lastName': creator.person.lastname
+                })
+        # add to collections based on derrida works that cited this item;
+        # use collection zotero id from DerridaWork
+        template['collections'] = [derrida_work.zotero_id for derrida_work in \
+                                   self.cited_in.exclude(zotero_id='')]
+
+        # page range; only stored for book sections and journal articles
+        if self.start_page and self.end_page:
+            template['pages'] = '-'.join((self.start_page, self.end_page))
+
+        # convert boolean fields to tags
+        tags = []
+        for attr in ['is_extant', 'is_annotated', 'is_translation',
+                     'has_dedication', 'has_insertions', 'digital_edition']:
+            if getattr(self, attr):
+                # use attribute name as tag
+                # strip "is_" and convert underscores to spaces
+                tags.append(attr.replace('is_', '').replace('_', ' '))
+        # zotero template requires a list of dictionaries
+        template['tags'] = [{'tag': tagval} for tagval in tags]
+
+        # try to use primary language, otherwise pick first language
+        language = self.languages.filter(instancelanguage__is_primary=True).first()
+        if not language and self.languages.exists():
+            language = self.languages.first()
+        template['language'] = language.code if language else ''
+
+        # use finding aids URL as archive location
+        if self.uri and 'princeton' in self.uri:
+            template['archiveLocation'] = self.uri
+
+            # if we have a princeton URI,
+            # use catalogue for location in archive / library catalog
+            # set archive based on catalogue information (i.e., PUL)
+            # NOTE: only applying to items with princeton urls, because
+            # import seems to have associated all items with princeton
+            # as owning institution, whether they are extant or not
+            current_catalog = self.instancecatalogue_set.filter(is_current=True).first()
+            if current_catalog:
+                template['archive'] = current_catalog.institution.name
+
+        # item-type specific metadata
+        if self.item_type == 'Book Section':
+            # title of the book this work appears in
+            template['bookTitle'] = self.collected_in.display_title()
+            # publication information stored on the book, but don't override
+            # if anything was set on the book section
+            book_metadata = self.collected_in.as_zotero_item(library)
+            for field in ['date', 'publisher', 'place', 'language',
+                          'archive', 'archiveLocation']:
+                if not template.get(field, None) and field in book_metadata:
+                    template[field] = book_metadata[field]
+
+        if self.item_type == 'Journal Article':
+            template['publicationTitle'] = self.journal.name
+
+        # add notes to abstract field
+        notes = []
+        # include copy information, if present, to indicate multiple copies
+        if self.copy:
+            notes.append('Copy {}'.format(self.copy))
+        # include total reference count
+        if self.reference_set.exists():
+            # in future, this should be reference count *per* derrida work
+            ref_count = self.reference_set.count()
+            notes.append('{} reference{}'.format(
+                ref_count, 's' if ref_count != 1 else ''))
+        # number of pages with annotations documented
+        annotated_page_count = self.annotated_pages().count()
+        if annotated_page_count:
+            notes.append('{} page{} with documented annotations'.format(
+                annotated_page_count, 's' if annotated_page_count != 1 else ''))
+        if notes:
+            template['abstractNote'] = '\n'.join(notes)
+
+        return template
 
 
 class WorkSubject(Notable):
@@ -697,6 +828,8 @@ class DerridaWork(Notable):
     #: slug for use in URLs
     slug = models.SlugField(
         help_text='slug for use in URLs (changing after creation will break URLs)')
+    #: zotero collection ID for use in populating library
+    zotero_id = models.CharField(max_length=8, default='', blank=True)
 
     def __str__(self):
         return self.short_title
@@ -735,14 +868,22 @@ class ReferenceQuerySet(models.QuerySet):
         '''Order by author of cited work'''
         return self.order_by('instance__work__authors__authorized_name')
 
-    def summary_values(self):
+    def summary_values(self, include_author=False):
         '''Return a values list of summary information for display or
         visualization.  Currently used for histogram visualization.
         Author of cited work is aliased to `author`.
+
+        :param include_author: optionally include author information;
+            off by default, since this creates repeated records for
+            references to multi-author works
         '''
-        return self.values('id', 'instance__slug', 'derridawork__slug',
-            'derridawork_page', 'derridawork_pageloc',
-           author=models.F('instance__work__authors__authorized_name'))
+        extra_fields = {}
+        if include_author:
+            extra_fields['author'] = models.F('instance__work__authors__authorized_name')
+
+        return self.values(
+            'id', 'instance__slug', 'derridawork__slug',
+            'derridawork_page', 'derridawork_pageloc', **extra_fields)
 
 
 class Reference(models.Model):
@@ -794,6 +935,10 @@ class Reference(models.Model):
             'page': self.derridawork_page,
             'pageloc': self.derridawork_pageloc
         })
+
+    def get_uri(self):
+        '''public URI for this instance to be used as an identifier'''
+        return absolutize_url(self.get_absolute_url())
 
     def anchor_text_snippet(self):
         '''Anchor text snippet, for admin display'''

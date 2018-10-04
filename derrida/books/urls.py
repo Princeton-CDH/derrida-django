@@ -51,5 +51,8 @@ urlpatterns = [
             url(r'^(?P<mode>smthumb|thumbnail)(?P<x>@2x)?/$',
                 views.CanvasImage.as_view(), name='book-image')
         ])) # end library/<slug> urls
-    ])) # end library urls
+    ])), # end library urls
+
+    url(r'^titles/(?P<pk>\d+)/', views.InstanceURIView.as_view(), name='instance'),
+
 ]

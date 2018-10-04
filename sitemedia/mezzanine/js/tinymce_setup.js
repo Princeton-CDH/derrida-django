@@ -60,6 +60,28 @@
         return false;
     }
 
+    // Stylesheets are being compiled using django-compressor
+    // (https://github.com/django-compressor/django-compressor),
+    // which generates a single .css file on page load and inserts it
+    // into the page using a django template tag. We ensure this happens
+    // by including the "compress" tag on the edit form template
+    // (templates/admin/change_form.html).
+    function get_editor_stylesheet() {
+        // We don't know what the name of the compressed stylesheet will be,
+        // but we know it will have "CACHE" somewhere in the href attribute.
+        var mainSheet;
+        $.each(document.styleSheets, function(_, sheet) {
+            if (sheet.href && sheet.href.match(/CACHE/g)) {
+                mainSheet = sheet;
+            }
+        })
+        // Use the default tinyMCE style if we couldn't find the site styles
+        return mainSheet ? mainSheet.href : window.__tinymce_css;
+    }
+
+    // get the main stylesheet so that we can apply it to tinyMCE only
+    var editor_css = get_editor_stylesheet();
+
     var tinymce_config = {
         height: '500px',
         language: language_codes[window.__language_code] || 'en',
@@ -78,7 +100,8 @@
                   "bullist numlist | credits creditsection | link image | " +
                   "fullscreen code"),
         file_browser_callback: custom_file_browser,
-        content_css: window.__tinymce_css,
+        content_css: editor_css,
+        body_id: 'editor', // necessary to view content page styles
         style_formats: [
           { title: 'h2', block: 'h2' },
           { title: 'h3', block: 'h3' },
@@ -91,7 +114,6 @@
         advlist_bullet_styles: "default",
         advlist_number_styles: "default",
         setup: function(editor) {
-            console.log('editor', editor)
             function insertCreditSection() {
                 editor.insertContent('<section class="credits"><ul class="credits__group"><li class="credits__role">Role</li><li class="credits__name">Name</li></ul></section>')
             }

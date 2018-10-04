@@ -6,7 +6,10 @@ from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.core.cache import cache
 from django.core.exceptions import PermissionDenied
 from django.db.models import Q, Max, Min
+from django.urls import reverse
 from django.views.generic import ListView
+from django.views.generic.base import RedirectView
+from django.shortcuts import get_object_or_404
 from djiffy import views as djiffy_views
 from haystack.inputs import Raw
 from haystack.query import SearchQuerySet
@@ -298,3 +301,34 @@ class InterventionListView(ListView):
             'form': self.form,
         })
         return context
+
+
+class InterventionView(RedirectView):
+    '''View for a single intervention, so we can provide a URI for identifiers
+    in datasets that resolve to something meaningful. Currently redirects
+    to the public canvas view with the annotation highlighted if possible,
+    or an intervention search for that item if the intervention
+    is not associated with a canvas.
+    '''
+
+    def get(self, *args, **kwargs):
+        '''Patch the response to set status code to 303 See Other'''
+        response = super().get(*args, **kwargs)
+        response.status_code = 303
+        return response
+
+    def get_redirect_url(self, *args, **kwargs):
+        intervention = get_object_or_404(Intervention, id=kwargs['id'])
+        if intervention.canvas:
+            # link to public canvas view with the intervention selected
+            return '{}#annotations/{}'.format(
+                reverse('books:canvas-detail', kwargs={
+                    'slug': intervention.canvas.manifest.instance.slug,
+                    'short_id': intervention.canvas.short_id}),
+                intervention.id)
+
+        # if for some reason we have an intervention without a canvas
+        # (not likely in current set but possible), link to intervention
+        # search for this item
+        return '{}?query={}'.format(
+            reverse('interventions:list'), intervention.id)

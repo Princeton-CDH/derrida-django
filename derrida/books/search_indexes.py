@@ -70,11 +70,11 @@ class InstanceIndex(indexes.SearchIndex, indexes.Indexable):
     def prepare_cited_in(self, instance):
         '''Return Derridaworks in which this instance is cited.'''
         # return cited work once only;
-        # cheeck for references to this instance or any book sections
+        # check for references to this instance or any book sections
         # it collects
         ref_ids = [ref.id for ref in instance.reference_set.all()]
         ref_ids.extend([ref.id for bksect in instance.collected_set.all()
-                               for ref in bksect.reference_set.all()])
+                        for ref in bksect.reference_set.all()])
         # use distinct to avoid needless repetition
         return [dw.short_title for dw in
                 DerridaWork.objects.filter(reference__in=ref_ids).distinct()]
