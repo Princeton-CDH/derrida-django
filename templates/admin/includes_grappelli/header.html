@@ -13,7 +13,9 @@
         <li id="sw-version">v. {{ SW_VERSION }}</li>
 
         {# link to admin-view annotatable digital books #}
-         <li id='iif-books-link'><a href="{% url 'djiffy:list' %}">View Digital Books</a></li>
+        {% if perms.djiffy.view_manifest %}
+        <li id='iif-books-link'><a href="{% url 'djiffy:list' %}">View Digital Books</a></li>
+        {% endif %}
 
         <!-- Username -->
         <li><strong>{% firstof user.first_name user.username %}</strong></li>
