@@ -868,14 +868,22 @@ class ReferenceQuerySet(models.QuerySet):
         '''Order by author of cited work'''
         return self.order_by('instance__work__authors__authorized_name')
 
-    def summary_values(self):
+    def summary_values(self, include_author=False):
         '''Return a values list of summary information for display or
         visualization.  Currently used for histogram visualization.
         Author of cited work is aliased to `author`.
+
+        :param include_author: optionally include author information;
+            off by default, since this creates repeated records for
+            references to multi-author works
         '''
-        return self.values('id', 'instance__slug', 'derridawork__slug',
-            'derridawork_page', 'derridawork_pageloc',
-           author=models.F('instance__work__authors__authorized_name'))
+        extra_fields = {}
+        if include_author:
+            extra_fields['author'] = models.F('instance__work__authors__authorized_name')
+
+        return self.values(
+            'id', 'instance__slug', 'derridawork__slug',
+            'derridawork_page', 'derridawork_pageloc', **extra_fields)
 
 
 class Reference(models.Model):

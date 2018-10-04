@@ -235,10 +235,13 @@ class TestReferenceQuerySet(TestCase):
         assert ref_values['derridawork__slug'] == ref.derridawork.slug
         assert ref_values['derridawork_page'] == ref.derridawork_page
         assert ref_values['derridawork_pageloc'] == ref.derridawork_pageloc
+        # no author by default
+        assert 'author' not in ref_values
+
+        # author should be included if requested
+        ref_values = self.ref_qs.summary_values(include_author=True).first()
         assert ref_values['author'] == \
             ref.instance.work.authors.first().authorized_name
-
-        # TODO: not actually sure how this works for multi-author items
 
 
 class TestWork(TestCase):

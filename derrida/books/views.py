@@ -453,10 +453,13 @@ class ReferenceHistogramView(ListView):
         # NOTE: eventually this willl need to filter/segment
         # on derrida work, when we have more than one.
         if self.kwargs.get('mode', None) == 'section':
-            refs = refs.order_by_source_page()
+            return refs.order_by_source_page() \
+                       .summary_values()
         else:
-            refs = refs.order_by_author()
-        return refs.summary_values()
+            # including authors results in multiple entries
+            # for multi-author works, so only include if needed
+            return refs.order_by_author() \
+                       .summary_values(include_author=True)
 
     def get_context_data(self):
         context = super(ReferenceHistogramView, self).get_context_data()

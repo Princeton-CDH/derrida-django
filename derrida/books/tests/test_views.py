@@ -802,7 +802,7 @@ class TestReferenceViews(TestCase):
         response = self.client.get(histogram_url)
         self.assertTemplateUsed(response, 'books/reference_histogram.html')
         assert list(response.context['object_list']) == \
-            list(Reference.objects.order_by_author().summary_values())
+            list(Reference.objects.order_by_author().summary_values(include_author=True))
         assert 'sections' not in response.context
         refs = Reference.objects.all()
         for ref in refs:
