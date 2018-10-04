@@ -16,6 +16,9 @@ class TestOutwork(TestCase):
         cls.culture = Outwork.objects.get(pk=10) # 'Culture et écriture' essay outwork
         cls.outwork = Page.objects.get(title="Outwork") # main Outwork page
 
+    def test_repr(self):
+        assert repr(self.culture) == '<Outwork: {}>'.format(self.culture.slug)
+
     def test_get_slug(self):
         year = now().year
         title = slugify(self.culture.title)
@@ -30,10 +33,8 @@ class TestOutwork(TestCase):
         assert self.culture.get_slug() == 'outwork/{}/{}'.format(year, title)
         # even if it's a child of the main outwork page
         self.culture.parent = self.outwork
-        slug = self.culture.get_slug()
         assert self.culture.get_slug() == 'outwork/{}/{}'.format(year, title)
 
-    
     def test_is_published(self):
         # false if draft
         self.culture.status = CONTENT_STATUS_DRAFT
