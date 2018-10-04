@@ -537,14 +537,6 @@ class TestInstanceViews(TestCase):
 class TestReferenceViews(TestCase):
     fixtures = ['test_references.json']
 
-    def setUp(self):
-        '''None of the Instacefixtures have slugs, so generate them'''
-        for instance in Instance.objects.all():
-            instance.slug = instance.generate_safe_slug()
-            instance.save()
-        # reindex with slugs
-        call_command('rebuild_index', '--noinput')
-
     @pytest.mark.haystack
     def test_instance_reference_detail(self):
         # last instance has many references so ideal for this test

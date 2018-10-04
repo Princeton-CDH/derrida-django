@@ -17,12 +17,25 @@ class Outwork(Page, RichText):
     # use displayable manager for access to published queryset filter, etc.
     objects = DisplayableManager()
 
+    def __repr__(self):
+        '''object representation; use slug as identifier'''
+        return '<Outwork: %s>' % self.slug
+
     def get_slug(self):
+        '''customize slug logic to include year and ensure url is
+        under outwork/'''
         slug = super(Outwork, self).get_slug()
+        # if added as a child of the outwork list page,
+        # mezzanine adds an outwork prefix we don't want; remove it
+        # before customizing the url
+        if slug.startswith('outwork/'):
+            slug = slug[len('outwork/'):]
+
         if self.publish_date:
             year = self.publish_date.year
         else:
             year = self.created.year
+        # remove the extra '/outwork/' if a child of the outwork page
         return '/'.join(['outwork', str(year), slug])
 
     def is_published(self):
