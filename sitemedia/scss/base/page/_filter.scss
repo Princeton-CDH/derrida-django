@@ -467,3 +467,8 @@
     }
   }
 }
+
+/* legend not included in design but desired for accesibility */
+fieldset legend {
+  display: none;
+}

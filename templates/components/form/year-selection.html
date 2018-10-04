@@ -17,6 +17,8 @@
   <label class="mdl-textfield__label" for="year-selection">{{label}}</label>
 </div>
 <div class="filter filter--years filter--{{name}}">
+  <fieldset>
+    <legend>{{ label }} options</legend>
   <header class="filter__search">
     {% render_field items class="filter__search-field" placeholder="Start" %}
   </header>
@@ -32,6 +34,7 @@
       <span class="chart-label chart-label--end">{{ranges.end}}</span>
     </div>
   </section>
+</fieldset>
 
   <footer class="filter__footer">
     <a class="clear-link" href="#">Clear Selection</a>

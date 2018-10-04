@@ -15,11 +15,14 @@
 
   <nav class="filter__nav"></nav>
 
+  <fieldset>
+    <legend>Author options</legend>
   <section class="filter__check-list filter__check-list--authors">
     {% for author in authors %}
       {{author}}
     {% endfor %}
   </section>
+  </fieldset>
 
   <footer class="filter__footer">
     <a class="clear-link" href="#">Clear Selection</a>
