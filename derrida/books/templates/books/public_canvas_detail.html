@@ -249,7 +249,7 @@
 {% block content %}
   <header class="page-header page-header--link">
     <div class="container">
-      <a class="page-header__toggle"><img class="icon" src="{% static 'img/icons/Expand.svg' %}" /></a>
+      <a class="page-header__toggle"><img class="icon" src="{% static 'img/icons/Expand.svg' %}" alt="▽"/></a>
       <a class="page-header__link" href="{% url 'books:detail-gallery' instance.slug %}"><h1 class="page-header__heading"><span class="arrow_icon">⟵</span> Book Image Gallery</h1></a>
 
       {# no deep zoom if image is suppressed #}
