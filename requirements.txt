@@ -25,3 +25,5 @@ mezzanine>4.3
 django-fullurl
 django-apptemplates
 roman
+pyzotero
+progressbar2

@@ -65,6 +65,12 @@ HAYSTACK_TEST_CONNECTIONS = {
 # NOTE: this should be enabled in Production and QA
 # HAYSTACK_SIGNAL_PROCESSOR = 'derrida.books.signals.RelationSafeRTSP'
 
+# Zotero API key, for exporting library data to Zotero. The API key
+# must have write permissions on the configrued Zotero library.
+#ZOTERO_API_KEY = ''
+# Numeric Zotero library id where library data should be exported.
+#ZOTERO_LIBRARY_ID = ''
+
 
 # username for accessing GeoNames API
 GEONAMES_USERNAME = ''
