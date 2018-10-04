@@ -42,9 +42,6 @@ urlpatterns = [
     # alternate homepage named url needed for djiffy templates
     url(r'^$', mezzanine.pages.views.page, {"slug": "/"}, name="site-index"),
 
-    # grappelli URLS for admin related lookups & autocompletes
-    url(r'^grappelli/', include('grappelli.urls')),
-
     url(r'^admin/', include(admin.site.urls)),
     url(r'^accounts/', include('pucas.cas_urls')),
     url(r'^', include('derrida.books.urls', namespace='books')),
