@@ -50,7 +50,7 @@ $(function() {
 
   // Submit the form immediately when a toggle filter is switched
   $('.filter__section--toggles .mdl-switch__input').change(submitFilterForm)
-  
+
   // Make floating labels for filters clickable
   $('.mdl-textfield--floating-label').click(function(e) {
       e.stopPropagation()
@@ -575,7 +575,9 @@ $(function() {
       var $inputs = $yearFilter.find(".filter__search input"),
           $firstInput = $inputs.first(),
           $lastInput = $inputs.last();
-      $lastInput.attr({placeholder: "End"}).before($("<label/>").addClass("filter__search-label").text("to"));
+      // set aria labels for accessibility
+      $firstInput.attr({'aria-label': 'Start'});
+      $lastInput.attr({placeholder: "End", 'aria-label': 'End'}).before($("<span/>").addClass("filter__search-label").text("to"));
 
       $yearFilter.find(".clear-link").on("click", function(e) {
         e.preventDefault();
