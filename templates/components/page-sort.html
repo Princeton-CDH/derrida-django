@@ -9,7 +9,10 @@
     <header class="page-sort__header">
       <p class="sort-label">Sort By</p>
       <form class="order_by">
+        <fieldset>
+          <legend>Sort options</legend>
         {% render_field form.order_by class="order_by__options" %}
+      </fieldset>
       </form>
     </header>
     {% endif %}
