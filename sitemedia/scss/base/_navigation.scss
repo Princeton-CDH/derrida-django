@@ -27,7 +27,7 @@
     }
   }
 
-  
+
   &.mdl-layout__header--transparent {
     background-color: $header-background-color; // have to override MDL selector to get white with this class
 
@@ -354,8 +354,8 @@
   padding-bottom: 2em;
   z-index: 4;
   box-shadow: none;
-  background: $base-background-color;
-  
+  background: $white;
+
   @include prefixer(transform, translateY(-100%), webkit moz ms o spec);
 
   .background-colored--dark & {
@@ -418,7 +418,7 @@
   .mdl-layout__drawer__close_button {
     width: 2.25rem;
     display: block;
-    position: absolute;
+    position: fixed;
     left: 0;
     top: 0;
     padding: 0.5rem;
@@ -426,7 +426,7 @@
 
     &::before {
       content: "";
-      position: absolute;
+      position: fixed;
       top: 0;
       left: 0;
       width: 100%;
@@ -439,6 +439,7 @@
   opacity: 0;
   margin-top: 1em;
   margin-left: 1em;
+  position: fixed;
 
   &.active {
     opacity: 1;
