@@ -159,6 +159,8 @@
   .mdl-textfield {
     align-self: center;
     width: 100%;
+    /* align placeholder text with padded input text */
+    text-indent: 30px;
 
     .mdl-textfield__input {
       /* extend line under search icon to left, add padding before bottom border */
