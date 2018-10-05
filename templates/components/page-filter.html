@@ -1,32 +1,5 @@
 {% load static widget_tweaks %}
-{% if form.query %}
-<script>
-  $(function() {
-    var $searchFormHeader = $(".search-form-header");
-    if ($searchFormHeader.length && $searchFormHeader.find(".mdl-textfield__input").val().length) {
-      $(".search-form-header").removeClass("is-hidden");
-    }
-
-    if (window.selectizedFields) {
-      var searchFormSelectize = $.grep(window.selectizedFields, function(selectize){
-        return "id_content_type-selectized" === window.selectizedFields[0].$control_input[0].id;
-      });
-
-      if (searchFormSelectize.length) {
-        searchFormSelectize = searchFormSelectize[0];
-        var path = window.location.pathname;
-        if (path.indexOf("library") > 0) {
-          searchFormSelectize.setValue("book");
-        } else if (path.indexOf("references") > 0) {
-          searchFormSelectize.setValue("reference");
-        } else if (path.indexOf("interventions") > 0) {
-          searchFormSelectize.setValue("intervention");
-        }
-      }
-    }
-  });
-</script>
-{% endif %}
+{% include 'components/search-form-header-init.html' %}
 <section class="page-filter {% if not hide_filter %}is-visible{% endif %}">
 
 <form class="page-filter__form">
