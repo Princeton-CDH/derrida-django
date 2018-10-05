@@ -32,3 +32,11 @@ version: '1.1'
 date-released: 2018-06-28
 repository-code: https://github.com/Princeton-CDH/derrida-django
 license: Apache-2.0
+references:
+  - type: website
+    title: Derrida's Margins
+    year: 2018
+    authors:
+      - name: The Center for Digital Humanities at Princeton
+        website: https://cdh.princeton.edu
+    url: https://derridas-margins.princeton.edu/
