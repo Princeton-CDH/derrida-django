@@ -80,6 +80,12 @@
       // max-width: 700px;
       // margin-left: 300px;
     }
+
+    @media (max-width: $medium-breakpoint) {
+      .page-header__link {
+        margin-left: 0;
+      }
+    }
   }
 
   .page-header__heading {
@@ -325,6 +331,10 @@ $component-padding: 4rem;
   width: 220px;
   margin-left: auto;
 
+  @media (max-width: $medium-breakpoint) {
+    margin-left: unset;
+  }
+
   @include grid-media($large-medium-viewport-grid) {
     // width: 50%;
   }
@@ -390,6 +400,7 @@ $component-padding: 4rem;
 
   @media (max-width: $medium-breakpoint) {
     right: 10%;
+    width: 100%;
   }
 
   .is-background-darken & {
@@ -414,6 +425,11 @@ $component-padding: 4rem;
     width: calc(100% - 300px);
     background-position: 0;
     @include transition(background-position 150ms $base-timing);
+
+    @media (max-width: $medium-breakpoint) {
+      width: 100%;
+    }
+
   }
 
   .img {
