@@ -9,7 +9,7 @@
   top: 4em;
   position: fixed;
   transition: background 0.5s ease;
-  background: $base-background-color;
+  background: $white;
 
   .background-colored--dark & {
       background: #fff;
@@ -89,6 +89,11 @@
     &.is-focused > *,
     &:hover > * {
       filter: grayscale(0);
+
+      /* make search icon blue when form is focused */
+      &.mdl-button--search {
+        filter: sepia(100%) hue-rotate(180deg) saturate(5) brightness(.8);
+      }
     }
 
     // Never grey out the selection options
@@ -137,20 +142,28 @@
   .mdl-button--search {
     // border-bottom: 1px solid $primary-color;
     // border-radius: 0;
-    margin-bottom: 4px;
     min-width: 0;
     width: 30px;
     padding-right: 10px;
-    margin-left: 6px;
+    // margin-left: 6px;
+    /* allow overlap with text input underline */
+    position: absolute;
+    bottom: 18px;
 
     .img {
-      width: 100%;
+      width: 20px;
+      height:  20px;
     }
   }
 
   .mdl-textfield {
     align-self: center;
     width: 100%;
+
+    .mdl-textfield__input {
+      /* extend line under search icon to left, add padding before bottom border */
+      padding: 8px 0 12px 30px;
+    }
   }
 
   .mdl-textfield__label--search {
@@ -173,19 +186,27 @@
     align-self: center;
     width: 200px;
     padding-bottom: 0;
-    padding-top: 0.75em;
+    // padding-top: 0.75em;
     margin-right: 2rem;
+    padding-top: 0;
 
     &.is-active {
-      padding-top: 22px;
-      line-height: 0;
+      // line-height: 0;
     }
 
     .selectize-input,
     .selectize-input.has-options,
     .selectize-input.has-items {
-      padding-bottom: 0.65rem;
-      margin-top: -0.4rem;
+      // padding-bottom: 0.65rem;
+      // margin-top: -0.4rem;
+      // match text input field so bottom borders line up
+      padding: 8px 0 9px 0px;
+      margin: 0;
+      line-height: 16.5px; /* match text input */
+
+      /* NOTE: the bottom borders line up perfectly in Chrome and Safari but is slightly off in
+      Firefox; can't figure out where the discrepancy is coming from. */
+
       color: $base-font-color;
       border-bottom-color: $primary-color;
 
@@ -202,7 +223,8 @@
 
   .selectize-input > * {
     font-size: 12px;
-    color: $grey-500;
+
+
   }
 
   .selectize-input > .item {
@@ -213,7 +235,7 @@
 
   .selectize-control.single .selectize-input.input-active {
     background: transparent;
-    margin-top: -0.6rem;
+    // margin-top: -0.6rem;
   }
 
   .selectize-control.single .selectize-input::after {
@@ -237,10 +259,17 @@
   .selectize-dropdown {
     border: 1px solid $primary-color;
     border-radius: 0;
+    /* align with underline */
+    margin-top: -1px;
 
     .option {
       font-size: 0.9rem;
       padding: 0.5em 10px;
+      color: $black;
+
+      &.selected {
+        color: $blue;
+      }
     }
   }
 
@@ -281,6 +310,7 @@
     }
 
     .mdl-textfield__input {
+      padding-bottom: 18px;
       border-bottom-color: rgba($white, 0.6);
       color: $grey-500;
     }
