@@ -534,13 +534,18 @@ $component-padding: 4rem;
   width: 100%;
   margin: 0 0 0 5%;
 
+  .image-container {
+    display: inline-block;
+    position: relative;
+  }
+
   .zone {
     position: absolute;
     display: block;
     background-color: transparentize($orange-red, 0.75);
     border: 1px solid transparent;
     border-radius: 1px;
-    opacity: 0;
+    cursor: pointer;
     @include transition(opacity $base-duration $base-timing);
 
     &.is-selected {
@@ -550,10 +555,6 @@ $component-padding: 4rem;
     }
   }
 
-  &.has-zones-added .zone {
-    opacity: 1;
-    cursor: pointer;
-  }
 }
 
 .suppress-form {

@@ -68,51 +68,7 @@
       zones.push(parseJSONFromHtml(data));
     {% endfor %}
 
-    var drawAttempts = 0;
-    function drawZones() {
-      // if the image is not yet drawn, attempt to redraw zones
-      if (imgH === 0) {
-        // limit attmpts to draw zones
-        if (drawAttempts > 6) {
-          console.log("Failed to calculate and draw annotation areas");
-          return;
-        }
-        imgH = parseFloat($img.height());
-        imgW = parseFloat($img.width());
-        drawAttempts++;
-        setTimeout(drawZones, 500);
-        return;
-      }
-
-      var zoneDivs = [];
-      $.each(zones, function(index, zone) {
-        var zoneCSS = {
-            height: calcRelativePosition(zone.h, imgH),
-            width: calcRelativePosition(zone.w, imgW),
-            top: calcRelativePosition(zone.y, imgH),
-            left: calcRelativePosition(zone.x, imgW),
-            padding: 0 // overrides default button padding
-          }
-        var $zone = $("<button/>").addClass("zone").css(zoneCSS);
-        $zone.attr('title', 'annotated region')
-        zoneDivs.push($zone);
-      });
-
-      if (zoneDivs.length > 0) {
-        $annotationSection.css({
-          height: $deepZoom.height(),
-          width: $deepZoom.width()
-        }).append(zoneDivs);
-        setTimeout(function() {
-          $annotationSection.addClass("has-zones-added");
-        }, 100)
-      }
-      return;
-    }
-
-    drawZones();
-
-    $(".gallery-image-view__nav .mdl-layout__tab").on("click", function(e) {
+     $(".gallery-image-view__nav .mdl-layout__tab").on("click", function(e) {
       var $this = $(this),
           value = $this.data("value");
 
@@ -402,9 +358,21 @@
 
       <div class="annotation-selections">
         {# large size image #}
+        <div class="image-container">
         <img class="gallery-image-view__img" src="{% url 'books:canvas-image' instance.slug canvas.short_id 'large' %}"
           srcset="{% url 'books:canvas-image' instance.slug canvas.short_id 'large' '@2x' %} 2x"
           {% if ocr_text %}alt="Page text (OCR generated): {{ ocr_text }}"{% else %}alt="No OCR text available for image."{% endif %} />
+
+        {# draw zones over the image for each annotation #}
+        {% for intervention in canvas.intervention_set.sorted_by_page_loc %}
+          {% with img_info=intervention.extra_data.image_selection %}
+        <button class="zone" title="annotated region"
+          style="width: {{ img_info.w }}; height: {{ img_info.h }}; left: {{ img_info.x }}; top: {{ img_info.y}}">
+        </button>
+        {% endwith %}
+        {% endfor %}
+        </div>
+
       </div>
       {% endif %}
 
