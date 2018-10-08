@@ -1,0 +1,229 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>derrida.books.management.commands.reference_data &#8212; Derrida 1.2.0 documentation</title>
+    <link rel="stylesheet" href="../../../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../../../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for derrida.books.management.commands.reference_data</h1><div class="highlight"><pre>
+<span></span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Manage command to export reference data for use by others.</span>
+
+<span class="sd">Generates a CSV and JSON file for each Derrida Work in the database</span>
+<span class="sd">(currently only Of Grammatology), with details for each reference</span>
+<span class="sd">documented in the database.</span>
+
+<span class="sd">Takes an optional argument to specify the output directory. Otherwise,</span>
+<span class="sd">files are created in the current directory.</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="kn">import</span> <span class="nn">codecs</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">OrderedDict</span>
+<span class="kn">import</span> <span class="nn">csv</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">os.path</span>
+
+<span class="kn">from</span> <span class="nn">django.core.management.base</span> <span class="k">import</span> <span class="n">BaseCommand</span>
+
+<span class="kn">from</span> <span class="nn">derrida.books.models</span> <span class="k">import</span> <span class="n">DerridaWork</span>
+
+
+<div class="viewcode-block" id="Command"><a class="viewcode-back" href="../../../../../codedocs.html#derrida.books.management.commands.reference_data.Command">[docs]</a><span class="k">class</span> <span class="nc">Command</span><span class="p">(</span><span class="n">BaseCommand</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Export reference data for each Derrida Work as CSV and JSON&#39;&#39;&#39;</span>
+    <span class="n">help</span> <span class="o">=</span> <span class="vm">__doc__</span>
+
+    <span class="c1">#: fields for CSV output</span>
+    <span class="n">csv_fields</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;page&#39;</span><span class="p">,</span> <span class="s1">&#39;page location&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="s1">&#39;book title&#39;</span><span class="p">,</span> <span class="s1">&#39;book id&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;book page&#39;</span><span class="p">,</span> <span class="s1">&#39;book type&#39;</span><span class="p">,</span> <span class="s1">&#39;anchor text&#39;</span><span class="p">,</span> <span class="s1">&#39;interventions&#39;</span>
+    <span class="p">]</span>
+
+<div class="viewcode-block" id="Command.add_arguments"><a class="viewcode-back" href="../../../../../codedocs.html#derrida.books.management.commands.reference_data.Command.add_arguments">[docs]</a>    <span class="k">def</span> <span class="nf">add_arguments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">):</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s1">&#39;-d&#39;</span><span class="p">,</span> <span class="s1">&#39;--directory&#39;</span><span class="p">,</span></div>
+            <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Specify the directory where files should be generated&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Command.handle"><a class="viewcode-back" href="../../../../../codedocs.html#derrida.books.management.commands.reference_data.Command.handle">[docs]</a>    <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+        <span class="k">for</span> <span class="n">derrida_work</span> <span class="ow">in</span> <span class="n">DerridaWork</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+            <span class="n">base_filename</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">_references&#39;</span> <span class="o">%</span> <span class="n">derrida_work</span><span class="o">.</span><span class="n">slug</span>
+            <span class="k">if</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;directory&#39;</span><span class="p">]:</span>
+                <span class="n">base_filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;directory&#39;</span><span class="p">],</span> <span class="n">base_filename</span><span class="p">)</span>
+
+            <span class="c1"># generate filenames based on slug ?</span>
+            <span class="c1"># Can we use the same data to generate both CSV and JSON?</span>
+
+            <span class="c1"># aggregate reference data to be exported for use in generating</span>
+            <span class="c1"># CSV and JSON output</span>
+            <span class="n">refdata</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_data</span><span class="p">(</span><span class="n">ref</span><span class="p">)</span>
+                       <span class="k">for</span> <span class="n">ref</span> <span class="ow">in</span> <span class="n">derrida_work</span><span class="o">.</span><span class="n">reference_set</span><span class="o">.</span><span class="n">all</span><span class="p">()]</span>
+
+            <span class="c1"># list of dictionaries can be output as is for JSON export</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.json&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">base_filename</span><span class="p">),</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">jsonfile</span><span class="p">:</span>
+                <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">refdata</span><span class="p">,</span> <span class="n">jsonfile</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+            <span class="c1"># generate CSV export</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.csv&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">base_filename</span><span class="p">),</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">csvfile</span><span class="p">:</span>
+                <span class="c1"># write utf-8 byte order mark at the beginning of the file</span>
+                <span class="n">csvfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">codecs</span><span class="o">.</span><span class="n">BOM_UTF8</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span>
+
+                <span class="n">csvwriter</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">DictWriter</span><span class="p">(</span><span class="n">csvfile</span><span class="p">,</span> <span class="n">fieldnames</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">csv_fields</span><span class="p">)</span>
+                <span class="n">csvwriter</span><span class="o">.</span><span class="n">writeheader</span><span class="p">()</span>
+
+                <span class="k">for</span> <span class="n">reference</span> <span class="ow">in</span> <span class="n">refdata</span><span class="p">:</span></div>
+                    <span class="n">csvwriter</span><span class="o">.</span><span class="n">writerow</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flatten_dict</span><span class="p">(</span><span class="n">reference</span><span class="p">))</span>
+
+<div class="viewcode-block" id="Command.reference_data"><a class="viewcode-back" href="../../../../../codedocs.html#derrida.books.management.commands.reference_data.Command.reference_data">[docs]</a>    <span class="k">def</span> <span class="nf">reference_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reference</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Generate a dictionary of data to export for a single</span>
+<span class="sd">         :class:`~derrida.books.models.Reference` object&#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="n">OrderedDict</span><span class="p">([</span>
+            <span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="n">reference</span><span class="o">.</span><span class="n">get_uri</span><span class="p">()),</span>
+            <span class="p">(</span><span class="s1">&#39;page&#39;</span><span class="p">,</span> <span class="n">reference</span><span class="o">.</span><span class="n">derridawork_page</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">&#39;page location&#39;</span><span class="p">,</span> <span class="n">reference</span><span class="o">.</span><span class="n">derridawork_pageloc</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">&#39;book&#39;</span><span class="p">,</span>  <span class="n">OrderedDict</span><span class="p">([</span>
+                <span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="n">reference</span><span class="o">.</span><span class="n">instance</span><span class="o">.</span><span class="n">get_uri</span><span class="p">()),</span>
+                <span class="p">(</span><span class="s1">&#39;title&#39;</span><span class="p">,</span> <span class="n">reference</span><span class="o">.</span><span class="n">instance</span><span class="o">.</span><span class="n">display_title</span><span class="p">()),</span>
+                <span class="p">(</span><span class="s1">&#39;page&#39;</span><span class="p">,</span> <span class="n">reference</span><span class="o">.</span><span class="n">book_page</span><span class="p">),</span>
+                <span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="n">reference</span><span class="o">.</span><span class="n">book</span><span class="o">.</span><span class="n">item_type</span><span class="p">),</span>
+            <span class="p">])),</span>
+            <span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">reference</span><span class="o">.</span><span class="n">reference_type</span><span class="p">)),</span>
+            <span class="p">(</span><span class="s1">&#39;anchor text&#39;</span><span class="p">,</span> <span class="n">reference</span><span class="o">.</span><span class="n">anchor_text</span><span class="p">),</span>
+            <span class="c1"># use intervention URI as identifier</span>
+            <span class="p">(</span><span class="s1">&#39;interventions&#39;</span><span class="p">,</span> <span class="p">[</span>
+                <span class="n">intervention</span><span class="o">.</span><span class="n">get_uri</span><span class="p">()</span>
+                <span class="k">for</span> <span class="n">intervention</span> <span class="ow">in</span> <span class="n">reference</span><span class="o">.</span><span class="n">interventions</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+            <span class="p">])</span></div>
+        <span class="p">])</span>
+
+<div class="viewcode-block" id="Command.flatten_dict"><a class="viewcode-back" href="../../../../../codedocs.html#derrida.books.management.commands.reference_data.Command.flatten_dict">[docs]</a>    <span class="k">def</span> <span class="nf">flatten_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Flatten a dictionary with nested dictionaries or lists into a</span>
+<span class="sd">        key value pairs that can be output as CSV.  Nested dictionaries will be</span>
+<span class="sd">        flattened and keys combined; lists will be converted into semi-colon</span>
+<span class="sd">        delimited strings.&#39;&#39;&#39;</span>
+        <span class="n">flat_data</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="c1"># for a nested subdictionary, combine key and nested key</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">subkey</span><span class="p">,</span> <span class="n">subval</span> <span class="ow">in</span> <span class="n">val</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="n">flat_data</span><span class="p">[</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">key</span><span class="p">,</span> <span class="n">subkey</span><span class="p">])]</span> <span class="o">=</span> <span class="n">subval</span>
+            <span class="c1"># convert list to a delimited string</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="n">flat_data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">flat_data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+</div></div>
+        <span class="k">return</span> <span class="n">flat_data</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../../../index.html">Derrida</a></h1>
+
+
+
+<p class="blurb">Django web application for "Derrida's Margins" CDH project</p>
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=Princeton-CDH&repo=derrida-django&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+    
+
+<p>
+<a href="https://travis-ci.org/Princeton-CDH/derrida-django">
+    <img
+        alt="https://secure.travis-ci.org/Princeton-CDH/derrida-django.svg?branch=master"
+        src="https://secure.travis-ci.org/Princeton-CDH/derrida-django.svg?branch=master"
+    />
+</a>
+</p>
+
+
+
+
+    
+
+<p>
+<a href="https://codecov.io/github/Princeton-CDH/derrida-django">
+    <img
+    alt="https://codecov.io/github/Princeton-CDH/derrida-django/coverage.svg?branch=master"
+    src="https://codecov.io/github/Princeton-CDH/derrida-django/coverage.svg?branch=master"
+    />
+</a>
+</p>
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../architecture.html">Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../codedocs.html">Code Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../changelog.html">Change Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../deploynotes.html">Deploy and Upgrade notes</a></li>
+</ul>
+
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, CDH @ Princeton & Trustees of Princeton University.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

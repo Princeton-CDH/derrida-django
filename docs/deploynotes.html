@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Deploy and Upgrade notes &#8212; Derrida 1.1.0 documentation</title>
+    <title>Deploy and Upgrade notes &#8212; Derrida 1.2.0 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" src="_static/documentation_options.js"></script>
@@ -33,7 +33,22 @@
   <div class="section" id="deploy-and-upgrade-notes">
 <span id="deploynotes"></span><h1>Deploy and Upgrade notes<a class="headerlink" href="#deploy-and-upgrade-notes" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="id1">
-<h2>1.0<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<h2>1.2<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p class="first">Provision and configure a <strong>ZOTERO_API_KEY</strong> and <strong>ZOTERO_LIBRARY_ID</strong>
+before running zotero export script.</p>
+</li>
+<li><p class="first">Run data export scripts to generate dataset for deposit and reuse:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">manage</span><span class="o">.</span><span class="n">py</span> <span class="n">reference_data</span>
+<span class="n">python</span> <span class="n">manage</span><span class="o">.</span><span class="n">py</span> <span class="n">intervention_data</span>
+<span class="n">python</span> <span class="n">manage</span><span class="o">.</span><span class="n">py</span> <span class="n">export_zotero</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="id2">
+<h2>1.0<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li>Solr XML configuration files <code class="docutils literal notranslate"><span class="pre">schema.xml</span></code> and <code class="docutils literal notranslate"><span class="pre">solrconfig.xml</span></code>
 need to be generated and deployed to production Solr server.  Use
@@ -44,8 +59,8 @@ the Solr core or restart Solr after updating the configuration.</li>
 content in the Derrida database.</li>
 </ul>
 </div>
-<div class="section" id="id2">
-<h2>0.9<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id3">
+<h2>0.9<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
 <ul>
 <li><p class="first">Migration from Plum to Figgy requires that a new auth token be added
 to local settings under <strong>DJIFFY_AUTH_TOKENS</strong> for loading restricted
@@ -171,8 +186,9 @@ and resetting symlinks to make the deployment go live.</p>
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Deploy and Upgrade notes</a><ul>
-<li><a class="reference internal" href="#id1">1.0</a></li>
-<li><a class="reference internal" href="#id2">0.9</a></li>
+<li><a class="reference internal" href="#id1">1.2</a></li>
+<li><a class="reference internal" href="#id2">1.0</a></li>
+<li><a class="reference internal" href="#id3">0.9</a></li>
 <li><a class="reference internal" href="#interventions-phase-i">0.8 Interventions Phase I</a><ul>
 <li><a class="reference internal" href="#ansible">Ansible</a></li>
 </ul>

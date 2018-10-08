@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>derrida.common.solr_backend &#8212; Derrida 1.1.0 documentation</title>
+    <title>derrida.common.solr_backend &#8212; Derrida 1.2.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
@@ -156,6 +156,8 @@
     <span class="sd">&#39;&#39;&#39;Update alpha facet so that sorting ignores accents.&#39;&#39;&#39;</span>
     <span class="c1"># update alpha facet so that sorting ignores accents</span>
     <span class="c1"># (can&#39;t be done in solr because then facets would display without accents)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">facets</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">facets</span>
     <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">facets</span><span class="p">[</span><span class="s1">&#39;fields&#39;</span><span class="p">]:</span>
             <span class="n">facets</span><span class="p">[</span><span class="s1">&#39;fields&#39;</span><span class="p">][</span><span class="n">field</span><span class="p">]</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">elem</span><span class="p">:</span> <span class="n">unidecode</span><span class="p">(</span><span class="n">elem</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span></div>
