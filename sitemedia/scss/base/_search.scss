@@ -11,10 +11,6 @@
   transition: background 0.5s ease;
   background: $white;
 
-  .background-colored--dark & {
-      background: #fff;
-  }
-
   @include grid-media($xlarge-viewport-grid) {
     .mdl-layout:not(.disable-coordinate-navigation) & {
       position: fixed;
@@ -63,12 +59,6 @@
 
   &:not(.is-hidden) ~ main {
     padding-top: $search-height;
-  }
-
-  @include grid-media($large-medium-viewport-grid) {
-    .background-colored--dark & {
-      color: $light-grey;
-    }
   }
 
   .search-form-header__form {
@@ -126,12 +116,6 @@
   .mdl-button {
     color: $medium-grey;
     align-self: center;
-
-    .background-colored--dark & {
-      color: $black-0;
-      opacity: 0.8;
-      border-bottom-color: transparentize($white, 0.2);
-    }
   }
 }
 
@@ -202,7 +186,7 @@
       // padding-bottom: 0.65rem;
       // margin-top: -0.4rem;
       // match text input field so bottom borders line up
-      padding: 8px 0 9px 0px;
+      padding: 9px 0 9px 0px;
       margin: 0;
       line-height: 16.5px; /* match text input */
 
@@ -216,10 +200,6 @@
         display: none !important;
       }
 
-      .background-colored--dark & {
-        color: $white;
-        border-bottom-color: rgba($white, 0.6);
-      }
     }
   }
 
@@ -269,7 +249,7 @@
       padding: 0.5em 10px;
       color: $black;
 
-      &.selected {
+      &.active {
         color: $blue;
       }
     }
@@ -306,21 +286,6 @@
     }
   }
 
-  .background-colored--dark & {
-    .mdl-textfield__label {
-      color: $grey-500;
-    }
-
-    .mdl-textfield__input {
-      padding-bottom: 18px;
-      border-bottom-color: rgba($white, 0.6);
-      color: $grey-500;
-    }
-
-    &.is-focused .mdl-textfield__label::after {
-      background-color: $white;
-    }
-  }
 }
 
 #search-results {

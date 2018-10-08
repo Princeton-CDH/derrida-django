@@ -1,3 +1,15 @@
+'''
+Manage command to export reference data for use by others.
+
+Generates a CSV and JSON file for each Derrida Work in the database
+(currently only Of Grammatology), with details for each reference
+documented in the database.
+
+Takes an optional argument to specify the output directory. Otherwise,
+files are created in the current directory.
+
+'''
+
 import codecs
 from collections import OrderedDict
 import csv

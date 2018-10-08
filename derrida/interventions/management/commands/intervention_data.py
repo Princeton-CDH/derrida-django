@@ -1,3 +1,15 @@
+'''
+Manage command to export intervention data for use by others.
+
+Generates a CSV and JSON file with details for all interventions
+documented in the database.
+
+Takes an optional argument to specify the output directory. Otherwise,
+files are created in the current directory.
+
+'''
+
+
 import codecs
 from collections import OrderedDict
 import csv
