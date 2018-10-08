@@ -11,10 +11,6 @@
   transition: background 0.5s ease;
   background: $white;
 
-  .background-colored--dark & {
-      background: #fff;
-  }
-
   @include grid-media($xlarge-viewport-grid) {
     .mdl-layout:not(.disable-coordinate-navigation) & {
       position: fixed;
@@ -302,20 +298,6 @@
     }
   }
 
-  .background-colored--dark & {
-    .mdl-textfield__label {
-      color: $grey-500;
-    }
-
-    .mdl-textfield__input {
-      padding-bottom: 18px;
-      color: $grey-500;
-    }
-
-    &.is-focused .mdl-textfield__label::after {
-      background-color: $white;
-    }
-  }
 }
 
 #search-results {
