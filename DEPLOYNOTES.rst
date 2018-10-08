@@ -10,9 +10,9 @@ Deploy and Upgrade notes
   before running zotero export script.
 * Run data export scripts to generate dataset for deposit and reuse::
 
-  python manage.py reference_data
-  python manage.py intervention_data
-  python manage.py export_zotero
+    python manage.py reference_data
+    python manage.py intervention_data
+    python manage.py export_zotero
 
 
 1.0
