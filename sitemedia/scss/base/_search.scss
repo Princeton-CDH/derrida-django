@@ -61,12 +61,6 @@
     padding-top: $search-height;
   }
 
-  @include grid-media($large-medium-viewport-grid) {
-    .background-colored--dark & {
-      color: $light-grey;
-    }
-  }
-
   .search-form-header__form {
     height: $search-height;
 
@@ -122,12 +116,6 @@
   .mdl-button {
     color: $medium-grey;
     align-self: center;
-
-    .background-colored--dark & {
-      color: $black-0;
-      opacity: 0.8;
-      border-bottom-color: transparentize($white, 0.2);
-    }
   }
 }
 
