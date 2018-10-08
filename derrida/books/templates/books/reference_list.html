@@ -30,7 +30,7 @@
 {% include "components/page-sort.html" with number=count orderBy=orderBy %}
 <div class="container">
   <div class="loading-spinner">
-    <img src="{% static 'img/loading.gif' %}" />
+    <img src="{% static 'img/loading.gif' %}" alt="↻"/>
   </div>
   <article class="collection">
     {% for reference in object_list %}

@@ -1,0 +1,273 @@
+[
+    {
+    "model": "djiffy.manifest",
+    "pk": 71,
+    "fields": {
+        "label": "Studio - Wall 1 - La Pens\u00e9e sauvage",
+        "short_id": "5b86f297-e02e-428f-82f3-1c756b2dcddd",
+        "uri": "https://repo.me/concern/scanned_resources/5b86f297/manifest",
+        "metadata": "{\"Created At\":[\"12/07/17 06:04:30 PM UTC\"],\"Updated At\":[\"04/24/18 06:09:11 PM UTC\"],\"Depositor\":[\"kc16\"],\"Created\":[\"01/01/1962\"],\"Date Created\":[\"1962\"],\"Extent\":[\"1 folder\"],\"Title\":[\"Studio - Wall 1 - La Pens\\u00e9e sauvage\"],\"Creator\":[\"Derrida, Jacques\"],\"Local Identifier\":[\"p9p292b05k\"],\"Publisher\":[\"Derrida, Jacques\"],\"Source Metadata Identifier\":[\"RBD1_c9167\"],\"PDF Type\":[\"gray\"],\"Container\":[\"Box B-000145, Folder 2\"],\"Member Of Collections\":[\"The Library of Jacques Derrida, Studio Series\"]}",
+        "created": "2017-08-01",
+        "last_modified": "2018-05-02",
+        "extra_data": "{\"https://repo.me/catalog/5b86f297.jsonld\":{\"memberOf\":[{\"title\":\"The Library of Jacques Derrida, Studio Series\",\"@id\":\"https://repo.me/catalog/7081b751\",\"@type\":\"pcdm:Collection\"}],\"edm_rights\":{\"pref_label\":\"In Copyright\",\"@id\":\"http://rightsstatements.org/vocab/InC/1.0/\",\"@type\":\"dcterms:RightsStatement\"},\"title\":[{\"@value\":\"Studio - Wall 1 - La Pens\\u00e9e sauvage\",\"@language\":\"eng\"}],\"@id\":\"https://repo.me/catalog/5b86f297\",\"@context\":\"https://bibdata.princeton.edu/context.json\"},\"https://findingaids.princeton.edu/collections/RBD1/c9167.xml?scope=record\":{},\"logo\":\"https://repo.me/assets/icon.png\",\"license\":\"http://rightsstatements.org/vocab/InC/1.0/\"}"
+    }
+},
+{
+    "model": "books.publisher",
+    "pk": 10,
+    "fields": {
+        "name": "Plon",
+        "notes": ""
+    }
+},
+{
+    "model": "books.work",
+    "pk": 117,
+    "fields": {
+        "notes": "",
+        "primary_title": "La pens\u00e9e sauvage",
+        "short_title": "La pens\u00e9e sauvage",
+        "year": 1962,
+        "uri": "",
+        "authors": [
+            87
+        ]
+    }
+},
+{
+    "model": "djiffy.manifest",
+    "pk": 2,
+    "fields": {
+        "label": "House - Gift Books, Works By and About Derrida, and Related Items - Derrida, Jacques. De la grammatologie.",
+        "short_id": "6f997084-98bb-49db-b03b-82525c9474d1",
+        "uri": "https://repo.me/concern/scanned_resources/6f997084/manifest",
+        "metadata": "{\"Created At\":[\"12/01/17 03:28:02 AM UTC\"],\"Updated At\":[\"04/24/18 06:08:06 PM UTC\"],\"Depositor\":[\"rmunoz\"],\"Created\":[\"01/01/1967\"],\"Date Created\":[\"1967\"],\"Extent\":[\"1 folder\"],\"Title\":[\"House - Gift Books, Works By and About Derrida, and Related Items - Derrida, Jacques. De la grammatologie.\"],\"Creator\":[\"Derrida, Jacques\"],\"Local Identifier\":[\"phx121388m\"],\"Publisher\":[\"Derrida, Jacques\"],\"Source Metadata Identifier\":[\"RBD1.1_c8193\"],\"PDF Type\":[\"gray\"],\"Container\":[\"Box B-000112, Folder 5\"],\"Member Of Collections\":[\"The Library of Jacques Derrida, Studio Series\"]}",
+        "created": "2017-08-01",
+        "last_modified": "2018-05-02",
+        "extra_data": "{\"https://repo.me/catalog/6f997084.jsonld\":{\"memberOf\":[{\"title\":\"The Library of Jacques Derrida, Studio Series\",\"@id\":\"https://repo.me/catalog/7081b751-abb6-4f62-9c38-ff1fda0f9d30\",\"@type\":\"pcdm:Collection\"}],\"edm_rights\":{\"pref_label\":\"No Known Copyright\",\"@id\":\"http://rightsstatements.org/vocab/NKC/1.0/\",\"@type\":\"dcterms:RightsStatement\"},\"title\":[{\"@value\":\"House - Gift Books, Works By and About Derrida, and Related Items - Derrida, Jacques. De la grammatologie.\",\"@language\":\"eng\"}],\"@id\":\"https://repo.me/catalog/6f997084-98bb-49db-b03b-82525c9474d1\",\"@context\":\"https://bibdata.princeton.edu/context.json\"},\"https://findingaids.princeton.edu/collections/RBD1.1/c8193.xml?scope=record\":{},\"logo\":\"https://repo.me/assets/icon.png\",\"license\":\"http://rightsstatements.org/vocab/NKC/1.0/\"}"
+    }
+},
+{
+    "model": "books.work",
+    "pk": 252,
+    "fields": {
+        "notes": "",
+        "primary_title": "De la grammatologie",
+        "short_title": "De la grammatologie",
+        "year": 1967,
+        "uri": "",
+        "authors": [
+            1
+        ]
+    }
+},
+{
+    "model": "books.instance",
+    "pk": 117,
+    "fields": {
+        "notes": "dg147fF___ is where D simply evokes a section entitled \"le temps retrouv\u00e9e\", without citing a page. dg155cF___ = D mentions simply the ch. \"L'individu comme esp\u00e8ce\"",
+        "work": 117,
+        "alternate_title": "",
+        "publisher": 10,
+        "zotero_id": "",
+        "slug": "levi-strauss-la-pensee-sauvage-1962",
+        "is_extant": true,
+        "is_annotated": true,
+        "is_translation": false,
+        "dimensions": "",
+        "copyright_year": 1962,
+        "journal": null,
+        "print_date": "1962-05-01",
+        "print_date_day_known": false,
+        "print_date_month_known": true,
+        "print_date_year_known": true,
+        "uri": "http://findingaids.princeton.edu/collections/RBD1/c9167",
+        "has_dedication": false,
+        "has_insertions": true,
+        "start_page": null,
+        "end_page": null,
+        "copy": "",
+        "collected_in": null,
+        "digital_edition": 71,
+        "suppress_all_images": false,
+        "pub_place": [
+            3
+        ],
+        "cited_in": [
+            1
+        ],
+        "suppressed_images": []
+    }
+},
+{
+    "model": "books.instance",
+    "pk": 243,
+    "fields": {
+        "notes": "",
+        "work": 252,
+        "alternate_title": "",
+        "publisher": null,
+        "zotero_id": "",
+        "slug": "derrida-de-la-grammatologie-1967",
+        "is_extant": true,
+        "is_annotated": true,
+        "is_translation": false,
+        "dimensions": "",
+        "copyright_year": 1967,
+        "journal": null,
+        "print_date": "1967-01-01",
+        "print_date_day_known": false,
+        "print_date_month_known": false,
+        "print_date_year_known": true,
+        "uri": "http://findingaids.princeton.edu/collections/RBD1.1/c8193",
+        "has_dedication": false,
+        "has_insertions": true,
+        "start_page": null,
+        "end_page": null,
+        "copy": "",
+        "collected_in": null,
+        "digital_edition": 2,
+        "suppress_all_images": false,
+        "pub_place": [
+            3
+        ],
+        "cited_in": [],
+        "suppressed_images": []
+    }
+},
+{
+    "model": "books.language",
+    "pk": 1,
+    "fields": {
+        "name": "French",
+        "notes": "",
+        "uri": "",
+        "code": "fr"
+    }
+},
+{
+    "model": "djiffy.canvas",
+    "pk": 1802,
+    "fields": {
+        "label": "p. 446",
+        "short_id": "p-446",
+        "uri": "https://repo.me/concern/scanned_resources/6f997084/manifest/canvas/4565c163",
+        "iiif_image_id": "https://imgserver.edu/loris/file.jp2",
+        "manifest": 2,
+        "thumbnail": false,
+        "order": 499,
+        "extra_data": "{\"rendering\":[{\"label\":\"Download page text\",\"format\":\"text/plain\",\"@id\":\"https://repo.me/concern/file_sets/4565c163/text\"}]}"
+    }
+},
+{
+    "model": "auth.user",
+    "pk": 4,
+    "fields": {
+        "password": "",
+        "last_login": "2018-05-01T12:30:21Z",
+        "is_superuser": true,
+        "username": "admin2",
+        "first_name": "A.",
+        "last_name": "Admin2",
+        "email": "admin2@example.com",
+        "is_staff": true,
+        "is_active": true,
+        "date_joined": "2017-04-23T01:44:23Z",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "people.person",
+    "pk": 1,
+    "fields": {
+        "notes": "",
+        "start_year": 1930,
+        "end_year": 2004,
+        "authorized_name": "Derrida, Jacques",
+        "viaf_id": "https://viaf.org/viaf/88958529/",
+        "sort_name": "",
+        "family_group": ""
+    }
+},
+{
+    "model": "djiffy.canvas",
+    "pk": 22128,
+    "fields": {
+        "label": "p. 169",
+        "short_id": "p-169",
+        "uri": "https://repo.me/concern/scanned_resources/5b86f297/manifest/canvas/4084cf99",
+        "iiif_image_id": "https://imgserver.edu/loris/file.jp2",
+        "manifest": 71,
+        "thumbnail": false,
+        "order": 194,
+        "extra_data": "{\"rendering\":[{\"label\":\"Download page text\",\"format\":\"text/plain\",\"@id\":\"https://repo.me/concern/file_sets/4084cf99/text\"}]}"
+    }
+},
+{
+    "model": "auth.user",
+    "pk": 9,
+    "fields": {
+        "password": "",
+        "last_login": "2018-03-01T15:30:03Z",
+        "is_superuser": false,
+        "username": "data_editor",
+        "first_name": "",
+        "last_name": "",
+        "email": "",
+        "is_staff": true,
+        "is_active": true,
+        "date_joined": "2017-08-21T17:23:21Z",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "interventions.intervention",
+    "pk": "02031300-f6e2-4eb5-9c5a-3a120cd74618",
+    "fields": {
+        "created": "2018-05-01T19:52:59Z",
+        "updated": "2018-05-01T19:52:59Z",
+        "text": "\u00e9",
+        "quote": "Levi-Strauss",
+        "uri": "https://repo.me/concern/scanned_resources/6f997084/manifest/canvas/4565c163",
+        "user": 4,
+        "extra_data": "{\"image_selection\":{\"x\":\"19.54%\",\"y\":\"75.50%\",\"w\":\"5.25%\",\"h\":\"5.80%\",\"uri\":\"https://imgserver.edu/loris/file.jp2/full/!1000,1000/0/default.jpg\",\"src\":\"https://imgserver.edu/loris/file.jp2/full/!1000,1000/0/default.jpg\"},\"ranges\":[],\"author\":\"Derrida, Jacques\"}",
+        "intervention_type": "A",
+        "canvas": 1802,
+        "text_language": 1,
+        "text_translation": "",
+        "quote_language": 1,
+        "author": 1,
+        "tags": [
+            6,
+            7,
+            14
+        ]
+    }
+},
+{
+    "model": "interventions.intervention",
+    "pk": "00100b86-92f2-4668-8678-967bd9a2ae50",
+    "fields": {
+        "created": "2017-12-13T12:10:05Z",
+        "updated": "2018-04-16T20:03:50Z",
+        "text": "",
+        "quote": "",
+        "uri": "https://repo.me/concern/scanned_resources/5b86f297/manifest/canvas/4084cf99",
+        "user": 9,
+        "extra_data": "{\"author\":\"Derrida, Jacques\",\"image_selection\":{\"uri\":\"https://imgserver.edu/loris/file.jp2/full/!1000,1000/0/default.jpg\",\"w\":\"6.47%\",\"h\":\"14.90%\",\"y\":\"37.70%\",\"x\":\"74.13%\",\"src\":\"https://imgserver.edu/loris/file.jp2/full/!1000,1000/0/default.jpg\"},\"ranges\":[]}",
+        "intervention_type": "A",
+        "canvas": 22128,
+        "text_language": null,
+        "text_translation": "",
+        "quote_language": null,
+        "author": 1,
+        "tags": [
+            13,
+            5,
+            7
+        ]
+    }
+}
+]

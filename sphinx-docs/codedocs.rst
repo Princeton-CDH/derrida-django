@@ -69,6 +69,27 @@ Signals
 .. automodule:: derrida.books.signals
     :members:
 
+Manage commands
+^^^^^^^^^^^^^^^
+
+Import digital editions
+~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: derrida.books.management.commands.import_digitaleds
+    :members:
+
+Export Reference data
+~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: derrida.books.management.commands.reference_data
+    :members:
+
+Export to Zotero
+~~~~~~~~~~~~~~~~
+
+.. automodule:: derrida.books.management.commands.export_zotero
+    :members:
+
 People
 ------
 .. automodule:: derrida.people
@@ -112,6 +133,14 @@ Views
 Search Indexes
 ^^^^^^^^^^^^^^
 .. automodule:: derrida.interventions.search_indexes
+    :members:
+
+Manage commands
+^^^^^^^^^^^^^^^
+
+Export Intervention data
+~~~~~~~~~~~~~~~~~~~~~~~~
+.. automodule:: derrida.interventions.management.commands.intervention_data
     :members:
 
 Outwork

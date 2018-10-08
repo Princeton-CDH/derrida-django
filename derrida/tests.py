@@ -59,5 +59,4 @@ class TestContextProcessors(TestCase):
             INCLUDE_ANALYTICS=True
         ):
             response = self.client.get('/')
-            print(response.render().content)
             self.assertContains(response, '<div class="ribbon-box fade">')

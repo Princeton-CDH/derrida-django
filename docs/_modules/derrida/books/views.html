@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>derrida.books.views &#8212; Derrida 1.1.0 documentation</title>
+    <title>derrida.books.views &#8212; Derrida 1.2.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
@@ -32,6 +32,7 @@
   <h1>Source code for derrida.books.views</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">datetime</span>
 <span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">logging</span>
 
 <span class="kn">from</span> <span class="nn">dal</span> <span class="k">import</span> <span class="n">autocomplete</span>
 <span class="kn">from</span> <span class="nn">django.contrib</span> <span class="k">import</span> <span class="n">messages</span>
@@ -60,6 +61,8 @@
 <span class="kn">from</span> <span class="nn">derrida.outwork.models</span> <span class="k">import</span> <span class="n">Outwork</span>
 
 
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
 <div class="viewcode-block" id="PublisherAutocomplete"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.views.PublisherAutocomplete">[docs]</a><span class="k">class</span> <span class="nc">PublisherAutocomplete</span><span class="p">(</span><span class="n">autocomplete</span><span class="o">.</span><span class="n">Select2QuerySetView</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Basic publisher autocomplete lookup, for use with</span>
 <span class="sd">    django-autocomplete-light.  Restricted to staff only.&#39;&#39;&#39;</span>
@@ -81,7 +84,7 @@
 <div class="viewcode-block" id="InstanceDetailView"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.views.InstanceDetailView">[docs]</a><span class="k">class</span> <span class="nc">InstanceDetailView</span><span class="p">(</span><span class="n">DetailView</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;:class:`~django.views.generic.DetailView` for</span>
 <span class="sd">    :class:`~derrida.books.models.Instance`. Returns only Instances that have</span>
-<span class="sd">    digtial editions set.&#39;&#39;&#39;</span>
+<span class="sd">    digital editions set.&#39;&#39;&#39;</span>
 
     <span class="n">model</span> <span class="o">=</span> <span class="n">Instance</span>
     <span class="n">slug_field</span> <span class="o">=</span> <span class="s1">&#39;slug&#39;</span>
@@ -89,6 +92,67 @@
 <div class="viewcode-block" id="InstanceDetailView.get_queryset"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.views.InstanceDetailView.get_queryset">[docs]</a>    <span class="k">def</span> <span class="nf">get_queryset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">instances</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">InstanceDetailView</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_queryset</span><span class="p">()</span></div></div>
         <span class="k">return</span> <span class="n">instances</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">digital_edition__isnull</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="InstanceURIView"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.views.InstanceURIView">[docs]</a><span class="k">class</span> <span class="nc">InstanceURIView</span><span class="p">(</span><span class="n">DetailView</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Generic view for Instance by URI identifier.  Redirects</span>
+<span class="sd">    to the best view for that item.&#39;&#39;&#39;</span>
+
+    <span class="n">model</span> <span class="o">=</span> <span class="n">Instance</span>
+
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1"># if this instance is a book with a digital edition, redirect</span>
+        <span class="c1"># to the book detail view</span>
+
+        <span class="c1"># NOTE: not sure why get_object isn&#39;t called automatically</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">object</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_object</span><span class="p">()</span>
+        <span class="n">redirect_url</span> <span class="o">=</span> <span class="n">search_slug</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">found</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">object</span><span class="o">.</span><span class="n">digital_edition</span><span class="p">:</span>
+            <span class="n">redirect_url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">object</span><span class="o">.</span><span class="n">get_absolute_url</span><span class="p">()</span>
+            <span class="c1"># 1-for-1 relationship, this is not a see other redirect</span>
+            <span class="n">found</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="c1"># if this is a section of a book with a digital edition,</span>
+        <span class="c1"># redirect to book detail view, and jump to book section anchor</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">object</span><span class="o">.</span><span class="n">collected_in</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">object</span><span class="o">.</span><span class="n">collected_in</span><span class="o">.</span><span class="n">digital_edition</span><span class="p">:</span>
+            <span class="n">redirect_url</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">#sections&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">object</span><span class="o">.</span><span class="n">collected_in</span><span class="o">.</span><span class="n">get_absolute_url</span><span class="p">())</span>
+
+        <span class="c1"># if this is a book, link to a library search for this item</span>
+        <span class="c1"># (or book section)</span>
+
+        <span class="k">if</span> <span class="n">redirect_url</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">object</span><span class="o">.</span><span class="n">item_type</span> <span class="o">==</span> <span class="s1">&#39;Book&#39;</span><span class="p">:</span>
+                <span class="n">search_slug</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">object</span><span class="o">.</span><span class="n">slug</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">object</span><span class="o">.</span><span class="n">item_type</span> <span class="o">==</span> <span class="s1">&#39;Book Section&#39;</span><span class="p">:</span>
+                <span class="n">search_slug</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">object</span><span class="o">.</span><span class="n">collected_in</span><span class="o">.</span><span class="n">slug</span>
+
+            <span class="k">if</span> <span class="n">search_slug</span><span class="p">:</span>
+                <span class="n">redirect_url</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">?query=</span><span class="si">{}</span><span class="s1">&amp;is_extant=false&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">reverse</span><span class="p">(</span><span class="s1">&#39;books:list&#39;</span><span class="p">),</span> <span class="n">search_slug</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">redirect_url</span><span class="p">:</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="n">HttpResponseRedirect</span><span class="p">(</span><span class="n">redirect_url</span><span class="p">)</span>
+            <span class="c1"># set redirect code to See Other unless redirecting to</span>
+            <span class="c1"># the detail display for *this* item exactly</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">found</span><span class="p">:</span>
+                <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="mi">303</span>
+            <span class="k">return</span> <span class="n">response</span>
+
+        <span class="c1"># otherwise: (i.e., for journal articles), there is no meaningful</span>
+        <span class="c1"># view to redirect to, so display a minimal page</span>
+        <span class="c1"># (fall through to template display)</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+<div class="viewcode-block" id="InstanceURIView.get_context_data"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.views.InstanceURIView.get_context_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_context_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get_context_data</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">context</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
+            <span class="s1">&#39;hide_placeholder&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="s1">&#39;hide_nav&#39;</span><span class="p">:</span> <span class="kc">True</span>
+        <span class="p">})</span></div></div>
+        <span class="k">return</span> <span class="n">context</span>
+
 
 <div class="viewcode-block" id="InstanceReferenceDetailView"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.views.InstanceReferenceDetailView">[docs]</a><span class="k">class</span> <span class="nc">InstanceReferenceDetailView</span><span class="p">(</span><span class="n">InstanceDetailView</span><span class="p">):</span>
 
@@ -109,8 +173,6 @@
 
         <span class="n">context</span><span class="p">[</span><span class="s1">&#39;references&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">refs</span></div></div>
         <span class="k">return</span> <span class="n">context</span>
-
-
 
 
 <div class="viewcode-block" id="InstanceListView"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.views.InstanceListView">[docs]</a><span class="k">class</span> <span class="nc">InstanceListView</span><span class="p">(</span><span class="n">ListView</span><span class="p">):</span>
@@ -143,10 +205,28 @@
                 <span class="n">form_opts</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">form</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">form_class</span><span class="p">(</span><span class="n">form_opts</span><span class="p">)</span>
 
-        <span class="c1"># request facet counts from solr</span>
+        <span class="c1"># request facet counts and filter for solr</span>
+        <span class="c1"># form handles the solr name for the fields</span>
         <span class="k">for</span> <span class="n">facet_field</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">facet_fields</span><span class="p">:</span>
+            <span class="n">field_values</span> <span class="o">=</span> <span class="n">form_opts</span><span class="o">.</span><span class="n">getlist</span><span class="p">(</span><span class="n">facet_field</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="c1"># if the field has a value</span>
+            <span class="k">if</span> <span class="n">field_values</span><span class="p">:</span>
+                <span class="c1"># narrow adds to fq but not q and creates a tag to use</span>
+                <span class="c1"># in excluding later</span>
+                <span class="n">sqs</span> <span class="o">=</span> <span class="n">sqs</span><span class="o">.</span><span class="n">narrow</span><span class="p">(</span>
+                    <span class="s1">&#39;{!tag=</span><span class="si">%s</span><span class="s1">}</span><span class="si">%s</span><span class="s1">_exact:(</span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span>
+                    <span class="p">(</span>
+                        <span class="n">facet_field</span><span class="p">,</span>
+                        <span class="n">facet_field</span><span class="p">,</span>
+                        <span class="s1">&#39; OR &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;&quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span> <span class="o">%</span> <span class="n">val</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">field_values</span><span class="p">)</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
             <span class="c1"># sort by alpha instead of solr default of count</span>
-            <span class="n">sqs</span> <span class="o">=</span> <span class="n">sqs</span><span class="o">.</span><span class="n">facet</span><span class="p">(</span><span class="n">facet_field</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
+            <span class="c1"># facet adds to the list of generate facets but excludes</span>
+            <span class="c1"># so that OR behavior exists for counts within a filter rather</span>
+            <span class="c1"># than and</span>
+            <span class="n">sqs</span> <span class="o">=</span> <span class="n">sqs</span><span class="o">.</span><span class="n">facet</span><span class="p">(</span><span class="s1">&#39;{!ex=</span><span class="si">%s</span><span class="s1">}</span><span class="si">%s</span><span class="s1">_exact&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                            <span class="n">facet_field</span><span class="p">,</span> <span class="n">facet_field</span><span class="p">),</span> <span class="n">sort</span><span class="o">=</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
 
         <span class="c1"># form shouldn&#39;t normally be invalid since no fields are</span>
         <span class="c1"># required, but cleaned data isn&#39;t available until we validate</span>
@@ -159,20 +239,11 @@
         <span class="c1"># filter solr query based on search options</span>
         <span class="k">if</span> <span class="n">search_opts</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;query&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
             <span class="n">sqs</span> <span class="o">=</span> <span class="n">sqs</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="n">Clean</span><span class="p">(</span><span class="n">search_opts</span><span class="p">[</span><span class="s1">&#39;query&#39;</span><span class="p">]))</span>
-        <span class="c1"># no is extant filter for library; already restricted to extant items</span>
         <span class="k">if</span> <span class="n">search_opts</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;is_annotated&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
             <span class="n">sqs</span> <span class="o">=</span> <span class="n">sqs</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">is_annotated</span><span class="o">=</span><span class="n">search_opts</span><span class="p">[</span><span class="s1">&#39;is_annotated&#39;</span><span class="p">])</span>
         <span class="k">if</span> <span class="n">search_opts</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;is_extant&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
             <span class="n">sqs</span> <span class="o">=</span> <span class="n">sqs</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">is_extant</span><span class="o">=</span><span class="n">search_opts</span><span class="p">[</span><span class="s1">&#39;is_extant&#39;</span><span class="p">])</span>
 
-        <span class="k">for</span> <span class="n">facet</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">facet_inputs</span><span class="p">:</span>
-            <span class="c1"># check if a value is set for this facet</span>
-            <span class="c1"># NOTE: check if facet is set *and* if first value is non-empty,</span>
-            <span class="c1"># because a list with an empty string [&#39;&#39;] evaluates as true</span>
-            <span class="k">if</span> <span class="n">facet</span> <span class="ow">in</span> <span class="n">search_opts</span> <span class="ow">and</span> <span class="n">search_opts</span><span class="p">[</span><span class="n">facet</span><span class="p">]</span> <span class="ow">and</span> <span class="n">search_opts</span><span class="p">[</span><span class="n">facet</span><span class="p">][</span><span class="mi">0</span><span class="p">]:</span>
-                <span class="n">solr_facet</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">solr_field</span><span class="p">(</span><span class="n">facet</span><span class="p">)</span>
-                <span class="c1"># filter the query: facet matches any of the terms</span>
-                <span class="n">sqs</span> <span class="o">=</span> <span class="n">sqs</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">__in&#39;</span> <span class="o">%</span> <span class="n">solr_facet</span><span class="p">:</span> <span class="n">search_opts</span><span class="p">[</span><span class="n">facet</span><span class="p">]})</span>
 
         <span class="c1"># request range facets</span>
         <span class="c1"># get max/min from database to specify range start &amp; end values</span>
@@ -278,10 +349,38 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">form</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">form_class</span><span class="p">(</span><span class="n">form_opts</span><span class="p">)</span>
 
-        <span class="k">for</span> <span class="n">facet_field</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">facet_fields</span><span class="p">:</span>
-            <span class="c1"># sort by alpha instead of solr default of count</span>
-            <span class="n">sqs</span> <span class="o">=</span> <span class="n">sqs</span><span class="o">.</span><span class="n">facet</span><span class="p">(</span><span class="n">facet_field</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
+        <span class="c1"># add facet fields to filter query and tag for exclusion in generating</span>
+        <span class="c1"># facets</span>
 
+        <span class="c1"># form handles the solr name for the fields, but in the lookup below</span>
+        <span class="c1"># if it&#39;s a mapped field, i.e. instance_author -&gt;</span>
+        <span class="c1"># instance, then map for the field value lookup (but not for solr fq).</span>
+        <span class="k">for</span> <span class="n">facet_field</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">facet_fields</span><span class="p">:</span>
+            <span class="n">form_field</span> <span class="o">=</span> <span class="n">facet_field</span>
+            <span class="k">if</span> <span class="n">facet_field</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">solr_facet_fields</span><span class="p">:</span>
+                <span class="n">form_field</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">solr_facet_fields</span><span class="p">[</span><span class="n">facet_field</span><span class="p">]</span>
+            <span class="n">field_values</span> <span class="o">=</span> <span class="n">form_opts</span><span class="o">.</span><span class="n">getlist</span><span class="p">(</span><span class="n">form_field</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+            <span class="c1"># if the field has a value</span>
+            <span class="k">if</span> <span class="n">field_values</span><span class="p">:</span>
+                <span class="c1"># narrow adds to fq but not q and creates a tag to use</span>
+                <span class="c1"># in excluding later</span>
+                <span class="n">sqs</span> <span class="o">=</span> <span class="n">sqs</span><span class="o">.</span><span class="n">narrow</span><span class="p">(</span>
+                    <span class="s1">&#39;{!tag=</span><span class="si">%s</span><span class="s1">}</span><span class="si">%s</span><span class="s1">_exact:(</span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span>
+                    <span class="p">(</span>
+                        <span class="n">facet_field</span><span class="p">,</span>
+                        <span class="n">facet_field</span><span class="p">,</span>
+                        <span class="s1">&#39; OR &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;&quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span> <span class="o">%</span> <span class="n">val</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">field_values</span><span class="p">)</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+            <span class="c1"># sort by alpha instead of solr default of count</span>
+            <span class="c1"># facet adds to the list of generate facets but excludes</span>
+            <span class="c1"># so that OR behavior exists for counts within a filter rather</span>
+            <span class="c1"># than and</span>
+            <span class="n">sqs</span> <span class="o">=</span> <span class="n">sqs</span><span class="o">.</span><span class="n">facet</span><span class="p">(</span><span class="s1">&#39;{!ex=</span><span class="si">%s</span><span class="s1">}</span><span class="si">%s</span><span class="s1">_exact&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                            <span class="n">facet_field</span><span class="p">,</span> <span class="n">facet_field</span><span class="p">),</span> <span class="n">sort</span><span class="o">=</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
+
+        <span class="c1"># request facet counts and filter for solr</span>
         <span class="c1"># form shouldn&#39;t normally be invalid since no fields are</span>
         <span class="c1"># required, but cleaned data isn&#39;t available until we validate</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
@@ -300,14 +399,6 @@
             <span class="n">sqs</span> <span class="o">=</span> <span class="n">sqs</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">instance_is_annotated</span><span class="o">=</span><span class="n">search_opts</span><span class="p">[</span><span class="s1">&#39;is_annotated&#39;</span><span class="p">])</span>
         <span class="k">if</span> <span class="n">search_opts</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;corresponding_intervention&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
             <span class="n">sqs</span> <span class="o">=</span> <span class="n">sqs</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">corresponding_intervention</span><span class="o">=</span><span class="n">search_opts</span><span class="p">[</span><span class="s1">&#39;corresponding_intervention&#39;</span><span class="p">])</span>
-
-        <span class="c1"># look over form fields that map to facets</span>
-        <span class="k">for</span> <span class="n">facet</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">facet_inputs</span><span class="p">:</span>
-            <span class="c1"># check if a value is set for this facet</span>
-            <span class="k">if</span> <span class="n">facet</span> <span class="ow">in</span> <span class="n">search_opts</span> <span class="ow">and</span> <span class="n">search_opts</span><span class="p">[</span><span class="n">facet</span><span class="p">]</span> <span class="ow">and</span> <span class="n">search_opts</span><span class="p">[</span><span class="n">facet</span><span class="p">][</span><span class="mi">0</span><span class="p">]:</span>
-                <span class="n">solr_facet</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">solr_field</span><span class="p">(</span><span class="n">facet</span><span class="p">)</span>
-                <span class="c1"># filter the query: facet matches any of the terms</span>
-                <span class="n">sqs</span> <span class="o">=</span> <span class="n">sqs</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">__in&#39;</span> <span class="o">%</span> <span class="n">solr_facet</span><span class="p">:</span> <span class="n">search_opts</span><span class="p">[</span><span class="n">facet</span><span class="p">]})</span>
         <span class="c1"># request range facets for References, adapated from logic</span>
         <span class="c1"># above for Instances</span>
         <span class="c1"># get max/min from database to specify range start &amp; end values</span>
@@ -394,10 +485,13 @@
         <span class="c1"># NOTE: eventually this willl need to filter/segment</span>
         <span class="c1"># on derrida work, when we have more than one.</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mode&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;section&#39;</span><span class="p">:</span>
-            <span class="n">refs</span> <span class="o">=</span> <span class="n">refs</span><span class="o">.</span><span class="n">order_by_source_page</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">refs</span><span class="o">.</span><span class="n">order_by_source_page</span><span class="p">()</span> \
+                       <span class="o">.</span><span class="n">summary_values</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">refs</span> <span class="o">=</span> <span class="n">refs</span><span class="o">.</span><span class="n">order_by_author</span><span class="p">()</span></div>
-        <span class="k">return</span> <span class="n">refs</span><span class="o">.</span><span class="n">summary_values</span><span class="p">()</span>
+            <span class="c1"># including authors results in multiple entries</span>
+            <span class="c1"># for multi-author works, so only include if needed</span>
+            <span class="k">return</span> <span class="n">refs</span><span class="o">.</span><span class="n">order_by_author</span><span class="p">()</span> \</div>
+                       <span class="o">.</span><span class="n">summary_values</span><span class="p">(</span><span class="n">include_author</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <div class="viewcode-block" id="ReferenceHistogramView.get_context_data"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.views.ReferenceHistogramView.get_context_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_context_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">context</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">ReferenceHistogramView</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_context_data</span><span class="p">()</span>
@@ -420,9 +514,19 @@
     <span class="c1"># reference detail view for loading via ajax</span>
 
     <span class="n">model</span> <span class="o">=</span> <span class="n">Reference</span>
-    <span class="n">template_name</span> <span class="o">=</span> <span class="s1">&#39;components/citation-list-item.html&#39;</span>
+    <span class="n">ajax_template_name</span> <span class="o">=</span> <span class="s1">&#39;components/citation-list-item.html&#39;</span>
+    <span class="n">template_name</span> <span class="o">=</span> <span class="s1">&#39;books/reference_detail.html&#39;</span>
+
+<div class="viewcode-block" id="ReferenceDetailView.get_template_names"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.views.ReferenceDetailView.get_template_names">[docs]</a>    <span class="k">def</span> <span class="nf">get_template_names</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># when queried via ajax, return partial html for pop-up display</span>
+        <span class="c1"># in the visualization</span>
+        <span class="c1"># (don&#39;t render the form or base template)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">is_ajax</span><span class="p">():</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ajax_template_name</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">template_name</span>
 
 <div class="viewcode-block" id="ReferenceDetailView.get_object"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.views.ReferenceDetailView.get_object">[docs]</a>    <span class="k">def</span> <span class="nf">get_object</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">queryset</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
         <span class="k">if</span> <span class="n">queryset</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">queryset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_queryset</span><span class="p">()</span>
         <span class="c1"># NOTE: this is returning two results for some cases</span>
@@ -527,12 +631,19 @@
         <span class="n">context</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">CanvasDetail</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_context_data</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="c1"># If there is a plain_text_url in info, use a Djiffy method to get the</span>
         <span class="c1"># text from Figgy and pass it to the view, default ocr_text to None</span>
-        <span class="n">ocr_text</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">ocr_text</span> <span class="o">=</span> <span class="n">res</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="c1"># Make sure we have a variable to test against in case of a connect error</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">object</span><span class="o">.</span><span class="n">plain_text_url</span><span class="p">:</span>
             <span class="c1"># get the text</span>
-            <span class="n">res</span> <span class="o">=</span> <span class="n">get_iiif_url</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">object</span><span class="o">.</span><span class="n">plain_text_url</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">res</span> <span class="o">=</span> <span class="n">get_iiif_url</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">object</span><span class="o">.</span><span class="n">plain_text_url</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">ConnectionError</span><span class="p">:</span>
+                <span class="c1"># log the stack trace using exception handler and</span>
+                <span class="c1"># provide the url where the error happened to the log</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s1">&#39;Connection error getting OCR text for </span><span class="si">%s</span><span class="s1">&#39;</span>
+                                 <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">get_full_path</span><span class="p">(</span><span class="s1">&#39;?&#39;</span><span class="p">))</span>
             <span class="c1"># check that we got a valid response and set ocr_text if so.</span>
-            <span class="k">if</span> <span class="n">res</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">res</span> <span class="ow">and</span> <span class="n">res</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
                 <span class="n">ocr_text</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">text</span>
         <span class="n">context</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
             <span class="s1">&#39;instance&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">instance</span><span class="p">,</span>

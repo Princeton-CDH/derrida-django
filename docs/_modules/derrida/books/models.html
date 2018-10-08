@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>derrida.books.models &#8212; Derrida 1.1.0 documentation</title>
+    <title>derrida.books.models &#8212; Derrida 1.2.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
@@ -31,13 +31,12 @@
             
   <h1>Source code for derrida.books.models</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">json</span>
-<span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">string</span>
 
-<span class="kn">from</span> <span class="nn">django.db</span> <span class="k">import</span> <span class="n">models</span>
 <span class="kn">from</span> <span class="nn">django.contrib.contenttypes.fields</span> <span class="k">import</span> <span class="n">GenericRelation</span>
-<span class="kn">from</span> <span class="nn">django.core.validators</span> <span class="k">import</span> <span class="n">RegexValidator</span>
 <span class="kn">from</span> <span class="nn">django.core.exceptions</span> <span class="k">import</span> <span class="n">ValidationError</span>
+<span class="kn">from</span> <span class="nn">django.core.validators</span> <span class="k">import</span> <span class="n">RegexValidator</span>
+<span class="kn">from</span> <span class="nn">django.db</span> <span class="k">import</span> <span class="n">models</span>
 <span class="kn">from</span> <span class="nn">django.urls</span> <span class="k">import</span> <span class="n">reverse</span>
 <span class="kn">from</span> <span class="nn">django.utils.safestring</span> <span class="k">import</span> <span class="n">mark_safe</span>
 <span class="kn">from</span> <span class="nn">django.utils.text</span> <span class="k">import</span> <span class="n">slugify</span>
@@ -45,12 +44,11 @@
 <span class="kn">from</span> <span class="nn">sortedm2m.fields</span> <span class="k">import</span> <span class="n">SortedManyToManyField</span>
 <span class="kn">from</span> <span class="nn">unidecode</span> <span class="k">import</span> <span class="n">unidecode</span>
 
-<span class="kn">from</span> <span class="nn">derrida.common.models</span> <span class="k">import</span> <span class="n">Named</span><span class="p">,</span> <span class="n">Notable</span><span class="p">,</span> <span class="n">DateRange</span>
-<span class="kn">from</span> <span class="nn">derrida.places.models</span> <span class="k">import</span> <span class="n">Place</span>
-<span class="kn">from</span> <span class="nn">derrida.people.models</span> <span class="k">import</span> <span class="n">Person</span>
+<span class="kn">from</span> <span class="nn">derrida.common.models</span> <span class="k">import</span> <span class="n">DateRange</span><span class="p">,</span> <span class="n">Named</span><span class="p">,</span> <span class="n">Notable</span>
+<span class="kn">from</span> <span class="nn">derrida.common.utils</span> <span class="k">import</span> <span class="n">absolutize_url</span>
 <span class="kn">from</span> <span class="nn">derrida.footnotes.models</span> <span class="k">import</span> <span class="n">Footnote</span>
-
-<span class="n">Q</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">Q</span>
+<span class="kn">from</span> <span class="nn">derrida.people.models</span> <span class="k">import</span> <span class="n">Person</span>
+<span class="kn">from</span> <span class="nn">derrida.places.models</span> <span class="k">import</span> <span class="n">Place</span>
 
 
 <span class="c1"># TODO: could work/instance count be refactored for more general use?</span>
@@ -218,15 +216,7 @@
     <span class="n">pub_place</span> <span class="o">=</span> <span class="n">SortedManyToManyField</span><span class="p">(</span><span class="n">Place</span><span class="p">,</span>
         <span class="n">verbose_name</span><span class="o">=</span><span class="s1">&#39;Place(s) of Publication&#39;</span><span class="p">,</span> <span class="n">blank</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="c1">#: Zotero identifier</span>
-    <span class="n">zotero_id</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span>
-        <span class="n">max_length</span><span class="o">=</span><span class="mi">255</span><span class="p">,</span>
-        <span class="c1"># Add validator for any Zotero IDs entered manually by form.</span>
-        <span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">RegexValidator</span><span class="p">(</span>
-                        <span class="sa">r</span><span class="s1">&#39;\W&#39;</span><span class="p">,</span>
-                        <span class="n">inverse_match</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                        <span class="n">message</span><span class="o">=</span><span class="s1">&#39;Zotero IDs must be alphanumeric.&#39;</span>
-                    <span class="p">)]</span>
-    <span class="p">)</span>
+    <span class="n">zotero_id</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">blank</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="c1"># identifying slug for use in get_absolute_url, indexed for speed</span>
     <span class="n">slug</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">SlugField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">255</span><span class="p">,</span>
                             <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -348,12 +338,16 @@
 
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> (</span><span class="si">%s%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">display_title</span><span class="p">(),</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">copyright_year</span> <span class="ow">or</span> <span class="s1">&#39;n.d.&#39;</span><span class="p">,</span>
-            <span class="s1">&#39; </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+                              <span class="bp">self</span><span class="o">.</span><span class="n">copyright_year</span> <span class="ow">or</span> <span class="s1">&#39;n.d.&#39;</span><span class="p">,</span>
+                              <span class="s1">&#39; </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Instance.get_absolute_url"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.models.Instance.get_absolute_url">[docs]</a>    <span class="k">def</span> <span class="nf">get_absolute_url</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;URL for this :class:`Instance` on the website.&#39;&#39;&#39;</span></div>
         <span class="k">return</span> <span class="n">reverse</span><span class="p">(</span><span class="s1">&#39;books:detail&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;slug&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">slug</span><span class="p">})</span>
+
+<div class="viewcode-block" id="Instance.get_uri"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.models.Instance.get_uri">[docs]</a>    <span class="k">def</span> <span class="nf">get_uri</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;public URI for this instance to be used as an identifier&#39;&#39;&#39;</span></div>
+        <span class="k">return</span> <span class="n">absolutize_url</span><span class="p">(</span><span class="n">reverse</span><span class="p">(</span><span class="s1">&#39;books:instance&#39;</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">]))</span>
 
 <div class="viewcode-block" id="Instance.generate_base_slug"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.models.Instance.generate_base_slug">[docs]</a>    <span class="k">def</span> <span class="nf">generate_base_slug</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Generate a slug based on first author, work title, and year.</span>
@@ -588,14 +582,151 @@
 <span class="sd">        same author.  For a work that collects item, include</span>
 <span class="sd">        work by any book section authors.&#39;&#39;&#39;</span>
         <span class="n">authors</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">work</span><span class="o">.</span><span class="n">authors</span><span class="o">.</span><span class="n">all</span><span class="p">())</span>
-        <span class="n">exclude</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">pk</span><span class="p">]</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">collected_set</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
             <span class="k">for</span> <span class="n">instance</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">collected_set</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
                 <span class="n">authors</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">instance</span><span class="o">.</span><span class="n">work</span><span class="o">.</span><span class="n">authors</span><span class="o">.</span><span class="n">all</span><span class="p">())</span>
 
         <span class="k">return</span> <span class="n">Instance</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">work__authors__in</span><span class="o">=</span><span class="n">authors</span><span class="p">)</span> \
-                       <span class="o">.</span><span class="n">exclude</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pk</span><span class="p">)</span> \</div>
+                       <span class="o">.</span><span class="n">exclude</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pk</span><span class="p">)</span> \
                        <span class="o">.</span><span class="n">exclude</span><span class="p">(</span><span class="n">digital_edition__isnull</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1">#: map local :attr:`item_type` to equivalent zotero template name</span>
+    <span class="n">zotero_template_by_itemtype</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;Book&#39;</span><span class="p">:</span> <span class="s1">&#39;book&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;Book Section&#39;</span><span class="p">:</span> <span class="s1">&#39;bookSection&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;Journal Article&#39;</span><span class="p">:</span> <span class="s1">&#39;journalArticle&#39;</span>
+    <span class="p">}</span>
+
+<div class="viewcode-block" id="Instance.as_zotero_item"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.models.Instance.as_zotero_item">[docs]</a>    <span class="k">def</span> <span class="nf">as_zotero_item</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">library</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Serialize the instance as an item suitable for export to a Zotero</span>
+<span class="sd">        library. Requires a :class:`pyzotero.zotero.Zotero` instance for API</span>
+<span class="sd">        calls to retrieve item type templates and creator types.&#39;&#39;&#39;</span>
+        <span class="c1"># get the item template/creator types based on item type</span>
+
+        <span class="c1"># retrieve appropriate item and creator templates based on item type</span>
+        <span class="n">zotero_template</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">zotero_template_by_itemtype</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">item_type</span><span class="p">]</span>
+        <span class="n">template</span> <span class="o">=</span> <span class="n">library</span><span class="o">.</span><span class="n">item_template</span><span class="p">(</span><span class="n">zotero_template</span><span class="p">)</span>
+        <span class="n">creator_types</span> <span class="o">=</span> <span class="n">library</span><span class="o">.</span><span class="n">item_creator_types</span><span class="p">(</span><span class="n">zotero_template</span><span class="p">)</span>
+
+        <span class="c1"># set common properties</span>
+        <span class="c1"># zotero id, if set (API will reject if it&#39;s set to an empty string)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">zotero_id</span><span class="p">:</span>
+            <span class="n">template</span><span class="p">[</span><span class="s1">&#39;key&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">zotero_id</span>
+
+        <span class="c1"># use local instance URI for zotero url, for compatibility</span>
+        <span class="c1"># with other data exports</span>
+        <span class="n">template</span><span class="p">[</span><span class="s1">&#39;url&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_uri</span><span class="p">()</span>
+
+        <span class="c1"># metadata</span>
+        <span class="n">template</span><span class="p">[</span><span class="s1">&#39;title&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">alternate_title</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">work</span><span class="o">.</span><span class="n">primary_title</span>
+        <span class="n">template</span><span class="p">[</span><span class="s1">&#39;shortTitle&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">work</span><span class="o">.</span><span class="n">short_title</span>
+        <span class="n">template</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copyright_year</span>
+        <span class="n">template</span><span class="p">[</span><span class="s1">&#39;publisher&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">publisher</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">publisher</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span>
+        <span class="c1"># place is not valid for journal articles</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pub_place</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">item_type</span> <span class="o">==</span> <span class="s1">&#39;Journal Article&#39;</span><span class="p">:</span>
+            <span class="n">template</span><span class="p">[</span><span class="s1">&#39;place&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">place</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">place</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">pub_place</span><span class="o">.</span><span class="n">all</span><span class="p">()])</span>
+
+        <span class="c1"># no series, volume, or edition information stored in db</span>
+
+        <span class="c1"># author</span>
+        <span class="n">template</span><span class="p">[</span><span class="s1">&#39;creators&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span> <span class="c1"># clear out the default one first</span>
+        <span class="k">for</span> <span class="n">author</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">work</span><span class="o">.</span><span class="n">authors</span><span class="o">.</span><span class="n">all</span><span class="p">():</span> <span class="c1"># authors come from work</span>
+            <span class="n">template</span><span class="p">[</span><span class="s1">&#39;creators&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                <span class="s1">&#39;creatorType&#39;</span><span class="p">:</span> <span class="s1">&#39;author&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;firstName&#39;</span><span class="p">:</span> <span class="n">author</span><span class="o">.</span><span class="n">firstname</span><span class="p">,</span>
+                <span class="s1">&#39;lastName&#39;</span><span class="p">:</span> <span class="n">author</span><span class="o">.</span><span class="n">lastname</span>
+            <span class="p">})</span>
+
+        <span class="c1"># other creators</span>
+        <span class="c1"># create a lookup dict of zotero&#39;s &quot;localized&quot; creator type names</span>
+        <span class="c1"># for matching on local creator_type names</span>
+        <span class="n">type_names</span> <span class="o">=</span> <span class="p">{</span><span class="n">c</span><span class="p">[</span><span class="s1">&#39;localized&#39;</span><span class="p">]:</span> <span class="n">c</span><span class="p">[</span><span class="s1">&#39;creatorType&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">creator_types</span><span class="p">}</span>
+        <span class="n">author</span> <span class="o">=</span> <span class="n">CreatorType</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Author&#39;</span><span class="p">)</span>
+        <span class="c1"># all creators that are not authors</span>
+        <span class="k">for</span> <span class="n">creator</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">instancecreator_set</span><span class="o">.</span><span class="n">exclude</span><span class="p">(</span><span class="n">creator_type</span><span class="o">=</span><span class="n">author</span><span class="p">):</span>
+            <span class="c1"># match on localized name, because we use it</span>
+            <span class="k">if</span> <span class="n">creator</span><span class="o">.</span><span class="n">creator_type</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">type_names</span><span class="p">:</span>
+                <span class="n">template</span><span class="p">[</span><span class="s1">&#39;creators&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                    <span class="c1"># lookup on localized name and send the &quot;type name&quot;</span>
+                    <span class="s1">&#39;creatorType&#39;</span><span class="p">:</span> <span class="n">type_names</span><span class="p">[</span><span class="n">creator</span><span class="o">.</span><span class="n">creator_type</span><span class="o">.</span><span class="n">name</span><span class="p">],</span>
+                    <span class="s1">&#39;firstName&#39;</span><span class="p">:</span> <span class="n">creator</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">firstname</span><span class="p">,</span>
+                    <span class="s1">&#39;lastName&#39;</span><span class="p">:</span> <span class="n">creator</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">lastname</span>
+                <span class="p">})</span>
+        <span class="c1"># add to collections based on derrida works that cited this item;</span>
+        <span class="c1"># use collection zotero id from DerridaWork</span>
+        <span class="n">template</span><span class="p">[</span><span class="s1">&#39;collections&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">derrida_work</span><span class="o">.</span><span class="n">zotero_id</span> <span class="k">for</span> <span class="n">derrida_work</span> <span class="ow">in</span> \
+                                   <span class="bp">self</span><span class="o">.</span><span class="n">cited_in</span><span class="o">.</span><span class="n">exclude</span><span class="p">(</span><span class="n">zotero_id</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)]</span>
+
+        <span class="c1"># page range; only stored for book sections and journal articles</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_page</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_page</span><span class="p">:</span>
+            <span class="n">template</span><span class="p">[</span><span class="s1">&#39;pages&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;-&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">start_page</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_page</span><span class="p">))</span>
+
+        <span class="c1"># convert boolean fields to tags</span>
+        <span class="n">tags</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;is_extant&#39;</span><span class="p">,</span> <span class="s1">&#39;is_annotated&#39;</span><span class="p">,</span> <span class="s1">&#39;is_translation&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;has_dedication&#39;</span><span class="p">,</span> <span class="s1">&#39;has_insertions&#39;</span><span class="p">,</span> <span class="s1">&#39;digital_edition&#39;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
+                <span class="c1"># use attribute name as tag</span>
+                <span class="c1"># strip &quot;is_&quot; and convert underscores to spaces</span>
+                <span class="n">tags</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">attr</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;is_&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">))</span>
+        <span class="c1"># zotero template requires a list of dictionaries</span>
+        <span class="n">template</span><span class="p">[</span><span class="s1">&#39;tags&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[{</span><span class="s1">&#39;tag&#39;</span><span class="p">:</span> <span class="n">tagval</span><span class="p">}</span> <span class="k">for</span> <span class="n">tagval</span> <span class="ow">in</span> <span class="n">tags</span><span class="p">]</span>
+
+        <span class="c1"># try to use primary language, otherwise pick first language</span>
+        <span class="n">language</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">languages</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">instancelanguage__is_primary</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">language</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">languages</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="n">language</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">languages</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+        <span class="n">template</span><span class="p">[</span><span class="s1">&#39;language&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">language</span><span class="o">.</span><span class="n">code</span> <span class="k">if</span> <span class="n">language</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span>
+
+        <span class="c1"># use finding aids URL as archive location</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">uri</span> <span class="ow">and</span> <span class="s1">&#39;princeton&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">uri</span><span class="p">:</span>
+            <span class="n">template</span><span class="p">[</span><span class="s1">&#39;archiveLocation&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">uri</span>
+
+            <span class="c1"># if we have a princeton URI,</span>
+            <span class="c1"># use catalogue for location in archive / library catalog</span>
+            <span class="c1"># set archive based on catalogue information (i.e., PUL)</span>
+            <span class="c1"># NOTE: only applying to items with princeton urls, because</span>
+            <span class="c1"># import seems to have associated all items with princeton</span>
+            <span class="c1"># as owning institution, whether they are extant or not</span>
+            <span class="n">current_catalog</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">instancecatalogue_set</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">is_current</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">current_catalog</span><span class="p">:</span>
+                <span class="n">template</span><span class="p">[</span><span class="s1">&#39;archive&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">current_catalog</span><span class="o">.</span><span class="n">institution</span><span class="o">.</span><span class="n">name</span>
+
+        <span class="c1"># item-type specific metadata</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">item_type</span> <span class="o">==</span> <span class="s1">&#39;Book Section&#39;</span><span class="p">:</span>
+            <span class="c1"># title of the book this work appears in</span>
+            <span class="n">template</span><span class="p">[</span><span class="s1">&#39;bookTitle&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">collected_in</span><span class="o">.</span><span class="n">display_title</span><span class="p">()</span>
+            <span class="c1"># publication information stored on the book, but don&#39;t override</span>
+            <span class="c1"># if anything was set on the book section</span>
+            <span class="n">book_metadata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">collected_in</span><span class="o">.</span><span class="n">as_zotero_item</span><span class="p">(</span><span class="n">library</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="s1">&#39;publisher&#39;</span><span class="p">,</span> <span class="s1">&#39;place&#39;</span><span class="p">,</span> <span class="s1">&#39;language&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;archive&#39;</span><span class="p">,</span> <span class="s1">&#39;archiveLocation&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">template</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">book_metadata</span><span class="p">:</span>
+                    <span class="n">template</span><span class="p">[</span><span class="n">field</span><span class="p">]</span> <span class="o">=</span> <span class="n">book_metadata</span><span class="p">[</span><span class="n">field</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">item_type</span> <span class="o">==</span> <span class="s1">&#39;Journal Article&#39;</span><span class="p">:</span>
+            <span class="n">template</span><span class="p">[</span><span class="s1">&#39;publicationTitle&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">journal</span><span class="o">.</span><span class="n">name</span>
+
+        <span class="c1"># add notes to abstract field</span>
+        <span class="n">notes</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1"># include copy information, if present, to indicate multiple copies</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">:</span>
+            <span class="n">notes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;Copy </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">))</span>
+        <span class="c1"># include total reference count</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference_set</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="c1"># in future, this should be reference count *per* derrida work</span>
+            <span class="n">ref_count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference_set</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+            <span class="n">notes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> reference</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">ref_count</span><span class="p">,</span> <span class="s1">&#39;s&#39;</span> <span class="k">if</span> <span class="n">ref_count</span> <span class="o">!=</span> <span class="mi">1</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
+        <span class="c1"># number of pages with annotations documented</span>
+        <span class="n">annotated_page_count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">annotated_pages</span><span class="p">()</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">annotated_page_count</span><span class="p">:</span>
+            <span class="n">notes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> page</span><span class="si">{}</span><span class="s1"> with documented annotations&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">annotated_page_count</span><span class="p">,</span> <span class="s1">&#39;s&#39;</span> <span class="k">if</span> <span class="n">annotated_page_count</span> <span class="o">!=</span> <span class="mi">1</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">notes</span><span class="p">:</span>
+            <span class="n">template</span><span class="p">[</span><span class="s1">&#39;abstractNote&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">notes</span><span class="p">)</span>
+</div></div>
+        <span class="k">return</span> <span class="n">template</span>
 
 
 <div class="viewcode-block" id="WorkSubject"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.models.WorkSubject">[docs]</a><span class="k">class</span> <span class="nc">WorkSubject</span><span class="p">(</span><span class="n">Notable</span><span class="p">):</span>
@@ -729,6 +860,8 @@
     <span class="c1">#: slug for use in URLs</span>
     <span class="n">slug</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">SlugField</span><span class="p">(</span>
         <span class="n">help_text</span><span class="o">=</span><span class="s1">&#39;slug for use in URLs (changing after creation will break URLs)&#39;</span><span class="p">)</span>
+    <span class="c1">#: zotero collection ID for use in populating library</span>
+    <span class="n">zotero_id</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">blank</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">short_title</span>
@@ -767,14 +900,22 @@
         <span class="sd">&#39;&#39;&#39;Order by author of cited work&#39;&#39;&#39;</span></div>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s1">&#39;instance__work__authors__authorized_name&#39;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="ReferenceQuerySet.summary_values"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.models.ReferenceQuerySet.summary_values">[docs]</a>    <span class="k">def</span> <span class="nf">summary_values</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ReferenceQuerySet.summary_values"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.models.ReferenceQuerySet.summary_values">[docs]</a>    <span class="k">def</span> <span class="nf">summary_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">include_author</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Return a values list of summary information for display or</span>
 <span class="sd">        visualization.  Currently used for histogram visualization.</span>
 <span class="sd">        Author of cited work is aliased to `author`.</span>
+
+<span class="sd">        :param include_author: optionally include author information;</span>
+<span class="sd">            off by default, since this creates repeated records for</span>
+<span class="sd">            references to multi-author works</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;instance__slug&#39;</span><span class="p">,</span> <span class="s1">&#39;derridawork__slug&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;derridawork_page&#39;</span><span class="p">,</span> <span class="s1">&#39;derridawork_pageloc&#39;</span><span class="p">,</span></div></div>
-           <span class="n">author</span><span class="o">=</span><span class="n">models</span><span class="o">.</span><span class="n">F</span><span class="p">(</span><span class="s1">&#39;instance__work__authors__authorized_name&#39;</span><span class="p">))</span>
+        <span class="n">extra_fields</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="n">include_author</span><span class="p">:</span>
+            <span class="n">extra_fields</span><span class="p">[</span><span class="s1">&#39;author&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">F</span><span class="p">(</span><span class="s1">&#39;instance__work__authors__authorized_name&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">(</span>
+            <span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;instance__slug&#39;</span><span class="p">,</span> <span class="s1">&#39;derridawork__slug&#39;</span><span class="p">,</span></div></div>
+            <span class="s1">&#39;derridawork_page&#39;</span><span class="p">,</span> <span class="s1">&#39;derridawork_pageloc&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">extra_fields</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="Reference"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.models.Reference">[docs]</a><span class="k">class</span> <span class="nc">Reference</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
@@ -826,6 +967,10 @@
             <span class="s1">&#39;page&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">derridawork_page</span><span class="p">,</span>
             <span class="s1">&#39;pageloc&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">derridawork_pageloc</span></div>
         <span class="p">})</span>
+
+<div class="viewcode-block" id="Reference.get_uri"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.models.Reference.get_uri">[docs]</a>    <span class="k">def</span> <span class="nf">get_uri</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;public URI for this instance to be used as an identifier&#39;&#39;&#39;</span></div>
+        <span class="k">return</span> <span class="n">absolutize_url</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_absolute_url</span><span class="p">())</span>
 
 <div class="viewcode-block" id="Reference.anchor_text_snippet"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.models.Reference.anchor_text_snippet">[docs]</a>    <span class="k">def</span> <span class="nf">anchor_text_snippet</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Anchor text snippet, for admin display&#39;&#39;&#39;</span>

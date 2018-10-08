@@ -2,7 +2,6 @@ from dal import autocomplete, forward
 from django import forms
 from django.contrib import admin
 from djiffy.admin import ManifestSelectWidget
-from grappelli.forms import GrappelliSortableHiddenMixin
 
 from derrida.common.admin import NamedNotableAdmin
 from derrida.footnotes.admin import FootnoteInline
@@ -213,7 +212,9 @@ class PersonBookAdmin(admin.ModelAdmin):
     inlines = [FootnoteInline]
 
 
-class DerridaWorkSectionInline(GrappelliSortableHiddenMixin, CollapsibleTabularInline):
+class DerridaWorkSectionInline(CollapsibleTabularInline):
+    # NOTE: had to remove GrappelliSortableHiddenMixin when reverting to
+    # grappelli_safe for mezzanine/grappelli compatibility reasons
     model = DerridaWorkSection
     extra = 1
     fieldsets = (

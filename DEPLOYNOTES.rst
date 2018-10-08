@@ -3,6 +3,17 @@
 Deploy and Upgrade notes
 ========================
 
+1.2
+---
+
+* Provision and configure a **ZOTERO_API_KEY** and **ZOTERO_LIBRARY_ID**
+  before running zotero export script.
+* Run data export scripts to generate dataset for deposit and reuse::
+
+    python manage.py reference_data
+    python manage.py intervention_data
+    python manage.py export_zotero
+
 
 1.0
 ----

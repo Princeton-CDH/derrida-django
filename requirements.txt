@@ -1,9 +1,8 @@
-django>=1.11,<2.0
+django>=1.11.15,<2.0
 mysqlclient
 django-compressor
 django-compressor-autoprefixer
-django-grappelli
-django-autocomplete-light
+django-autocomplete-light<3.3
 requests
 rdflib
 django-sortedm2m
@@ -20,8 +19,9 @@ django-widget-tweaks
 django-markdownify
 # manually pin a compatible version of pillow for mezzanine image preview
 pillow<4.2
-# mezzanine from github required for django 1.11 compatibility; should be > 4.2.3
-git+https://github.com/stephenmcd/mezzanine.git@397409d#egg=mezzanine
+mezzanine>4.3
 django-fullurl
 django-apptemplates
 roman
+pyzotero
+progressbar2

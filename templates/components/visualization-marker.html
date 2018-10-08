@@ -1,9 +1,9 @@
 {# single reference marker for histogram viz; expects a reference dict as returned by summary_value #}
 <div class="visualization-marker-container">
 {% url 'books:reference' derridawork_slug=ref.derridawork__slug page=ref.derridawork_page pageloc=ref.derridawork_pageloc  as ref_url%}
+{# NOTE: omitting id attribute (formerly id="tt{{ ref.id }}" because ids are not distinct for multi-author works and id is not used #}
   <div role="button" class="visualization-chapter-marker"
      href="{% url 'books:detail' slug=ref.instance__slug %}"
-     id="tt{{ ref.id }}"
      data-url="{{ ref_url }}"
      tabindex="0">
     Reference on page {{ ref.derridawork_page }}

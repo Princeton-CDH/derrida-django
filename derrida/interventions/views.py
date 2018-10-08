@@ -6,7 +6,10 @@ from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.core.cache import cache
 from django.core.exceptions import PermissionDenied
 from django.db.models import Q, Max, Min
+from django.urls import reverse
 from django.views.generic import ListView
+from django.views.generic.base import RedirectView
+from django.shortcuts import get_object_or_404
 from djiffy import views as djiffy_views
 from haystack.inputs import Raw
 from haystack.query import SearchQuerySet
@@ -187,10 +190,33 @@ class InterventionListView(ListView):
                 form_opts.setdefault(key, val)
         self.form = self.form_class(form_opts)
 
+        # request facet counts and filter for solr
+        # form handles the solr name for the fields, but in the lookup below
+        # if it's a mapped field, i.e. instance_author ->
+        # instance, then map for the field value lookup (but not for solr fq).
         for facet_field in self.form.facet_fields:
+            form_field = facet_field
+            if facet_field in self.form.solr_facet_fields:
+                form_field = self.form.solr_facet_fields[facet_field]
+            field_values = form_opts.getlist(form_field, None)
+            # if the field has a value
+            if field_values:
+                # narrow adds to fq but not q and creates a tag to use
+                # in excluding later
+                sqs = sqs.narrow(
+                    '{!tag=%s}%s_exact:(%s)' %
+                    (
+                        facet_field,
+                        facet_field,
+                        ' OR '.join('"%s"' % val for val in field_values)
+                    )
+                )
             # sort by alpha instead of solr default of count
-            sqs = sqs.facet(facet_field, sort='index')
-
+            # facet adds to the list of generate facets but excludes
+            # so that OR behavior exists for counts within a filter rather
+            # than and
+            sqs = sqs.facet('{!ex=%s}%s_exact' % (
+                            facet_field, facet_field), sort='index')
         # form shouldn't normally be invalid since no fields are
         # required, but cleaned data isn't available until we validate
         if self.form.is_valid():
@@ -202,14 +228,6 @@ class InterventionListView(ListView):
         # filter solr query based on search options
         if search_opts.get('query', None):
             sqs = sqs.filter(text=search_opts['query'])
-
-        for facet in self.form.facet_inputs:
-            # check if a value is set for this facet
-            if facet in search_opts and search_opts[facet] and search_opts[facet][0]:
-                solr_facet = self.form.solr_field(facet)
-                # filter the query: facet matches any of the terms
-                sqs = sqs.filter(**{'%s__in' % solr_facet: search_opts[facet]})
-
         # request range facets
         # get max/min from database to specify range start & end values
         # set the aggregate queries for this particular query and their
@@ -283,3 +301,34 @@ class InterventionListView(ListView):
             'form': self.form,
         })
         return context
+
+
+class InterventionView(RedirectView):
+    '''View for a single intervention, so we can provide a URI for identifiers
+    in datasets that resolve to something meaningful. Currently redirects
+    to the public canvas view with the annotation highlighted if possible,
+    or an intervention search for that item if the intervention
+    is not associated with a canvas.
+    '''
+
+    def get(self, *args, **kwargs):
+        '''Patch the response to set status code to 303 See Other'''
+        response = super().get(*args, **kwargs)
+        response.status_code = 303
+        return response
+
+    def get_redirect_url(self, *args, **kwargs):
+        intervention = get_object_or_404(Intervention, id=kwargs['id'])
+        if intervention.canvas:
+            # link to public canvas view with the intervention selected
+            return '{}#annotations/{}'.format(
+                reverse('books:canvas-detail', kwargs={
+                    'slug': intervention.canvas.manifest.instance.slug,
+                    'short_id': intervention.canvas.short_id}),
+                intervention.id)
+
+        # if for some reason we have an intervention without a canvas
+        # (not likely in current set but possible), link to intervention
+        # search for this item
+        return '{}?query={}'.format(
+            reverse('interventions:list'), intervention.id)

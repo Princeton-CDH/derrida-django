@@ -2,7 +2,7 @@
 
 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
   <input class="mdl-textfield__input" type="text" id="author-selection" readonly="readonly" />
-  <img class="expand-icon" src="{% static 'img/icons/Expand.svg' %}" aria-hidden="True">
+  <img class="expand-icon" src="{% static 'img/icons/Expand.svg' %}" aria-hidden="True" alt="▽">
   <label class="mdl-textfield__label" for="author-selection">Author</label>
 </div>
 <div class="filter filter--author is-not-ready" id="authors">
@@ -15,11 +15,14 @@
 
   <nav class="filter__nav"></nav>
 
+  <fieldset>
+    <legend>Author options</legend>
   <section class="filter__check-list filter__check-list--authors">
     {% for author in authors %}
       {{author}}
     {% endfor %}
   </section>
+  </fieldset>
 
   <footer class="filter__footer">
     <a class="clear-link" href="#">Clear Selection</a>

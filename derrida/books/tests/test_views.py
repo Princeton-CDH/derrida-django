@@ -13,14 +13,15 @@ from django.core.management import call_command
 from django.db.models import Min, Max
 from django.http import Http404
 from django.test import TestCase, override_settings
-from django.urls import reverse
+from django.urls import reverse, resolve
 from django.utils.html import escape
 from djiffy.models import Manifest, Canvas
 from haystack.models import SearchResult
 
 from derrida.books import views
 from derrida.books.forms import RangeWidget, RangeField
-from derrida.books.models import Instance, Reference, DerridaWorkSection
+from derrida.books.models import Instance, Reference, DerridaWorkSection, \
+    Work, Journal
 from derrida.interventions.models import Intervention, INTERVENTION_TYPES
 from derrida.outwork.models import Outwork
 
@@ -61,7 +62,6 @@ class TestInstanceViews(TestCase):
         response = self.client.get(saussure.get_absolute_url())
         # license label from edm rights should be set in alt text
         self.assertContains(response, 'alt="In Copyright"')
-
 
     @pytest.mark.haystack
     def test_instance_list_view(self):
@@ -120,13 +120,22 @@ class TestInstanceViews(TestCase):
             extant_bks.filter(is_annotated=True).count()
         # multiple facets should return both
         response = self.client.get(list_view_url, {'pub_place': ['Paris', 'Pfullingen']})
-        # fixture has 12 published in Paris and 1 in Pfulligen
+        # fixture has 13 published in Paris and 1 in Pfulligen
         assert len(response.context['object_list']) == 14
 
-        # search for non-cited volume
-        response = self.client.get(list_view_url, {'query': 'gelb', 'is_extant': True})
-        # should not be found
-        assert len(response.context['object_list']) == 0
+        # multiple facets should also return counts that are joined by OR within
+        # the same facet, if any of these are 0, it means the facets
+        # within the same field used AND logic
+        # all pub place counts are at least 1 and come as tuples of (name, count)
+        pub_place = response.context['facets']['fields']['pub_place']
+        for item in pub_place:
+            assert item[1] != 0
+
+        # search for uncited books in the test data
+        # NOTE: this test is wrong; there are currently no uncited books in the test data
+        # response = self.client.get(list_view_url, {'query': 'gelb', 'is_extant': True})
+        # # should not be found
+        # assert len(response.context['object_list']) == 0
 
         # range filter
         # - work year
@@ -265,7 +274,8 @@ class TestInstanceViews(TestCase):
         assert response.url == cover_image_url
 
     @patch('derrida.books.views.get_iiif_url')
-    def test_canvas_detail_view(self, mockiiifurl):
+    @patch('derrida.books.views.logger')
+    def test_canvas_detail_view(self, mocklogger, mockiiifurl):
         # get an instance with a digital edition
         item = Instance.objects.filter(digital_edition__isnull=False).first()
         # add logo and license to manifest
@@ -345,8 +355,18 @@ class TestInstanceViews(TestCase):
         mockresponse.status_code = 403
         response = self.client.get(p23_detail_url)
         self.assertNotContains(response, mockresponse.text)
-
-
+        # simulate a raised ConnectionError
+        mockiiifurl.side_effect = ConnectionError
+        response = self.client.get(p23_detail_url)
+        # page should still be rendered
+        assert response.status_code == 200
+        # OCR text should not be present
+        self.assertNotContains(response, mockresponse.text)
+        # logger exception should have been called
+        assert mocklogger.exception.called
+        mocklogger.exception\
+            .assert_called_with("Connection error getting OCR text for %s"
+                                % response.request['PATH_INFO'])
         # annotated page should be listed in nav on other pages
         response = self.client.get(cover_detail_url)
         self.assertContains(response, p23.label)
@@ -454,18 +474,68 @@ class TestInstanceViews(TestCase):
         item = Instance.objects.get(pk=item.pk)
         assert item.suppress_all_images
 
+    def test_instance_uri_view(self):
+        # redirect view for titles
+
+        # book with no digital edition
+        la_vie = Instance.objects.filter(work__primary_title__icontains='la vie').first()
+
+        response = self.client.get(reverse('books:instance', args=[la_vie.pk]))
+        assert response.status_code == 303  # see other
+        # no associated digital edition, so should link to search
+        # split into base url and query string
+        redirect_url, querystring = response['Location'].split('?')
+        resolved_url = resolve(redirect_url)
+        assert resolved_url.namespace == 'books'
+        assert resolved_url.url_name == 'list'
+        assert 'query={}'.format(la_vie.slug) in querystring
+        assert 'is_extant=false' in querystring
+
+        # associate a manifest as a digital edition
+        manif = Manifest.objects.create()
+        la_vie.digital_edition = manif
+        la_vie.save()
+
+        response = self.client.get(reverse('books:instance', args=[la_vie.pk]))
+        assert response.status_code == 302  # found
+        assert response['location'] == reverse('books:detail', args=[la_vie.slug])
+
+        # book section of a work with digital edition
+        # create a book section in la vie to test
+        bk_section = Instance.objects.create(collected_in=la_vie, work=Work.objects.first())
+        response = self.client.get(reverse('books:instance', args=[bk_section.pk]))
+        assert response.status_code == 303  # see other
+        redirect_url, anchor = response['Location'].split('#')
+        # should redirect to collected in book page
+        assert redirect_url == reverse('books:detail', args=[la_vie.slug])
+        assert anchor == 'sections'
+
+        # book section of a work with no digital edition
+        la_vie.digital_edition = None
+        la_vie.save()
+        response = self.client.get(reverse('books:instance', args=[bk_section.pk]))
+        assert response.status_code == 303  # see other
+        # should link to library search for the book this section belongs to
+        redirect_url, querystring = response['Location'].split('?')
+        resolved_url = resolve(redirect_url)
+        assert resolved_url.namespace == 'books'
+        assert resolved_url.url_name == 'list'
+        assert 'query={}'.format(la_vie.slug) in querystring
+        assert 'is_extant=false' in querystring
+
+        # journal article - no meaningful place to redirect; displays minimal page
+        journal = Journal.objects.create(name='Interational Journal of Things')
+        article = Instance.objects.create(work=Work.objects.first(), journal=journal,
+            alternate_title='An Essay on some things')
+        response = self.client.get(reverse('books:instance', args=[article.pk]))
+        assert response.status_code == 200  # ok
+        self.assertContains(response, article.alternate_title)
+        self.assertContains(response, journal.name)
+
 
 @USE_TEST_HAYSTACK
 class TestReferenceViews(TestCase):
     fixtures = ['test_references.json']
-
-    def setUp(self):
-        '''None of the Instacefixtures have slugs, so generate them'''
-        for instance in Instance.objects.all():
-            instance.slug = instance.generate_safe_slug()
-            instance.save()
-        # reindex with slugs
-        call_command('rebuild_index', '--noinput')
 
     @pytest.mark.haystack
     def test_instance_reference_detail(self):
@@ -509,6 +579,8 @@ class TestReferenceViews(TestCase):
         assert response.context['total'] == 20
         self.assertContains(response, '20 Results',
             msg_prefix='total number of results displayed')
+        # facets should be set
+        assert response.context['facets']
         # reference details that should be present in the template
         ref = Reference.objects.first()
         # spot check template (tested more thoroughly in reference detail below)
@@ -566,6 +638,17 @@ class TestReferenceViews(TestCase):
         response = self.client.get(reference_list_url, {'author': authors})
         assert len(response.context['object_list']) == \
             Reference.objects.filter(instance__work__authors__authorized_name__in=authors).count()
+
+        # verify that author counts are being tallied within filter using
+        # OR not AND
+        # instance_author has no zero counts, so if any are, then the join
+        # has been done using AND (and therefore only selecte authors) have
+        # counts
+        #
+        # counts are given as tuples of (name, count)
+        instance_author = response.context['facets']['fields']['instance_author']
+        for item in instance_author:
+            assert item[1] != 0
 
         # sort by cited item title
         response = self.client.get(reference_list_url, {'order_by': 'cited_title'})
@@ -643,9 +726,12 @@ class TestReferenceViews(TestCase):
 
     def test_reference_detail(self):
         ref = Reference.objects.exclude(book_page='').first()
-        response = self.client.get(ref.get_absolute_url())
+        # simulate ajax request, i.e. for visualization
+        response = self.client.get(ref.get_absolute_url(),
+                                   HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         assert response.status_code == 200
         self.assertTemplateUsed('components/citation-list-item.html')
+        self.assertTemplateNotUsed('books/reference_detail.html')
         # check for details that should be displayed
         # - reference type
         self.assertContains(response, ref.reference_type.name,
@@ -685,13 +771,30 @@ class TestReferenceViews(TestCase):
         self.assertContains(response, 'pp. %s' % ref.book_page,
             msg_prefix='display reference page number with pp. for ranges')
 
+        # non-ajax request
+        response = self.client.get(ref.get_absolute_url())
+        assert response.status_code == 200
+        self.assertTemplateUsed('books/reference_detail.html')
+        # spot-check that the same details are displayed
+        # - reference type
+        self.assertContains(response, ref.reference_type.name,
+            msg_prefix='should display reference type')
+        # - link to cited book
+        self.assertContains(response, ref.instance.get_absolute_url(),
+            msg_prefix='should include link to work instance detail page')
+        # - cited book title
+        self.assertContains(response, escape(ref.instance.display_title()),
+            msg_prefix='should include work instance title')
+        # should also link to reference list
+        self.assertContains(response, reverse('books:reference-list'))
+
     def test_reference_histogram(self):
         # default: reference by author of referenced book
         histogram_url = reverse('books:reference-histogram')
         response = self.client.get(histogram_url)
         self.assertTemplateUsed(response, 'books/reference_histogram.html')
         assert list(response.context['object_list']) == \
-            list(Reference.objects.order_by_author().summary_values())
+            list(Reference.objects.order_by_author().summary_values(include_author=True))
         assert 'sections' not in response.context
         refs = Reference.objects.all()
         for ref in refs:
@@ -752,7 +855,7 @@ class TestBookViews(TestCase):
         assert response.status_code == 200
         data = json.loads(response.content.decode('utf-8'))
         assert 'results' in data
-        assert data['results'][0]['text'] == 'Baconnière'
+        assert data['results'][0]['text'] == 'Armand Colin'
 
     def test_language_autocomplete(self):
         # Not accessible to anonymous user
@@ -809,7 +912,8 @@ class TestBookViews(TestCase):
             msg_prefix='canvas url should be included once for each associated intervention')
         self.assertContains(response, 'Annotation', count=2,
             msg_prefix='intervention type should display for each item')
-        self.assertContains(response, 'Intervention', count=5,
+        # plus 2 for mezzanine sidebar app/model navigation links
+        self.assertContains(response, 'Intervention', count=5 + 2,
             msg_prefix='intervention type should display for each item, once in'
             ' the reference inline, and once in the hidden reference inline, and'
             ' the inline fieldset.')

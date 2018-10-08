@@ -5,6 +5,19 @@
   background-color: $header-background-color;
   color: $header-text-color;
   z-index: 10;
+  position: fixed;
+
+  & ~ main {
+      margin-top: 56px;
+  }
+
+  @media screen and (min-width: $medium-breakpoint) {
+      position: relative;
+
+      & ~ main {
+          margin-top: 0;
+      }
+  }
 
   @include grid-media($xlarge-viewport-grid) {
     position: fixed;
@@ -14,7 +27,7 @@
     }
   }
 
-  
+
   &.mdl-layout__header--transparent {
     background-color: $header-background-color; // have to override MDL selector to get white with this class
 
@@ -56,6 +69,7 @@
   opacity: 1;
   line-height: 1;
   outline: none;
+  color: $black-0;
 
   .navigation-title {
     position: relative;
@@ -278,21 +292,6 @@
       }
     }
 
-    .background-colored--dark & {
-      path,
-      polygon {
-        fill: transparentize($white, 0.4);
-      }
-
-      &:hover,
-      &:active {
-        path,
-        polygon {
-          fill: $white;
-        }
-      }
-    }
-
   }
 }
 
@@ -333,12 +332,15 @@
 
 .mdl-layout__drawer {
   width: 100%;
-  padding-top: 1em;
+  padding-top: 2em;
+  top: -1em;
+  position: fixed;
   height: auto;
   padding-bottom: 2em;
   z-index: 4;
   box-shadow: none;
-  background: none;
+  background: $white;
+
   @include prefixer(transform, translateY(-100%), webkit moz ms o spec);
 
   .background-colored--dark & {
@@ -401,7 +403,7 @@
   .mdl-layout__drawer__close_button {
     width: 2.25rem;
     display: block;
-    position: absolute;
+    position: fixed;
     left: 0;
     top: 0;
     padding: 0.5rem;
@@ -409,7 +411,7 @@
 
     &::before {
       content: "";
-      position: absolute;
+      position: fixed;
       top: 0;
       left: 0;
       width: 100%;
@@ -422,6 +424,7 @@
   opacity: 0;
   margin-top: 1em;
   margin-left: 1em;
+  position: fixed;
 
   &.active {
     opacity: 1;

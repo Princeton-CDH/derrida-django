@@ -5,7 +5,6 @@
     min-height: 54px; // override material design 64px
 
     @include grid-media($large-medium-viewport-grid) {
-      background: linear-gradient(to right, $white 0%, $white 300px, transparentize($white, 1) 300px, transparentize($white, 1) 100%);
       background-position: -300px;
       @include transition(background-position 20ms $base-timing);
 
@@ -81,6 +80,12 @@
       // max-width: 700px;
       // margin-left: 300px;
     }
+
+    @media (max-width: $medium-breakpoint) {
+      .page-header__link {
+        margin-left: 0;
+      }
+    }
   }
 
   .page-header__heading {
@@ -88,7 +93,6 @@
 
     @include grid-media($large-medium-viewport-grid) {
       text-align: right;
-      padding-right: 10%;
     }
   }
 
@@ -131,6 +135,10 @@
 
   @include grid-media($large-medium-viewport-grid) {
     flex-direction: row;
+  }
+
+  @media (max-width: $medium-breakpoint) {
+      display: block;
   }
 
   &.is-background-darken {
@@ -215,7 +223,7 @@ a.gallery-image-view__list-item {
 
 
 .gallery-image-view__list-end {
-  border-color: $medium-grey;
+  border-color: #d8d8d8;
   opacity: 0.8;
 }
 
@@ -264,6 +272,11 @@ $component-padding: 4rem;
   position: relative;
   padding: $component-padding $gutter-size 0 0;
 
+  @media (max-width: $medium-breakpoint) {
+    display: block;
+  }
+
+
   .is-background-darken & {
     padding-top: 0;
     padding-right: 0;
@@ -285,6 +298,7 @@ $component-padding: 4rem;
 
     &.is-hidden {
       // width: $deep-zoom-width;
+      display: none;
     }
 
     #deep-zoom {
@@ -316,6 +330,10 @@ $component-padding: 4rem;
   top: 0;
   width: 220px;
   margin-left: auto;
+
+  @media (max-width: $medium-breakpoint) {
+    margin-left: unset;
+  }
 
   @include grid-media($large-medium-viewport-grid) {
     // width: 50%;
@@ -356,8 +374,18 @@ $component-padding: 4rem;
 }
 
 .gallery-image-view__img {
+  display: inline-block;
   max-height: $max-component-height;
-  max-width: $deep-zoom-width;
+  // max-width: $deep-zoom-width;
+  // shrink with the window and leave space for the annotation cards
+  max-width: calc(100vh - 375px);
+
+  @media (max-width: $medium-breakpoint) {
+      max-width: unset;
+      max-height: unset;
+      width: 100%;
+  }
+
 }
 
 .gallery-image-view__footer {
@@ -369,6 +397,11 @@ $component-padding: 4rem;
   flex-direction: row-reverse;
   padding: 1em 4%;
   z-index: 1;
+
+  @media (max-width: $medium-breakpoint) {
+    right: 10%;
+    width: 100%;
+  }
 
   .is-background-darken & {
     background: linear-gradient(to right, $white 0%, $white 300px, $base-background-color 300px, $base-background-color 100%);
@@ -392,6 +425,11 @@ $component-padding: 4rem;
     width: calc(100% - 300px);
     background-position: 0;
     @include transition(background-position 150ms $base-timing);
+
+    @media (max-width: $medium-breakpoint) {
+      width: 100%;
+    }
+
   }
 
   .img {
@@ -405,12 +443,20 @@ $component-padding: 4rem;
 .collection.annotation-cards {
   // $offset: 40px;
   // width: calc(40% + #{$offset});
-  flex: 1;
+  align-self: flex-start;
+  flex: 20%;
   flex-direction: column;
   flex-wrap: nowrap;
+  min-width: 350px;
   max-height: calc(100vh - 260px); // shorter than max-component-height to allow space for rights info @bottom right
   overflow: scroll;
   position: relative;
+
+  @media (max-width: $medium-breakpoint) {
+    display: block;
+    width: 95%;
+    padding: 50px 0 100px 20px;
+  }
 
   .collection__item {
     left: 30px;
@@ -480,7 +526,7 @@ $component-padding: 4rem;
 
     &,
     .item__body {
-      width: 100%;
+      width: 85%;
       margin-left: 0;
       margin-bottom: 0;
     }
@@ -497,11 +543,15 @@ $component-padding: 4rem;
     font-size: 10px;
     line-height: 1;
     margin-top: 3px;
-    @include faded-link($medium-grey);
+
+    &:hover {
+        border-color: $orange-red;
+    }
 
     &::after {
         content: "";
         height: 3px;
+        bottom: -3px;
         width: 0;
         background-color: $orange-red;
         position: absolute;
@@ -526,10 +576,24 @@ $component-padding: 4rem;
 
 .annotation-selections {
   height: $max-component-height;
-  display: block;
-  position: absolute;
+  display: flex;
+  flex-direction: column;
   width: 100%;
   margin: 0 0 0 5%;
+
+  @media (max-width: $medium-breakpoint) {
+    display: block;
+    height: auto;
+  }
+
+  .image-container {
+    align-self: center;
+    display: inline-block;
+    position: relative;
+    @media (max-width: $medium-breakpoint) {
+      width: 90%;
+    }
+  }
 
   .zone {
     position: absolute;
@@ -537,7 +601,7 @@ $component-padding: 4rem;
     background-color: transparentize($orange-red, 0.75);
     border: 1px solid transparent;
     border-radius: 1px;
-    opacity: 0;
+    cursor: pointer;
     @include transition(opacity $base-duration $base-timing);
 
     &.is-selected {
@@ -547,10 +611,6 @@ $component-padding: 4rem;
     }
   }
 
-  &.has-zones-added .zone {
-    opacity: 1;
-    cursor: pointer;
-  }
 }
 
 .suppress-form {

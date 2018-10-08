@@ -1,6 +1,6 @@
 {% extends "admin/change_form.html" %}
 
-{% load admin_static i18n admin_modify admin_urls grp_tags %}
+{% load admin_static i18n admin_modify admin_urls %}
 
 {% block stylesheets %}
   {{ block.super }}
@@ -15,43 +15,42 @@
 
 
 {% block after_related_objects %}
-<div class="inline-group grp-group grp-tabular">
-    <h2 class="grp-collapse-handler">Interventions</h2>
+<div class="inline-group inline-tabular grp-collapse grp-open">
+    <h2>Interventions</h2>
 
     <!-- container -->
-    <div class="tabular inline-related grp-module grp-table">
-        <div class="module grp-module grp-thead">
-            <div class="grp-tr">
-                <div class="grp-th">Thumbnail</div>
-                <div class="grp-th">Canvas</div>
-                <div class='grp-th'>Type</div>
-                <div class="grp-th">Text</div>
-                <div class="grp-th">Edit in Django Admin</div>
-            </div>
+    <div class="items" style="width:100%">
+        <div class="legend">
+            <div class="form-cell">Thumbnail</div>
+            <div class="form-cell">Canvas</div>
+            <div class="form-cell">Type</div>
+            <div class="form-cell">Text</div>
+            <div class="form-cell">Edit in Django Admin</div>
         </div>
+       {% for canvas in original.digital_edition.canvases.all %}
+                {% for intervention in canvas.intervention_set.all %}
+
         <!-- element -->
-        <div class="form-row grp-module grp-tbody"
+        <div class="inline-related"
                 id="to-relationship-read-only">
 
-            {% for canvas in original.digital_edition.canvases.all %}
-                {% for intervention in canvas.intervention_set.all %}
-                  <div class="grp-tr">
-                    <div class="grp-td">
+                  <div class="fieldset module">
+                    <div class="item form-cell">
                         {# TODO: add anchor link logic to link directly to intervention #}
                         <a href="{{ intervention.canvas.get_absolute_url }}"
                             title="View on canvas">{{ intervention.admin_thumbnail|safe }}</a>
                     </div>
-                    <div class="grp-td">{{ canvas.label }}</div>
-                    <div class="grp-td">{{ intervention.get_intervention_type_display }}</div>
-                    <div class="grp-td">{{ intervention.text_preview }}</div>
-                    <div class="grp-td">
+                    <div class="item form-cell">{{ canvas.label }}</div>
+                    <div class="item form-cell">{{ intervention.get_intervention_type_display }}</div>
+                    <div class="item form-cell">{{ intervention.text_preview }}</div>
+                    <div class="item form-cell">
                         <a href="{% url 'admin:interventions_intervention_change' intervention.id %}" class="grp-state-focus">Edit</a>
                     </div>
                 </div>
+        </div>
                 {% endfor %}
             {% endfor %}
 
-        </div>
     </div>
 
 </div>

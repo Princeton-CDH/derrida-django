@@ -4,20 +4,6 @@ $(function() {
   // based on the checked boxes when users hit back/forward in the browser
   $('.mdl-textfield__input:not([name=query])').val(''); // but don't clear the header search bar...let it persist
 
-  function initNavigationButton() {
-    var $drawerButton = $("<div/>").addClass("mdl-layout__drawer-button").addClass("active"),
-        $svg = $("<svg/>")
-          .addClass("svg-icon")
-          .attr({
-            xmlns: "http://www.w3.org/2000/svg",
-            viewBox: "0 0 20 20"
-          })
-          .html(
-            '<rect x="2.4" y="3.3" width="15.2" height="2" fill="#979797"/><rect x="2.4" y="9" width="15.2" height="2" fill="#979797"/><rect x="2.4" y="14.7" width="15.2" height="2" fill="#979797"/>'
-          );
-    $("body").append($drawerButton.append($svg));
-  }
-
   function submitFilterForm() {
     $(".mdl-layout").addClass("is-submitting");
     $(".page-filter__form").submit();
@@ -34,7 +20,36 @@ $(function() {
             return !this.value;
         })
         .prop('name', '');
-  });
+
+    /**
+     * If the switch inputs are toggled off, create a fake input to send that
+     * information to the backend - otherwise it won't be sent, as they are
+     * checkboxes
+     */
+    $('.mdl-switch__input').each(function(i, element) {
+        if (!element.checked) {
+            var falseInput = $(element).clone().prop('checked', true).val('false')
+            $(".page-filter__form").append(falseInput)
+        }
+    })
+  })
+
+  // Submit the form immediately when a toggle filter is switched
+  $('.filter__section--toggles .mdl-switch__input').change(submitFilterForm)
+
+  // Make floating labels for filters clickable
+  $('.mdl-textfield--floating-label').click(function(e) {
+      e.stopPropagation()
+      $(e.currentTarget).find('.mdl-textfield__input').focus()
+  })
+
+  // Make expand arrows on fields close them when clicked
+  $('.mdl-textfield--floating-label .expand-icon').click(function(e) {
+      if ($(e.currentTarget).parent().hasClass('is-open')) {
+          e.stopPropagation()
+          $('header').click() // click someplace else to "blur" the field
+      }
+  })
 
   function initPageFilter() {
     var $pageFilter = $(".page-filter");
@@ -546,7 +561,9 @@ $(function() {
       var $inputs = $yearFilter.find(".filter__search input"),
           $firstInput = $inputs.first(),
           $lastInput = $inputs.last();
-      $lastInput.attr({placeholder: "End"}).before($("<label/>").addClass("filter__search-label").text("to"));
+      // set aria labels for accessibility
+      $firstInput.attr({'aria-label': 'Start'});
+      $lastInput.attr({placeholder: "End", 'aria-label': 'End'}).before($("<span/>").addClass("filter__search-label").text("to"));
 
       $yearFilter.find(".clear-link").on("click", function(e) {
         e.preventDefault();
@@ -854,7 +871,6 @@ $(function() {
     }
   }
 
-  initNavigationButton();
   initSearchForm();
   initPageFilter();
   initBookHeader();

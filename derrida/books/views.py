@@ -1,5 +1,6 @@
 import datetime
 import json
+import logging
 
 from dal import autocomplete
 from django.contrib import messages
@@ -28,6 +29,8 @@ from derrida.interventions.models import Intervention
 from derrida.outwork.models import Outwork
 
 
+logger = logging.getLogger(__name__)
+
 class PublisherAutocomplete(autocomplete.Select2QuerySetView):
     '''Basic publisher autocomplete lookup, for use with
     django-autocomplete-light.  Restricted to staff only.'''
@@ -49,7 +52,7 @@ class LanguageAutocomplete(autocomplete.Select2QuerySetView):
 class InstanceDetailView(DetailView):
     ''':class:`~django.views.generic.DetailView` for
     :class:`~derrida.books.models.Instance`. Returns only Instances that have
-    digtial editions set.'''
+    digital editions set.'''
 
     model = Instance
     slug_field = 'slug'
@@ -57,6 +60,67 @@ class InstanceDetailView(DetailView):
     def get_queryset(self):
         instances = super(InstanceDetailView, self).get_queryset()
         return instances.filter(digital_edition__isnull=False)
+
+
+class InstanceURIView(DetailView):
+    '''Generic view for Instance by URI identifier.  Redirects
+    to the best view for that item.'''
+
+    model = Instance
+
+    def get(self, *args, **kwargs):
+        # if this instance is a book with a digital edition, redirect
+        # to the book detail view
+
+        # NOTE: not sure why get_object isn't called automatically
+        self.object = self.get_object()
+        redirect_url = search_slug = None
+        found = False
+
+        if self.object.digital_edition:
+            redirect_url = self.object.get_absolute_url()
+            # 1-for-1 relationship, this is not a see other redirect
+            found = True
+        # if this is a section of a book with a digital edition,
+        # redirect to book detail view, and jump to book section anchor
+        elif self.object.collected_in and self.object.collected_in.digital_edition:
+            redirect_url = '{}#sections'.format(
+                self.object.collected_in.get_absolute_url())
+
+        # if this is a book, link to a library search for this item
+        # (or book section)
+
+        if redirect_url is None:
+            if self.object.item_type == 'Book':
+                search_slug = self.object.slug
+            elif self.object.item_type == 'Book Section':
+                search_slug = self.object.collected_in.slug
+
+            if search_slug:
+                redirect_url = '{}?query={}&is_extant=false'.format(
+                    reverse('books:list'), search_slug)
+
+        if redirect_url:
+            response = HttpResponseRedirect(redirect_url)
+            # set redirect code to See Other unless redirecting to
+            # the detail display for *this* item exactly
+            if not found:
+                response.status_code = 303
+            return response
+
+        # otherwise: (i.e., for journal articles), there is no meaningful
+        # view to redirect to, so display a minimal page
+        # (fall through to template display)
+        return super().get(*args, **kwargs)
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context.update({
+            'hide_placeholder': True,
+            'hide_nav': True
+        })
+        return context
+
 
 class InstanceReferenceDetailView(InstanceDetailView):
 
@@ -77,8 +141,6 @@ class InstanceReferenceDetailView(InstanceDetailView):
 
         context['references'] = refs
         return context
-
-
 
 
 class InstanceListView(ListView):
@@ -111,10 +173,28 @@ class InstanceListView(ListView):
                 form_opts.setdefault(key, val)
         self.form = self.form_class(form_opts)
 
-        # request facet counts from solr
+        # request facet counts and filter for solr
+        # form handles the solr name for the fields
         for facet_field in self.form.facet_fields:
+            field_values = form_opts.getlist(facet_field, None)
+            # if the field has a value
+            if field_values:
+                # narrow adds to fq but not q and creates a tag to use
+                # in excluding later
+                sqs = sqs.narrow(
+                    '{!tag=%s}%s_exact:(%s)' %
+                    (
+                        facet_field,
+                        facet_field,
+                        ' OR '.join('"%s"' % val for val in field_values)
+                    )
+                )
             # sort by alpha instead of solr default of count
-            sqs = sqs.facet(facet_field, sort='index')
+            # facet adds to the list of generate facets but excludes
+            # so that OR behavior exists for counts within a filter rather
+            # than and
+            sqs = sqs.facet('{!ex=%s}%s_exact' % (
+                            facet_field, facet_field), sort='index')
 
         # form shouldn't normally be invalid since no fields are
         # required, but cleaned data isn't available until we validate
@@ -127,20 +207,11 @@ class InstanceListView(ListView):
         # filter solr query based on search options
         if search_opts.get('query', None):
             sqs = sqs.filter(content=Clean(search_opts['query']))
-        # no is extant filter for library; already restricted to extant items
         if search_opts.get('is_annotated', None):
             sqs = sqs.filter(is_annotated=search_opts['is_annotated'])
         if search_opts.get('is_extant', None):
             sqs = sqs.filter(is_extant=search_opts['is_extant'])
 
-        for facet in self.form.facet_inputs:
-            # check if a value is set for this facet
-            # NOTE: check if facet is set *and* if first value is non-empty,
-            # because a list with an empty string [''] evaluates as true
-            if facet in search_opts and search_opts[facet] and search_opts[facet][0]:
-                solr_facet = self.form.solr_field(facet)
-                # filter the query: facet matches any of the terms
-                sqs = sqs.filter(**{'%s__in' % solr_facet: search_opts[facet]})
 
         # request range facets
         # get max/min from database to specify range start & end values
@@ -246,10 +317,38 @@ class ReferenceListView(ListView):
 
         self.form = self.form_class(form_opts)
 
-        for facet_field in self.form.facet_fields:
-            # sort by alpha instead of solr default of count
-            sqs = sqs.facet(facet_field, sort='index')
+        # add facet fields to filter query and tag for exclusion in generating
+        # facets
 
+        # form handles the solr name for the fields, but in the lookup below
+        # if it's a mapped field, i.e. instance_author ->
+        # instance, then map for the field value lookup (but not for solr fq).
+        for facet_field in self.form.facet_fields:
+            form_field = facet_field
+            if facet_field in self.form.solr_facet_fields:
+                form_field = self.form.solr_facet_fields[facet_field]
+            field_values = form_opts.getlist(form_field, None)
+
+            # if the field has a value
+            if field_values:
+                # narrow adds to fq but not q and creates a tag to use
+                # in excluding later
+                sqs = sqs.narrow(
+                    '{!tag=%s}%s_exact:(%s)' %
+                    (
+                        facet_field,
+                        facet_field,
+                        ' OR '.join('"%s"' % val for val in field_values)
+                    )
+                )
+            # sort by alpha instead of solr default of count
+            # facet adds to the list of generate facets but excludes
+            # so that OR behavior exists for counts within a filter rather
+            # than and
+            sqs = sqs.facet('{!ex=%s}%s_exact' % (
+                            facet_field, facet_field), sort='index')
+
+        # request facet counts and filter for solr
         # form shouldn't normally be invalid since no fields are
         # required, but cleaned data isn't available until we validate
         if self.form.is_valid():
@@ -268,14 +367,6 @@ class ReferenceListView(ListView):
             sqs = sqs.filter(instance_is_annotated=search_opts['is_annotated'])
         if search_opts.get('corresponding_intervention', None):
             sqs = sqs.filter(corresponding_intervention=search_opts['corresponding_intervention'])
-
-        # look over form fields that map to facets
-        for facet in self.form.facet_inputs:
-            # check if a value is set for this facet
-            if facet in search_opts and search_opts[facet] and search_opts[facet][0]:
-                solr_facet = self.form.solr_field(facet)
-                # filter the query: facet matches any of the terms
-                sqs = sqs.filter(**{'%s__in' % solr_facet: search_opts[facet]})
         # request range facets for References, adapated from logic
         # above for Instances
         # get max/min from database to specify range start & end values
@@ -362,10 +453,13 @@ class ReferenceHistogramView(ListView):
         # NOTE: eventually this willl need to filter/segment
         # on derrida work, when we have more than one.
         if self.kwargs.get('mode', None) == 'section':
-            refs = refs.order_by_source_page()
+            return refs.order_by_source_page() \
+                       .summary_values()
         else:
-            refs = refs.order_by_author()
-        return refs.summary_values()
+            # including authors results in multiple entries
+            # for multi-author works, so only include if needed
+            return refs.order_by_author() \
+                       .summary_values(include_author=True)
 
     def get_context_data(self):
         context = super(ReferenceHistogramView, self).get_context_data()
@@ -388,9 +482,19 @@ class ReferenceDetailView(DetailView):
     # reference detail view for loading via ajax
 
     model = Reference
-    template_name = 'components/citation-list-item.html'
+    ajax_template_name = 'components/citation-list-item.html'
+    template_name = 'books/reference_detail.html'
+
+    def get_template_names(self):
+        # when queried via ajax, return partial html for pop-up display
+        # in the visualization
+        # (don't render the form or base template)
+        if self.request.is_ajax():
+            return self.ajax_template_name
+        return self.template_name
 
     def get_object(self, queryset=None):
+
         if queryset is None:
             queryset = self.get_queryset()
         # NOTE: this is returning two results for some cases
@@ -495,12 +599,19 @@ class CanvasDetail(DetailView):
         context = super(CanvasDetail, self).get_context_data(*args, **kwargs)
         # If there is a plain_text_url in info, use a Djiffy method to get the
         # text from Figgy and pass it to the view, default ocr_text to None
-        ocr_text = None
+        ocr_text = res = None
+        # Make sure we have a variable to test against in case of a connect error
         if self.object.plain_text_url:
             # get the text
-            res = get_iiif_url(self.object.plain_text_url)
+            try:
+                res = get_iiif_url(self.object.plain_text_url)
+            except ConnectionError:
+                # log the stack trace using exception handler and
+                # provide the url where the error happened to the log
+                logger.exception('Connection error getting OCR text for %s'
+                                 % self.request.get_full_path('?'))
             # check that we got a valid response and set ocr_text if so.
-            if res.status_code == 200:
+            if res and res.status_code == 200:
                 ocr_text = res.text
         context.update({
             'instance': self.instance,

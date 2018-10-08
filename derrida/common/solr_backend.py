@@ -124,6 +124,8 @@ def facet_sort_ignoreaccents(facets, *fields):
     '''Update alpha facet so that sorting ignores accents.'''
     # update alpha facet so that sorting ignores accents
     # (can't be done in solr because then facets would display without accents)
+    if not facets:
+        return facets
     for field in fields:
         if field in facets['fields']:
             facets['fields'][field].sort(key=lambda elem: unidecode(elem[0]))

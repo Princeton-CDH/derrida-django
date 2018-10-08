@@ -46,7 +46,8 @@ class InterventionIndex(indexes.SearchIndex, indexes.Indexable):
     annotated_page = indexes.CharField(model_attr='canvas__label', null=True)
     # NOTE: using generic "item" to avoid confusion woth work, work instance, etc
     #: title of item; :class:`derrida.books.Instance.display_title`
-    item_title = indexes.CharField(model_attr='work_instance__display_title')
+    item_title = indexes.CharField(model_attr='work_instance__display_title',
+        null=True)
     #: sortable title field
     item_title_isort = indexes.CharField(model_attr='work_instance__display_title')
     item_author = indexes.MultiValueField(model_attr='work_instance__work__authors__authorized_name',

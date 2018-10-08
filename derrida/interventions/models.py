@@ -2,11 +2,14 @@ from attrdict import AttrDict
 from annotator_store.models import BaseAnnotation, AnnotationQuerySet
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
+from django.urls import reverse
 from djiffy.models import Canvas
 
-from derrida.common.models import Named, Notable
 from derrida.books.models import Language
+from derrida.common.models import Named, Notable
+from derrida.common.utils import absolutize_url
 from derrida.people.models import Person
+
 
 #: intervention type codes to distinguish annotations and insertions
 INTERVENTION_TYPES = AttrDict({
@@ -145,6 +148,10 @@ class Intervention(BaseAnnotation):
             except Canvas.DoesNotExist:
                 pass
         super(Intervention, self).save()
+
+    def get_uri(self):
+        '''Return a public URI for this intervention that can be used as an identifier'''
+        return absolutize_url(reverse('interventions:view', args=[self.id]))
 
     def is_verbal(self):
         '''Return whether a :class:`Intervention` has a verbal component.'''

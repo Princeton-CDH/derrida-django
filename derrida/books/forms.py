@@ -137,6 +137,8 @@ class InstanceSearchForm(forms.Form):
 
     def set_choices_from_facets(self, facets):
         # configure field choices based on facets returned from Solr
+        if not facets:
+            return
         for facet, counts in facets.items():
             if facet in self.fields:
                 self.fields[facet].choices = [
