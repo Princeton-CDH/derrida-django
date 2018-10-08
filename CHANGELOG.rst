@@ -3,6 +3,38 @@
 CHANGELOG
 =========
 
+1.2 Data exports and fixes for public launch
+--------------------------------------------
+
+Data export features
+~~~~~~~~~~~~~~~~~~~~
+
+* As an admin, I want to generate a data download for references by Derrida work so that I can deposit and version the data for others to use.
+* As an admin, I want to generate a data download for annotations so that I can deposit and version the data for others to use.
+* As an admin, I want to create or update a Zotero library with data for all works referenced in a Derrida work so that I can make the data available for others to use.
+
+Fixes and improvements
+~~~~~~~~~~~~~~~~~~~~~~
+
+* bugfix: Duplicate ids on the visualization pages
+* bugfix: error generating outwork slug
+* bugfix: Sporadic ConnectionError causing 500s on page detail view
+* bugfix: Facet counts report totals incorrectly for behavior (OR instead of AND)
+* bugfix: Togging checkboxes on the search filters doesn't trigger a form submission
+* bugfix: Adding form filters removes keyword search terms
+* design fixes: view age behavior
+* design fixes: Filters on drop down menu
+* design fixes: Typography - text color corrections for accessibilty
+* design fixes: outwork list page display
+* design fixes: annotated page view, basic mobile display
+* design fixes: annotation panel obscures page image on annotated page view
+* bugfix: Firefox renders annotation bounding boxes incorrectly
+* design fixes: search field status
+* design fixes: navigation styles (large, medium, small)
+* accessibilty: Address accessibility issues in forms
+* style tinyMCE admin editor to match site styles
+
+
 1.1
 ---
 
