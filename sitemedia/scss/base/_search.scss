@@ -216,10 +216,6 @@
         display: none !important;
       }
 
-      .background-colored--dark & {
-        color: $white;
-        border-bottom-color: rgba($white, 0.6);
-      }
     }
   }
 
@@ -313,7 +309,6 @@
 
     .mdl-textfield__input {
       padding-bottom: 18px;
-      border-bottom-color: rgba($white, 0.6);
       color: $grey-500;
     }
 

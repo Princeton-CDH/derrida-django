@@ -292,21 +292,6 @@
       }
     }
 
-    .background-colored--dark & {
-      path,
-      polygon {
-        fill: transparentize($white, 0.4);
-      }
-
-      &:hover,
-      &:active {
-        path,
-        polygon {
-          fill: $white;
-        }
-      }
-    }
-
   }
 }
 
