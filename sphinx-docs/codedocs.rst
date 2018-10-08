@@ -72,11 +72,20 @@ Signals
 Manage commands
 ^^^^^^^^^^^^^^^
 
+Import digital editions
+~~~~~~~~~~~~~~~~~~~~~~~
+
 .. automodule:: derrida.books.management.commands.import_digitaleds
     :members:
 
+Export Reference data
+~~~~~~~~~~~~~~~~~~~~~
+
 .. automodule:: derrida.books.management.commands.reference_data
     :members:
+
+Export to Zotero
+~~~~~~~~~~~~~~~~
 
 .. automodule:: derrida.books.management.commands.export_zotero
     :members:
@@ -129,6 +138,8 @@ Search Indexes
 Manage commands
 ^^^^^^^^^^^^^^^
 
+Export Intervention data
+~~~~~~~~~~~~~~~~~~~~~~~~
 .. automodule:: derrida.interventions.management.commands.intervention_data
     :members:
 
