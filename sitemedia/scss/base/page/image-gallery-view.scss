@@ -251,12 +251,14 @@ a.gallery-image-view__list-item {
     width: 300px;
     min-width: 300px;
 
-    &.is-hidden {
-      opacity: 0;
-      transform: translateX(-300px);
-      min-width: 0;
-      width: 0;
-    }
+  }
+
+  &.is-hidden {
+    opacity: 0;
+    transform: translateX(-300px);
+    min-width: 0;
+    width: 0;
+    display: none;
   }
 }
 
@@ -318,9 +320,6 @@ $component-padding: 4rem;
     visibility: hidden;
     opacity: 0;
     pointer-events: none;
-  }
-
-  .annotation-cards.is-hidden {
     display: none;
   }
 }
