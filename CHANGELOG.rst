@@ -3,6 +3,14 @@
 CHANGELOG
 =========
 
+1.2.1
+-----
+
+* bugfix: deep zoom view layout on page view
+* bugfix: mobile menu does not respond on iOS
+* Add links to Zotero library and datasets on Figshare on library,
+  reference list, and interventions pages.
+
 1.2 Data exports and fixes for public launch
 --------------------------------------------
 
