@@ -22,13 +22,15 @@ authors:
 - given-names: Nick
   family-names: Budak
   affiliation: '@Princeton-CDH'
+  orcid: https://orcid.org/0000-0002-4542-0899
 - given-names: Xinyi
   family-names: Li
   affiliation: '@Princeton-CDH'
 - given-names: Jean
   family-names: Bauer
   affiliation: Princeton University
-version: '1.1'
+  orcid: https://orcid.org/0000-0002-4026-740X
+version: '1.2'
 date-released: 2018-06-28
 repository-code: https://github.com/Princeton-CDH/derrida-django
 license: Apache-2.0
