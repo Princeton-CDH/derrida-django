@@ -420,11 +420,24 @@
   }
 }
 
+// use sibling selector to toggle menu button when drawer is open
+.mdl-layout__drawer.is-visible ~ .mdl-layout__drawer-button {
+    background-image: url("../img/icons/Delete.svg");
+}
+
 .mdl-layout__drawer-button {
-  opacity: 0;
   margin-top: 1em;
   margin-left: 1em;
   position: fixed;
+  // use local menu icon
+  width: 20px;
+  background-image: url("../img/icons/Menu.svg");
+  background-repeat: no-repeat;
+
+  i {
+    // hide the material design icon
+    opacity: 0;
+  }
 
   &.active {
     opacity: 1;
