@@ -12,7 +12,7 @@ cache:
   - downloads
 before_install:
 - mysql -e 'CREATE DATABASE IF NOT EXISTS test;'
-- rvm install 2.0
+- rvm install 2.2
 - gem install sass
 - npm install -g postcss-cli autoprefixer
 install:
