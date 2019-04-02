@@ -1,0 +1,253 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>derrida.common.solr_backend &#8212; Derrida 1.2.2 documentation</title>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for derrida.common.solr_backend</h1><div class="highlight"><pre>
+<span></span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Haystack does not yet support range facets on Solr.  This module</span>
+<span class="sd">provides subclasses of SolrSearchQuery and SolrSearchBackend to</span>
+<span class="sd">patch in range facet functionalty.</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="kn">from</span> <span class="nn">haystack</span> <span class="k">import</span> <span class="n">connections</span>
+<span class="kn">from</span> <span class="nn">haystack.backends.solr_backend</span> <span class="k">import</span> <span class="n">SolrSearchQuery</span><span class="p">,</span> <span class="n">SolrSearchBackend</span><span class="p">,</span> \
+    <span class="n">SolrEngine</span>
+<span class="kn">from</span> <span class="nn">unidecode</span> <span class="k">import</span> <span class="n">unidecode</span>
+
+
+<div class="viewcode-block" id="RangeSolrSearchQuery"><a class="viewcode-back" href="../../../codedocs.html#derrida.common.solr_backend.RangeSolrSearchQuery">[docs]</a><span class="k">class</span> <span class="nc">RangeSolrSearchQuery</span><span class="p">(</span><span class="n">SolrSearchQuery</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">RangeSolrSearchQuery</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">range_facets</span> <span class="o">=</span> <span class="p">{}</span>
+
+<div class="viewcode-block" id="RangeSolrSearchQuery.add_field_facet"><a class="viewcode-back" href="../../../codedocs.html#derrida.common.solr_backend.RangeSolrSearchQuery.add_field_facet">[docs]</a>    <span class="k">def</span> <span class="nf">add_field_facet</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">):</span>
+        <span class="c1"># extend default facet field method to handle a special</span>
+        <span class="c1"># range=True case</span>
+        <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;range&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_range_facet</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span></div>
+            <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">RangeSolrSearchQuery</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">add_field_facet</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
+
+<div class="viewcode-block" id="RangeSolrSearchQuery.add_range_facet"><a class="viewcode-back" href="../../../codedocs.html#derrida.common.solr_backend.RangeSolrSearchQuery.add_range_facet">[docs]</a>    <span class="k">def</span> <span class="nf">add_range_facet</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Adds a solr range facet on a field.  Options must include</span>
+<span class="sd">        start, end, and gap.&quot;&quot;&quot;</span>
+        <span class="c1"># using same logic as normal facets; for range facets this</span>
+        <span class="c1"># is probably unnecessary since they have to be numeric anyway</span>
+        <span class="n">field_name</span> <span class="o">=</span> <span class="n">connections</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_using</span><span class="p">]</span><span class="o">.</span><span class="n">get_unified_index</span><span class="p">()</span> \
+                                             <span class="o">.</span><span class="n">get_facet_fieldname</span><span class="p">(</span><span class="n">field</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">range_facets</span><span class="p">[</span><span class="n">field_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+<div class="viewcode-block" id="RangeSolrSearchQuery.build_params"><a class="viewcode-back" href="../../../codedocs.html#derrida.common.solr_backend.RangeSolrSearchQuery.build_params">[docs]</a>    <span class="k">def</span> <span class="nf">build_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1"># extend default build params logic to include any facet range</span>
+        <span class="c1"># options</span>
+        <span class="n">search_kwargs</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">RangeSolrSearchQuery</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">build_params</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">range_facets</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">search_kwargs</span>
+
+        <span class="n">range_kwargs</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;facet.range&#39;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">range_facets</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="p">}</span>
+        <span class="k">for</span> <span class="n">field</span><span class="p">,</span> <span class="n">opts</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">range_facets</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="c1"># NOTE: not exposing other range facet params for now</span>
+            <span class="k">for</span> <span class="n">solr_opt</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;start&#39;</span><span class="p">,</span> <span class="s1">&#39;end&#39;</span><span class="p">,</span> <span class="s1">&#39;gap&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="n">solr_opt</span> <span class="ow">in</span> <span class="n">opts</span><span class="p">:</span>
+                    <span class="n">range_kwargs</span><span class="p">[</span><span class="s1">&#39;f.</span><span class="si">%s</span><span class="s1">.facet.range.</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">solr_opt</span><span class="p">)]</span> \
+                         <span class="o">=</span> <span class="n">opts</span><span class="p">[</span><span class="n">solr_opt</span><span class="p">]</span>
+
+            <span class="c1"># support hard end option; convert python boolean to solr bool</span>
+            <span class="k">if</span> <span class="s1">&#39;hardend&#39;</span> <span class="ow">in</span> <span class="n">opts</span><span class="p">:</span>
+                <span class="n">val</span> <span class="o">=</span> <span class="s1">&#39;true&#39;</span> <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="n">opts</span><span class="p">[</span><span class="s1">&#39;hardend&#39;</span><span class="p">])</span> <span class="k">else</span> <span class="s1">&#39;false&#39;</span>
+                <span class="n">range_kwargs</span><span class="p">[</span><span class="s1">&#39;f.</span><span class="si">%s</span><span class="s1">.facet.range.hardend&#39;</span> <span class="o">%</span> <span class="n">field</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+
+        <span class="n">search_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">range_kwargs</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">search_kwargs</span>
+
+<div class="viewcode-block" id="RangeSolrSearchQuery.post_process_facets"><a class="viewcode-back" href="../../../codedocs.html#derrida.common.solr_backend.RangeSolrSearchQuery.post_process_facets">[docs]</a>    <span class="k">def</span> <span class="nf">post_process_facets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Extend post processing logic to include facet range data in returned</span>
+<span class="sd">        facets.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">facets</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">RangeSolrSearchQuery</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">post_process_facets</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s1">&#39;facet_ranges&#39;</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+            <span class="c1"># copy facet range data into existing facet data</span>
+            <span class="n">facets</span><span class="p">[</span><span class="s1">&#39;ranges&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;facet_ranges&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">facets</span><span class="p">[</span><span class="s1">&#39;ranges&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+                <span class="c1"># possible to get no counts, in which case we can&#39;t calculate a max</span>
+                <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;counts&#39;</span><span class="p">]:</span>
+                    <span class="c1"># find the max value for the facet_ranges</span>
+                    <span class="n">data</span><span class="p">[</span><span class="s1">&#39;max&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;counts&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">])</span>
+
+                    <span class="c1"># solr returns a list of value, count, value, count</span>
+                    <span class="c1"># use zip to convert into a list of two-tuples</span>
+                    <span class="c1"># (thanks to https://stackoverflow.com/questions/14902686/turn-flat-list-into-two-tuples)</span>
+                    <span class="n">data</span><span class="p">[</span><span class="s1">&#39;counts&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;counts&#39;</span><span class="p">][::</span><span class="mi">2</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;counts&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">]))</span></div>
+        <span class="k">return</span> <span class="n">facets</span>
+
+    <span class="k">def</span> <span class="nf">_clone</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1"># extend clone to ensure range facets are preserved</span>
+        <span class="n">clone</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">RangeSolrSearchQuery</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">_clone</span><span class="p">(</span><span class="n">klass</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span>
+            <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">clone</span><span class="o">.</span><span class="n">range_facets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">range_facets</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span></div>
+        <span class="k">return</span> <span class="n">clone</span>
+
+
+<div class="viewcode-block" id="SolrRangeSearchBackend"><a class="viewcode-back" href="../../../codedocs.html#derrida.common.solr_backend.SolrRangeSearchBackend">[docs]</a><span class="k">class</span> <span class="nc">SolrRangeSearchBackend</span><span class="p">(</span><span class="n">SolrSearchBackend</span><span class="p">):</span>
+    <span class="c1"># extend default solr backend to ensure facet ranges are accessible</span>
+    <span class="c1"># in the result for processing by RangeSolrSearchQuery</span>
+
+    <span class="k">def</span> <span class="nf">_process_results</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">raw_results</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">SolrRangeSearchBackend</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">_process_results</span><span class="p">(</span><span class="n">raw_results</span><span class="p">,</span>
+            <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">raw_results</span><span class="p">,</span> <span class="s1">&#39;facets&#39;</span><span class="p">):</span>
+            <span class="n">results</span><span class="p">[</span><span class="s1">&#39;facet_ranges&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">raw_results</span><span class="o">.</span><span class="n">facets</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;facet_ranges&#39;</span><span class="p">,</span> <span class="p">{}),</span>
+
+        <span class="k">return</span> <span class="n">results</span>
+
+<div class="viewcode-block" id="SolrRangeSearchBackend.build_schema"><a class="viewcode-back" href="../../../codedocs.html#derrida.common.solr_backend.SolrRangeSearchBackend.build_schema">[docs]</a>    <span class="k">def</span> <span class="nf">build_schema</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fields</span><span class="p">):</span>
+        <span class="c1"># haystack doesn&#39;t have any customization points for schema generation</span>
+        <span class="c1"># or types, and Solr won&#39;t allow tokenization/customization on</span>
+        <span class="c1"># the built string field; customize the generated schema here</span>
+        <span class="c1"># to use local &#39;string_en&#39; solr field for fields ending in &quot;_isort&quot;</span>
+        <span class="n">schema</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">SolrRangeSearchBackend</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">build_schema</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">field_cfg</span> <span class="ow">in</span> <span class="n">schema</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">field_cfg</span><span class="p">[</span><span class="s1">&#39;field_name&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;_isort&#39;</span><span class="p">):</span>
+                <span class="n">field_cfg</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;string_en&#39;</span>
+</div></div>
+        <span class="k">return</span> <span class="n">schema</span>
+
+
+<span class="k">class</span> <span class="nc">RangeSolrEngine</span><span class="p">(</span><span class="n">SolrEngine</span><span class="p">):</span>
+    <span class="c1"># extend default solr engine to make range backend and query defaults</span>
+    <span class="n">backend</span> <span class="o">=</span> <span class="n">SolrRangeSearchBackend</span>
+    <span class="n">query</span> <span class="o">=</span> <span class="n">RangeSolrSearchQuery</span>
+
+
+<div class="viewcode-block" id="facet_sort_ignoreaccents"><a class="viewcode-back" href="../../../codedocs.html#derrida.common.solr_backend.facet_sort_ignoreaccents">[docs]</a><span class="k">def</span> <span class="nf">facet_sort_ignoreaccents</span><span class="p">(</span><span class="n">facets</span><span class="p">,</span> <span class="o">*</span><span class="n">fields</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Update alpha facet so that sorting ignores accents.&#39;&#39;&#39;</span>
+    <span class="c1"># update alpha facet so that sorting ignores accents</span>
+    <span class="c1"># (can&#39;t be done in solr because then facets would display without accents)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">facets</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">facets</span>
+    <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">facets</span><span class="p">[</span><span class="s1">&#39;fields&#39;</span><span class="p">]:</span>
+            <span class="n">facets</span><span class="p">[</span><span class="s1">&#39;fields&#39;</span><span class="p">][</span><span class="n">field</span><span class="p">]</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">elem</span><span class="p">:</span> <span class="n">unidecode</span><span class="p">(</span><span class="n">elem</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span></div>
+    <span class="k">return</span> <span class="n">facets</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">Derrida</a></h1>
+
+
+
+<p class="blurb">Django web application for "Derrida's Margins" CDH project</p>
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=Princeton-CDH&repo=derrida-django&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+    
+
+<p>
+<a href="https://travis-ci.org/Princeton-CDH/derrida-django">
+    <img
+        alt="https://secure.travis-ci.org/Princeton-CDH/derrida-django.svg?branch=master"
+        src="https://secure.travis-ci.org/Princeton-CDH/derrida-django.svg?branch=master"
+    />
+</a>
+</p>
+
+
+
+
+    
+
+<p>
+<a href="https://codecov.io/github/Princeton-CDH/derrida-django">
+    <img
+    alt="https://codecov.io/github/Princeton-CDH/derrida-django/coverage.svg?branch=master"
+    src="https://codecov.io/github/Princeton-CDH/derrida-django/coverage.svg?branch=master"
+    />
+</a>
+</p>
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../architecture.html">Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../codedocs.html">Code Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Change Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../deploynotes.html">Deploy and Upgrade notes</a></li>
+</ul>
+
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, CDH @ Princeton & Trustees of Princeton University.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

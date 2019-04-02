@@ -1,0 +1,223 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>derrida.interventions.search_indexes &#8212; Derrida 1.2.2 documentation</title>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for derrida.interventions.search_indexes</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">haystack</span> <span class="k">import</span> <span class="n">indexes</span>
+<span class="kn">from</span> <span class="nn">derrida.interventions.models</span> <span class="k">import</span> <span class="n">Intervention</span>
+
+<span class="c1"># Solr index needs to support:</span>
+<span class="c1"># Browse/search interventions</span>
+<span class="c1"># - Display cited page thumbnail, title, author, year and copy</span>
+<span class="c1"># - Filter by annotated work fields:</span>
+<span class="c1">#      author, subject, language of publication, original language,</span>
+<span class="c1">#      edition year,</span>
+<span class="c1"># - Filter on annotation details: language, annotation type, annotation hand,</span>
+<span class="c1">#   ink, cited in Derrida work (?)</span>
+<span class="c1"># - Sort by author of annotated work, title of annotated work,</span>
+<span class="c1">#   number of annotations (?)</span>
+
+
+<div class="viewcode-block" id="InterventionIndex"><a class="viewcode-back" href="../../../codedocs.html#derrida.interventions.search_indexes.InterventionIndex">[docs]</a><span class="k">class</span> <span class="nc">InterventionIndex</span><span class="p">(</span><span class="n">indexes</span><span class="o">.</span><span class="n">SearchIndex</span><span class="p">,</span> <span class="n">indexes</span><span class="o">.</span><span class="n">Indexable</span><span class="p">):</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">document</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">use_template</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">stored</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="c1">### annotation details</span>
+
+    <span class="c1">#: annotation or insertion (all annotation for now); display value for :class:`derrida.interventions.models.Intervention.intervention_type`</span>
+    <span class="n">intervention_type</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">model_attr</span><span class="o">=</span><span class="s1">&#39;get_intervention_type_display&#39;</span><span class="p">)</span>
+    <span class="c1">#: annotation type; :class:`derrida.interventions.models.Intervention.annotation_type`</span>
+    <span class="n">annotation_type</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">MultiValueField</span><span class="p">(</span><span class="n">model_attr</span><span class="o">=</span><span class="s1">&#39;annotation_type&#39;</span><span class="p">,</span>
+        <span class="n">faceted</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1">#: annotation text; :class:`derrida.interventions.models.Intervention.text`</span>
+    <span class="n">annotation_text</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">model_attr</span><span class="o">=</span><span class="s1">&#39;text&#39;</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1">#: language code for annotation text language</span>
+    <span class="n">annotation_text_lang</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">model_attr</span><span class="o">=</span><span class="s1">&#39;text_language__code&#39;</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1">#: annotation anchor text; :class:`derrida.interventions.models.Intervention.quote`</span>
+    <span class="n">anchor_text</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">model_attr</span><span class="o">=</span><span class="s1">&#39;quote&#39;</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1">#: language code for anchor text language</span>
+    <span class="n">anchor_text_lang</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">model_attr</span><span class="o">=</span><span class="s1">&#39;quote_language__code&#39;</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1">#: annotation author</span>
+    <span class="n">annotation_author</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">faceted</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1">#: annotation text&#39;s language; :class:`derrida.interventions.models.Intervention.text_language`</span>
+    <span class="n">annotation_language</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">model_attr</span><span class="o">=</span><span class="s1">&#39;text_language&#39;</span><span class="p">,</span>
+            <span class="n">faceted</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1">#: color ink or pencil of annotation; :class:`derrida.interventions.Intervention.ink`</span>
+    <span class="n">ink</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">MultiValueField</span><span class="p">(</span><span class="n">model_attr</span><span class="o">=</span><span class="s1">&#39;ink&#39;</span><span class="p">,</span> <span class="n">faceted</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1">#: thumbnail of the annotated page;</span>
+    <span class="n">thumbnail</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">model_attr</span><span class="o">=</span><span class="s1">&#39;canvas__image__thumbnail&#39;</span><span class="p">,</span>
+        <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1">#: cited work todo (canvas -&gt; digital edition -&gt; instance -&gt; derrida work)</span>
+
+    <span class="c1">### annotated work details</span>
+    <span class="n">annotated_page</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">model_attr</span><span class="o">=</span><span class="s1">&#39;canvas__label&#39;</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1"># NOTE: using generic &quot;item&quot; to avoid confusion woth work, work instance, etc</span>
+    <span class="c1">#: title of item; :class:`derrida.books.Instance.display_title`</span>
+    <span class="n">item_title</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">model_attr</span><span class="o">=</span><span class="s1">&#39;work_instance__display_title&#39;</span><span class="p">,</span>
+        <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1">#: sortable title field</span>
+    <span class="n">item_title_isort</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">model_attr</span><span class="o">=</span><span class="s1">&#39;work_instance__display_title&#39;</span><span class="p">)</span>
+    <span class="n">item_author</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">MultiValueField</span><span class="p">(</span><span class="n">model_attr</span><span class="o">=</span><span class="s1">&#39;work_instance__work__authors__authorized_name&#39;</span><span class="p">,</span>
+        <span class="n">faceted</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1">#: first author to allow sorting by author</span>
+    <span class="n">item_author_isort</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">model_attr</span><span class="o">=</span><span class="s1">&#39;work_instance__work__authors__authorized_name&#39;</span><span class="p">,</span>
+        <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1">#: author in firstname last for display</span>
+    <span class="n">item_author_firstname_last</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">MultiValueField</span><span class="p">(</span><span class="n">model_attr</span><span class="o">=</span><span class="s1">&#39;work_instance__work__authors__firstname_last&#39;</span><span class="p">,</span>
+        <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1">#: subject of annotated work; :class:`derrida.books.models.Work.subjects`</span>
+    <span class="n">item_subject</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">MultiValueField</span><span class="p">(</span><span class="n">model_attr</span><span class="o">=</span><span class="s1">&#39;work_instance__work__subjects__name&#39;</span><span class="p">,</span>
+        <span class="n">faceted</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1">#: language of publication; :class:`derrida.books.models.Instance.languages`</span>
+    <span class="n">item_language</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">MultiValueField</span><span class="p">(</span><span class="n">model_attr</span><span class="o">=</span><span class="s1">&#39;work_instance__languages__name&#39;</span><span class="p">,</span>
+        <span class="n">faceted</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1">#: original language; class:`derrida.books.models.Work.languages`</span>
+    <span class="n">item_work_language</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">MultiValueField</span><span class="p">(</span><span class="n">model_attr</span><span class="o">=</span><span class="s1">&#39;work_instance__work__languages__name&#39;</span><span class="p">,</span>
+        <span class="n">faceted</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1"># TODO: is this populated? fallback to other dates?</span>
+    <span class="c1">#: edition year; :class:`derrida.books.models.Instance.print_year`</span>
+    <span class="n">item_print_year</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">IntegerField</span><span class="p">(</span><span class="n">model_attr</span><span class="o">=</span><span class="s1">&#39;work_instance__print_year&#39;</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1">#: work publication year; :class:`derrida.books.models.Work.year`</span>
+    <span class="n">item_work_year</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">IntegerField</span><span class="p">(</span><span class="n">model_attr</span><span class="o">=</span><span class="s1">&#39;work_instance__work__year&#39;</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1">#: work copyright year; :class:`derrida.books.models.Instance.copyright_year`</span>
+    <span class="n">item_copyright_year</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">IntegerField</span><span class="p">(</span><span class="n">model_attr</span><span class="o">=</span><span class="s1">&#39;work_instance__copyright_year&#39;</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1">#: publication place; :class:`derrida.books.models.Instance.pub_place`</span>
+    <span class="n">item_pub_place</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">MultiValueField</span><span class="p">(</span><span class="n">model_attr</span><span class="o">=</span><span class="s1">&#39;work_instance__pub_place__name&#39;</span><span class="p">,</span>
+        <span class="n">faceted</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1">#: copy of edition; :class:`derrida.books.models.Instance.copy`</span>
+    <span class="n">item_copy</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">model_attr</span><span class="o">=</span><span class="s1">&#39;work_instance__copy&#39;</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1">#: slug for generating url to work; :class:`derrida.books.models.Instance.slug`</span>
+    <span class="n">item_slug</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">model_attr</span><span class="o">=</span><span class="s1">&#39;work_instance__slug&#39;</span><span class="p">)</span>
+
+    <span class="c1"># canvas details</span>
+    <span class="n">canvas_id</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">model_attr</span><span class="o">=</span><span class="s1">&#39;canvas__short_id&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="InterventionIndex.get_model"><a class="viewcode-back" href="../../../codedocs.html#derrida.interventions.search_indexes.InterventionIndex.get_model">[docs]</a>    <span class="k">def</span> <span class="nf">get_model</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
+        <span class="k">return</span> <span class="n">Intervention</span>
+
+<div class="viewcode-block" id="InterventionIndex.index_queryset"><a class="viewcode-back" href="../../../codedocs.html#derrida.interventions.search_indexes.InterventionIndex.index_queryset">[docs]</a>    <span class="k">def</span> <span class="nf">index_queryset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">using</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="c1"># exclude any interventions on canvases that are not associated</span>
+        <span class="c1"># with a work instance (work instance data is needed to be meaningful)</span>
+        <span class="n">qs</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">InterventionIndex</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">index_queryset</span><span class="p">(</span><span class="n">using</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">qs</span><span class="o">.</span><span class="n">exclude</span><span class="p">(</span><span class="n">canvas__manifest__instance__isnull</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<div class="viewcode-block" id="InterventionIndex.prepare_annotation_author"><a class="viewcode-back" href="../../../codedocs.html#derrida.interventions.search_indexes.InterventionIndex.prepare_annotation_author">[docs]</a>    <span class="k">def</span> <span class="nf">prepare_annotation_author</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Return firstname, last of annotation author.&#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">author</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">item</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">firstname_last</span>
+        <span class="k">else</span><span class="p">:</span></div></div>
+            <span class="k">return</span> <span class="s1">&#39;Unknown&#39;</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">Derrida</a></h1>
+
+
+
+<p class="blurb">Django web application for "Derrida's Margins" CDH project</p>
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=Princeton-CDH&repo=derrida-django&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+    
+
+<p>
+<a href="https://travis-ci.org/Princeton-CDH/derrida-django">
+    <img
+        alt="https://secure.travis-ci.org/Princeton-CDH/derrida-django.svg?branch=master"
+        src="https://secure.travis-ci.org/Princeton-CDH/derrida-django.svg?branch=master"
+    />
+</a>
+</p>
+
+
+
+
+    
+
+<p>
+<a href="https://codecov.io/github/Princeton-CDH/derrida-django">
+    <img
+    alt="https://codecov.io/github/Princeton-CDH/derrida-django/coverage.svg?branch=master"
+    src="https://codecov.io/github/Princeton-CDH/derrida-django/coverage.svg?branch=master"
+    />
+</a>
+</p>
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../architecture.html">Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../codedocs.html">Code Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Change Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../deploynotes.html">Deploy and Upgrade notes</a></li>
+</ul>
+
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, CDH @ Princeton & Trustees of Princeton University.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

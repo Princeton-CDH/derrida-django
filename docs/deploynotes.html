@@ -1,0 +1,238 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Deploy and Upgrade notes &#8212; Derrida 1.2.2 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="CHANGELOG" href="changelog.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="deploy-and-upgrade-notes">
+<span id="deploynotes"></span><h1>Deploy and Upgrade notes<a class="headerlink" href="#deploy-and-upgrade-notes" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="id1">
+<h2>1.2<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p class="first">Provision and configure a <strong>ZOTERO_API_KEY</strong> and <strong>ZOTERO_LIBRARY_ID</strong>
+before running zotero export script.</p>
+</li>
+<li><p class="first">Run data export scripts to generate dataset for deposit and reuse:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">manage</span><span class="o">.</span><span class="n">py</span> <span class="n">reference_data</span>
+<span class="n">python</span> <span class="n">manage</span><span class="o">.</span><span class="n">py</span> <span class="n">intervention_data</span>
+<span class="n">python</span> <span class="n">manage</span><span class="o">.</span><span class="n">py</span> <span class="n">export_zotero</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">This update includes changes to the Solr indexing (but not to the Solr
+schema). You should refresh the Solr index:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">manage</span><span class="o">.</span><span class="n">py</span> <span class="n">update_index</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="id2">
+<h2>1.0<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Solr XML configuration files <code class="docutils literal notranslate"><span class="pre">schema.xml</span></code> and <code class="docutils literal notranslate"><span class="pre">solrconfig.xml</span></code>
+need to be generated and deployed to production Solr server.  Use
+<code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">manage.py</span> <span class="pre">build_solr_schema</span></code> to generate the schema.  Reload
+the Solr core or restart Solr after updating the configuration.</li>
+<li>After Solr configurations are in place, run <code class="docutils literal notranslate"><span class="pre">python</span>
+<span class="pre">manage.py</span> <span class="pre">rebuild_index</span> <span class="pre">--noinput</span></code> to update the index based on
+content in the Derrida database.</li>
+</ul>
+</div>
+<div class="section" id="id3">
+<h2>0.9<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p class="first">Migration from Plum to Figgy requires that a new auth token be added
+to local settings under <strong>DJIFFY_AUTH_TOKENS</strong> for loading restricted
+IIIF Manifests.</p>
+</li>
+<li><p class="first">Solr XML configuration files <code class="docutils literal notranslate"><span class="pre">schema.xml</span></code> and <code class="docutils literal notranslate"><span class="pre">solrconfig.xml</span></code>
+need to be generated and deployed to production Solr server.  Use
+<code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">manage.py</span> <span class="pre">build_solr_schema</span></code> to generate the schema.  Reload
+the Solr core or restart Solr after updating the configuration.</p>
+</li>
+<li><p class="first">After Solr configurations are in place, run <code class="docutils literal notranslate"><span class="pre">python</span>
+<span class="pre">manage.py</span> <span class="pre">rebuild_index</span> <span class="pre">--noinput</span></code> to update the index based on
+content in the Derrida database.</p>
+</li>
+<li><p class="first">Production <code class="docutils literal notranslate"><span class="pre">local_settings.py</span></code> should have updated settings to use the
+extended signal processor for Haystack managed models:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">HAYSTACK_SIGNAL_PROCESSOR</span> <span class="o">=</span> <span class="s1">&#39;derrida.books.signals.RelationSafeRTSP&#39;</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">This update includes a migration to update cached Plum IIIF Manifest
+and Canvas data to the new equivalent Figgy URLs.  This migration
+will update records, but to update IIIF content (i.e. after additional
+labeling work), run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">manage</span><span class="o">.</span><span class="n">py</span> <span class="n">import_digitaleds</span> <span class="n">PUL</span> <span class="o">--</span><span class="n">update</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="interventions-phase-i">
+<h2>0.8 Interventions Phase I<a class="headerlink" href="#interventions-phase-i" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p class="first">This release adds <cite>django.contrib.sites</cite> to <strong>INSTALLED_APPS</strong>, so you
+will need to manually configure your site domain in Django admin.</p>
+</li>
+<li><p class="first">An auth token must be configured using <strong>DJIFFY_AUTH_TOKENS</strong> in
+<code class="docutils literal notranslate"><span class="pre">local_settings.py</span></code> in order to import restricted IIIF manifests.</p>
+</li>
+<li><p class="first">To load IIIF digitized content for documenting interventions, you should use
+the <strong>import_digitaleds</strong> manage.py script. Use <strong>PUL</strong> to load the
+entire collection:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">manage</span><span class="o">.</span><span class="n">py</span> <span class="n">import_digitaleds</span> <span class="n">PUL</span>
+</pre></div>
+</div>
+</li>
+</ul>
+<div class="section" id="ansible">
+<h3>Ansible<a class="headerlink" href="#ansible" title="Permalink to this headline">¶</a></h3>
+<p>We include sample deploy scripts in the form of a short <a class="reference external" href="http://docs.ansible.com/">Ansible</a> playbook
+and associated configuration files. In the current usage, assuming Ansible
+is installed and the appropriate server key is loaded via <cite>ssh-add</cite>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">derrida</span><span class="o">-</span><span class="n">django</span><span class="o">/</span><span class="n">deploy</span><span class="o">/</span>
+<span class="n">ansible</span><span class="o">-</span><span class="n">playbook</span> <span class="n">prod_derrida</span><span class="o">-</span><span class="n">django_</span><span class="o">.</span><span class="n">yml</span> <span class="o">&lt;-</span><span class="n">e</span> <span class="n">github</span> <span class="n">reference</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>Any valid Github tag type is accepted, but the script defaults to <code class="docutils literal notranslate"><span class="pre">master</span></code>. <code class="docutils literal notranslate"><span class="pre">ansible.cfg</span></code> and <code class="docutils literal notranslate"><span class="pre">hosts</span></code> set up the host group and configuration used in the commands.</p>
+<p>The production deploy does not involve itself with Apache configuration, because
+that is handled server side and now handles running a database backup, migrations,
+and resetting symlinks to make the deployment go live.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Derrida</a></h1>
+
+
+
+<p class="blurb">Django web application for "Derrida's Margins" CDH project</p>
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=Princeton-CDH&repo=derrida-django&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+    
+
+<p>
+<a href="https://travis-ci.org/Princeton-CDH/derrida-django">
+    <img
+        alt="https://secure.travis-ci.org/Princeton-CDH/derrida-django.svg?branch=master"
+        src="https://secure.travis-ci.org/Princeton-CDH/derrida-django.svg?branch=master"
+    />
+</a>
+</p>
+
+
+
+
+    
+
+<p>
+<a href="https://codecov.io/github/Princeton-CDH/derrida-django">
+    <img
+    alt="https://codecov.io/github/Princeton-CDH/derrida-django/coverage.svg?branch=master"
+    src="https://codecov.io/github/Princeton-CDH/derrida-django/coverage.svg?branch=master"
+    />
+</a>
+</p>
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codedocs.html">Code Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Change Log</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Deploy and Upgrade notes</a></li>
+</ul>
+
+
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Deploy and Upgrade notes</a><ul>
+<li><a class="reference internal" href="#id1">1.2</a></li>
+<li><a class="reference internal" href="#id2">1.0</a></li>
+<li><a class="reference internal" href="#id3">0.9</a></li>
+<li><a class="reference internal" href="#interventions-phase-i">0.8 Interventions Phase I</a><ul>
+<li><a class="reference internal" href="#ansible">Ansible</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, CDH @ Princeton & Trustees of Princeton University.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/deploynotes.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
