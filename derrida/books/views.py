@@ -605,7 +605,7 @@ class CanvasDetail(DetailView):
             # get the text
             try:
                 res = get_iiif_url(self.object.plain_text_url)
-            except ConnectionError:
+            except requests.ConnectionError:
                 # log the stack trace using exception handler and
                 # provide the url where the error happened to the log
                 logger.exception('Connection error getting OCR text for %s'

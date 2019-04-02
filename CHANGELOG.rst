@@ -7,6 +7,7 @@ CHANGELOG
 -----
 
 * bugfix: filter to published outwork in list view
+* bugfix: catch the correct ConnectionError exception in CanvasDetail view
 * Revise person admin edit template to work with grappelli_safe
 * Require at least django 1.11.19 for security reasons
 * Pin django-cas-ng <3.6

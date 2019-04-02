@@ -17,6 +17,7 @@ from django.urls import reverse, resolve
 from django.utils.html import escape
 from djiffy.models import Manifest, Canvas
 from haystack.models import SearchResult
+import requests
 
 from derrida.books import views
 from derrida.books.forms import RangeWidget, RangeField
@@ -356,7 +357,7 @@ class TestInstanceViews(TestCase):
         response = self.client.get(p23_detail_url)
         self.assertNotContains(response, mockresponse.text)
         # simulate a raised ConnectionError
-        mockiiifurl.side_effect = ConnectionError
+        mockiiifurl.side_effect = requests.ConnectionError
         response = self.client.get(p23_detail_url)
         # page should still be rendered
         assert response.status_code == 200
