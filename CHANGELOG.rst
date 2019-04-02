@@ -3,6 +3,16 @@
 CHANGELOG
 =========
 
+1.2.2
+-----
+
+* bugfix: filter to published outwork in list view
+* Revise person admin edit template to work with grappelli_safe
+* Require at least django 1.11.19 for security reasons
+* Pin django-cas-ng <3.6
+* Set ruby version to 2.2 for travis-ci build
+* Configure additional vendor and docs paths so github-linguist will be more accurate
+
 1.2.1
 -----
 
