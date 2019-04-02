@@ -14,13 +14,13 @@ a `DH project sponsored by CDH <https://cdh.princeton.edu/projects/derridas-marg
    :target: https://travis-ci.org/Princeton-CDH/derrida-django
    :alt: Build status
 
-.. image:: https://landscape.io/github/Princeton-CDH/derrida-django/master/landscape.svg?style=flat
-  :target: https://landscape.io/github/Princeton-CDH/derrida-django/master
-  :alt: Code Health
-
 .. image:: https://codecov.io/gh/Princeton-CDH/derrida-django/branch/master/graph/badge.svg
    :target: https://codecov.io/gh/Princeton-CDH/derrida-django
    :alt: Code coverage
+
+.. image:: https://api.codeclimate.com/v1/badges/1cb1a007da663863e326/maintainability
+   :target: https://codeclimate.com/github/Princeton-CDH/derrida-django/maintainability
+   :alt: Maintainability
 
 .. image:: https://requires.io/github/Princeton-CDH/derrida-django/requirements.svg?branch=master
    :target: https://requires.io/github/Princeton-CDH/derrida-django/requirements/?branch=master
