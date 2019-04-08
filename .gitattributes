@@ -1,0 +1,9 @@
+sitemedia/scss/neat/* linguist-vendored
+sitemedia/css/MyFontsWebfontsKit.css linguist-vendored
+sitemedia/js/annotator/* linguist-vendored
+sitemedia/js/annotator/interventions-plugin.js linguist-vendored=false
+sitemedia/js/lib/* linguist-vendored
+sitemedia/js/openseadragon/* linguist-vendored
+sitemedia/js/jquery.meltdown.js linguist-vendored
+sitemedia/mezzanine/* linguist-vendored
+docs/* linguist-documentation

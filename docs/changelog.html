@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>CHANGELOG &#8212; Derrida 1.2.0 documentation</title>
+    <title>CHANGELOG &#8212; Derrida 1.2.2 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" src="_static/documentation_options.js"></script>
@@ -33,6 +33,26 @@
             
   <div class="section" id="changelog">
 <span id="id1"></span><h1>CHANGELOG<a class="headerlink" href="#changelog" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="id2">
+<h2>1.2.2<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>bugfix: filter to published outwork in list view</li>
+<li>Revise person admin edit template to work with grappelli_safe</li>
+<li>Require at least django 1.11.19 for security reasons</li>
+<li>Pin django-cas-ng &lt;3.6</li>
+<li>Set ruby version to 2.2 for travis-ci build</li>
+<li>Configure additional vendor and docs paths so github-linguist will be more accurate</li>
+</ul>
+</div>
+<div class="section" id="id3">
+<h2>1.2.1<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>bugfix: deep zoom view layout on page view</li>
+<li>bugfix: mobile menu does not respond on iOS</li>
+<li>Add links to Zotero library and datasets on Figshare on library,
+reference list, and interventions pages.</li>
+</ul>
+</div>
 <div class="section" id="data-exports-and-fixes-for-public-launch">
 <h2>1.2 Data exports and fixes for public launch<a class="headerlink" href="#data-exports-and-fixes-for-public-launch" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="data-export-features">
@@ -66,8 +86,8 @@
 </ul>
 </div>
 </div>
-<div class="section" id="id2">
-<h2>1.1<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id4">
+<h2>1.1<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li>Add license to README and document Princeton docket # for permissions</li>
 <li>Adjust homepage styles for mobile</li>
@@ -85,16 +105,16 @@ digital edition</li>
 <li>bugfix: Correct reference card thumbnail display and instance title logic</li>
 </ul>
 </div>
-<div class="section" id="id3">
-<h2>1.0.1<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id5">
+<h2>1.0.1<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li>bugfix: use license text label from local manifest data if possible;
 avoids issue with current logic for retrieving labels from
 rightsstatements.org causing a 500 error.</li>
 </ul>
 </div>
-<div class="section" id="id4">
-<h2>1.0<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id6">
+<h2>1.0<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h2>
 <p>Numerous design and accessibility fixes, including:</p>
 <ul class="simple">
 <li>Improved keyboard and screen reader navigation</li>
@@ -180,8 +200,8 @@ available from IIIF server where possible</li>
 </ul>
 </div>
 </div>
-<div class="section" id="id5">
-<h2>0.8.1<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id7">
+<h2>0.8.1<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h2>
 <p>Maintenance release to provide needed migration</p>
 </div>
 <div class="section" id="interventions-phase-i">
@@ -214,8 +234,8 @@ of his library works.</p>
 <li>As a record editor, when editing this field in the Django admin, I want it to automatically filter to only those intervetions associated with the digital edition of the book (i.e. if a reference is set to BookA, only interventions associated with BookA show up).</li>
 </ul>
 </div>
-<div class="section" id="id6">
-<h3>Interventions<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id8">
+<h3>Interventions<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>As an intervention data editor, I want the option of leaving all fields blank so that I can accurately describe non-verbal interventions or interventions that don’t relate to anchor text.</li>
 <li>As an intervention data editor, I want to be able to add and edit the color if the ink type is “pen,” so that I can see if there are patterns in Derrida’s pen usage and whether he revisited the same text.</li>
@@ -234,8 +254,8 @@ of his library works.</p>
 </ul>
 </div>
 </div>
-<div class="section" id="id7">
-<h2>0.7<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id9">
+<h2>0.7<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h2>
 <p>Maintenance release to clean up obsolete models and code after
 the refactor in 0.6.</p>
 <ul class="simple">
@@ -375,14 +395,16 @@ project teams.</p>
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">CHANGELOG</a><ul>
+<li><a class="reference internal" href="#id2">1.2.2</a></li>
+<li><a class="reference internal" href="#id3">1.2.1</a></li>
 <li><a class="reference internal" href="#data-exports-and-fixes-for-public-launch">1.2 Data exports and fixes for public launch</a><ul>
 <li><a class="reference internal" href="#data-export-features">Data export features</a></li>
 <li><a class="reference internal" href="#fixes-and-improvements">Fixes and improvements</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id2">1.1</a></li>
-<li><a class="reference internal" href="#id3">1.0.1</a></li>
-<li><a class="reference internal" href="#id4">1.0</a></li>
+<li><a class="reference internal" href="#id4">1.1</a></li>
+<li><a class="reference internal" href="#id5">1.0.1</a></li>
+<li><a class="reference internal" href="#id6">1.0</a></li>
 <li><a class="reference internal" href="#library-works-references-interventions">0.9 Library works, references, interventions</a><ul>
 <li><a class="reference internal" href="#library-works">Library works</a></li>
 <li><a class="reference internal" href="#references">References</a></li>
@@ -392,15 +414,15 @@ project teams.</p>
 <li><a class="reference internal" href="#other-improvements">Other improvements</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id5">0.8.1</a></li>
+<li><a class="reference internal" href="#id7">0.8.1</a></li>
 <li><a class="reference internal" href="#interventions-phase-i">0.8 (Interventions Phase I)</a><ul>
 <li><a class="reference internal" href="#access">Access</a></li>
 <li><a class="reference internal" href="#books">Books</a></li>
 <li><a class="reference internal" href="#citations">Citations</a></li>
-<li><a class="reference internal" href="#id6">Interventions</a></li>
+<li><a class="reference internal" href="#id8">Interventions</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id7">0.7</a></li>
+<li><a class="reference internal" href="#id9">0.7</a></li>
 <li><a class="reference internal" href="#bibliographic-enhancements">0.6 Bibliographic Enhancements</a></li>
 <li><a class="reference internal" href="#bio-bibliographical-admin-interface">0.5 Bio/Bibliographical Admin interface</a><ul>
 <li><a class="reference internal" href="#book-metadata">Book Metadata</a></li>

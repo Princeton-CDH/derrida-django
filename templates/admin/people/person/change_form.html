@@ -1,100 +1,95 @@
 {% extends "admin/change_form.html" %}
 
-{% load admin_static i18n admin_modify admin_urls grp_tags %}
+{% load admin_static i18n admin_modify admin_urls %}
 
 {% block after_related_objects %}
-<div class="inline-group grp-group grp-tabular">
-    <h2 class="grp-collapse-handler">To Relationships</h2>
+<div class="inline-group inline-tabular">
+    <h2>To Relationships</h2>
     <!-- container -->
-    <div class="tabular inline-related grp-module grp-table">
-        <div class="module grp-module grp-thead">
-            <div class="grp-tr">
-                <div class="grp-th">From person</div>
-                <div class="grp-th">Relationship type</div>
-                <div class='grp-th'>To person</div>
-                <div class="grp-th">Start year</div>
-                <div class="grp-th">End year</div>
-                <div class="grp-th">Notes</div>
-            </div>
-        </div>            <!-- element -->
-            <div class="form-row grp-module grp-tbody"
-                id="to-relationship-read-only">
-                {% for relation in original.to_relationships.all %}
-                  <div class="grp-tr">
+    <div class="items" style="width:100%">
+        <div class="legend">
+            <div class="form-cell">From person</div>
+            <div class="form-cell">Relationship type</div>
+            <div class='form-cell'>To person</div>
+            <div class="form-cell">Start year</div>
+            <div class="form-cell">End year</div>
+            <div class="form-cell">Notes</div>
+        </div>
 
-                    <div class="grp-td">
+      {% for relation in original.to_relationships.all %}
+        <!-- element -->
+        <div class="inline-related"
+                id="to-relationship-read-only">
+                  <div class="fieldset module">
+                    <div class="item form-cell">
                       <a href='{% url "admin:people_person_change" relation.from_person.pk %}'>
                         {{ relation.from_person }}
                       </a>
                     </div>
-                    <div class='grp-td'>
+                    <div class='item form-cell'>
                       {{ relation.relationship_type }}
                     </div>
-                    <div class='grp-td'>
+                    <div class='item form-cell'>
                       {{ original.authorized_name }}
                     </div>
-                    <div class='grp-td'>
+                    <div class='item form-cell'>
                       {{ relation.start_year|default_if_none:" " }}
                     </div>
-                    <div class='grp-td'>
+                    <div class='item form-cell'>
                       {{ relation.end_year|default_if_none:" " }}
                     </div>
-                    <div class='grp-td'>
+                    <div class='item form-cell'>
                       {{ relation.notes }}
                     </div>
 
-
-                </div>
-                {% endfor %}
             </div>
+        {% endfor %}
     </div>
 
 </div>
-<div class="inline-group grp-group grp-tabular">
-    <h2 class="grp-collapse-handler">Associated Books</h2>
+
+<div class="inline-group inline-tabular">
+    <h2>Associated Books</h2>
     <!-- container -->
-    <div class="tabular inline-related grp-module grp-table">
-        <div class="module grp-module grp-thead">
-            <div class="grp-tr">
-                <div class="grp-th">Title</div>
-                <div class="grp-th">Publication Year</div>
-                <div class='grp-th'>Type of Relationship (i.e., owner)</div>
-                <div class="grp-th">Start Year (of relationship)</div>
-                <div class="grp-th">End year (of relationship)</div>
-                <div class="grp-th">Notes</div>
-            </div>
-        </div>            <!-- element -->
-            <div class="form-row grp-module grp-tbody"
-                id="to-relationship-read-only">
-                {% for personbook in original.personbook_set.all %}
-                  <div class="grp-tr">
-                    <div class="grp-td">
+    <div class="items" style="width:100%">
+        <div class="legend">
+            <div class="form-cell">Title</div>
+            <div class="form-cell">Publication Year</div>
+            <div class='form-cell'>Type of Relationship (i.e., owner)</div>
+            <div class="form-cell">Start Year (of relationship)</div>
+            <div class="form-cell">End year (of relationship)</div>
+            <div class="form-cell">Notes</div>
+        </div>
+
+        {% for personbook in original.personbook_set.all %}
+          <!-- element -->
+        <div class="inline-related"
+                id="to-associated-books-read-only">
+                  <div class="fieldset module">
+                    <div class="item form-cell">
                       <a href='{% url "admin:books_book_change" personbook.book.pk %}'>
                         {{ personbook.book.primary_title }}
                       </a>
                     </div>
-                    <div class='grp-td'>
+                    <div class='item form-cell'>
                       {{ personbook.book.copyright_year }}
                     </div>
-                    <div class='grp-td'>
+                    <div class='item form-cell'>
                       <a href='{% url "admin:books_personbook_change" personbook.pk %}'>
                         {{ personbook.relationship_type }}
                       </a>
                     </div>
-                    <div class='grp-td'>
+                    <div class='item form-cell'>
                       {{ personbook.start_year|default_if_none:" " }}
                     </div>
-                    <div class='grp-td'>
+                    <div class='item form-cell'>
                       {{ personbook.end_year|default_if_none:" " }}
                     </div>
-                    <div class='grp-td'>
+                    <div class='item form-cell'>
                       {{ personbook.notes }}
                     </div>
-
-
-                </div>
-                {% endfor %}
             </div>
+        {% endfor %}
     </div>
 
 </div>

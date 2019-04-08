@@ -1,4 +1,4 @@
-django>=1.11.15,<2.0
+django>=1.11.19,<2.0
 mysqlclient
 django-compressor
 django-compressor-autoprefixer
@@ -8,6 +8,8 @@ rdflib
 django-sortedm2m
 attrdict
 unidecode
+# pin to 3.5.x for django 1.11 compatibility
+django-cas-ng<3.6
 pucas>=0.5
 piffle>=0.3
 djiffy>=0.5

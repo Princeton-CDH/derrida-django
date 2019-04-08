@@ -14,6 +14,10 @@ Deploy and Upgrade notes
     python manage.py intervention_data
     python manage.py export_zotero
 
+* This update includes changes to the Solr indexing (but not to the Solr
+  schema). You should refresh the Solr index::
+
+    python manage.py update_index
 
 1.0
 ----
