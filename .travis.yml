@@ -5,8 +5,8 @@ env:
   global:
   - SOLR_VERSION=6.6.0
   - SOLR_CORE=test-derrida
-addons:
-- mariadb: '5.5'
+services:
+  - mysql
 cache:
   directories:
   - downloads
