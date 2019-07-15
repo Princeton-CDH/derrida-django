@@ -1,18 +1,17 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Derrida documentation &#8212; Derrida 1.2.2 documentation</title>
+    <meta charset="utf-8" />
+    <title>Derrida documentation &#8212; Derrida 1.2.3 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Architecture" href="architecture.html" />
@@ -28,6 +27,8 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
+          
+
           <div class="body" role="main">
             
   <div class="section" id="derrida-documentation">
@@ -45,13 +46,14 @@
 a <a class="reference external" href="https://cdh.princeton.edu/projects/derridas-margins/">DH project sponsored by CDH</a>.</p>
 <a class="reference external image-reference" href="https://zenodo.org/badge/latestdoi/83320273"><img alt="DOI: 10.5281/zenodo.1299972" src="https://zenodo.org/badge/83320273.svg" /></a>
 <a class="reference external image-reference" href="https://travis-ci.org/Princeton-CDH/derrida-django"><img alt="Build status" src="https://travis-ci.org/Princeton-CDH/derrida-django.svg?branch=master" /></a>
-<a class="reference external image-reference" href="https://landscape.io/github/Princeton-CDH/derrida-django/master"><img alt="Code Health" src="https://landscape.io/github/Princeton-CDH/derrida-django/master/landscape.svg?style=flat" /></a>
 <a class="reference external image-reference" href="https://codecov.io/gh/Princeton-CDH/derrida-django"><img alt="Code coverage" src="https://codecov.io/gh/Princeton-CDH/derrida-django/branch/master/graph/badge.svg" /></a>
+<a class="reference external image-reference" href="https://codeclimate.com/github/Princeton-CDH/derrida-django/maintainability"><img alt="Maintainability" src="https://api.codeclimate.com/v1/badges/1cb1a007da663863e326/maintainability" /></a>
 <a class="reference external image-reference" href="https://requires.io/github/Princeton-CDH/derrida-django/requirements/?branch=master"><img alt="Requirements Status" src="https://requires.io/github/Princeton-CDH/derrida-django/requirements.svg?branch=master" /></a>
 <p><a class="reference external" href="https://princeton-cdh.github.io/derrida-django/">Current release documentation</a>.</p>
 <p>This repository uses <a class="reference external" href="https://github.com/nvie/gitflow">git-flow</a> conventions; master
 contains the most recent release, and work in progress will be on the develop branch.
 Pull requests should be made against develop.</p>
+<p>Python 3.5 / Django 1.11 / Node 8.16.0 / MariaDB (MySQL) 5.5 w/ timezone info</p>
 <div class="section" id="license">
 <h2>License<a class="headerlink" href="#license" title="Permalink to this headline">¶</a></h2>
 <p><strong>derrida-django</strong> is distributed under the Apache 2.0 License.</p>
@@ -64,35 +66,48 @@ is distributed online via open source.</p>
 <h2>Development instructions<a class="headerlink" href="#development-instructions" title="Permalink to this headline">¶</a></h2>
 <p>Initial setup and installation:</p>
 <ul>
-<li><p class="first"><strong>recommended:</strong> create and activate a python 3.5 virtualenv:</p>
+<li><p><strong>recommended:</strong> create and activate a python 3.5 virtualenv:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">virtualenv</span> <span class="n">derrida</span> <span class="o">-</span><span class="n">p</span> <span class="n">python3</span><span class="o">.</span><span class="mi">5</span>
 <span class="n">source</span> <span class="n">derrida</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">activate</span>
 </pre></div>
 </div>
 </li>
-<li><p class="first">Use pip to install required python dependencies:</p>
+<li><p>Use pip to install required python dependencies:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">r</span> <span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
 <span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">r</span> <span class="n">dev</span><span class="o">-</span><span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
 </pre></div>
 </div>
 </li>
-<li><p class="first">Copy sample local settings and configure for your environment:</p>
+<li><p>Copy sample local settings and configure for your environment:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cp</span> <span class="n">derrida</span><span class="o">/</span><span class="n">local_settings</span><span class="o">.</span><span class="n">py</span><span class="o">.</span><span class="n">sample</span> <span class="n">derrida</span><span class="o">/</span><span class="n">local_settings</span><span class="o">.</span><span class="n">py</span>
 </pre></div>
 </div>
 </li>
-<li><p class="first">Download required fonts from project folder and add to <cite>/sitemedia/fonts</cite></p>
-</li>
-<li><p class="first">Create a database, configure in local settings, and run migrations:</p>
+<li><p>Download required fonts from project folder and add to <cite>/sitemedia/fonts</cite></p></li>
+<li><p>Create a database, configure in local settings, and run migrations:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">manage</span><span class="o">.</span><span class="n">py</span> <span class="n">migrate</span>
 </pre></div>
 </div>
 </li>
-<li><p class="first">Create a Solr core, configure it, and index content:</p>
+<li><p>Create a Solr core, configure it, and index content:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">manage</span><span class="o">.</span><span class="n">py</span> <span class="n">build_solr_schema</span> <span class="o">--</span><span class="n">configure</span><span class="o">-</span><span class="n">directory</span><span class="o">=/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">solr</span><span class="o">/</span><span class="n">derrida</span><span class="o">/</span><span class="n">conf</span> <span class="o">--</span><span class="n">reload</span><span class="o">-</span><span class="n">core</span> <span class="n">derrida</span>
 <span class="n">python</span> <span class="n">manage</span><span class="o">.</span><span class="n">py</span> <span class="n">rebuild_index</span> <span class="o">--</span><span class="n">noinput</span>
 </pre></div>
 </div>
+</li>
+<li><p>If running this application on MariaDB/MySQL, you must make sure that
+time zone definitions are installed. On most flavors of Linux/MacOS,
+you may use the following command, which will prompt
+for the database server’s root password:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mysql_tzinfo_to_sql</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">share</span><span class="o">/</span><span class="n">zoneinfo</span> <span class="o">|</span> <span class="n">mysql</span> <span class="o">-</span><span class="n">u</span> <span class="n">root</span> <span class="n">mysql</span> <span class="o">-</span><span class="n">p</span>
+</pre></div>
+</div>
+<p>If this command does not work, make sure you have the command line utilities
+for MariaDB/MySQL installed and consult the documentation for your OS for
+timezone info. Windows users will need to install a copy of the zoneinfo
+files.</p>
+<p>See <a class="reference external" href="https://mariadb.com/kb/en/library/mysql_tzinfo_to_sql/">MariaDB</a>’s
+info on the utility for more information.</p>
 </li>
 </ul>
 <div class="section" id="unit-tests">
@@ -134,14 +149,15 @@ update the published documentation on GitHub Pages.</p>
 <div class="section" id="indices-and-tables">
 <h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
 <ul class="simple">
-<li><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></li>
-<li><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></li>
-<li><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></li>
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
 </ul>
 </div>
 
 
           </div>
+          
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -167,7 +183,7 @@ update the published documentation on GitHub Pages.</p>
     
 
 <p>
-<a href="https://travis-ci.org/Princeton-CDH/derrida-django">
+<a class="badge" href="https://travis-ci.org/Princeton-CDH/derrida-django">
     <img
         alt="https://secure.travis-ci.org/Princeton-CDH/derrida-django.svg?branch=master"
         src="https://secure.travis-ci.org/Princeton-CDH/derrida-django.svg?branch=master"
@@ -181,7 +197,7 @@ update the published documentation on GitHub Pages.</p>
     
 
 <p>
-<a href="https://codecov.io/github/Princeton-CDH/derrida-django">
+<a class="badge" href="https://codecov.io/github/Princeton-CDH/derrida-django">
     <img
     alt="https://codecov.io/github/Princeton-CDH/derrida-django/coverage.svg?branch=master"
     src="https://codecov.io/github/Princeton-CDH/derrida-django/coverage.svg?branch=master"
@@ -198,7 +214,7 @@ update the published documentation on GitHub Pages.</p>
 </ul>
 
 
-  <h3><a href="#">Table Of Contents</a></h3>
+  <h3><a href="#">Table of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Derrida documentation</a><ul>
 <li><a class="reference internal" href="#license">License</a></li>
@@ -213,13 +229,11 @@ update the published documentation on GitHub Pages.</p>
 </ul>
 
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
@@ -232,8 +246,8 @@ update the published documentation on GitHub Pages.</p>
       &copy;2017, CDH @ Princeton & Trustees of Princeton University.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.1</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.1.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
       <a href="_sources/index.rst.txt"
