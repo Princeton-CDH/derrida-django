@@ -3,6 +3,12 @@
 CHANGELOG
 =========
 
+1.2.3
+-----
+
+* Update dependencies for pytest for Travis CI builds
+* Update Travis CI build to install openjdk8 via apt for Solr 6.
+
 1.2.2
 -----
 
