@@ -5,6 +5,7 @@ env:
   global:
   - SOLR_VERSION=6.6.5
   - SOLR_CORE=test-derrida
+  - JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
 services:
   - mysql
 addons:
@@ -14,7 +15,13 @@ addons:
 cache:
   directories:
   - downloads
+addons:
+  apt:
+    packages:
+      - openjdk-8-jdk
+    update: true
 before_install:
+- sudo apt-get install -y
 - mysql -e 'CREATE DATABASE IF NOT EXISTS test;'
 - rvm install 2.2
 - gem install sass
