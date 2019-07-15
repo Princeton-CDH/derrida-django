@@ -7,7 +7,6 @@ env:
   - SOLR_CORE=test-derrida
 services:
   - mysql
-jdk: openjdk8
 cache:
   directories:
   - downloads
@@ -16,6 +15,8 @@ before_install:
 - rvm install 2.2
 - gem install sass
 - npm install -g postcss-cli autoprefixer
+# correctly set the javascript version to prevent openjdk11 from being used
+- jdk_switcher use openjdk8
 install:
 - pip install -r requirements.txt
 - pip install -r dev-requirements.txt
