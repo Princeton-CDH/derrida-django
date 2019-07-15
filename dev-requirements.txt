@@ -5,6 +5,4 @@ pytest-cov
 pytest-sugar
 django-debug-toolbar
 sphinx
-# Optional, only needed if deploying
-ansible
 pytest-django-haystack>=0.3.0
