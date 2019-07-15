@@ -7,6 +7,7 @@ env:
   - SOLR_CORE=test-derrida
 services:
   - mysql
+jdk: openjdk8
 cache:
   directories:
   - downloads
