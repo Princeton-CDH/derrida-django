@@ -3,7 +3,7 @@ python:
 - '3.5'
 env:
   global:
-  - SOLR_VERSION=6.6.0
+  - SOLR_VERSION=6.6.5
   - SOLR_CORE=test-derrida
 services:
   - mysql
