@@ -1,18 +1,17 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>derrida.books.views &#8212; Derrida 1.2.2 documentation</title>
+    <meta charset="utf-8" />
+    <title>derrida.books.views &#8212; Derrida 1.2.3 documentation</title>
     <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-    <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
    
@@ -27,6 +26,8 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
+          
+
           <div class="body" role="main">
             
   <h1>Source code for derrida.books.views</h1><div class="highlight"><pre>
@@ -68,8 +69,8 @@
 <span class="sd">    django-autocomplete-light.  Restricted to staff only.&#39;&#39;&#39;</span>
     <span class="c1"># NOTE staff restriction applied in url config</span>
 
-<div class="viewcode-block" id="PublisherAutocomplete.get_queryset"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.views.PublisherAutocomplete.get_queryset">[docs]</a>    <span class="k">def</span> <span class="nf">get_queryset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div></div>
-        <span class="k">return</span> <span class="n">Publisher</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">name__icontains</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">q</span><span class="p">)</span>
+<div class="viewcode-block" id="PublisherAutocomplete.get_queryset"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.views.PublisherAutocomplete.get_queryset">[docs]</a>    <span class="k">def</span> <span class="nf">get_queryset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Publisher</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">name__icontains</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">q</span><span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="LanguageAutocomplete"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.views.LanguageAutocomplete">[docs]</a><span class="k">class</span> <span class="nc">LanguageAutocomplete</span><span class="p">(</span><span class="n">autocomplete</span><span class="o">.</span><span class="n">Select2QuerySetView</span><span class="p">):</span>
@@ -77,8 +78,8 @@
 <span class="sd">    django-autocomplete-light.  Restricted to staff only.&#39;&#39;&#39;</span>
     <span class="c1"># NOTE staff restriction applied in url config</span>
 
-<div class="viewcode-block" id="LanguageAutocomplete.get_queryset"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.views.LanguageAutocomplete.get_queryset">[docs]</a>    <span class="k">def</span> <span class="nf">get_queryset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div></div>
-        <span class="k">return</span> <span class="n">Language</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">name__icontains</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">q</span><span class="p">)</span>
+<div class="viewcode-block" id="LanguageAutocomplete.get_queryset"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.views.LanguageAutocomplete.get_queryset">[docs]</a>    <span class="k">def</span> <span class="nf">get_queryset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Language</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">name__icontains</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">q</span><span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="InstanceDetailView"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.views.InstanceDetailView">[docs]</a><span class="k">class</span> <span class="nc">InstanceDetailView</span><span class="p">(</span><span class="n">DetailView</span><span class="p">):</span>
@@ -90,8 +91,8 @@
     <span class="n">slug_field</span> <span class="o">=</span> <span class="s1">&#39;slug&#39;</span>
 
 <div class="viewcode-block" id="InstanceDetailView.get_queryset"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.views.InstanceDetailView.get_queryset">[docs]</a>    <span class="k">def</span> <span class="nf">get_queryset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">instances</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">InstanceDetailView</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_queryset</span><span class="p">()</span></div></div>
-        <span class="k">return</span> <span class="n">instances</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">digital_edition__isnull</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">instances</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">InstanceDetailView</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_queryset</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">instances</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">digital_edition__isnull</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="InstanceURIView"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.views.InstanceURIView">[docs]</a><span class="k">class</span> <span class="nc">InstanceURIView</span><span class="p">(</span><span class="n">DetailView</span><span class="p">):</span>
@@ -150,8 +151,8 @@
         <span class="n">context</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
             <span class="s1">&#39;hide_placeholder&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
             <span class="s1">&#39;hide_nav&#39;</span><span class="p">:</span> <span class="kc">True</span>
-        <span class="p">})</span></div></div>
-        <span class="k">return</span> <span class="n">context</span>
+        <span class="p">})</span>
+        <span class="k">return</span> <span class="n">context</span></div></div>
 
 
 <div class="viewcode-block" id="InstanceReferenceDetailView"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.views.InstanceReferenceDetailView">[docs]</a><span class="k">class</span> <span class="nc">InstanceReferenceDetailView</span><span class="p">(</span><span class="n">InstanceDetailView</span><span class="p">):</span>
@@ -171,8 +172,8 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">refs</span> <span class="o">=</span> <span class="n">refs</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s1">&#39;derridawork_page&#39;</span><span class="p">)</span>
 
-        <span class="n">context</span><span class="p">[</span><span class="s1">&#39;references&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">refs</span></div></div>
-        <span class="k">return</span> <span class="n">context</span>
+        <span class="n">context</span><span class="p">[</span><span class="s1">&#39;references&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">refs</span>
+        <span class="k">return</span> <span class="n">context</span></div></div>
 
 
 <div class="viewcode-block" id="InstanceListView"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.views.InstanceListView">[docs]</a><span class="k">class</span> <span class="nc">InstanceListView</span><span class="p">(</span><span class="n">ListView</span><span class="p">):</span>
@@ -307,8 +308,8 @@
             <span class="n">sqs</span> <span class="o">=</span> <span class="n">sqs</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">solr_sort</span><span class="p">)</span>
 
         <span class="c1"># store for retrieving facets in get context data</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">queryset</span> <span class="o">=</span> <span class="n">sqs</span></div>
-        <span class="k">return</span> <span class="n">sqs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">queryset</span> <span class="o">=</span> <span class="n">sqs</span>
+        <span class="k">return</span> <span class="n">sqs</span></div>
 
 <div class="viewcode-block" id="InstanceListView.get_context_data"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.views.InstanceListView.get_context_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_context_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">context</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">InstanceListView</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_context_data</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -319,8 +320,8 @@
             <span class="s1">&#39;facets&#39;</span><span class="p">:</span> <span class="n">facets</span><span class="p">,</span>   <span class="c1"># now includes ranges as facets.ranges</span>
             <span class="s1">&#39;total&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">queryset</span><span class="o">.</span><span class="n">count</span><span class="p">(),</span>
             <span class="s1">&#39;form&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">form</span><span class="p">,</span>
-        <span class="p">})</span></div></div>
-        <span class="k">return</span> <span class="n">context</span>
+        <span class="p">})</span>
+        <span class="k">return</span> <span class="n">context</span></div></div>
 
 
 <div class="viewcode-block" id="ReferenceListView"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.views.ReferenceListView">[docs]</a><span class="k">class</span> <span class="nc">ReferenceListView</span><span class="p">(</span><span class="n">ListView</span><span class="p">):</span>
@@ -459,8 +460,8 @@
             <span class="n">sqs</span> <span class="o">=</span> <span class="n">sqs</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">solr_sort</span><span class="p">)</span>
 
         <span class="c1"># store for accessing counts &amp; facets in context data</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">queryset</span> <span class="o">=</span> <span class="n">sqs</span></div>
-        <span class="k">return</span> <span class="n">sqs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">queryset</span> <span class="o">=</span> <span class="n">sqs</span>
+        <span class="k">return</span> <span class="n">sqs</span></div>
 
 <div class="viewcode-block" id="ReferenceListView.get_context_data"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.views.ReferenceListView.get_context_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_context_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">context</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">ReferenceListView</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_context_data</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -471,8 +472,8 @@
             <span class="s1">&#39;facets&#39;</span><span class="p">:</span> <span class="n">facets</span><span class="p">,</span>
             <span class="s1">&#39;total&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">queryset</span><span class="o">.</span><span class="n">count</span><span class="p">(),</span>
             <span class="s1">&#39;form&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">form</span><span class="p">,</span>
-        <span class="p">})</span></div></div>
-        <span class="k">return</span> <span class="n">context</span>
+        <span class="p">})</span>
+        <span class="k">return</span> <span class="n">context</span></div></div>
 
 
 <div class="viewcode-block" id="ReferenceHistogramView"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.views.ReferenceHistogramView">[docs]</a><span class="k">class</span> <span class="nc">ReferenceHistogramView</span><span class="p">(</span><span class="n">ListView</span><span class="p">):</span>
@@ -490,8 +491,8 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># including authors results in multiple entries</span>
             <span class="c1"># for multi-author works, so only include if needed</span>
-            <span class="k">return</span> <span class="n">refs</span><span class="o">.</span><span class="n">order_by_author</span><span class="p">()</span> \</div>
-                       <span class="o">.</span><span class="n">summary_values</span><span class="p">(</span><span class="n">include_author</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">refs</span><span class="o">.</span><span class="n">order_by_author</span><span class="p">()</span> \
+                       <span class="o">.</span><span class="n">summary_values</span><span class="p">(</span><span class="n">include_author</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ReferenceHistogramView.get_context_data"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.views.ReferenceHistogramView.get_context_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_context_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">context</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">ReferenceHistogramView</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_context_data</span><span class="p">()</span>
@@ -506,8 +507,8 @@
             <span class="n">context</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
                 <span class="s1">&#39;mode&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;mode&#39;</span><span class="p">],</span>
                 <span class="s1">&#39;sections&#39;</span><span class="p">:</span> <span class="n">sections</span>
-            <span class="p">})</span></div></div>
-        <span class="k">return</span> <span class="n">context</span>
+            <span class="p">})</span>
+        <span class="k">return</span> <span class="n">context</span></div></div>
 
 
 <div class="viewcode-block" id="ReferenceDetailView"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.views.ReferenceDetailView">[docs]</a><span class="k">class</span> <span class="nc">ReferenceDetailView</span><span class="p">(</span><span class="n">DetailView</span><span class="p">):</span>
@@ -522,8 +523,8 @@
         <span class="c1"># in the visualization</span>
         <span class="c1"># (don&#39;t render the form or base template)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">is_ajax</span><span class="p">():</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ajax_template_name</span></div>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">template_name</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ajax_template_name</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">template_name</span></div>
 
 <div class="viewcode-block" id="ReferenceDetailView.get_object"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.views.ReferenceDetailView.get_object">[docs]</a>    <span class="k">def</span> <span class="nf">get_object</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">queryset</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 
@@ -534,8 +535,8 @@
         <span class="k">return</span> <span class="n">queryset</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
             <span class="n">derridawork_page</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;page&#39;</span><span class="p">],</span>
             <span class="n">derridawork_pageloc</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;pageloc&#39;</span><span class="p">],</span>
-            <span class="n">derridawork__slug</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;derridawork_slug&#39;</span><span class="p">]</span></div></div>
-            <span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+            <span class="n">derridawork__slug</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;derridawork_slug&#39;</span><span class="p">]</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span></div></div>
 
 
 <div class="viewcode-block" id="SearchView"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.views.SearchView">[docs]</a><span class="k">class</span> <span class="nc">SearchView</span><span class="p">(</span><span class="n">TemplateView</span><span class="p">):</span>
@@ -572,8 +573,8 @@
                 <span class="n">response</span> <span class="o">=</span> <span class="n">HttpResponseRedirect</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
                 <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="mi">303</span>  <span class="c1"># see other</span>
                 <span class="k">return</span> <span class="n">response</span>
-</div>
-        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">SearchView</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">SearchView</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SearchView.get_context_data"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.views.SearchView.get_context_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_context_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Retrieve Solr queries for :class:`SearchView` context.&#39;&#39;&#39;</span>
@@ -600,8 +601,8 @@
             <span class="s1">&#39;intervention_list&#39;</span><span class="p">:</span> <span class="n">intervention_query</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">max_per_type</span><span class="p">],</span>
             <span class="s1">&#39;intervention_count&#39;</span><span class="p">:</span> <span class="n">intervention_query</span><span class="o">.</span><span class="n">count</span><span class="p">(),</span>
             <span class="s1">&#39;outwork_list&#39;</span><span class="p">:</span> <span class="n">outwork_query</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">max_per_type</span><span class="p">],</span>
-            <span class="s1">&#39;outwork_count&#39;</span><span class="p">:</span> <span class="n">outwork_query</span><span class="o">.</span><span class="n">count</span><span class="p">()</span></div></div>
-        <span class="p">}</span>
+            <span class="s1">&#39;outwork_count&#39;</span><span class="p">:</span> <span class="n">outwork_query</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+        <span class="p">}</span></div></div>
 
 
 <div class="viewcode-block" id="CanvasDetail"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.views.CanvasDetail">[docs]</a><span class="k">class</span> <span class="nc">CanvasDetail</span><span class="p">(</span><span class="n">DetailView</span><span class="p">):</span>
@@ -621,8 +622,8 @@
         <span class="c1"># and pages with documented interventions</span>
         <span class="k">if</span> <span class="n">canvas</span> <span class="ow">and</span> <span class="n">Instance</span><span class="o">.</span><span class="n">allow_canvas_detail</span><span class="p">(</span><span class="n">canvas</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">canvas</span>
-        <span class="k">else</span><span class="p">:</span></div>
-            <span class="k">raise</span> <span class="n">Http404</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">Http404</span></div>
 
 <div class="viewcode-block" id="CanvasDetail.get_context_data"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.views.CanvasDetail.get_context_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_context_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
@@ -637,7 +638,7 @@
             <span class="c1"># get the text</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">res</span> <span class="o">=</span> <span class="n">get_iiif_url</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">object</span><span class="o">.</span><span class="n">plain_text_url</span><span class="p">)</span>
-            <span class="k">except</span> <span class="ne">ConnectionError</span><span class="p">:</span>
+            <span class="k">except</span> <span class="n">requests</span><span class="o">.</span><span class="n">ConnectionError</span><span class="p">:</span>
                 <span class="c1"># log the stack trace using exception handler and</span>
                 <span class="c1"># provide the url where the error happened to the log</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s1">&#39;Connection error getting OCR text for </span><span class="si">%s</span><span class="s1">&#39;</span>
@@ -654,8 +655,8 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">has_perm</span><span class="p">(</span><span class="s1">&#39;books.change_instance&#39;</span><span class="p">):</span>
             <span class="n">context</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
                 <span class="s1">&#39;suppress_form&#39;</span><span class="p">:</span> <span class="n">SuppressImageForm</span><span class="p">(</span><span class="n">initial</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;canvas_id&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">object</span><span class="o">.</span><span class="n">short_id</span><span class="p">}),</span>
-            <span class="p">})</span></div></div>
-        <span class="k">return</span> <span class="n">context</span>
+            <span class="p">})</span>
+        <span class="k">return</span> <span class="n">context</span></div></div>
 
 
 <div class="viewcode-block" id="CanvasSuppress"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.views.CanvasSuppress">[docs]</a><span class="k">class</span> <span class="nc">CanvasSuppress</span><span class="p">(</span><span class="n">FormView</span><span class="p">):</span>
@@ -676,8 +677,8 @@
         <span class="c1"># no get display; redirect to book detail</span>
         <span class="n">response</span> <span class="o">=</span> <span class="n">HttpResponseRedirect</span><span class="p">(</span><span class="n">reverse</span><span class="p">(</span><span class="s1">&#39;books:detail&#39;</span><span class="p">,</span>
             <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;slug&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;slug&#39;</span><span class="p">]}))</span>
-        <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="mi">303</span>  <span class="c1"># see other</span></div>
-        <span class="k">return</span> <span class="n">response</span>
+        <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="mi">303</span>  <span class="c1"># see other</span>
+        <span class="k">return</span> <span class="n">response</span></div>
 
 <div class="viewcode-block" id="CanvasSuppress.form_valid"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.views.CanvasSuppress.form_valid">[docs]</a>    <span class="k">def</span> <span class="nf">form_valid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">form</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Custom form validation for canvas surpress form.&#39;&#39;&#39;</span>
@@ -700,8 +701,8 @@
         <span class="n">response</span> <span class="o">=</span> <span class="n">HttpResponseRedirect</span><span class="p">(</span><span class="n">reverse</span><span class="p">(</span><span class="s1">&#39;books:canvas-detail&#39;</span><span class="p">,</span>
             <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;slug&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;slug&#39;</span><span class="p">],</span>
                     <span class="s1">&#39;short_id&#39;</span><span class="p">:</span> <span class="n">formdata</span><span class="p">[</span><span class="s1">&#39;canvas_id&#39;</span><span class="p">]}))</span>
-        <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="mi">303</span>  <span class="c1"># see other</span></div></div>
-        <span class="k">return</span> <span class="n">response</span>
+        <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="mi">303</span>  <span class="c1"># see other</span>
+        <span class="k">return</span> <span class="n">response</span></div></div>
 
 
 <div class="viewcode-block" id="ProxyView"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.views.ProxyView">[docs]</a><span class="k">class</span> <span class="nc">ProxyView</span><span class="p">(</span><span class="n">View</span><span class="p">):</span>
@@ -749,8 +750,8 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># include response content if any</span>
             <span class="n">local_response</span><span class="o">.</span><span class="n">content</span> <span class="o">=</span> <span class="n">remote_response</span><span class="o">.</span><span class="n">content</span>
-</div>
-        <span class="k">return</span> <span class="n">local_response</span>
+
+        <span class="k">return</span> <span class="n">local_response</span></div>
 
 <div class="viewcode-block" id="ProxyView.head"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.views.ProxyView.head">[docs]</a>    <span class="k">def</span> <span class="nf">head</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
@@ -762,8 +763,8 @@
         <span class="k">for</span> <span class="n">header</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">remote_response</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">header</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Connection&#39;</span><span class="p">,</span> <span class="s1">&#39;Server&#39;</span><span class="p">,</span> <span class="s1">&#39;Keep-Alive&#39;</span><span class="p">,</span>
                              <span class="s1">&#39;Access-Control-Allow-Origin&#39;</span><span class="p">,</span> <span class="s1">&#39;Link&#39;</span><span class="p">]:</span>
-                <span class="n">response</span><span class="p">[</span><span class="n">header</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span></div></div>
-        <span class="k">return</span> <span class="n">response</span>
+                <span class="n">response</span><span class="p">[</span><span class="n">header</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">return</span> <span class="n">response</span></div></div>
 
 
 <div class="viewcode-block" id="CanvasImageByPageNumber"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.views.CanvasImageByPageNumber">[docs]</a><span class="k">class</span> <span class="nc">CanvasImageByPageNumber</span><span class="p">(</span><span class="n">View</span><span class="p">):</span>
@@ -794,8 +795,8 @@
                 <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="mi">303</span>  <span class="c1"># see other</span>
                 <span class="k">return</span> <span class="n">response</span>
 
-        <span class="c1"># 404 if no canvas was found</span></div></div>
-        <span class="k">raise</span> <span class="n">Http404</span>
+        <span class="c1"># 404 if no canvas was found</span>
+        <span class="k">raise</span> <span class="n">Http404</span></div></div>
 
 
 <div class="viewcode-block" id="CanvasImage"><a class="viewcode-back" href="../../../codedocs.html#derrida.books.views.CanvasImage">[docs]</a><span class="k">class</span> <span class="nc">CanvasImage</span><span class="p">(</span><span class="n">ProxyView</span><span class="p">):</span>
@@ -893,11 +894,12 @@
         <span class="c1"># if no match was found or sizes are not available, use exact size</span>
         <span class="k">if</span> <span class="n">min_width</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">canvas</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="n">min_width</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">min_height</span><span class="p">:</span></div></div>
-            <span class="k">return</span> <span class="n">canvas</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">height</span><span class="o">=</span><span class="n">min_height</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">min_height</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">canvas</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">height</span><span class="o">=</span><span class="n">min_height</span><span class="p">)</span></div></div>
 </pre></div>
 
           </div>
+          
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -923,7 +925,7 @@
     
 
 <p>
-<a href="https://travis-ci.org/Princeton-CDH/derrida-django">
+<a class="badge" href="https://travis-ci.org/Princeton-CDH/derrida-django">
     <img
         alt="https://secure.travis-ci.org/Princeton-CDH/derrida-django.svg?branch=master"
         src="https://secure.travis-ci.org/Princeton-CDH/derrida-django.svg?branch=master"
@@ -937,7 +939,7 @@
     
 
 <p>
-<a href="https://codecov.io/github/Princeton-CDH/derrida-django">
+<a class="badge" href="https://codecov.io/github/Princeton-CDH/derrida-django">
     <img
     alt="https://codecov.io/github/Princeton-CDH/derrida-django/coverage.svg?branch=master"
     src="https://codecov.io/github/Princeton-CDH/derrida-django/coverage.svg?branch=master"
@@ -955,13 +957,11 @@
 
 
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
@@ -974,8 +974,8 @@
       &copy;2017, CDH @ Princeton & Trustees of Princeton University.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.1</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.1.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>
 
