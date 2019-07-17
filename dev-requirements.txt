@@ -1,10 +1,8 @@
-pytest>=3.6 # required for pytest-django
+pytest>=3.6,<4 # required for pytest-django-haystack (<4) and pytest-django (>=3.6)
 pytest-django
 pytest-cov
 # note: pytest-sugar is optional but pretty
 pytest-sugar
 django-debug-toolbar
 sphinx
-# Optional, only needed if deploying
-ansible
 pytest-django-haystack>=0.3.0

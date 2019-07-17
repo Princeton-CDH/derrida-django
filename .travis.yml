@@ -3,14 +3,22 @@ python:
 - '3.5'
 env:
   global:
-  - SOLR_VERSION=6.6.0
+  - SOLR_VERSION=6.6.5
   - SOLR_CORE=test-derrida
+  - JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+services:
+  - mysql
 addons:
-- mariadb: '5.5'
+  apt:
+    packages:
+      - openjdk-8-jdk
+    update: true
 cache:
   directories:
   - downloads
+
 before_install:
+- sudo apt-get install -y
 - mysql -e 'CREATE DATABASE IF NOT EXISTS test;'
 - rvm install 2.2
 - gem install sass
