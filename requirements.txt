@@ -8,9 +8,7 @@ rdflib
 django-sortedm2m
 attrdict
 unidecode
-# pin to 3.5.x for django 1.11 compatibility
-django-cas-ng<3.6
-pucas>=0.5
+pucas>=0.6
 piffle>=0.3
 djiffy>=0.5
 annotator_store>=0.6
