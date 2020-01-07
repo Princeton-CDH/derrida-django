@@ -7,14 +7,15 @@
     </span>
     <div class="mdl-textfield mdl-js-textfield">
       {% render_field search_form.query class+='mdl-textfield__input' %}
-      <label class="mdl-textfield__label mdl-textfield__label--search" for="{{ search_form.query.id }}">{{ search_form.query.label }}</label>
+      <label class="mdl-textfield__label mdl-textfield__label--search" for="{{ search_form.query.id_for_label }}">{{ search_form.query.label }}</label>
     </div>
     <div class="mdl-selectfield mdl-js-selectfield">
      {% render_field search_form.content_type class+="mdl-selectfield__select" %}
+      <label class="sr-only" for="{{ search_form.content_type.id_for_label }}">{{ search_form.content_type.label }}</label>
     </div>
     <div class="mdl-button mdl-js-button mdl-button--icon" data-action="toggle-search-form">
       <svg class="svg" xmlns="http://www.w3.org/2000/svg"><polygon points="17.62 3.79 16.21 2.38 10 8.59 3.79 2.38 2.38 3.79 8.59 10 2.38 16.21 3.79 17.62 10 11.41 16.21 17.62 17.62 16.21 11.41 10 17.62 3.79" fill="#FFFFFF"/></svg>
     </div>
-    <input type="submit" class="submit-button is-hidden" />
+    <input type="submit" value="submit" class="submit-button is-hidden" />
   </form>
 </section>
