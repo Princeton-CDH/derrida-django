@@ -16,7 +16,8 @@ class PageSitemap(Sitemap):
     def lastmod(self, item):
         # last modified information currently not available for db content
         # don't return page modified, since it is inaccurate
-        if item.slug in self.lastmod_slugs or item.slug.startswith('references'):
+        if item.slug in self.lastmod_slugs or \
+           item.slug.startswith('references'):
             return None
         return item.updated
 
@@ -28,4 +29,3 @@ class PageSitemap(Sitemap):
         if '3' in item.in_menus:
             return 0.6
         return self.default_priority
-
