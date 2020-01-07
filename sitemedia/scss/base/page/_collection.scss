@@ -162,7 +162,9 @@
 }
 
 .item__body {
-  @include grid-column(2);
+  @include grid-media($large-medium-viewport-grid) {
+    @include grid-column(2);
+  }
 
   .collection--condensed & {
     width: 100%;
