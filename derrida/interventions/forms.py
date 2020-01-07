@@ -65,6 +65,8 @@ class InterventionSearchForm(forms.Form):
 
     def set_choices_from_facets(self, facets):
         # configure field choices based on facets returned from Solr
+        if not facets:
+            return
         for facet, counts in facets.items():
             formfield = self.solr_facet_fields.get(facet, facet)
             if formfield in self.fields:
