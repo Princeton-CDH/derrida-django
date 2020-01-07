@@ -50,6 +50,11 @@ section.page-filter {
     &:focus {
       border-bottom-color: $doger-blue;
     }
+    &:hover {
+      border-bottom-color: $doger-blue;
+      color: $doger-blue;
+    }
+
   }
 
   .mdl-textfield {

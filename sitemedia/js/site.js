@@ -40,7 +40,13 @@ $(function() {
   // Make floating labels for filters clickable
   $('.mdl-textfield--floating-label').click(function(e) {
       e.stopPropagation()
-      $(e.currentTarget).find('.mdl-textfield__input').focus()
+      // if already open, close the filter
+      if ($(e.currentTarget).hasClass('is-open')) {
+          e.stopPropagation()
+          $('header').click() // click someplace else to "blur" the field
+      } else {
+        $(e.currentTarget).find('.mdl-textfield__input').focus()
+      }
   })
 
   // Make expand arrows on fields close them when clicked
