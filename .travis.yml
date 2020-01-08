@@ -36,7 +36,7 @@ before_script:
 - python manage.py migrate
 - python manage.py loaddata sample_work_data test_references
 - python manage.py rebuild_index --noinput  # index in solr
-- python manage.py runserver & # this needs to be running for pa11y
+- python manage.py runserver --insecure &  # run for pa11y, serve static content
 before_cache:
 - rm -rf downloads/solr-${SOLR_VERSION}/
 script:
