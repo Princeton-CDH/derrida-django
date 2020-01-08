@@ -40,7 +40,7 @@ before_cache:
 - rm -rf downloads/solr-${SOLR_VERSION}/
 script:
 - py.test --cov=derrida
-- npm run pa11y
+- npm test
 after_success:
 - codecov
 notifications:
