@@ -19,7 +19,7 @@ cache:
   - node_modules
 before_install:
 - sudo apt-get install -y
-- mysql -e 'CREATE DATABASE IF NOT EXISTS test;'
+- mysql -e 'CREATE DATABASE IF NOT EXISTS test CHARACTER SET utf8;'
 - rvm install 2.2
 - gem install sass
 install:
