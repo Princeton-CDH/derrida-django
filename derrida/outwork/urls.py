@@ -1,7 +1,9 @@
-from django.conf.urls import url, include
-from django.contrib.admin.views.decorators import staff_member_required
+from django.conf.urls import url
 
 from derrida.outwork import views
+
+
+app_name = 'derrida.outwork'
 
 urlpatterns = [
     url(r'^$', views.OutworkListView.as_view(), name='list'),

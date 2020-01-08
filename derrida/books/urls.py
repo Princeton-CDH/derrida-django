@@ -4,6 +4,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from derrida.books import views
 
 
+app_name = 'derrida.books'
 
 urlpatterns = [
     url(r'^publishers/autocomplete/$', staff_member_required(views.PublisherAutocomplete.as_view()),
