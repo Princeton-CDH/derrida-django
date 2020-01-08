@@ -33,9 +33,8 @@ before_script:
 - SOLR_VERSION=$SOLR_VERSION SOLR_CORE=$SOLR_CORE bash ci/config_solr.sh
 - python manage.py build_solr_schema --configure-directory=downloads/solr-$SOLR_VERSION/server/solr/$SOLR_CORE/conf
   --reload-core $SOLR_CORE
-- mysql -u root -e "create database test";
 - python manage.py migrate
-- python manage.py loaddata pages
+#- python manage.py loaddata pages
 - python manage.py runserver & # this needs to be running for pa11y
 before_cache:
 - rm -rf downloads/solr-${SOLR_VERSION}/
