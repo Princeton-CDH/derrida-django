@@ -5,6 +5,14 @@
         ]
     },
     "urls": [
-        "http://localhost:8000/"
+        "http://localhost:8000/",
+        "http://localhost:8000/contact/",
+        "http://localhost:8000/cite/",
+        "http://localhost:8000/library/",
+        "http://localhost:8000/library/levi-strauss-anthropologie-structurale-1958/",
+        "http://localhost:8000/library/levi-strauss-anthropologie-structurale-1958/gallery/",
+        "http://localhost:8000/library/levi-strauss-anthropologie-structurale-1958/gallery/p4j03g635v/",
+        "http://localhost:8000/interventions/",
+        "http://localhost:8000/references/histogram/",
     ]
 }
