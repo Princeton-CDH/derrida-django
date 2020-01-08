@@ -27,14 +27,14 @@ sitemaps = {
 
 
 urlpatterns = [
-
-     url(r'^robots\.txt$', TemplateView.as_view(template_name='robots.txt',
+    url(r'^robots\.txt$', TemplateView.as_view(template_name='robots.txt',
         content_type='text/plain')),
     url(r'^favicon\.ico$', RedirectView.as_view(url='/static/favicon.ico',
         permanent=True)),
     url(r'^sitemap\.xml$', sitemap_views.index, {'sitemaps': sitemaps},
         name='sitemap-index'),
-    url(r'^sitemap-(?P<section>.+)\.xml$', sitemap_views.sitemap, {'sitemaps': sitemaps},
+    url(r'^sitemap-(?P<section>.+)\.xml$',
+        sitemap_views.sitemap, {'sitemaps': sitemaps},
         name='django.contrib.sitemaps.views.sitemap'),
 
     # home page managed via mezzanine, but needs a named url
@@ -48,17 +48,22 @@ urlpatterns = [
     url(r'^search/$', SearchView.as_view(), name='search'),
     url(r'^people/', include('derrida.people.urls', namespace='people')),
     url(r'^places/', include('derrida.places.urls', namespace='places')),
-    url(r'^interventions/', include('derrida.interventions.urls', namespace='interventions')),
-    url(r'^viaf/', include('viapy.urls', namespace='viaf')),
+    url(r'^interventions/', include('derrida.interventions.urls',
+        namespace='interventions')),
+    url(r'^viaf/', include(('viapy.urls', 'viapy'), namespace='viaf')),
     url(r'^outwork/', include('derrida.outwork.urls', namespace='outwork')),
 
     # local version of djiffy urls
-    url(r'^admin/iiif-books/', include('derrida.interventions.iiif_urls', namespace='djiffy')),
+    url(r'^admin/iiif-books/',
+        include(('derrida.interventions.iiif_urls', 'djiffy'),
+                namespace='djiffy')),
 
     # annotations API
-    url(r'^annotations/api/', include('annotator_store.urls', namespace='annotation-api')),
+    url(r'^annotations/api/', include('annotator_store.urls',
+        namespace='annotation-api')),
     # annotatorjs doesn't handle trailing slash in api prefix url
-    url(r'^annotations/api', annotator_views.AnnotationIndex.as_view(), name='annotation-api-prefix'),
+    url(r'^annotations/api', annotator_views.AnnotationIndex.as_view(),
+        name='annotation-api-prefix'),
 
     # content pages managed by mezzanine
     url("^", include(mezzanine.urls))
