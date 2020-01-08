@@ -1,0 +1,22 @@
+{
+    "name": "derrida-django",
+    "description": "Django web application for Derrida's Margins",
+    "author": "The Center for Digital Humanities at Princeton <cdhdevteam@princeton.edu>",
+    "license": "Apache-2.0",
+    "private": true,
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Princeton-CDH/derrida-django.git"
+    },
+    "scripts": {
+        "test": "npm run test:a11y",
+        "test:a11y": "pa11y-ci"
+    },
+    "dependencies": {
+        "autoprefixer": "^9.7.3",
+        "postcss-cli": "^7.0.0"
+    },
+    "devDependencies": {
+        "pa11y-ci": "^2.3.0"
+    }
+}
