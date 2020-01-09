@@ -59,11 +59,10 @@ class DerridaManifestImporter(ManifestImporter):
         # associated instance, bail out
         if self.update:
             try:
-                db_manifest.instance
+                assert db_manifest.instance
                 return db_manifest
             except ObjectDoesNotExist:
                 pass
-
 
         self.output('Imported %s "%s"' % (short_id, db_manifest.label))
 
@@ -140,5 +139,3 @@ class Command(BaseCommand):
             if stats['nomatch']:
                 self.stdout.write('Manifests not matched to library work instances: %(nomatch)d' \
                     % stats)
-
-

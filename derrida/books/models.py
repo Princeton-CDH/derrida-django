@@ -19,8 +19,6 @@ from derrida.people.models import Person
 from derrida.places.models import Place
 
 
-# TODO: could work/instance count be refactored for more general use?
-
 class WorkCount(models.Model):
     '''Mix-in for models related to works; adds work count property and link to
     associated works'''
@@ -82,7 +80,6 @@ class Language(Named, Notable, WorkCount, InstanceCount):
 
 class Publisher(Named, Notable, InstanceCount):
     '''Publisher of a book'''
-    pass
 
 
 class OwningInstitution(Named, Notable, InstanceCount):
@@ -101,7 +98,6 @@ class OwningInstitution(Named, Notable, InstanceCount):
 
 class Journal(Named, Notable):
     '''List of associated journals for items published as journal articles'''
-    pass
 
 
 class Work(Notable):
@@ -537,12 +533,8 @@ class Instance(Notable):
             return False
         # if image has interventions, check if it is suppressed
         if canvas.intervention_set.exists():
-            # deny if suppressed
-            if canvas in self.suppressed_images.all():
-                return False
-            else:
-                # otherwise, allow
-                return True
+            # deny if suppressed, otherwise allow
+            return canvas not in self.suppressed_images.all()
 
     @property
     def related_instances(self):
@@ -800,7 +792,6 @@ class PersonBookRelationshipType(Named, Notable):
 class PersonBook(Notable, DateRange):
     '''Interactions or connections between books and people other than
     annotation.'''
-    # FIXME: better name? concept/thing/model
     person = models.ForeignKey(Person)
     book = models.ForeignKey(Instance)
     relationship_type = models.ForeignKey(PersonBookRelationshipType)
@@ -853,8 +844,7 @@ class DerridaWorkSection(models.Model):
 
 
 class ReferenceType(Named, Notable):
-    '''Type of reference, i.e. citation, quotation, footnotes, epigraph, etc.'''
-    pass
+    '''Type of reference, i.e. citation, quotation, footnotes, epigraph.'''
 
 
 class ReferenceQuerySet(models.QuerySet):
@@ -894,7 +884,6 @@ class Reference(models.Model):
     #: :class:`DerridaWork` that references the item
     derridawork = models.ForeignKey(DerridaWork)
     #: page in the Derrida work.
-    # FIXME: does this have to be char and not integer?
     derridawork_page = models.IntegerField()
     #: location/identifier on the page
     derridawork_pageloc = models.CharField(max_length=2)
@@ -969,10 +958,7 @@ class Reference(models.Model):
         this is the work instance the section is collected in; for all other
         cases, it is the work instance associated with this reference.
         '''
-        if self.instance.collected_in:
-            return self.instance.collected_in
-        else:
-            return self.instance
+        return self.instance.collected_in or self.instance
 
     @staticmethod
     def instance_ids_with_digital_editions():

@@ -31,6 +31,3 @@ def absolutize_url(local_url, request=None):
         root = root.rstrip('/')
 
     return root + local_url
-
-
-

@@ -187,11 +187,10 @@ class Intervention(BaseAnnotation):
         '''List of annotation types. Generated from tags, excluding ink
         and pencil tags, uncertain and illegible tags, and with the
         addition of verbal or nonverbal  annotation.'''
-        # FIXME: should we restrict to known types to prevent new
         # tags from being treated as annotation types?
         tags = [tag.name for tag in self.tags.all() if not any(
-                 ['ink' in tag.name, 'pencil' in tag.name, 'uncertain' in tag.name,
-                  'illegible' in tag.name])]
+                ['ink' in tag.name, 'pencil' in tag.name,
+                 'uncertain' in tag.name, 'illegible' in tag.name])]
         if self.is_verbal():
             tags.append('verbal annotation')
         else:
@@ -202,7 +201,7 @@ class Intervention(BaseAnnotation):
     def ink(self):
         '''pen ink color or pencil, from tags'''
         return [tag.name for tag in self.tags.all() if any(
-                 ['ink' in tag.name, 'pencil' in tag.name])]
+                ['ink' in tag.name, 'pencil' in tag.name])]
 
     # NOTE: iiif_image_selection and admin_thumbnail borrowed
     # directly from cdh winthrop annotation code
@@ -236,7 +235,7 @@ class Intervention(BaseAnnotation):
         if img_selection:
             return u'<img src="%s" />' % img_selection.mini_thumbnail()
         # otherwise, if canvas is set, display canvas small thumbnail
-        elif self.canvas:
+        if self.canvas:
             return u'<img src="%s" />' % self.canvas.image.mini_thumbnail()
     admin_thumbnail.short_description = 'Thumbnail'
     admin_thumbnail.allow_tags = True

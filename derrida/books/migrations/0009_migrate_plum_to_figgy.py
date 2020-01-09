@@ -31,7 +31,7 @@ def migrate_plum_to_figgy(apps, schema_editor):
         # expecting a 302 found; ignore if we got something else
         if not response.status_code == requests.codes.found:
             # error/warn?
-            next
+            continue
 
         # update database manifest with new url and short id
         db_manif.uri = response.headers['location']

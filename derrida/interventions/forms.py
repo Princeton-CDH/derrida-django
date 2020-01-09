@@ -13,7 +13,6 @@ class InterventionSearchForm(forms.Form):
     order_by = forms.ChoiceField(choices=[
             ('author', 'Author of annotated work'),
             ('title', 'Title of annotated work'),
-            # TODO: number of annotations?
         ], required=False, initial=defaults['order_by'],
         widget=forms.RadioSelect)
 
@@ -49,8 +48,6 @@ class InterventionSearchForm(forms.Form):
         required=False)
     item_copyright_year = RangeField(label='Edition Year', required=False)
     item_print_year = RangeField(label='Printing Year', required=False)
-
-    # TODO cited_in ?
 
     # map solr facet field to corresponding form input
     solr_facet_fields = {

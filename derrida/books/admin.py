@@ -369,7 +369,6 @@ class InstanceAdmin(admin.ModelAdmin):
     search_fields = ('alternate_title', 'work__primary_title',
         'work__authors__authorized_name', 'instancecatalogue__call_number',
         'notes', 'publisher__name', 'uri')
-    # TODO: how to display sections collected by an instance?
     inlines = [ReferenceInline, InstanceCreatorInline, InstanceLanguageInline,
         InstanceCatalogueInline, PersonBookInline, FootnoteInline]
     list_filter = ('languages', 'is_extant', 'is_annotated', 'has_insertions')

@@ -101,4 +101,3 @@ class RelationSafeRTSP(RealtimeSignalProcessor):
         # Naive (listen to all model saves).
         models.signals.post_save.disconnect(self.handle_save)
         models.signals.post_delete.disconnect(self.handle_delete)
-
