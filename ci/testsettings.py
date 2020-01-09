@@ -18,10 +18,6 @@ DATABASES = {
         'USER': 'root',
         'HOST': 'localhost',
         'PORT': '',
-        'TEST': {
-                'CHARSET': 'utf8',
-                'COLLATION': 'utf8_general_ci',
-            },
     },
 
 }
