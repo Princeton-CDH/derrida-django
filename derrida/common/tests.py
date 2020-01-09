@@ -27,13 +27,14 @@ class TestNotable(TestCase):
 
     def test_has_notes(self):
         noted = Notable()
-        assert False == noted.has_notes()
+        assert not noted.has_notes()
         noted.notes = 'some text'
-        assert True == noted.has_notes()
+        assert noted.has_notes()
         noted.notes = ''
-        assert False == noted.has_notes()
+        assert not noted.has_notes()
         noted.notes = None
-        assert False == noted.has_notes()
+        assert not noted.has_notes()
+
 
 class TestDateRange(TestCase):
 

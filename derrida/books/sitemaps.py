@@ -12,7 +12,7 @@ class InstanceSitemap(Sitemap):
 
     def items(self):
         # only instances with digital editions have web pages
-        # TODO: use solr if it gets us last modified
+        # NOTE: use solr here if it gets us last modified
         return Instance.objects.filter(digital_edition__isnull=False)
 
 

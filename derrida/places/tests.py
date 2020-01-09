@@ -140,4 +140,3 @@ class TestGeonamesLookupWidget(TestCase):
         # value when the form is submitted
         assert '<option value="%(uri)s" selected>%(uri)s</option' % \
             {'uri': uri} in rendered
-

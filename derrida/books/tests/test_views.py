@@ -465,7 +465,7 @@ class TestInstanceViews(TestCase):
 
         # canvas is now suppressed
         assert p23 in item.suppressed_images.all()
-        # TODO: check that messages are set?
+        # could check that messages are set
 
         # post should process the request
         response = self.client.post(suppress_url,
@@ -620,7 +620,7 @@ class TestReferenceViews(TestCase):
 
         # test no results displayed
         response = self.client.get(reference_list_url, {'query': 'foobar'})
-        assert len(response.context['object_list']) == 0
+        assert not response.context['object_list']
         self.assertContains(response,
             'No trace of what you were searching for was found')
 
@@ -1065,8 +1065,9 @@ class TestCanvasImageView(TestCase):
         with pytest.raises(Http404):
             canvasimgview.get_proxy_url(mode='smthumb')
 
-    # TODO: test proxyview logic in preserving headers, rewriting
+    # NOTE: could test proxyview logic in preserving headers, rewriting
     # iiif id to local url, etc
+
 
 def test_range_widget():
     # range widget decompress logic

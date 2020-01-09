@@ -1015,4 +1015,3 @@ class TestInterventionsData(TestCase):
                 # spot check the data
                 assert annotations[0].get_uri() in rows[1]
                 assert annotations[0].canvas.label in rows[1]
-

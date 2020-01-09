@@ -58,4 +58,3 @@ class TestReferenceIndex(TestCase):
         text = tpl.render({'object': ref})
         assert inst.collected_in.display_title() in text
         assert inst.alternate_title in text
-

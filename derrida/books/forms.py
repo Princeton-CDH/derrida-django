@@ -206,7 +206,6 @@ class ReferenceSearchForm(forms.Form):
     language = FacetChoiceField(label='Language of Publication')
     original_language = FacetChoiceField(label='Original Language')
     pub_place = FacetChoiceField(label='Place of Publication')
-    # TODO: original pub year, edition year, print year
     reference_type = FacetChoiceField(label='Reference Type', required=False)
     derridawork = FacetChoiceField(label='Cited by Derrida in', required=False)
 
@@ -222,7 +221,6 @@ class ReferenceSearchForm(forms.Form):
         # configure field choices based on facets returned from Solr
         if not facets:
             return
-        # TODO: Generalize this for a sublcass of forms.Form?
         for facet, counts in facets.items():
             formfield = self.solr_facet_fields.get(facet, facet)
             if formfield in self.fields:
