@@ -16,27 +16,30 @@ addons:
 cache:
   directories:
   - downloads
-
+  - node_modules
 before_install:
 - sudo apt-get install -y
-- mysql -e 'CREATE DATABASE IF NOT EXISTS test;'
-- rvm install 2.2
-- gem install sass
-- npm install -g postcss-cli autoprefixer
+- mysql -e 'CREATE DATABASE IF NOT EXISTS test CHARACTER SET utf8;'
 install:
 - pip install -r requirements.txt
 - pip install -r dev-requirements.txt
 - pip install codecov
 - cp ci/testsettings.py derrida/local_settings.py
 - python -c "import uuid; print('SECRET_KEY = \'%s\'' % uuid.uuid4())" >> derrida/local_settings.py
+- npm ci # installs from package-lock.json
 before_script:
 - SOLR_VERSION=$SOLR_VERSION SOLR_CORE=$SOLR_CORE bash ci/config_solr.sh
 - python manage.py build_solr_schema --configure-directory=downloads/solr-$SOLR_VERSION/server/solr/$SOLR_CORE/conf
   --reload-core $SOLR_CORE
+- python manage.py migrate
+- python manage.py loaddata sample_work_data test_references
+- python manage.py rebuild_index --noinput  # index in solr
+- python manage.py runserver --insecure &  # run for pa11y, serve static content
 before_cache:
 - rm -rf downloads/solr-${SOLR_VERSION}/
 script:
 - py.test --cov=derrida
+- npm test
 after_success:
 - codecov
 notifications:

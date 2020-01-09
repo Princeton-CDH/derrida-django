@@ -353,7 +353,8 @@
 
         </div>
         {# deep zoom #}
-        <div id="deep-zoom"></div>
+        <a name="zoom"> </a>
+        <div name="zoom" id="deep-zoom"></div>
       </section>
 
       <div class="annotation-selections">
@@ -367,6 +368,7 @@
         {% for intervention in canvas.intervention_set.sorted_by_page_loc %}
           {% with img_info=intervention.extra_data.image_selection %}
         <button class="zone" title="annotated region"
+          id="annotations/{{ intervention.id }}"
           style="width: {{ img_info.w }}; height: {{ img_info.h }}; left: {{ img_info.x }}; top: {{ img_info.y}}">
         </button>
         {% endwith %}
@@ -378,6 +380,7 @@
 
       <section class="collection annotation-cards annotation-list" id="annotation-list">
         <a href="#toc" class="sr-only sr-only-focusable">Skip back to table of contents</a>
+        <a name="annotations"> </a>
         {% for intervention in canvas.intervention_set.sorted_by_page_loc %}
           {% include 'components/intervention-card.html' %}
         {% endfor %}
@@ -393,8 +396,8 @@
       {% endif %}
 
       {# logo for IIIF provider of digitized item #}
-      {% if instance.digital_edition.logo %}
-      <img class="img" src="{{ instance.digital_edition.logo }}"/>
+      {% if instance.digital_edition.logo %} {# no alt text available from manifest #}
+      <img class="img" src="{{ instance.digital_edition.logo }}" alt=""/>
       {% endif %}
     </footer>
   </article>

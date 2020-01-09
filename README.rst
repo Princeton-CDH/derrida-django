@@ -89,10 +89,10 @@ Initial setup and installation:
   See `MariaDB <https://mariadb.com/kb/en/library/mysql_tzinfo_to_sql/>`_'s
   info on the utility for more information.
 
-Unit Tests
-~~~~~~~~~~
+Tests
+~~~~~
 
-Unit tests are written with `py.test <http://doc.pytest.org/>`_ but use
+Python unit tests are written with `py.test <http://doc.pytest.org/>`_ but use
 Django fixture loading and convenience testing methods when that makes
 things easier. To run them, first install development requirements::
 
@@ -107,6 +107,18 @@ that require Solr.)  Any new unit tests that require Solr should use Django
 Run tests using py.test::
 
     py.test
+
+Automated accessibility testing is also possible using `pa11y <https://github.com/pa11y/pa11y>`_
+and `pa11y-ci <https://github.com/pa11y/pa11y-ci>`_. To run accessibility tests,
+start the server with ``python manage.py runserver`` and then use ``npm``::
+
+    npm run pa11y
+
+The accessibility tests are configured to read options from the ``.pa11yci.json``
+file and look for a sitemap at ``localhost:8000/sitemap.xml`` to use to crawl the
+site. Additional URLs to test can be added to the `urls` property of the
+``.pa11yci.json`` file.
+
 
 Documentation
 ~~~~~~~~~~~~~
