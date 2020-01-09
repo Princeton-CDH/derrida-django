@@ -14,6 +14,7 @@
     },
     "dependencies": {
         "autoprefixer": "^9.7.3",
+        "node-sass": "^4.13.0",
         "postcss-cli": "^7.0.0"
     },
     "devDependencies": {
