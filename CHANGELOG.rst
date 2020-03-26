@@ -3,6 +3,18 @@
 CHANGELOG
 =========
 
+1.2.4
+-----
+
+Maintenance release.
+
+* Finish adding documentation to template components
+* Add unit tests for XML sitemap code and fix error in behavior
+* Set up pa11y-ci in travis-ci build and fix errors flagged by pa11y-ci
+* bugfix: handle exception triggered by invalid search
+* bugfix: include reference type on reference card shown in visualization
+* bugfix: outwork list view on mobile displayed at half width
+
 1.2.3
 -----
 
