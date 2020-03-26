@@ -67,7 +67,6 @@ class InterventionIndex(indexes.SearchIndex, indexes.Indexable):
     #: original language; class:`derrida.books.models.Work.languages`
     item_work_language = indexes.MultiValueField(model_attr='work_instance__work__languages__name',
         faceted=True, null=True)
-    # TODO: is this populated? fallback to other dates?
     #: edition year; :class:`derrida.books.models.Instance.print_year`
     item_print_year = indexes.IntegerField(model_attr='work_instance__print_year', null=True)
     #: work publication year; :class:`derrida.books.models.Work.year`
@@ -98,5 +97,5 @@ class InterventionIndex(indexes.SearchIndex, indexes.Indexable):
         '''Return firstname, last of annotation author.'''
         if item.author:
             return item.author.firstname_last
-        else:
-            return 'Unknown'
+
+        return 'Unknown'

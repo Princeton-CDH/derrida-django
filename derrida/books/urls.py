@@ -4,6 +4,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from derrida.books import views
 
 
+app_name = 'derrida.books'
 
 urlpatterns = [
     url(r'^publishers/autocomplete/$', staff_member_required(views.PublisherAutocomplete.as_view()),
@@ -19,7 +20,7 @@ urlpatterns = [
         url(r'^$', views.ReferenceListView.as_view(), name='reference-list'),
         url(r'^histogram/$', views.ReferenceHistogramView.as_view(),
             name='reference-histogram'),
-        url(r'^histogram/(?P<derridawork_slug>[a-z-]+)/$',
+        url(r'^histogram/(?P<derridawork_slug>[a-z-\d]+)/$',
             views.ReferenceHistogramView.as_view(), {'mode': 'section'},
             name='reference-histogram'),
         url(r'^(?P<derridawork_slug>[a-z-]+)/(?P<page>[\dA-Z]+)(?P<pageloc>[a-z]+)?/$',

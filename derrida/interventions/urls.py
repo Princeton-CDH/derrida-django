@@ -5,6 +5,8 @@ from derrida.interventions import views
 from derrida.interventions.models import Intervention
 
 
+app_name = 'derrida.interventions'
+
 urlpatterns = [
     url(r'^$', views.InterventionListView.as_view(), name='list'),
     url(r'^tags/autocomplete/$',

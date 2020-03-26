@@ -2090,7 +2090,6 @@ hr {
   font-weight: normal;
   font-style: normal;
   font-size: 1.1875em;
-  font-style: italic;
   margin-top: 0.4em; }
   .collection--condensed .item__heading {
     margin-top: 0.6em;
@@ -2102,7 +2101,6 @@ hr {
   text-decoration: none;
   border-bottom: 3px solid #dbdbdb;
   transition: border-color 150ms ease;
-  color: inherit;
   line-height: 1.4; }
   .item__link:hover, .item__link:active, .item__link.is-hovered {
     color: #424242;

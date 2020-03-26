@@ -133,5 +133,5 @@ Created {created:,d}; updated {updated:,d}; unchanged {unchanged:,d}; failed {fa
 
         # Determine number of items newly created based on library count.
         stats['created'] = self.library.count_items() - initial_count
-        # TODO: success includes created; subtract created from updated?
+        # NOTE: report success includes created; subtract created from updated?
         return stats

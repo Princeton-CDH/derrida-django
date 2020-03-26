@@ -34,7 +34,7 @@ class TestManifestImporter(TestCase):
         # simulate import failed
         mocksuperimport.return_value = None
 
-        assert self.importer.import_manifest(manifest_uri, path) == None
+        assert self.importer.import_manifest(manifest_uri, path) is None
         mocksuperimport.assert_called_with(manifest_uri, path)
 
         # simulate import success but not local identifier

@@ -1,6 +1,6 @@
 from django.views.generic import ListView
-from haystack.query import SearchQuerySet
 from haystack.inputs import Clean, Raw
+from haystack.query import SearchQuerySet
 
 from derrida.outwork.models import Outwork
 
@@ -15,10 +15,6 @@ class OutworkListView(ListView):
         sqs = SearchQuerySet().models(self.model).filter(published=Raw(True))
         if self.request.GET.get('query', None):
             sqs = sqs.filter(content=Clean(self.request.GET['query']))
-
         # default sort ?
 
         return sqs
-        # return Outwork.objects.published(for_user=self.request.user)
-
-

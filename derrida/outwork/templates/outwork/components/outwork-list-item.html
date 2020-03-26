@@ -1,4 +1,8 @@
 {% load static %}
+{% comment %}
+Display outwork brief view on multi-item search and outwork list.
+Expects solr search result only.
+{% endcomment %}
 
 <section class="collection__item item outwork">
   {% comment %} currently no image for outwork
@@ -22,7 +26,7 @@
     <p class="item__author">{{ outwork.author }}</p>
     {% endif %}
     {% if outwork.orig_pubdate %}
-    <p class="item__date">1931</p>
+    <p class="item__date">{{ outwork.orig_pubdate.year }}</p>
     {% endif %}
     <p class="item__excerpt">{{ outwork.description }}</p>
   </div>

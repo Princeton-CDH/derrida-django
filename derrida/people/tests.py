@@ -1,6 +1,7 @@
 import json
 import os
 from unittest.mock import patch
+import uuid
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -173,11 +174,13 @@ class TestRelationship(TestCase):
 
 class TestPersonAutocomplete(TestCase):
 
+    password = uuid.uuid4()
+
     def setUp(self):
         User = get_user_model()
         User.objects.create_superuser(
             username='test',
-            password='secret',
+            password=self.password,
             email='foo@bar.com'
         )
         Person.objects.create(
@@ -190,10 +193,10 @@ class TestPersonAutocomplete(TestCase):
         assert response.status_code == 302
 
         # Get a response as a staff user
-        self.client.login(username='test', password='secret')
+        self.client.login(username='test', password=self.password)
         response = self.client.get(
             reverse('people:person-autocomplete'),
-            params = {'q': 'Mr.'}
+            params={'q': 'Mr.'}
         )
         assert response.status_code == 200
         data = json.loads(response.content.decode('utf-8'))
