@@ -121,18 +121,24 @@ site. Additional URLs to test can be added to the `urls` property of the
 
 
 Documentation
-~~~~~~~~~~~~~
+-------------
 
-Documentation is generated using `sphinx <http://www.sphinx-doc.org/>`__
+Documentation is generated using `sphinx <http://www.sphinx-doc.org/>`_.
 To generate documentation, first install development requirements::
 
     pip install -r dev-requirements.txt
 
-Then build the documentation using the customized make file in the `docs`
+Then build documentation using the customized make file in the `docs`
 directory::
 
     cd sphinx-docs
     make html
 
-When building documentation for a production release, use `make docs` to
-update the published documentation on GitHub Pages.
+To build and publish documentation for a release, add the ``gh-pages`` branch
+to the ``docs`` folder in your worktree::
+
+  git worktree add -B gh-pages docs origin/gh-pages
+
+In the ``sphinx-docs`` folder, use ``make docs`` to build the HTML documents
+and static assets, add it to the docs folder, and commit it for publication on
+Github Pages. After the build completes, push to GitHub from the ``docs`` folder.
