@@ -10,11 +10,11 @@ a `DH project sponsored by CDH <https://cdh.princeton.edu/projects/derridas-marg
    :target: https://zenodo.org/badge/latestdoi/83320273
    :alt: DOI: 10.5281/zenodo.1299972
 
-.. image:: https://travis-ci.org/Princeton-CDH/derrida-django.svg?branch=master
+.. image:: https://travis-ci.org/Princeton-CDH/derrida-django.svg?branch=main
    :target: https://travis-ci.org/Princeton-CDH/derrida-django
    :alt: Build status
 
-.. image:: https://codecov.io/gh/Princeton-CDH/derrida-django/branch/master/graph/badge.svg
+.. image:: https://codecov.io/gh/Princeton-CDH/derrida-django/branch/main/graph/badge.svg
    :target: https://codecov.io/gh/Princeton-CDH/derrida-django
    :alt: Code coverage
 
@@ -22,13 +22,13 @@ a `DH project sponsored by CDH <https://cdh.princeton.edu/projects/derridas-marg
    :target: https://codeclimate.com/github/Princeton-CDH/derrida-django/maintainability
    :alt: Maintainability
 
-.. image:: https://requires.io/github/Princeton-CDH/derrida-django/requirements.svg?branch=master
-   :target: https://requires.io/github/Princeton-CDH/derrida-django/requirements/?branch=master
+.. image:: https://requires.io/github/Princeton-CDH/derrida-django/requirements.svg?branch=main
+   :target: https://requires.io/github/Princeton-CDH/derrida-django/requirements/?branch=main
    :alt: Requirements Status
 
 `Current release documentation <https://princeton-cdh.github.io/derrida-django/>`_.
 
-This repository uses `git-flow <https://github.com/nvie/gitflow>`_ conventions; master
+This repository uses `git-flow <https://github.com/nvie/gitflow>`_ conventions; main
 contains the most recent release, and work in progress will be on the develop branch.
 Pull requests should be made against develop.
 
