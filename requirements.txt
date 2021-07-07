@@ -11,6 +11,7 @@ unidecode
 pucas>=0.6
 piffle>=0.3
 djiffy>=0.5
+pytest-runner
 annotator_store>=0.6
 viapy
 django-haystack>=2.7
