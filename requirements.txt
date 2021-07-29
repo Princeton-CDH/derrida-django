@@ -16,7 +16,8 @@ viapy
 django-haystack>=2.7
 pysolr
 django-widget-tweaks
-django-markdownify
+# require pre-0.9 for python 3.5 compatibility
+django-markdownify<0.9
 # manually pin a compatible version of pillow for mezzanine image preview
 pillow<4.2
 mezzanine>4.3
