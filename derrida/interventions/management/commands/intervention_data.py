@@ -88,6 +88,8 @@ class Command(reference_data.Command):
             ('page', intervention.canvas.label if intervention.canvas else ''),
             ('tags', [tag.name for tag in intervention.tags.all()]),
             ('ink', ';'.join(intervention.ink)),
+            ('page_iiif', str(intervention.canvas.image if intervention.canvas else '')),
+            ('annotation_region', str(intervention.iiif_image_selection())),
         ])
 
         # only include text and quote information if we have content
