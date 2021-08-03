@@ -86,7 +86,8 @@ class Command(reference_data.Command):
             ])),
             # canvas object *should* have a label, but possible it does not
             ('page', intervention.canvas.label if intervention.canvas else ''),
-            ('tags', [tag.name for tag in intervention.tags.all()])
+            ('tags', [tag.name for tag in intervention.tags.all()]),
+            ('ink', ';'.join(intervention.ink)),
         ])
 
         # only include text and quote information if we have content

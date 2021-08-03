@@ -955,6 +955,7 @@ class TestInterventionsData(TestCase):
         assert data['page'] == annotation.canvas.label
         assert data['tags'] == [tag.name for tag in annotation.tags.all()]
         assert data['annotator'] == annotation.author.authorized_name
+        assert data['ink'] == ';'.join(annotation.ink)
         # text and quote not included
         assert 'text' not in data
         assert 'quote' not in data
