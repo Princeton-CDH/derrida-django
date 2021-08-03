@@ -143,13 +143,8 @@ TEMPLATES = [
 ]
 
 # django-compressor settings
-# COMPRESS_PRECOMPILERS = (
-#     ('text/x-scss', 'sass --scss --quiet {infile} {outfile}'),
-# )
-
-# Use local node-sass installed via npm
 COMPRESS_PRECOMPILERS = (
-    ('text/x-scss', 'node_modules/node-sass/bin/node-sass {infile} {outfile}'),
+    ('text/x-scss', 'sass --scss --quiet {infile} {outfile}'),
 )
 
 COMPRESS_CSS_FILTERS = (

@@ -93,3 +93,8 @@ PUCAS_LDAP.update({
 
 # set to true to include analytics code in templates (i.e. in production only)
 #INCLUDE_ANALYTICS = True
+
+# If using updated sass, uncomment
+# COMPRESS_PRECOMPILERS = (
+#     ('text/x-scss', 'node_modules/node-sass/bin/node-sass {infile} {outfile}'),
+# )

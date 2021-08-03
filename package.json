@@ -14,9 +14,7 @@
     },
     "dependencies": {
         "autoprefixer": "^9.7.3",
-        "node-sass": "^6.0.1",
-        "postcss": "^8.3.5",
-        "postcss-cli": "^7.1.2"
+        "postcss-cli": "^7.0.0"
     },
     "devDependencies": {
         "pa11y-ci": "^2.3.0"
