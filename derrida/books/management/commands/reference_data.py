@@ -18,7 +18,7 @@ import os.path
 
 from django.core.management.base import BaseCommand
 
-from derrida.books.models import DerridaWork
+from derrida.books.models import DerridaWork, DerridaWorkSection
 
 
 class Command(BaseCommand):
@@ -48,6 +48,7 @@ class Command(BaseCommand):
 
             # aggregate reference data to be exported for use in generating
             # CSV and JSON output
+
             refdata = [self.reference_data(ref)
                        for ref in derrida_work.reference_set.all()]
 
@@ -69,6 +70,7 @@ class Command(BaseCommand):
     def reference_data(self, reference):
         '''Generate a dictionary of data to export for a single
          :class:`~derrida.books.models.Reference` object'''
+
         return OrderedDict([
             ('id', reference.get_uri()),
             ('page', reference.derridawork_page),
@@ -85,7 +87,10 @@ class Command(BaseCommand):
             ('interventions', [
                 intervention.get_uri()
                 for intervention in reference.interventions.all()
-            ])
+            ]),
+            # For convenience, assuming that we're only working with De la grammatologie
+            # ('section', reference.section),
+            # ('chapter', reference.chapter),
         ])
 
     def flatten_dict(self, data):

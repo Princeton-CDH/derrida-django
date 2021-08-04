@@ -839,3 +839,19 @@ class Reference(models.Model):
         ids = with_digital_eds.values_list('id', flat=True).order_by('id')
         # Return serialized JSON
         return json.dumps(list(ids))
+
+    def get_section(self):
+        '''Get the section name for a reference'''
+        # Hard coding because of the way DerridaWorkSection models are set up
+        # For convenience, assuming that we're only working with De la grammatologie
+        # Not making a property since that seems to mess with solr indexing
+        PART_2_CUTOFF = 140
+        return 'Part 1' if self.derridawork_page <= PART_2_CUTOFF else 'Part 2'
+
+    # @property
+    # def chapter(self):
+    #     # For convenience, assuming that we're only working with De la grammatologie
+    #     for section in DerridaWorkSection.objects.all():
+    #         if section.start_page and section.end_page:
+    #             if section.start_page <= self.derridawork_page <= section.end_page:
+    #                 return section.name
