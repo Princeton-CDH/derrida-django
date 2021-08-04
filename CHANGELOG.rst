@@ -3,6 +3,16 @@
 CHANGELOG
 =========
 
+1.3.0
+-----
+
+Maintenance release.
+
+* Fix IIIF links after PUL migration.
+* Pin dependencies for Python 3.5.
+* Update sphinx makefiles.
+
+
 1.2.4
 -----
 
