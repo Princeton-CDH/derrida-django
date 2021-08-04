@@ -503,7 +503,16 @@ class ReferenceDetailView(DetailView):
             derridawork_page=self.kwargs['page'],
             derridawork_pageloc=self.kwargs['pageloc'],
             derridawork__slug=self.kwargs['derridawork_slug']
-            ).first()
+        ).first()
+
+    def render_to_response(self, context, **response_kwargs):
+        response = super().render_to_response(context, **response_kwargs)
+        # allow cross-origin requests for reference cards
+        response["Access-Control-Allow-Origin"] = "*"
+        response["Access-Control-Allow-Methods"] = "GET, OPTIONS"
+        response["Access-Control-Max-Age"] = "1000"
+        response["Access-Control-Allow-Headers"] = "X-Requested-With, Content-Type"
+        return response
 
 
 class SearchView(TemplateView):
@@ -826,13 +835,6 @@ class CanvasImage(ProxyView):
             if not instance.allow_canvas_large_image(canvas):
                 raise Http404
 
-        # for specific sizes, request image info to determine available
-        # preset sizes and use the closest size larger than what we need
-        # (if the server supports it and provides sizes)
-        if mode in ['thumbnail', 'large', 'smthumb']:
-            resp = requests.get(canvas.image.info())
-            available_sizes = resp.json().get('sizes', [])
-
         min_width = min_height = None
         if mode == 'smthumb':
             # small thumbnail: 2 columns + 1 gutter = 135 (2x = 270)
@@ -850,15 +852,6 @@ class CanvasImage(ProxyView):
             min_width = min_width * 2 if min_width else None
             min_height = min_height * 2 if min_height else None
 
-        # iterate through available image sizes and use the nearest size
-        # larger than our minimum
-        for size in available_sizes:
-            if min_width and size['width'] >= min_width:
-               return canvas.image.size(**size)
-            if min_height and size['height'] >= min_height:
-               return canvas.image.size(**size)
-
-        # if no match was found or sizes are not available, use exact size
         if min_width:
             return canvas.image.size(width=min_width)
         elif min_height:

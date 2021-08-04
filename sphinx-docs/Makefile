@@ -17,11 +17,12 @@ help:
 # build production documentation for publishing on github pages
 # run the html build, then move to /docs/ folder and add to git
 docs:
-	rm -rf ../docs
+	rm -rf ../docs/*
 	@make html
-	mv html ../docs
+	mv html/* ../docs/
 	touch ../docs/.nojekyll
-	git add -f ../docs
+	cd ../docs && git add --all && git commit -m "Publishing updated documentation on gh-pages" && cd ..
+
 
 # Catch-all target: route all unknown targets to Sphinx using the new
 # "make mode" option.  $(O) is meant as a shortcut for $(SPHINXOPTS).

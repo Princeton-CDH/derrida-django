@@ -975,30 +975,7 @@ class TestCanvasImageView(TestCase):
 
         canvasimgview.kwargs = {'slug': item.slug, 'short_id': cover.short_id}
         imgurl = canvasimgview.get_proxy_url(mode='smthumb')
-        mockrequests.get.assert_called_with(str(cover.image.info()))
-        mockrequests.get.return_value.json.assert_called_with()
-        # smallest size larger than small thumbnail width 135 is 138x225
-        assert str(imgurl) == str(cover.image.size(width=138, height=225))
-        imgurl = canvasimgview.get_proxy_url(mode='thumbnail')
-        # smallest size larger than thumbnail width 218 is 275x450
-        assert str(imgurl) == str(cover.image.size(width=275, height=450))
-        imgurl = canvasimgview.get_proxy_url(mode='large')
-        # smallest size larger than large height 900 is 549x900
-        assert str(imgurl) == str(cover.image.size(width=549, height=900))
-
-        # 2x variants
-        canvasimgview.kwargs = {'slug': item.slug, 'short_id': cover.short_id,
-            'x': '@2x'}
-        imgurl = canvasimgview.get_proxy_url(mode='smthumb')
-        # smallest size larger than small thumbnail @2x width 270 is 275x450
-        assert str(imgurl) == str(cover.image.size(width=275, height=450))
-        imgurl = canvasimgview.get_proxy_url(mode='thumbnail')
-        # smallest size larger than thumbnail @2x width 435 is 549x900
-        assert str(imgurl) == str(cover.image.size(width=549, height=900))
-        imgurl = canvasimgview.get_proxy_url(mode='large')
-        # smallest size larger than large height @2x 1800 is 1097x1800
-        assert str(imgurl) == str(cover.image.size(width=1097, height=1800))
-
+        
         imgurl = canvasimgview.get_proxy_url(mode='info')
         assert str(imgurl) == str(cover.image.info())
 
@@ -1008,32 +985,6 @@ class TestCanvasImageView(TestCase):
         assert str(imgurl) == str(cover.image \
                 .region(x=0, y=0, width=2048, height=2048).size(width=1024))
 
-        # large image restricted to certain images only
-        # - turn off @2x size
-        canvasimgview.kwargs = {'slug': item.slug, 'short_id': cover.short_id}
-        # - expected sizes based on mock image info
-        large_size_opts = {'width': 549, 'height': 900}
-
-        # - overview image
-        canvasimgview.kwargs['short_id'] = cover2.short_id
-        imgurl = canvasimgview.get_proxy_url(mode='large')
-        assert str(imgurl) == str(cover2.image.size(**large_size_opts))
-        # - insertion image
-        canvasimgview.kwargs['short_id'] = ins.short_id
-        imgurl = canvasimgview.get_proxy_url(mode='large')
-        assert str(imgurl) == str(ins.image.size(**large_size_opts))
-        # page with interventions
-        canvasimgview.kwargs['short_id'] = p23.short_id
-        imgurl = canvasimgview.get_proxy_url(mode='large')
-        assert str(imgurl) == str(p23.image.size(**large_size_opts))
-        # page without interventions should 404
-        with pytest.raises(Http404):
-            mockrequests.reset_mock()
-            canvasimgview.kwargs['short_id'] = p24.short_id
-            canvasimgview.get_proxy_url(mode='large')
-        assert not mockrequests.get.called
-
-        # test fall-back logic when info sizes are unavailable
         canvasimgview.kwargs = {'slug': item.slug, 'short_id': cover.short_id}
         mockrequests.get.return_value.json.return_value = {}
         imgurl = canvasimgview.get_proxy_url(mode='smthumb')

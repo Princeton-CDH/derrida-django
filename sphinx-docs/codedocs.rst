@@ -84,12 +84,6 @@ Export Reference data
 .. automodule:: derrida.books.management.commands.reference_data
     :members:
 
-Export to Zotero
-~~~~~~~~~~~~~~~~
-
-.. automodule:: derrida.books.management.commands.export_zotero
-    :members:
-
 People
 ------
 .. automodule:: derrida.people
