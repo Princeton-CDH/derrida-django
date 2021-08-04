@@ -28,7 +28,7 @@ class Command(BaseCommand):
     #: fields for CSV output
     csv_fields = [
         'id', 'page', 'page location', 'type', 'book title', 'book id',
-        'book page', 'book type', 'anchor text', 'interventions'
+        'book page', 'book type', 'anchor text', 'interventions', 'section'
     ]
 
     def add_arguments(self, parser):
@@ -89,7 +89,7 @@ class Command(BaseCommand):
                 for intervention in reference.interventions.all()
             ]),
             # For convenience, assuming that we're only working with De la grammatologie
-            # ('section', reference.section),
+            ('section', reference.get_section()),
             # ('chapter', reference.chapter),
         ])
 

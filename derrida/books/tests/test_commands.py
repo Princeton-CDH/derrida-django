@@ -154,6 +154,7 @@ class TestReferenceData(TestCase):
         assert refdata['book']['page'] == ref.book_page
         assert refdata['type'] == str(ref.reference_type)
         assert refdata['anchor text'] == ref.anchor_text
+        assert refdata['section'] == ref.get_section()
         assert not refdata['interventions']
 
         # reference *with* corresponding intervention
