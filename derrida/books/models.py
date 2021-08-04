@@ -848,10 +848,13 @@ class Reference(models.Model):
         PART_2_CUTOFF = 140
         return 'Part 1' if self.derridawork_page <= PART_2_CUTOFF else 'Part 2'
 
-    # @property
-    # def chapter(self):
-    #     # For convenience, assuming that we're only working with De la grammatologie
-    #     for section in DerridaWorkSection.objects.all():
-    #         if section.start_page and section.end_page:
-    #             if section.start_page <= self.derridawork_page <= section.end_page:
-    #                 return section.name
+    def get_chapter(self):
+        # For convenience, assuming that we're only working with De la grammatologie
+        # Not making a property since that seems to mess with solr indexing
+
+        assert False
+        for section in DerridaWorkSection.objects.all():
+            if section.start_page and section.end_page:
+                if section.start_page <= self.derridawork_page <= section.end_page:
+                    return section.name
+                    

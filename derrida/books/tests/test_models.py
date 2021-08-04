@@ -216,16 +216,17 @@ class TestReference(TestCase):
         )
         assert ref.get_section() == 'Part 1'
 
-    # def test_chapter(self):
-    #     ref = Reference.objects.create(
-    #         instance=self.la_vie,
-    #         derridawork=self.dg,
-    #         derridawork_page='110',
-    #         derridawork_pageloc='a',
-    #         book_page='10s',
-    #         reference_type=self.quotation
-    #     )
-    #     assert ref.chapter == 'Chapter 3'
+    def test_chapter(self):
+        ref = Reference.objects.create(
+            instance=self.la_vie,
+            derridawork=self.dg,
+            derridawork_page=110,
+            derridawork_pageloc='a',
+            book_page='10s',
+            reference_type=self.quotation
+        )
+        
+        assert ref.get_chapter() == 'Chapter 3'
 
 
 class TestReferenceQuerySet(TestCase):
