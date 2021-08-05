@@ -23,9 +23,7 @@ class Command(BaseCommand):
     #: fields for CSV output
     csv_fields = [
         'id', 'item_type', 'work_title', 'work_short_title',
-        # 'alternate_title',
-        # 'work_year',
-        # 'copyright_year',
+        'alternate_title', 'work_year', 'copyright_year',
         # 'print_date',
         # 'work_authors',
         # 'publisher',
@@ -49,6 +47,34 @@ class Command(BaseCommand):
         # 'has_digital_edition',
         # 'uri',
         # 'zotero_id'
+
+    
+
+    # copyright_year: instance.copyright_year
+    # print_date: instance.print_date taking into account print date day/month/year known fieldst
+    # work_authors: work.authors
+    # publisher: instance.publisher
+    # pub_place: instance.pub_place
+    # is_extant
+    # is_annotated
+    # is_translation
+    # has_dedication
+    # has_insertions
+    # copy
+    # dimensions
+    # work_uri
+    # work_authors
+    # work_subjects
+    # languages
+    # journal_title: instance.journal.name
+    # book_title: instance.collected_in.display_title
+    # book_title_uri: instance.collected_in.
+    # start_page
+    # end_page
+    # has_digital_edition
+    # uri [finding aid url: these almost certainly don't resolve anymore! can we get help from PUL to get catalog links for the same items?]
+    # zotero_id (for compatibility with previous dataset)
+
     ]
 
     def add_arguments(self, parser):
@@ -86,6 +112,10 @@ class Command(BaseCommand):
             ('item_type', instance.item_type),
             ('work_title', instance.work.primary_title),
             ('work_short_title', instance.work.short_title),
+            ('alternate_title', instance.alternate_title),
+            ('work_year', instance.work.year),
+            ('copyright_year', instance.copyright_year),
+            
         ])
 
 
