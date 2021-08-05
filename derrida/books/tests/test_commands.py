@@ -16,7 +16,7 @@ from pytest import raises
 
 from derrida.books.models import Instance, Reference, DerridaWork
 from derrida.books.management.commands import import_digitaleds, \
-    reference_data
+    reference_data, instance_data
 
 
 class TestManifestImporter(TestCase):
@@ -210,3 +210,52 @@ class TestReferenceData(TestCase):
                 assert str(references[0].book_page) in rows[1]
                 assert references[0].anchor_text in rows[1]
                 assert str(references[0].reference_type) in rows[1]
+
+class TestInstanceData(TestCase):
+    fixtures = ['test_instances']
+
+    def setUp(self):
+        self.cmd = instance_data.Command()
+        self.cmd.stdout = StringIO()
+
+    def test_instance_data(self):
+        # reference with no corresponding intervention
+        inst = Instance.objects.filter(cited_in__isnull=False).first()
+        instdata = self.cmd.instance_data(inst)
+        assert instdata['id'] == inst.get_uri()
+
+    def test_command_line(self):
+        # test calling via command line with args
+
+        # generate output in a temporary directory
+        with tempfile.TemporaryDirectory(prefix='derrida-insts-') as outputdir:
+            stdout = StringIO()
+            call_command('instance_data', directory=outputdir, stdout=stdout)
+
+            derrida_work = DerridaWork.objects.first()
+            instances = Instance.objects.filter(cited_in__isnull=False)
+
+            base_filename = os.path.join(outputdir, 'derrida-instance-data')
+
+            # inspect JSON output
+            with open('{}.json'.format(base_filename)) as jsonfile:
+                jsondata = json.load(jsonfile)
+                # should be one entry for each reference
+                assert len(jsondata) == instances.count()
+                # spot check the data included
+                assert jsondata[0]['id'] == instances[0].get_uri()
+
+            # inspect CSV output
+            with open('{}.csv'.format(base_filename)) as csvfile:
+                # first byte should be UTF-8 byte order mark
+                assert csvfile.read(1) == codecs.BOM_UTF8.decode()
+
+                # then read as CSV
+                csvreader = csv.reader(csvfile)
+
+                rows = [row for row in csvreader]
+                # row count should be number of refs + header
+                assert len(rows) == instances.count() + 1
+                assert rows[0] == self.cmd.csv_fields
+                # spot check the data
+                assert instances[0].get_uri() in rows[1]
