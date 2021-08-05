@@ -841,7 +841,7 @@ class Reference(models.Model):
         return json.dumps(list(ids))
 
     def get_section(self):
-        '''Get the section name for a reference'''
+        '''Get the section name for a reference in grammatologie'''
         # Hard coding because of the way DerridaWorkSection models are set up
         # For convenience, assuming that we're only working with De la grammatologie
         # Not making a property since that seems to mess with solr indexing
@@ -849,11 +849,14 @@ class Reference(models.Model):
         return 'Part 1' if self.derridawork_page <= PART_2_CUTOFF else 'Part 2'
 
     def get_chapter(self):
+        '''Get the chapter name for a reference in grammatologie'''
         # For convenience, assuming that we're only working with De la grammatologie
         # Not making a property since that seems to mess with solr indexing
         # Some references have a page number before the first section (?)
 
         for section in DerridaWorkSection.objects.all():
+            # Chapters have start and end pages, otherwise they're "Part 1" or "Part 2"
+            #  and handled by the get_section method
             if section.start_page and section.end_page:
                 if section.start_page <= self.derridawork_page <= section.end_page:
                     return section.name

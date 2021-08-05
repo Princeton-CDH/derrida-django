@@ -251,7 +251,6 @@ class TestReference(TestCase):
             end_page=120
         )
 
-
         assert ref.get_chapter() == 'Chapter 3'
 
 

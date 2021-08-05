@@ -28,7 +28,7 @@ class Command(BaseCommand):
     #: fields for CSV output
     csv_fields = [
         'id', 'page', 'page location', 'type', 'book title', 'book id',
-        'book page', 'book type', 'anchor text', 'interventions', 'section'
+        'book page', 'book type', 'anchor text', 'interventions', 'section', 'chapter',
     ]
 
     def add_arguments(self, parser):
@@ -90,7 +90,7 @@ class Command(BaseCommand):
             ]),
             # For convenience, assuming that we're only working with De la grammatologie
             ('section', reference.get_section()),
-            # ('chapter', reference.chapter),
+            ('chapter', reference.get_chapter()),
         ])
 
     def flatten_dict(self, data):
