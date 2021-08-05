@@ -240,6 +240,9 @@ class TestInstanceData(TestCase):
         assert instdata['is_translation'] == inst.is_translation
         assert instdata['has_dedication'] == inst.has_dedication
         assert instdata['has_insertions'] == inst.has_insertions
+        assert instdata['copy'] == inst.copy
+        assert instdata['dimensions'] == inst.dimensions
+        assert instdata['work_uri'] == inst.work.uri
 
     def test_command_line(self):
         # test calling via command line with args

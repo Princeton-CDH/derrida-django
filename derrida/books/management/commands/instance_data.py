@@ -26,10 +26,7 @@ class Command(BaseCommand):
         'alternate_title', 'work_year', 'copyright_year',
         'print_date', 'work_authors', 'publisher', 'pub_place',
         'is_extant', 'is_annotated', 'is_translation', 'has_dedication',
-        'has_insertions',
-        # 'copy',
-        # 'dimensions',
-        # 'work_uri',
+        'has_insertions', 'copy', 'dimensions', 'work_uri',
         # 'work_subjects',
         # 'languages',
         # 'journal_title',
@@ -109,6 +106,9 @@ class Command(BaseCommand):
             ('is_translation', instance.is_translation),
             ('has_dedication', instance.has_dedication),
             ('has_insertions', instance.has_insertions),
+            ('copy', instance.copy),
+            ('dimensions', instance.dimensions),
+            ('work_uri', instance.work.uri),
         ])
 
 
