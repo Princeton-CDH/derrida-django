@@ -225,7 +225,33 @@ class TestReference(TestCase):
             book_page='10s',
             reference_type=self.quotation
         )
-        
+
+        # Create sections to search through
+        DerridaWorkSection.objects.create(
+            name='Part 1',
+            order=1,
+            derridawork=self.dg,
+            start_page=None,
+            end_page=None
+        )
+
+        DerridaWorkSection.objects.create(
+            name='Chapter 1',
+            order=2,
+            derridawork=self.dg,
+            start_page=1,
+            end_page=107
+        )
+
+        DerridaWorkSection.objects.create(
+            name='Chapter 3',
+            order=2,
+            derridawork=self.dg,
+            start_page=108,
+            end_page=120
+        )
+
+
         assert ref.get_chapter() == 'Chapter 3'
 
 

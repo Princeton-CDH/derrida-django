@@ -851,10 +851,9 @@ class Reference(models.Model):
     def get_chapter(self):
         # For convenience, assuming that we're only working with De la grammatologie
         # Not making a property since that seems to mess with solr indexing
+        # Some references have a page number before the first section (?)
 
-        assert False
         for section in DerridaWorkSection.objects.all():
             if section.start_page and section.end_page:
                 if section.start_page <= self.derridawork_page <= section.end_page:
                     return section.name
-                    
