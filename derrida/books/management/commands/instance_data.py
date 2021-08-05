@@ -24,10 +24,7 @@ class Command(BaseCommand):
     csv_fields = [
         'id', 'item_type', 'work_title', 'work_short_title',
         'alternate_title', 'work_year', 'copyright_year',
-        # 'print_date',
-        # 'work_authors',
-        # 'publisher',
-        # 'pub_place',
+        'print_date', 'work_authors', 'publisher', 'pub_place',
         # 'is_extant',
         # 'is_annotated',
         # 'is_translation',
@@ -36,7 +33,6 @@ class Command(BaseCommand):
         # 'copy',
         # 'dimensions',
         # 'work_uri',
-        # 'work_authors',
         # 'work_subjects',
         # 'languages',
         # 'journal_title',
@@ -48,13 +44,6 @@ class Command(BaseCommand):
         # 'uri',
         # 'zotero_id'
 
-    
-
-    # copyright_year: instance.copyright_year
-    # print_date: instance.print_date taking into account print date day/month/year known fieldst
-    # work_authors: work.authors
-    # publisher: instance.publisher
-    # pub_place: instance.pub_place
     # is_extant
     # is_annotated
     # is_translation
@@ -63,7 +52,6 @@ class Command(BaseCommand):
     # copy
     # dimensions
     # work_uri
-    # work_authors
     # work_subjects
     # languages
     # journal_title: instance.journal.name
@@ -115,7 +103,10 @@ class Command(BaseCommand):
             ('alternate_title', instance.alternate_title),
             ('work_year', instance.work.year),
             ('copyright_year', instance.copyright_year),
-            
+            ('print_date', str(instance.print_date) if instance.print_date else ''),
+            ('work_authors', [str(author) for author in instance.work.authors.all()]),
+            ('publisher', instance.publisher.name if instance.publisher else ''),
+            ('pub_place', [place.name for place in instance.pub_place.all()]),
         ])
 
 

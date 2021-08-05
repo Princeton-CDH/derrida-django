@@ -220,7 +220,9 @@ class TestInstanceData(TestCase):
 
     def test_instance_data(self):
         # reference with no corresponding intervention
-        inst = Instance.objects.filter(cited_in__isnull=False).first()
+        inst = Instance.objects.filter(cited_in__isnull=False, 
+            work__authors__isnull=False, publisher__isnull=False,
+            print_date__isnull=False).first()
         instdata = self.cmd.instance_data(inst)
         assert instdata['id'] == inst.get_uri()
         assert instdata['item_type'] == inst.item_type
@@ -229,6 +231,10 @@ class TestInstanceData(TestCase):
         assert instdata['alternate_title'] == inst.alternate_title
         assert instdata['work_year'] == inst.work.year
         assert instdata['copyright_year'] == inst.copyright_year
+        assert instdata['print_date'] == str(inst.print_date) # taking into account print date day/month/year known fieldst
+        assert instdata['publisher'] == inst.publisher.name
+        assert instdata['work_authors'] == [str(author) for author in inst.work.authors.all()]
+        assert instdata['pub_place'][0] == inst.pub_place.all()[0].name
 
     def test_command_line(self):
         # test calling via command line with args
