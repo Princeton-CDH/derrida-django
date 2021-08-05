@@ -223,6 +223,9 @@ class TestInstanceData(TestCase):
         inst = Instance.objects.filter(cited_in__isnull=False).first()
         instdata = self.cmd.instance_data(inst)
         assert instdata['id'] == inst.get_uri()
+        assert instdata['item_type'] == inst.item_type
+        assert instdata['work_title'] == inst.work.primary_title
+        assert instdata['work_short_title'] == inst.work.short_title
 
     def test_command_line(self):
         # test calling via command line with args
@@ -244,6 +247,8 @@ class TestInstanceData(TestCase):
                 assert len(jsondata) == instances.count()
                 # spot check the data included
                 assert jsondata[0]['id'] == instances[0].get_uri()
+                assert jsondata[0]['item_type'] == instances[0].item_type
+                assert jsondata[0]['work_title'] == instances[0].work.primary_title
 
             # inspect CSV output
             with open('{}.csv'.format(base_filename)) as csvfile:
@@ -259,3 +264,5 @@ class TestInstanceData(TestCase):
                 assert rows[0] == self.cmd.csv_fields
                 # spot check the data
                 assert instances[0].get_uri() in rows[1]
+                assert instances[0].item_type in rows[1]
+                assert instances[0].work.primary_title in rows[1]

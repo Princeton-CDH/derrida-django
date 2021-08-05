@@ -22,10 +22,7 @@ class Command(BaseCommand):
 
     #: fields for CSV output
     csv_fields = [
-        'id',
-        # 'item_type',
-        # 'work_title ',
-        # 'work_short_title ',
+        'id', 'item_type', 'work_title', 'work_short_title',
         # 'alternate_title',
         # 'work_year',
         # 'copyright_year',
@@ -86,6 +83,9 @@ class Command(BaseCommand):
          :class:`~derrida.books.models.Instance` object'''
         return OrderedDict([
             ('id', instance.get_uri()),
+            ('item_type', instance.item_type),
+            ('work_title', instance.work.primary_title),
+            ('work_short_title', instance.work.short_title),
         ])
 
 
