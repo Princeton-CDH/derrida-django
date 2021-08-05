@@ -25,11 +25,8 @@ class Command(BaseCommand):
         'id', 'item_type', 'work_title', 'work_short_title',
         'alternate_title', 'work_year', 'copyright_year',
         'print_date', 'work_authors', 'publisher', 'pub_place',
-        # 'is_extant',
-        # 'is_annotated',
-        # 'is_translation',
-        # 'has_dedication',
-        # 'has_insertions',
+        'is_extant', 'is_annotated', 'is_translation', 'has_dedication',
+        'has_insertions',
         # 'copy',
         # 'dimensions',
         # 'work_uri',
@@ -107,6 +104,11 @@ class Command(BaseCommand):
             ('work_authors', [str(author) for author in instance.work.authors.all()]),
             ('publisher', instance.publisher.name if instance.publisher else ''),
             ('pub_place', [place.name for place in instance.pub_place.all()]),
+            ('is_extant', instance.is_extant),
+            ('is_annotated', instance.is_annotated),
+            ('is_translation', instance.is_translation),
+            ('has_dedication', instance.has_dedication),
+            ('has_insertions', instance.has_insertions),
         ])
 
 

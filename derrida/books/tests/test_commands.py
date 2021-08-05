@@ -235,6 +235,11 @@ class TestInstanceData(TestCase):
         assert instdata['publisher'] == inst.publisher.name
         assert instdata['work_authors'] == [str(author) for author in inst.work.authors.all()]
         assert instdata['pub_place'][0] == inst.pub_place.all()[0].name
+        assert instdata['is_extant'] == inst.is_extant
+        assert instdata['is_annotated'] == inst.is_annotated
+        assert instdata['is_translation'] == inst.is_translation
+        assert instdata['has_dedication'] == inst.has_dedication
+        assert instdata['has_insertions'] == inst.has_insertions
 
     def test_command_line(self):
         # test calling via command line with args
