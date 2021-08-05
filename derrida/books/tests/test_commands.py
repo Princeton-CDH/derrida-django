@@ -219,10 +219,13 @@ class TestInstanceData(TestCase):
         self.cmd.stdout = StringIO()
 
     def test_instance_data(self):
+        # Properties of work, journal, authors, collected_in will be null, and
+        #  are thus not properly tested. Either build out the fixtures or leave
+        #  them untested.
+
         # reference with no corresponding intervention
         inst = Instance.objects.filter(cited_in__isnull=False, 
-            work__authors__isnull=False, publisher__isnull=False,
-            print_date__isnull=False).first()
+            publisher__isnull=False, print_date__isnull=False).first()
         instdata = self.cmd.instance_data(inst)
         assert instdata['id'] == inst.get_uri()
         assert instdata['item_type'] == inst.item_type
@@ -244,6 +247,10 @@ class TestInstanceData(TestCase):
         assert instdata['copy'] == inst.copy
         assert instdata['dimensions'] == inst.dimensions
         assert instdata['work_uri'] == inst.work.uri
+        assert instdata['work_subjects'] == [str(subject) for subject in inst.work.subjects.all()]
+        assert instdata['languages'] == [str(language) for language in inst.languages.all()]
+        assert instdata['journal_title'] == ''
+
 
     def test_command_line(self):
         # test calling via command line with args
