@@ -1,0 +1,75 @@
+name: unit tests
+
+on:
+  push: # run on every push or PR to any branch
+  pull_request:
+
+env:
+  SOLR_VERSION: 6.6.5
+  SOLR_CORE: test-derrida
+  JAVA_HOME: /usr/lib/jvm/java-8-openjdk-amd64
+
+jobs:
+  python-unit:
+    name: python unit tests
+    runs-on: ubuntu-latest
+
+    services:
+      db:
+        image: mariadb
+        env:
+          MYSQL_DATABASE: derrida
+          MYSQL_ROOT_PASSWORD: derrida
+        ports:
+          - 3306:3306
+      # solr:
+      #   image: solr:6.6
+      #   ports:
+      #     - 8983:8983
+    steps:
+      - uses: actions/checkout@v2
+      # - run: docker cp solr_conf ${{ job.services.solr.id }}:/opt/solr/server/solr/configsets/derrida
+      # - run: docker exec --user root ${{ job.services.solr.id }} /bin/bash -c "chown -R solr:solr /opt/solr/server/solr/configsets/derrida"
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.5
+      - uses: actions/cache@v2
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      # Perform installations
+      - run: pip install -r requirements.txt
+      - run: pip install -r dev-requirements.txt
+      - run: pip install codecov
+      - run: cp ci/testsettings.py derrida/local_settings.py
+      - run: python -c "import uuid; print('SECRET_KEY = \'%s\'' % uuid.uuid4())" >> derrida/local_settings.py
+      - run: npm ci
+      - run: SOLR_VERSION=$SOLR_VERSION SOLR_CORE=$SOLR_CORE bash ci/config_solr.sh
+      
+      # Configure site
+      - run: python manage.py build_solr_schema --configure-directory=downloads/solr-$SOLR_VERSION/server/solr/$SOLR_CORE/conf --reload-core $SOLR_CORE
+      - run: python manage.py migrate
+      - run: python manage.py loaddata sample_work_data test_references
+      - run: python manage.py rebuild_index --noinput  # index in solr
+      - run: python manage.py runserver --insecure &  # run for pa11y, serve static content
+
+      # Perform test
+      - run: py.test --cov=derrida
+      
+      - run: echo "SLACK_COLOR=$(if [ "$JOB_STATUS" == "success" ]; then echo "good"; elif [ "$JOB_STATUS" == "failure" ]; then echo "danger"; else echo "warning"; fi)" >> $GITHUB_ENV
+        if: ${{ always() }}
+        env:
+          JOB_STATUS: ${{ job.status }}
+      - uses: rtCamp/action-slack-notify@master
+        if: ${{ always() && (github.event_name == 'schedule' || github.event_name == 'push') }}
+        continue-on-error: true
+        env:
+          SLACK_COLOR: ${{ env.SLACK_COLOR }}
+          SLACK_WEBHOOK: ${{ secrets.ACTIONS_SLACK_WEBHOOK }}
+          SLACK_TITLE: "Workflow `${{ github.workflow }}`: ${{ job.status }}"
+          SLACK_MESSAGE: "Run <https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|#${{ github.run_number }}> on <https://github.com/${{ github.repository }}/|${{ github.repository }}@${{ github.ref }}>"
+          SLACK_FOOTER: "<https://github.com/${{ github.repository }}/commit/${{ github.sha }}|View commit>"
+          MSG_MINIMAL: true
