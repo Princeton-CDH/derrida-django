@@ -7,7 +7,7 @@ on:
 env:
   SOLR_VERSION: 6.6.5
   SOLR_CORE: test-derrida
-  JAVA_HOME: /usr/lib/jvm/java-8-openjdk-amd64
+  # JAVA_HOME: /usr/lib/jvm/java-8-openjdk-amd64
 
 jobs:
   python-unit:
@@ -41,7 +41,7 @@ jobs:
             ${{ runner.os }}-pip-
 
       # Perform installations
-      - run: pip install --no-dependencies -r ci-requirements.txt
+      - run: pip install -r requirements.txt
       - run: pip install codecov
       - run: cp ci/testsettings.py derrida/local_settings.py
       - run: python -c "import uuid; print('SECRET_KEY = \'%s\'' % uuid.uuid4())" >> derrida/local_settings.py
