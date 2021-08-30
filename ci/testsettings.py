@@ -17,7 +17,7 @@ DATABASES = {
         'NAME': 'derrida',
         'USER': 'root',
         'HOST': 'localhost',
-        'PORT': '',
+        'PORT': '3306',
     },
 
 }
