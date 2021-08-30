@@ -1,0 +1,36 @@
+django>=1.11.19,<2.0
+mysqlclient
+django-compressor
+django-compressor-autoprefixer
+django-autocomplete-light<3.3
+requests
+rdflib
+django-sortedm2m
+attrdict
+unidecode
+pucas>=0.6
+piffle>=0.3
+djiffy>=0.5
+pytest-runner
+annotator_store>=0.6
+viapy
+django-haystack>=2.7
+pysolr
+django-widget-tweaks
+# require pre-0.9 for python 3.5 compatibility
+django-markdownify<0.9
+# manually pin a compatible version of pillow for mezzanine image preview
+pillow<4.2
+mezzanine>4.3
+django-fullurl
+django-apptemplates
+roman
+progressbar2
+pytest>=3.6,<4 # required for pytest-django-haystack (<4) and pytest-django (>=3.6)
+pytest-django
+pytest-cov
+# note: pytest-sugar is optional but pretty
+pytest-sugar
+django-debug-toolbar
+sphinx
+pytest-django-haystack>=0.3.0
