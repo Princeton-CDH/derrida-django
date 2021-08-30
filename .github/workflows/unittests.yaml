@@ -45,11 +45,11 @@ jobs:
 
       # Configure site
       # --configure-directory=DOCKER//opt/solr/server/solr/$SOLR_CORE/conf
-      # - run: python manage.py build_solr_schema --reload-core $SOLR_CORE
-      # - run: python manage.py migrate
-      # - run: python manage.py loaddata sample_work_data test_references
-      # - run: python manage.py rebuild_index --noinput # index in solr
-      # - run: python manage.py runserver --insecure & # run for pa11y, serve static content
+      - run: python manage.py build_solr_schema --reload-core $SOLR_CORE
+      - run: python manage.py migrate
+      - run: python manage.py loaddata sample_work_data test_references
+      - run: python manage.py rebuild_index --noinput # index in solr
+      - run: python manage.py runserver --insecure & # run for pa11y, serve static content
 
       # Perform test
       - run: python -m pytest
