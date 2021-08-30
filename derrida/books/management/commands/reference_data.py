@@ -54,7 +54,9 @@ class Command(BaseCommand):
 
             # list of dictionaries can be output as is for JSON export
             with open('{}.json'.format(base_filename), 'w') as jsonfile:
-                json.dump(refdata, jsonfile, indent=2)
+                # Remove fields that are null
+                json_refdata = [{field: ref[field] for field in ref.keys() if ref[field]} for ref in refdata]
+                json.dump(json_refdata, jsonfile, indent=2)
 
             # generate CSV export
             with open('{}.csv'.format(base_filename), 'w') as csvfile:
