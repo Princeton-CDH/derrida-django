@@ -35,14 +35,14 @@ jobs:
 
       # Perform installations
       - run: pip install -r requirements.txt
-      - run: pip install codecov
+      # - run: pip install codecov
       - run: cp ci/testsettings.py derrida/local_settings.py
       - run: python -c "import uuid; print('SECRET_KEY = \'%s\'' % uuid.uuid4())" >> derrida/local_settings.py
       - run: npm ci
 
       # configure solr
       - name: Create solr core
-        run: docker exec --user root /opt/solr/bin/solr create -c $SOLR_CORE -n basic_configs
+        run: docker exec --user root ${{ job.services.solr.id }} /bin/bash -c "/opt/solr/bin/solr create -c $SOLR_CORE -n basic_configs"
 
       # Configure site
       # --configure-directory=DOCKER//opt/solr/server/solr/$SOLR_CORE/conf
@@ -53,4 +53,4 @@ jobs:
       - run: python manage.py runserver --insecure & # run for pa11y, serve static content
 
       # Perform test
-      - run: py.test --cov=derrida
+      # - run: py.test --cov=derrida
