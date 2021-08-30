@@ -35,6 +35,7 @@ jobs:
 
       # Perform installations
       - run: pip install -r requirements.txt
+      - run: pip install -r dev-requirements.txt
       # - run: pip install codecov
       - run: cp ci/testsettings.py derrida/local_settings.py
       - run: python -c "import uuid; print('SECRET_KEY = \'%s\'' % uuid.uuid4())" >> derrida/local_settings.py
