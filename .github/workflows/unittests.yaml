@@ -30,13 +30,19 @@ jobs:
         with:
           # This version is necessary for CI to run, despite the site being on python 3.5
           python-version: 3.7.6
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 8.16
 
       # Perform installations
       - run: pip install -r ci/ci-requirements.lock
+      - run: npm ci
+      - run: npm install node-sass -g
       # - run: pip install codecov
+
+      # Setup local settings
       - run: cp ci/testsettings.py derrida/local_settings.py
       - run: python -c "import uuid; print('SECRET_KEY = \'%s\'' % uuid.uuid4())" >> derrida/local_settings.py
-      - run: npm ci
 
       # configure solr
       - name: Create solr core
