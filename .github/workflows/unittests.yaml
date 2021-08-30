@@ -22,23 +22,18 @@ jobs:
           MYSQL_ROOT_PASSWORD: derrida
         ports:
           - 3306:3306
-      # solr:
-      #   image: solr:6.6
-      #   ports:
-      #     - 8983:8983
+      solr:
+        image: solr:6.6
+        ports:
+          - 8983:8983
     steps:
       - uses: actions/checkout@v2
-      # - run: docker cp solr_conf ${{ job.services.solr.id }}:/opt/solr/server/solr/configsets/derrida
-      # - run: docker exec --user root ${{ job.services.solr.id }} /bin/bash -c "chown -R solr:solr /opt/solr/server/solr/configsets/derrida"
+      - run: docker cp solr_conf ${{ job.services.solr.id }}:/opt/solr/server/solr/configsets/derrida
+      - run: docker exec --user root ${{ job.services.solr.id }} /bin/bash -c "chown -R solr:solr /opt/solr/server/solr/configsets/derrida"
       - uses: actions/setup-python@v2
         with:
+          # This version is necessary for CI to run, despite the site being on python 3.5
           python-version: 3.7.6
-      - uses: actions/cache@v2
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
 
       # Perform installations
       - run: pip install -r requirements.txt
@@ -46,7 +41,7 @@ jobs:
       - run: cp ci/testsettings.py derrida/local_settings.py
       - run: python -c "import uuid; print('SECRET_KEY = \'%s\'' % uuid.uuid4())" >> derrida/local_settings.py
       - run: npm ci
-      - run: SOLR_VERSION=$SOLR_VERSION SOLR_CORE=$SOLR_CORE bash ci/config_solr.sh
+      # - run: SOLR_VERSION=$SOLR_VERSION SOLR_CORE=$SOLR_CORE bash ci/config_solr.sh
 
       # Configure site
       - run: python manage.py build_solr_schema --configure-directory=downloads/solr-$SOLR_VERSION/server/solr/$SOLR_CORE/conf --reload-core $SOLR_CORE
@@ -57,18 +52,3 @@ jobs:
 
       # Perform test
       - run: py.test --cov=derrida
-
-      - run: echo "SLACK_COLOR=$(if [ "$JOB_STATUS" == "success" ]; then echo "good"; elif [ "$JOB_STATUS" == "failure" ]; then echo "danger"; else echo "warning"; fi)" >> $GITHUB_ENV
-        if: ${{ always() }}
-        env:
-          JOB_STATUS: ${{ job.status }}
-      # - uses: rtCamp/action-slack-notify@master
-      #   if: ${{ always() && (github.event_name == 'schedule' || github.event_name == 'push') }}
-      #   continue-on-error: true
-      #   env:
-      #     SLACK_COLOR: ${{ env.SLACK_COLOR }}
-      #     SLACK_WEBHOOK: ${{ secrets.ACTIONS_SLACK_WEBHOOK }}
-      #     SLACK_TITLE: "Workflow `${{ github.workflow }}`: ${{ job.status }}"
-      #     SLACK_MESSAGE: "Run <https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|#${{ github.run_number }}> on <https://github.com/${{ github.repository }}/|${{ github.repository }}@${{ github.ref }}>"
-      #     SLACK_FOOTER: "<https://github.com/${{ github.repository }}/commit/${{ github.sha }}|View commit>"
-      #     MSG_MINIMAL: true
