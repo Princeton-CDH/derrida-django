@@ -18,7 +18,7 @@ import os.path
 
 from django.core.management.base import BaseCommand
 
-from derrida.books.models import DerridaWork
+from derrida.books.models import DerridaWork, DerridaWorkSection
 
 
 class Command(BaseCommand):
@@ -28,7 +28,7 @@ class Command(BaseCommand):
     #: fields for CSV output
     csv_fields = [
         'id', 'page', 'page location', 'type', 'book title', 'book id',
-        'book page', 'book type', 'anchor text', 'interventions'
+        'book page', 'book type', 'anchor text', 'interventions', 'section', 'chapter',
     ]
 
     def add_arguments(self, parser):
@@ -48,12 +48,15 @@ class Command(BaseCommand):
 
             # aggregate reference data to be exported for use in generating
             # CSV and JSON output
+
             refdata = [self.reference_data(ref)
                        for ref in derrida_work.reference_set.all()]
 
             # list of dictionaries can be output as is for JSON export
             with open('{}.json'.format(base_filename), 'w') as jsonfile:
-                json.dump(refdata, jsonfile, indent=2)
+                # Remove fields that are null
+                json_refdata = [{field: ref[field] for field in ref.keys() if ref[field]} for ref in refdata]
+                json.dump(json_refdata, jsonfile, indent=2)
 
             # generate CSV export
             with open('{}.csv'.format(base_filename), 'w') as csvfile:
@@ -69,6 +72,7 @@ class Command(BaseCommand):
     def reference_data(self, reference):
         '''Generate a dictionary of data to export for a single
          :class:`~derrida.books.models.Reference` object'''
+
         return OrderedDict([
             ('id', reference.get_uri()),
             ('page', reference.derridawork_page),
@@ -85,7 +89,10 @@ class Command(BaseCommand):
             ('interventions', [
                 intervention.get_uri()
                 for intervention in reference.interventions.all()
-            ])
+            ]),
+            # For convenience, assuming that we're only working with De la grammatologie
+            ('section', reference.get_section()),
+            ('chapter', reference.get_chapter()),
         ])
 
     def flatten_dict(self, data):
