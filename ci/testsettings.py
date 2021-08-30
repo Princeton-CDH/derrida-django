@@ -14,7 +14,7 @@ COMPRESS_ENABLED = False
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'test',
+        'NAME': 'derrida',
         'USER': 'root',
         'HOST': 'localhost',
         'PORT': '',
