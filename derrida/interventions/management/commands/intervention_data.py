@@ -76,6 +76,14 @@ class Command(reference_data.Command):
         # NOTE: using OrderedDict to ensure JSON output follows logical
         # order in Python < 3.6, where dict order is not guaranteed
 
+        # This is URL pattern `canvas-image`. How would I get get that information here?
+        page_iiif = ('https://derridas-margins.princeton.edu/library/' + 
+            intervention.work_instance.slug + 
+            '/gallery/images/' + intervention.canvas.short_id + '/large@2x/' 
+            if intervention.canvas and intervention.canvas else ''
+        )
+        # annotation_region = #
+
         data = OrderedDict([
             ('id', intervention.get_uri()),
             # every intervention *should* be associated with a book,
@@ -89,7 +97,7 @@ class Command(reference_data.Command):
             ('page', intervention.canvas.label if intervention.canvas else ''),
             ('tags', [tag.name for tag in intervention.tags.all()]),
             ('ink', intervention.ink),
-            ('page iiif', str(intervention.canvas.image if intervention.canvas else '')),
+            ('page iiif', page_iiif),
             ('annotation region', str(intervention.iiif_image_selection())),
         ])
 
