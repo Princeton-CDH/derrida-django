@@ -105,7 +105,7 @@ class Command(BaseCommand):
             # for a nested subdictionary, combine key and nested key
             if isinstance(val, dict):
                 for subkey, subval in val.items():
-                    flat_data[' '.join([key, subkey])] = subval
+                    flat_data['_'.join([key, subkey])] = subval
             # convert list to a delimited string
             elif isinstance(val, list):
                 flat_data[key] = ';'.join(val)
