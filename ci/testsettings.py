@@ -41,4 +41,6 @@ COMPRESS_PRECOMPILERS = (
     ('text/x-scss', 'node_modules/node-sass/bin/node-sass {infile} {outfile}'),
 )
 
+COMPRESS_AUTOPREFIXER_BINARY = 'node_modules/postcss-cli/bin/postcss'
+
 # secret key added as a travis build step

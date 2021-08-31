@@ -39,7 +39,9 @@ jobs:
       - run: npm ci
       # HACK: Use different sass
       - run: npm uninstall postcss-cli postcss node-sass
-      - run: npm install postcss-cli postcss node-sass
+      - run: npm install postcss-cli
+      - run: npm install postcss
+      - run: npm install node-sass
       # - run: pip install codecov
 
       # Setup local settings
