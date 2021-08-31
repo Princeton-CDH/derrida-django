@@ -58,7 +58,7 @@ jobs:
       - name: upload configured schema
         run: docker cp tmp-solr-config ${{ job.services.solr.id }}:/opt/solr/server/solr/$SOLR_CORE/conf
       - name: restart solr
-        run: docker exec --user root ${{ job.services.solr.id }} /bin/bash -c "/opt/solr/bin/solr restart"
+        run: docker exec --user solr ${{ job.services.solr.id }} /bin/bash -c "/opt/solr/bin/solr restart"
 
       - run: python manage.py migrate
       - run: python manage.py loaddata sample_work_data test_references
