@@ -30,7 +30,7 @@ class Command(BaseCommand):
         'is_extant', 'is_annotated', 'is_translation', 'has_dedication',
         'has_insertions', 'copy', 'dimensions', 'work_uri',
         'work_subjects', 'languages', 'journal_title',
-        # 'book_title', 'book_title_uri', 
+        'book_title', 'book_title_uri', 
         # 'start_page',
         # 'end_page',
         # 'has_digital_edition',
@@ -101,6 +101,8 @@ class Command(BaseCommand):
             ('work_subjects', [str(subject) for subject in instance.work.subjects.all()]),
             ('languages', [str(language) for language in instance.languages.all()]),
             ('journal_title', instance.journal.name if instance.journal else ''),
+            ('book_title', instance.collected_in.display_title() if instance.collected_in else ''),
+            ('book_title_uri', instance.collected_in.get_uri() if instance.collected_in else ''),
         ])
 
 

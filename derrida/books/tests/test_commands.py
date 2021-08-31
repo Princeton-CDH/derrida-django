@@ -251,6 +251,12 @@ class TestInstanceData(TestCase):
         assert instdata['languages'] == [str(language) for language in inst.languages.all()]
         assert instdata['journal_title'] == ''
 
+        inst = Instance.objects.filter(
+            collected_in__isnull=False).first()
+        instdata = self.cmd.instance_data(inst)
+        assert instdata['book_title'] == inst.collected_in.display_title()
+        assert instdata['book_title_uri'] == inst.collected_in.get_uri()
+
 
     def test_command_line(self):
         # test calling via command line with args
