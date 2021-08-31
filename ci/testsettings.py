@@ -35,7 +35,10 @@ HAYSTACK_CONNECTIONS = {
 # for unit tests, that swap test connection in for default
 HAYSTACK_TEST_CONNECTIONS = HAYSTACK_CONNECTIONS
 
-
-
+# HACK: Use different sass
+# Use local node-sass installed via npm
+COMPRESS_PRECOMPILERS = (
+    ('text/x-scss', 'node_modules/node-sass/bin/node-sass {infile} {outfile}'),
+)
 
 # secret key added as a travis build step
