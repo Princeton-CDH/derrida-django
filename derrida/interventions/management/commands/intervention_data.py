@@ -32,7 +32,8 @@ class Command(reference_data.Command):
     csv_fields = [
         'id', 'book id', 'book title', 'book type', 'page', 'tags', 'text content',
         'text language', 'text language code', 'text translation',
-        'quote content', 'quote language', 'quote language code', 'annotator'
+        'quote content', 'quote language', 'quote language code', 'annotator',
+        'annotation region', 'ink', 'page iiif',
     ]
 
     #: base filename, for CSV and JSON output
@@ -87,9 +88,9 @@ class Command(reference_data.Command):
             # canvas object *should* have a label, but possible it does not
             ('page', intervention.canvas.label if intervention.canvas else ''),
             ('tags', [tag.name for tag in intervention.tags.all()]),
-            ('ink', ';'.join(intervention.ink)),
-            ('page_iiif', str(intervention.canvas.image if intervention.canvas else '')),
-            ('annotation_region', str(intervention.iiif_image_selection())),
+            ('ink', intervention.ink),
+            ('page iiif', str(intervention.canvas.image if intervention.canvas else '')),
+            ('annotation region', str(intervention.iiif_image_selection())),
         ])
 
         # only include text and quote information if we have content
