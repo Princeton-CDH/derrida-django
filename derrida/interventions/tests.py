@@ -956,7 +956,7 @@ class TestInterventionsData(TestCase):
         assert data['tags'] == [tag.name for tag in annotation.tags.all()]
         assert data['annotator'] == annotation.author.authorized_name
         assert data['ink'] == annotation.ink
-        assert annotation.canvas.short_id in data['page iiif'] 
+        assert annotation.canvas.short_id in data['page iiif']
         assert data['annotation region'] == str(annotation.iiif_image_selection())
 
         # text and quote not included
