@@ -49,14 +49,12 @@ jobs:
       - run: docker exec --user solr ${{ job.services.solr.id }} /bin/bash -c "/opt/solr/bin/solr create -c $SOLR_CORE -n basic_configs"
 
       # Configure site
-      # --configure-directory=DOCKER//opt/solr/server/solr/$SOLR_CORE/conf
-      # copy contents of solr container config locally
-      - name: Copy solr config
-        run: docker cp ${{ job.services.solr.id }}:/opt/solr/server/solr/$SOLR_CORE/conf tmp-solr-config
-      - name: run build_solr_schema to local schema
-        run: python manage.py build_solr_schema --configure-directory=tmp-solr-config
-      - name: upload configured schema
-        run: docker cp tmp-solr-config ${{ job.services.solr.id }}:/opt/solr/server/solr/$SOLR_CORE/conf
+      # - name: Copy solr config
+      #   run: docker cp ${{ job.services.solr.id }}:/opt/solr/server/solr/$SOLR_CORE/conf tmp-solr-config
+      # - name: run build_solr_schema to local schema
+      #   run: python manage.py build_solr_schema --configure-directory=tmp-solr-config
+      # - name: upload configured schema
+      #   run: docker cp tmp-solr-config ${{ job.services.solr.id }}:/opt/solr/server/solr/$SOLR_CORE/conf
       - name: restart solr
         run: docker exec --user solr ${{ job.services.solr.id }} /bin/bash -c "/opt/solr/bin/solr restart"
 
