@@ -32,12 +32,14 @@ jobs:
           python-version: 3.7.6
       - uses: actions/setup-node@v2
         with:
-          node-version: 8.16
+          # This version is necessary for CI to run, despite the site being on node 8.16
+          node-version: 10.16.3
 
       # Perform installations
       - run: pip install -r ci/ci-requirements.lock
       - run: npm install -g yarn
       - run: yarn install
+      - run: yarn add postcss-cli postcss node-sass
       # - run: npm ci
       # HACK: Use different sass
       # - run: npm uninstall postcss-cli postcss node-sass
