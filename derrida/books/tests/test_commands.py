@@ -256,6 +256,8 @@ class TestInstanceData(TestCase):
         instdata = self.cmd.instance_data(inst)
         assert instdata['book_title'] == inst.collected_in.display_title()
         assert instdata['book_title_uri'] == inst.collected_in.get_uri()
+        assert instdata['start_page'] == inst.start_page
+        assert instdata['end_page'] == inst.end_page
 
 
     def test_command_line(self):

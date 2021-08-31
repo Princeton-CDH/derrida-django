@@ -31,8 +31,7 @@ class Command(BaseCommand):
         'has_insertions', 'copy', 'dimensions', 'work_uri',
         'work_subjects', 'languages', 'journal_title',
         'book_title', 'book_title_uri', 
-        # 'start_page',
-        # 'end_page',
+        'start_page', 'end_page',
         # 'has_digital_edition',
         # 'uri',
         # 'zotero_id'
@@ -103,6 +102,8 @@ class Command(BaseCommand):
             ('journal_title', instance.journal.name if instance.journal else ''),
             ('book_title', instance.collected_in.display_title() if instance.collected_in else ''),
             ('book_title_uri', instance.collected_in.get_uri() if instance.collected_in else ''),
+            ('start_page', instance.start_page),
+            ('end_page', instance.end_page),
         ])
 
 
