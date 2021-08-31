@@ -49,7 +49,8 @@ class Command(BaseCommand):
 
         # list of dictionaries can be output as is for JSON export
         with open('{}.json'.format(base_filename), 'w') as jsonfile:
-            json.dump(instancedata, jsonfile, indent=2)
+            json_instancedata = [{field: inst[field] for field in inst.keys() if inst[field] not in [None, '', []]} for inst in instancedata]
+            json.dump(json_instancedata, jsonfile, indent=2)
 
         # generate CSV export
         with open('{}.csv'.format(base_filename), 'w') as csvfile:
