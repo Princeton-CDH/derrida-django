@@ -41,7 +41,7 @@ jobs:
       - run: npm uninstall postcss-cli postcss node-sass
       - run: npm install postcss-cli
       - run: npm install postcss
-      - run: npm install node-sass
+      - run: npm install -f node-sass
       # - run: pip install codecov
 
       # Setup local settings
