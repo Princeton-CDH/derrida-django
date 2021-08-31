@@ -32,18 +32,7 @@ class Command(BaseCommand):
         'work_subjects', 'languages', 'journal_title',
         'book_title', 'book_title_uri', 
         'start_page', 'end_page',
-        # 'has_digital_edition',
-        # 'uri',
-        # 'zotero_id'
-
-    # book_title: instance.collected_in.display_title
-    # book_title_uri: instance.collected_in.
-    # start_page
-    # end_page
-    # has_digital_edition
-    # uri [finding aid url: these almost certainly don't resolve anymore! can we get help from PUL to get catalog links for the same items?]
-    # zotero_id (for compatibility with previous dataset)
-
+        'has_digital_edition', 'uri', 'zotero_id'
     ]
 
     def add_arguments(self, parser):
@@ -104,6 +93,9 @@ class Command(BaseCommand):
             ('book_title_uri', instance.collected_in.get_uri() if instance.collected_in else ''),
             ('start_page', instance.start_page),
             ('end_page', instance.end_page),
+            ('has_digital_edition', bool(instance.digital_edition)),
+            ('uri', instance.uri), # TODO: Test the number of links that resolve
+            ('zotero_id', instance.zotero_id),
         ])
 
 
