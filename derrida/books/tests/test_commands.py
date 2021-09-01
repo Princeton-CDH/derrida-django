@@ -229,8 +229,8 @@ class TestInstanceData(TestCase):
         instdata = self.cmd.instance_data(inst)
         assert instdata['id'] == inst.get_uri()
         assert instdata['item_type'] == inst.item_type
-        assert instdata['work_title'] == inst.work.primary_title
-        assert instdata['work_short_title'] == inst.work.short_title
+        assert instdata['title'] == inst.work.primary_title
+        assert instdata['short_title'] == inst.work.short_title
         assert instdata['alternate_title'] == inst.alternate_title
         assert instdata['work_year'] == inst.work.year
         assert instdata['copyright_year'] == inst.copyright_year
@@ -283,7 +283,7 @@ class TestInstanceData(TestCase):
                 # spot check the data included
                 assert jsondata[0]['id'] == instances[0].get_uri()
                 assert jsondata[0]['item_type'] == instances[0].item_type
-                assert jsondata[0]['work_title'] == instances[0].work.primary_title
+                assert jsondata[0]['title'] == instances[0].work.primary_title
 
             # inspect CSV output
             with open('{}.csv'.format(base_filename)) as csvfile:

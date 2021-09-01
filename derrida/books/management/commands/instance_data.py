@@ -22,7 +22,7 @@ class Command(BaseCommand):
 
     #: fields for CSV output
     csv_fields = [
-        'id', 'item_type', 'work_title', 'work_short_title',
+        'id', 'item_type', 'title', 'short_title',
         'alternate_title', 'work_year', 'copyright_year',
         # TODO: take into account print date day/month/year known fields
         # 'print_date', 
@@ -69,8 +69,8 @@ class Command(BaseCommand):
         return OrderedDict([
             ('id', instance.get_uri()),
             ('item_type', instance.item_type),
-            ('work_title', instance.work.primary_title),
-            ('work_short_title', instance.work.short_title),
+            ('title', instance.work.primary_title),
+            ('short_title', instance.work.short_title),
             ('alternate_title', instance.alternate_title),
             ('work_year', instance.work.year),
             ('copyright_year', instance.copyright_year),
