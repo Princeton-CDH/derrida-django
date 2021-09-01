@@ -237,7 +237,7 @@ class TestInstanceData(TestCase):
         # TODO: take into account print date day/month/year known fields
         # assert instdata['print_date'] == str(inst.print_date) 
         assert instdata['publisher'] == inst.publisher.name
-        assert instdata['work_authors'] == [str(author) for author in inst.work.authors.all()]
+        assert instdata['authors'] == [str(author) for author in inst.work.authors.all()]
         assert instdata['pub_place'][0] == inst.pub_place.all()[0].name
         assert instdata['is_extant'] == inst.is_extant
         assert instdata['is_annotated'] == inst.is_annotated

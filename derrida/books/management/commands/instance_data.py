@@ -26,7 +26,7 @@ class Command(BaseCommand):
         'alternate_title', 'work_year', 'copyright_year',
         # TODO: take into account print date day/month/year known fields
         # 'print_date', 
-        'work_authors', 'publisher', 'pub_place',
+        'authors', 'publisher', 'pub_place',
         'is_extant', 'is_annotated', 'is_translation', 'has_dedication',
         'has_insertions', 'copy', 'dimensions', 'work_uri',
         'work_subjects', 'languages', 'journal_title',
@@ -76,7 +76,7 @@ class Command(BaseCommand):
             ('copyright_year', instance.copyright_year),
             # TODO: take into account print date day/month/year known fields
             # ('print_date', str(instance.print_date) if instance.print_date else ''),
-            ('work_authors', [str(author) for author in instance.work.authors.all()]),
+            ('authors', [str(author) for author in instance.work.authors.all()]),
             ('publisher', instance.publisher.name if instance.publisher else ''),
             ('pub_place', [place.name for place in instance.pub_place.all()]),
             ('is_extant', instance.is_extant),
