@@ -247,7 +247,7 @@ class TestInstanceData(TestCase):
         assert instdata['copy'] == inst.copy
         assert instdata['dimensions'] == inst.dimensions
         assert instdata['work_uri'] == inst.work.uri
-        assert instdata['work_subjects'] == [str(subject) for subject in inst.work.subjects.all()]
+        assert instdata['subjects'] == [str(subject) for subject in inst.work.subjects.all()]
         assert instdata['languages'] == [str(language) for language in inst.languages.all()]
         assert instdata['journal_title'] == ''
 
