@@ -85,7 +85,6 @@ class Command(BaseCommand):
             ('has_dedication', instance.has_dedication),
             ('has_insertions', instance.has_insertions),
             ('copy', instance.copy),
-            ('dimensions', instance.dimensions),
             ('work_uri', instance.work.uri),
             ('subjects', [str(subject) for subject in instance.work.subjects.all()]),
             ('languages', [str(language) for language in instance.languages.all()]),
