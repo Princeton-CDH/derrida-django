@@ -65,7 +65,7 @@ jobs:
       - name: upload configured schema
         run: docker cp tmp-solr-config ${{ job.services.solr.id }}:/opt/solr/server/solr/$SOLR_CORE/conf
       - name: Reload solr core
-        run: curl http://localhost:8983/solr/admin/cores?action=RELOAD\&core=${{ SOLR_CORE }}
+        run: curl http://localhost:8983/solr/admin/cores?action=RELOAD\&core=$SOLR_CORE
 
       - run: python manage.py migrate
       - run: python manage.py loaddata sample_work_data test_references
