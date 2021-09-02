@@ -14,9 +14,10 @@ import os.path
 from django.core.management.base import BaseCommand
 
 from derrida.books.models import Instance
+from derrida.books.management.commands import reference_data
 
 
-class Command(BaseCommand):
+class Command(reference_data.Command):
     '''Export reference data for each Derrida Work as CSV and JSON'''
     help = __doc__
 
@@ -97,25 +98,3 @@ class Command(BaseCommand):
             ('uri', instance.uri), # TODO: Test the number of links that resolve
             ('zotero_id', instance.zotero_id),
         ])
-
-
-    # NOTE: This is the same for both, should I just call the other one?
-    #  Should we centralize? Is it even worth it at this point?
-    def flatten_dict(self, data):
-        '''Flatten a dictionary with nested dictionaries or lists into a
-        key value pairs that can be output as CSV.  Nested dictionaries will be
-        flattened and keys combined; lists will be converted into semi-colon
-        delimited strings.'''
-        flat_data = {}
-        for key, val in data.items():
-            # for a nested subdictionary, combine key and nested key
-            if isinstance(val, dict):
-                for subkey, subval in val.items():
-                    flat_data[' '.join([key, subkey])] = subval
-            # convert list to a delimited string
-            elif isinstance(val, list):
-                flat_data[key] = ';'.join(val)
-            else:
-                flat_data[key] = val
-
-        return flat_data
