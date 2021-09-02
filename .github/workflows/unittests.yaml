@@ -59,7 +59,10 @@ jobs:
 
       # Perform test
       - name: Run pytest
-        run: pytest --cov=derrida
+        run: pytest --cov=derrida --cov-report=xml
+
+      - name: Upload test coverage to Codecov
+        uses: codecov/codecov-action@v1
 
       # Set the color of the slack message used in the next step based on the
       # status of the build: "warning" for failure and "good" for success
