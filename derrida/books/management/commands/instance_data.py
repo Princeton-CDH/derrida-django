@@ -82,8 +82,7 @@ class Command(reference_data.Command):
     def collect_all_languages(self, instance):
         if instance.work:
             return list(set([str(lang) for lang in instance.work.languages.all()] + [str(lang) for lang in instance.languages.all()]))
-        else:
-            return [str(lang) for lang in instance.languages.all()] 
+        return [str(lang) for lang in instance.languages.all()]
 
     def parse_date_certainty(self, instance):
         if not instance.print_date:
@@ -91,10 +90,9 @@ class Command(reference_data.Command):
         
         if instance.print_date_day_known:
             return str(instance.print_date)
-        elif instance.print_date_month_known:
+        if instance.print_date_month_known:
             return instance.print_date.strftime('%Y-%m')
-        else:
-            return str(instance.print_date.year)
+        return str(instance.print_date.year)
 
 
     def instance_data(self, instance):
