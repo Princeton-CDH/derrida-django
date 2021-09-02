@@ -25,8 +25,7 @@ class Command(reference_data.Command):
     csv_fields = [
         'id', 'item_type', 'title', 'short_title',
         'alternate_title', 'work_year', 'copyright_year',
-        # TODO: take into account print date day/month/year known fields
-        # 'print_date', 
+        'print_date', 
         'authors', 'publisher', 'pub_place',
         'is_extant', 'is_annotated', 'is_translation', 'has_dedication',
         'has_insertions', 'copy', 'dimensions', 'work_uri',
@@ -87,6 +86,18 @@ class Command(reference_data.Command):
         else:
             return [str(lang) for lang in instance.languages.all()] 
 
+    def parse_date_certainty(self, instance):
+        if not instance.print_date:
+            return
+        
+        if instance.print_date_day_known:
+            return str(instance.print_date)
+        elif instance.print_date_month_known:
+            return instance.print_date.strftime('%Y-%m')
+        else:
+            return str(instance.print_date.year)
+
+
     def instance_data(self, instance):
         '''Generate a dictionary of data to export for a single
          :class:`~derrida.books.models.Instance` object'''
@@ -99,8 +110,7 @@ class Command(reference_data.Command):
             ('alternate_title', instance.alternate_title),
             ('work_year', instance.work.year),
             ('copyright_year', instance.copyright_year),
-            # TODO: take into account print date day/month/year known fields
-            # ('print_date', str(instance.print_date) if instance.print_date else ''),
+            ('print_date', self.parse_date_certainty(instance)),
             ('authors', [str(author) for author in instance.work.authors.all()]),
             ('publisher', instance.publisher.name if instance.publisher else ''),
             ('pub_place', [place.name for place in instance.pub_place.all()]),

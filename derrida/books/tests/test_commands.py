@@ -6,6 +6,7 @@ import json
 import os.path
 import tempfile
 from unittest.mock import Mock, MagicMock, patch
+from datetime import date
 
 from django.core.management import call_command
 from django.core.management.base import CommandError
@@ -245,6 +246,17 @@ class TestInstanceData(TestCase):
         assert 'Chinese' in all_languages
         assert 'Vietnamese' in all_languages
         assert len(set(all_languages)) == len(all_languages)
+    
+    def test_print_date_certainty(self):
+        inst = Instance.objects.filter(print_date__isnull=False).first()
+        inst.print_date = date(1901, 1, 1)
+        inst.print_date_day_known = True
+        assert self.cmd.parse_date_certainty(inst) == '1901-01-01'
+        inst.print_date_day_known = False
+        inst.print_date_month_known = True
+        assert self.cmd.parse_date_certainty(inst) == '1901-01'
+        inst.print_date_month_known = False
+        assert self.cmd.parse_date_certainty(inst) == '1901'
 
     def test_instance_data(self):
         # Properties of work, journal, authors, collected_in will be null, and
@@ -262,8 +274,7 @@ class TestInstanceData(TestCase):
         assert instdata['alternate_title'] == inst.alternate_title
         assert instdata['work_year'] == inst.work.year
         assert instdata['copyright_year'] == inst.copyright_year
-        # TODO: take into account print date day/month/year known fields
-        # assert instdata['print_date'] == str(inst.print_date) 
+        assert instdata['print_date'] == self.cmd.parse_date_certainty(inst)
         assert instdata['publisher'] == inst.publisher.name
         assert instdata['authors'] == [str(author) for author in inst.work.authors.all()]
         assert instdata['pub_place'][0] == inst.pub_place.all()[0].name
