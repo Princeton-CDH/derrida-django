@@ -28,54 +28,58 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
         with:
-          # This version is necessary for CI to run, despite the site being on python 3.5
+          # Run on python 3.6 since 3.5 is no longer supported
           python-version: 3.6
-      - uses: actions/setup-node@v2
-        with:
-          # This version is necessary for CI to run, despite the site being on node 8.16
-          node-version: 10.16.3
 
       # Perform installations
-      - run: pip install -r ci/ci-requirements.lock
-      # - run: npm install -g yarn
-      # - run: yarn install
-      # - run: yarn add postcss-cli postcss node-sass
-      # - run: npm ci
-      # HACK: Use different sass
-      # - run: npm uninstall postcss-cli postcss node-sass
-      # - run: npm install postcss-cli
-      # - run: npm install postcss
-      # - run: npm install -f node-sass
-      - run: pip install codecov
-      - run: sudo apt-get install ruby-sass
+      - name: Install dependencies
+        run: |
+          pip install -r ci/ci-requirements.lock
+          pip install codecov
+          sudo apt-get install ruby-sass
 
       # Setup local settings
-      - name: Copy test settings to local settings
-        run: cp ci/testsettings.py derrida/local_settings.py
-      - name: Generate secret key and add to local settings
-        run: python -c "import uuid; print('SECRET_KEY = \'%s\'' % uuid.uuid4())" >> derrida/local_settings.py
+      - name: Configure test settings as local settings
+        run: |
+          cp ci/testsettings.py derrida/local_settings.py
+          python -c "import uuid; print('SECRET_KEY = \'%s\'' % uuid.uuid4())" >> derrida/local_settings.py
 
-      # configure solr core
-      - name: Create solr core with basic configs
-        run: docker exec ${{ job.services.solr.id }} /bin/bash -c "/opt/solr/bin/solr create -c $SOLR_CORE -n basic_config"
-      - name: Copy solr core config to local vm
-        run: docker cp ${{ job.services.solr.id }}:/opt/solr/server/solr/derrida/conf /tmp/derrida-conf
-      - name: Customize solr schema with haystack
-        run: python manage.py build_solr_schema --configure-directory=/tmp/derrida-conf
-      - name: Remove uncustomized solr conf
-        run: docker exec ${{ job.services.solr.id }} /bin/bash -c "rm -rf /opt/solr/server/solr/derrida/conf"
-        # copy in to solr configset directory
-      - name: Copy updated solr config back to solr
-        run: docker cp /tmp/derrida-conf ${{ job.services.solr.id }}:/opt/solr/server/solr/derrida/conf
-      - name: Reload the solr core
-        run: python manage.py build_solr_schema --configure-directory=/tmp/derrida-conf  --reload-core $SOLR_CORE
-
-      # skip runserver site for pa11y
-      # - run: python manage.py migrate
-      # - run: python manage.py loaddata sample_work_data test_references
-      # - run: python manage.py rebuild_index --noinput # index in solr
-      # - run: python manage.py runserver --insecure & # run for pa11y, serve static content
+      # configure solr core per haystack directions
+      # create a new core with basic configs
+      # copy core config to local machine and remove from docker vm
+      # use haystack to customize the config, copy it back, and reload the core
+      - name: Setup solr core
+        run: |
+          docker exec ${{ job.services.solr.id }} /bin/bash -c "/opt/solr/bin/solr create -c $SOLR_CORE -n basic_config"
+          docker cp ${{ job.services.solr.id }}:/opt/solr/server/solr/derrida/conf /tmp/derrida-conf
+          python manage.py build_solr_schema --configure-directory=/tmp/derrida-conf
+          docker exec ${{ job.services.solr.id }} /bin/bash -c "rm -rf /opt/solr/server/solr/derrida/conf"
+          docker cp /tmp/derrida-conf ${{ job.services.solr.id }}:/opt/solr/server/solr/derrida/conf
+          python manage.py build_solr_schema --configure-directory=/tmp/derrida-conf  --reload-core $SOLR_CORE
 
       # Perform test
-      # - run: python -m pytest
-      - run: pytest --cov=derrida
+      - name: Run pytest
+        run: pytest --cov=derrida
+
+      # Set the color of the slack message used in the next step based on the
+      # status of the build: "warning" for failure and "good" for success
+      - name: Set Slack message color based on build status
+        if: ${{ always() }}
+        env:
+          JOB_STATUS: ${{ job.status }}
+        run: echo "SLACK_COLOR=$(if [ "$JOB_STATUS" == "success" ]; then echo "good"; elif [ "$JOB_STATUS" == "failure" ]; then echo "danger"; else echo "warning"; fi)" >> $GITHUB_ENV
+
+      # Send a message to slack to report the build status. The webhook is stored
+      # at the organization level and available to all repositories. Only run on
+      # scheduled builds & pushes, since PRs automatically report to Slack.
+      - name: Report status to Slack
+        uses: rtCamp/action-slack-notify@master
+        if: ${{ always() && (github.event_name == 'schedule' || github.event_name == 'push') }}
+        continue-on-error: true
+        env:
+          SLACK_COLOR: ${{ env.SLACK_COLOR }}
+          SLACK_WEBHOOK: ${{ secrets.ACTIONS_SLACK_WEBHOOK }}
+          SLACK_TITLE: "Workflow `${{ github.workflow }}`: ${{ job.status }}"
+          SLACK_MESSAGE: "Run <https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|#${{ github.run_number }}> on <https://github.com/${{ github.repository }}/|${{ github.repository }}@${{ github.ref }}>"
+          SLACK_FOOTER: "<https://github.com/${{ github.repository }}/commit/${{ github.sha }}|View commit>"
+          MSG_MINIMAL: true # use compact slack message format
