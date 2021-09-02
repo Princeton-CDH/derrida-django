@@ -46,7 +46,8 @@ jobs:
       # - run: npm install postcss-cli
       # - run: npm install postcss
       # - run: npm install -f node-sass
-      # - run: pip install codecov
+      - run: pip install codecov
+      - run: sudo apt-get install ruby-sass
 
       # Setup local settings
       - run: cp ci/testsettings.py derrida/local_settings.py
@@ -67,11 +68,12 @@ jobs:
       - name: Reload solr core
         run: curl http://localhost:8983/solr/admin/cores?action=RELOAD\&core=$SOLR_CORE
 
-      - run: python manage.py migrate
-      - run: python manage.py loaddata sample_work_data test_references
-      - run: python manage.py rebuild_index --noinput # index in solr
-      - run: python manage.py runserver --insecure & # run for pa11y, serve static content
+      # skip runserver site for pa11y
+      # - run: python manage.py migrate
+      # - run: python manage.py loaddata sample_work_data test_references
+      # - run: python manage.py rebuild_index --noinput # index in solr
+      # - run: python manage.py runserver --insecure & # run for pa11y, serve static content
 
       # Perform test
-      - run: python -m pytest
-      # - run: py.test --cov=derrida
+      # - run: python -m pytest
+      - run: pytest --cov=derrida
