@@ -37,7 +37,7 @@ class Command(reference_data.Command):
     ]
 
     #: base filename, for CSV and JSON output
-    base_filename = 'interventions'
+    base_filename = 'annotations'
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -45,13 +45,12 @@ class Command(reference_data.Command):
             help='Specify the directory where files should be generated')
 
     def handle(self, *args, **kwargs):
-
         if kwargs['directory']:
             self.base_filename = os.path.join(kwargs['directory'], self.base_filename)
 
         # aggregate intervention data to be exported for use in generating
         # CSV and JSON output
-        data = [self.intervention_data(intervention)
+        data = [self.annotation_data(intervention)
                    for intervention in Intervention.objects.all()]
 
         # list of dictionaries can be output as is for JSON export
@@ -70,7 +69,7 @@ class Command(reference_data.Command):
             for intervention in data:
                 csvwriter.writerow(self.flatten_dict(intervention))
 
-    def intervention_data(self, intervention):
+    def annotation_data(self, intervention):
         '''Generate a dictionary of data to export for a single
         :class:`~derrida.books.models.Reference` object'''
 

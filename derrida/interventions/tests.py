@@ -26,7 +26,7 @@ from derrida.people.models import Person
 from derrida.interventions.models import Tag, INTERVENTION_TYPES, \
     Intervention, get_default_intervener
 from derrida.interventions.search_indexes import InterventionIndex
-from derrida.interventions.management.commands import intervention_data
+from derrida.interventions.management.commands import annotation_data
 
 
 
@@ -938,17 +938,17 @@ class TestInterventionSearchIndex(TestCase):
             note.author.firstname_last
 
 
-class TestInterventionsData(TestCase):
+class TestAnnotationData(TestCase):
     fixtures = ['test_interventions', 'interventions_with_text']
 
     def setUp(self):
-        self.cmd = intervention_data.Command()
+        self.cmd = annotation_data.Command()
         self.cmd.stdout = StringIO()
 
-    def test_intervention_data(self):
+    def test_annotation_data(self):
         # intervention with no text or quote
         annotation = Intervention.objects.filter(text='', quote='').first()
-        data = self.cmd.intervention_data(annotation)
+        data = self.cmd.annotation_data(annotation)
         assert data['id'] == annotation.get_uri()
         assert data['book']['id'] == annotation.work_instance.get_uri()
         assert data['book']['title'] == annotation.work_instance.display_title()
@@ -966,7 +966,7 @@ class TestInterventionsData(TestCase):
         # intervention with text content and text language
         annotation = Intervention.objects.exclude(text='') \
             .filter(text_language__isnull=False).first()
-        data = self.cmd.intervention_data(annotation)
+        data = self.cmd.annotation_data(annotation)
         assert data['text']['content'] == annotation.text
         assert data['text']['language'] == annotation.text_language.name
         assert data['text']['language code'] == annotation.text_language.code
@@ -974,23 +974,23 @@ class TestInterventionsData(TestCase):
         # intervention with quote content and language set
         annotation = Intervention.objects \
             .exclude(quote='', quote_language__isnull=True).first()
-        data = self.cmd.intervention_data(annotation)
+        data = self.cmd.annotation_data(annotation)
         assert data['quote']['content'] == annotation.quote
         assert data['quote']['language'] == annotation.quote_language.name
         assert data['quote']['language code'] == annotation.quote_language.code
 
         # intervention with annotator unknown
         annotation = Intervention.objects.filter(author__isnull=True).first()
-        data = self.cmd.intervention_data(annotation)
+        data = self.cmd.annotation_data(annotation)
         assert 'annotator' not in data
 
     def test_command_line(self):
         # test calling via command line with args
 
         # generate output in a temporary directory
-        with tempfile.TemporaryDirectory(prefix='derrida-interventions-') as outputdir:
+        with tempfile.TemporaryDirectory(prefix='derrida-annotation-') as outputdir:
             stdout = StringIO()
-            call_command('intervention_data', directory=outputdir, stdout=stdout)
+            call_command('annotation_data', directory=outputdir, stdout=stdout)
 
             annotations = Intervention.objects.all()
             base_filename = os.path.join(outputdir, self.cmd.base_filename)
