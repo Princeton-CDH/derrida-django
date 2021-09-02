@@ -10,9 +10,9 @@ a `DH project sponsored by CDH <https://cdh.princeton.edu/projects/derridas-marg
    :target: https://zenodo.org/badge/latestdoi/83320273
    :alt: DOI: 10.5281/zenodo.1299972
 
-.. image:: https://travis-ci.org/Princeton-CDH/derrida-django.svg?branch=main
-   :target: https://travis-ci.org/Princeton-CDH/derrida-django
-   :alt: Build status
+.. image:: https://github.com/Princeton-CDH/derrida-django/actions/workflows/unittests.yaml/badge.svg
+    :target: https://github.com/Princeton-CDH/derrida-django/actions/workflows/unittests.yaml
+    :alt: Unit Test status
 
 .. image:: https://codecov.io/gh/Princeton-CDH/derrida-django/branch/main/graph/badge.svg
    :target: https://codecov.io/gh/Princeton-CDH/derrida-django
