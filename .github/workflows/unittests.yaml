@@ -37,9 +37,9 @@ jobs:
 
       # Perform installations
       - run: pip install -r ci/ci-requirements.lock
-      - run: npm install -g yarn
-      - run: yarn install
-      - run: yarn add postcss-cli postcss node-sass
+      # - run: npm install -g yarn
+      # - run: yarn install
+      # - run: yarn add postcss-cli postcss node-sass
       # - run: npm ci
       # HACK: Use different sass
       # - run: npm uninstall postcss-cli postcss node-sass
