@@ -50,18 +50,25 @@ jobs:
       - run: sudo apt-get install ruby-sass
 
       # Setup local settings
-      - run: cp ci/testsettings.py derrida/local_settings.py
-      - run: python -c "import uuid; print('SECRET_KEY = \'%s\'' % uuid.uuid4())" >> derrida/local_settings.py
+      - name: Copy test settings to local settings
+        run: cp ci/testsettings.py derrida/local_settings.py
+      - name: Generate secret key and add to local settings
+        run: python -c "import uuid; print('SECRET_KEY = \'%s\'' % uuid.uuid4())" >> derrida/local_settings.py
 
-      # configure solr
-      - name: Create solr core
-        # create local configset
-        run: mkdir -p /tmp/derrida/conf
-      - run: python manage.py build_solr_schema --configure-directory=/tmp/derrida/conf
+      # configure solr core
+      - name: Create solr core with basic configs
+        run: docker exec ${{ job.services.solr.id }} /bin/bash -c "/opt/solr/bin/solr create -c $SOLR_CORE -n basic_config"
+      - name: Copy solr core config to local vm
+        run: docker cp ${{ job.services.solr.id }}:/opt/solr/server/solr/derrida/conf /tmp/derrida-conf
+      - name: Customize solr schema with haystack
+        run: python manage.py build_solr_schema --configure-directory=/tmp/derrida-conf
+      - name: Remove uncustomized solr conf
+        run: docker exec ${{ job.services.solr.id }} /bin/bash -c "rm -rf /opt/solr/server/solr/derrida/conf"
         # copy in to solr configset directory
-      - run: docker cp /tmp/derrida ${{ job.services.solr.id }}:/opt/solr/server/solr/configsets/derrida
-        # use the configset to create a new core
-      - run: docker exec --user solr ${{ job.services.solr.id }} /bin/bash -c "/opt/solr/bin/solr create -c $SOLR_CORE -n derrida"
+      - name: Copy updated solr config back to solr
+        run: docker cp /tmp/derrida-conf ${{ job.services.solr.id }}:/opt/solr/server/solr/derrida/conf
+      - name: Reload the solr core
+        run: python manage.py build_solr_schema --configure-directory=/tmp/derrida-conf  --reload-core $SOLR_CORE
 
       # skip runserver site for pa11y
       # - run: python manage.py migrate
