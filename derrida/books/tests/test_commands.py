@@ -143,6 +143,17 @@ class TestReferenceData(TestCase):
         assert flat_nested['page id'] == nested['page']['id']
         assert flat_nested['page label'] == nested['page']['label']
 
+    def test_remove_empty_keys(self):
+        test_list_of_dicts = [
+            {'a': '', 'list': [1, 2, 3], 'list2': []},
+            {'a': 'c', 'b': '', 'okay': 'ok', 'none': None},
+        ]
+        expected = [
+            {'list': [1, 2, 3]},
+            {'a': 'c', 'okay': 'ok'},
+        ]
+        assert self.cmd.remove_empty_keys(test_list_of_dicts) == expected
+
     def test_reference_data(self):
         # reference with no corresponding intervention
         ref = Reference.objects.filter(interventions__isnull=True).first()
