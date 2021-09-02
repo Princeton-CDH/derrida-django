@@ -16,6 +16,8 @@ import csv
 import json
 import os.path
 
+from django.urls import reverse
+
 from derrida.books.management.commands import reference_data
 from derrida.interventions.models import Intervention
 
@@ -50,6 +52,7 @@ class Command(reference_data.Command):
 
         # aggregate intervention data to be exported for use in generating
         # CSV and JSON output
+        # TODO: What's the simplest way to select only the annotations?
         data = [self.annotation_data(intervention)
                    for intervention in Intervention.objects.all()]
 
@@ -76,12 +79,16 @@ class Command(reference_data.Command):
         # NOTE: using OrderedDict to ensure JSON output follows logical
         # order in Python < 3.6, where dict order is not guaranteed
 
-        # This is URL pattern `canvas-image`. How would I get get that information here?
-        page_iiif = ('https://derridas-margins.princeton.edu/library/' + 
-            intervention.work_instance.slug + 
-            '/gallery/images/' + intervention.canvas.short_id + '/large@2x/' 
-            if intervention.canvas and intervention.canvas else ''
-        )
+        if intervention.canvas:
+            canvas_url = reverse('books:canvas-image', kwargs={
+                'slug': intervention.work_instance.slug,
+                'short_id': intervention.canvas.short_id, 
+                'mode': 'large',
+            })
+            page_iiif = 'https://derridas-margins.princeton.edu/' + canvas_url
+        else:
+            page_iiif = ''
+
         # annotation_region = #
 
         data = OrderedDict([
