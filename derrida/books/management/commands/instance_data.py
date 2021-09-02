@@ -81,10 +81,16 @@ class Command(reference_data.Command):
 
         return base_url + splitter + item_slug
 
+    def collect_all_languages(self, instance):
+        if instance.work:
+            return list(set([str(lang) for lang in instance.work.languages.all()] + [str(lang) for lang in instance.languages.all()]))
+        else:
+            return [str(lang) for lang in instance.languages.all()] 
 
     def instance_data(self, instance):
         '''Generate a dictionary of data to export for a single
          :class:`~derrida.books.models.Instance` object'''
+
         return OrderedDict([
             ('id', instance.get_uri()),
             ('item_type', instance.item_type),
@@ -106,7 +112,7 @@ class Command(reference_data.Command):
             ('copy', instance.copy),
             ('work_uri', instance.work.uri),
             ('subjects', [str(subject) for subject in instance.work.subjects.all()]),
-            ('languages', [str(language) for language in instance.languages.all()]),
+            ('languages', self.collect_all_languages(instance)),
             ('journal_title', instance.journal.name if instance.journal else ''),
             ('book_title', instance.collected_in.display_title() if instance.collected_in else ''),
             ('book_title_uri', instance.collected_in.get_uri() if instance.collected_in else ''),

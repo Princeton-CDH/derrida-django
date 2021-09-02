@@ -14,7 +14,7 @@ from django.test import TestCase, override_settings
 from djiffy.models import Manifest
 from pytest import raises
 
-from derrida.books.models import Instance, Reference, DerridaWork
+from derrida.books.models import Instance, Reference, DerridaWork, Language, WorkLanguage, InstanceLanguage
 from derrida.books.management.commands import import_digitaleds, \
     reference_data, instance_data
 
@@ -235,6 +235,17 @@ class TestInstanceData(TestCase):
         query_url = 'http://findingaids.princeton.edu/collections/RBD1?v1=Husserl+idees&f1=kw&b1=AND&v2=&f2=kw&b2=AND&v3=&f3=kw&year=before&ed=&ld=&rpp=10&start=0'
         assert self.cmd.update_findingaids_url(query_url) == 'https://findingaids.princeton.edu/catalog/RBD1'
 
+    def test_collect_all_languages(self):
+        inst = Instance.objects.first()
+        chinese = Language.objects.create(name='Chinese', uri='elv')
+        vietnamese = Language.objects.create(name='Vietnamese', uri='azt')
+        il = InstanceLanguage.objects.create(instance=inst, language=chinese, is_primary=False)
+        wl = WorkLanguage.objects.create(work=inst.work, language=vietnamese, is_primary=False)
+        all_languages = self.cmd.collect_all_languages(inst)
+        assert 'Chinese' in all_languages
+        assert 'Vietnamese' in all_languages
+        assert len(set(all_languages)) == len(all_languages)
+
     def test_instance_data(self):
         # Properties of work, journal, authors, collected_in will be null, and
         #  are thus not properly tested. Either build out the fixtures or leave
@@ -264,8 +275,8 @@ class TestInstanceData(TestCase):
         assert instdata['copy'] == inst.copy
         assert instdata['work_uri'] == inst.work.uri
         assert instdata['subjects'] == [str(subject) for subject in inst.work.subjects.all()]
-        assert instdata['languages'] == [str(language) for language in inst.languages.all()]
-        assert instdata['journal_title'] == ''
+        assert 'languages' in instdata
+        assert 'journal_title' in instdata
 
         inst = Instance.objects.filter(
             collected_in__isnull=False).first()
