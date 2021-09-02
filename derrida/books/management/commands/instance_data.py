@@ -41,7 +41,7 @@ class Command(reference_data.Command):
             help='Specify the directory where files should be generated')
 
     def handle(self, *args, **kwargs):
-        base_filename = 'derrida-instance-data'
+        base_filename = 'instances'
         if kwargs['directory']:
             base_filename = os.path.join(kwargs['directory'], base_filename)
 
