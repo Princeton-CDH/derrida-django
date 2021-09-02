@@ -2,7 +2,7 @@ name: unit tests
 
 on:
   push: # run on every push or PR to any branch
-  # pull_request:
+  pull_request:
 
 env:
   SOLR_CORE: derrida
