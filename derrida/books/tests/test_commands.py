@@ -275,7 +275,7 @@ class TestInstanceData(TestCase):
         assert instdata['start_page'] == inst.start_page
         assert instdata['end_page'] == inst.end_page
         assert instdata['has_digital_edition'] == bool(inst.digital_edition)
-        assert instdata['uri'] == self.cmd.update_findingaids_url(inst.uri)
+        assert instdata['catalog_uri'] == self.cmd.update_findingaids_url(inst.uri)
         assert instdata['zotero_id'] == inst.zotero_id
 
     def test_command_line(self):

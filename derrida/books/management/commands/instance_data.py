@@ -33,7 +33,7 @@ class Command(reference_data.Command):
         'subjects', 'languages', 'journal_title',
         'book_title', 'book_title_uri',
         'start_page', 'end_page',
-        'has_digital_edition', 'uri', 'zotero_id'
+        'has_digital_edition', 'catalog_uri', 'zotero_id'
     ]
 
     def add_arguments(self, parser):
@@ -113,6 +113,6 @@ class Command(reference_data.Command):
             ('start_page', instance.start_page),
             ('end_page', instance.end_page),
             ('has_digital_edition', bool(instance.digital_edition)),
-            ('uri', self.update_findingaids_url(instance.uri)),
+            ('catalog_uri', self.update_findingaids_url(instance.uri)),
             ('zotero_id', instance.zotero_id),
         ])
