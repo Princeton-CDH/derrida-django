@@ -31,7 +31,7 @@ class Command(reference_data.Command):
         'is_extant', 'is_annotated', 'is_translation', 'has_dedication',
         'has_insertions', 'copy', 'dimensions', 'work_uri',
         'subjects', 'languages', 'journal_title',
-        'book_title', 'book_title_uri', 
+        'book_title', 'book_title_uri',
         'start_page', 'end_page',
         'has_digital_edition', 'uri', 'zotero_id'
     ]
@@ -64,6 +64,24 @@ class Command(reference_data.Command):
             for instance in instancedata:
                 csvwriter.writerow(self.flatten_dict(instance))
 
+    def update_findingaids_url(self, old_url):
+        # Structure of the URL changed after the findingaids site updated.
+        if 'findingaids.princeton.edu' not in old_url:
+            return old_url
+        
+        new_url = old_url.replace('http:', 'https:')
+        new_url = new_url.split('?', 1)[0]
+        new_url = new_url.replace('/collections/', '/catalog/')
+
+        # manipulate changes to item slug
+        splitter = '/catalog/'
+        base_url, item_slug = new_url.split(splitter)
+        item_slug = item_slug.replace('/', '_')
+        item_slug = item_slug.replace('.', '-')
+
+        return base_url + splitter + item_slug
+
+
     def instance_data(self, instance):
         '''Generate a dictionary of data to export for a single
          :class:`~derrida.books.models.Instance` object'''
@@ -95,6 +113,6 @@ class Command(reference_data.Command):
             ('start_page', instance.start_page),
             ('end_page', instance.end_page),
             ('has_digital_edition', bool(instance.digital_edition)),
-            ('uri', instance.uri), # TODO: Test the number of links that resolve
+            ('uri', self.update_findingaids_url(instance.uri)),
             ('zotero_id', instance.zotero_id),
         ])

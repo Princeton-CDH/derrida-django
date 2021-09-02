@@ -217,6 +217,23 @@ class TestInstanceData(TestCase):
     def setUp(self):
         self.cmd = instance_data.Command()
         self.cmd.stdout = StringIO()
+    
+    def test_update_findingaids_url(self):
+        old_url = 'http://findingaids.princeton.edu/collections/RBD1.1/c15323'
+        new_url = 'https://findingaids.princeton.edu/catalog/RBD1-1_c15323'
+        assert self.cmd.update_findingaids_url(old_url) == new_url
+
+        old_url = 'https://findingaids.princeton.edu/collections/RBD1/c10456'
+        new_url = 'https://findingaids.princeton.edu/catalog/RBD1_c10456'
+        assert self.cmd.update_findingaids_url(old_url) == new_url
+
+        # Ignore non-findingaid URLs
+        ignore_url = 'http://gallica.bnf.fr/ark:/12148/bpt6k54443574.image.f163.langFR'
+        assert self.cmd.update_findingaids_url(ignore_url) == ignore_url
+
+        # query string should be stripped
+        query_url = 'http://findingaids.princeton.edu/collections/RBD1?v1=Husserl+idees&f1=kw&b1=AND&v2=&f2=kw&b2=AND&v3=&f3=kw&year=before&ed=&ld=&rpp=10&start=0'
+        assert self.cmd.update_findingaids_url(query_url) == 'https://findingaids.princeton.edu/catalog/RBD1'
 
     def test_instance_data(self):
         # Properties of work, journal, authors, collected_in will be null, and
@@ -258,7 +275,7 @@ class TestInstanceData(TestCase):
         assert instdata['start_page'] == inst.start_page
         assert instdata['end_page'] == inst.end_page
         assert instdata['has_digital_edition'] == bool(inst.digital_edition)
-        assert instdata['uri'] == inst.uri
+        assert instdata['uri'] == self.cmd.update_findingaids_url(inst.uri)
         assert instdata['zotero_id'] == inst.zotero_id
 
     def test_command_line(self):
