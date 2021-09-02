@@ -55,18 +55,13 @@ jobs:
 
       # configure solr
       - name: Create solr core
-        run: docker exec --user root ${{ job.services.solr.id }} /bin/bash -c "chown -R solr:solr /opt/solr/"
-      - run: docker exec --user solr ${{ job.services.solr.id }} /bin/bash -c "/opt/solr/bin/solr create -c $SOLR_CORE -n basic_configs"
-
-      # Configure site
-      - name: Copy solr config
-        run: docker cp ${{ job.services.solr.id }}:/opt/solr/server/solr/$SOLR_CORE/conf tmp-solr-config
-      - name: run build_solr_schema to local schema
-        run: python manage.py build_solr_schema --configure-directory=tmp-solr-config
-      - name: upload configured schema
-        run: docker cp tmp-solr-config ${{ job.services.solr.id }}:/opt/solr/server/solr/$SOLR_CORE/conf
-      - name: Reload solr core
-        run: curl http://localhost:8983/solr/admin/cores?action=RELOAD\&core=$SOLR_CORE
+        # create local configset
+        run: mkdir -p /tmp/derrida/conf
+      - run: python manage.py build_solr_schema --configure-directory=/tmp/derrida/conf
+        # copy in to solr configset directory
+      - run: docker cp /tmp/derrida ${{ job.services.solr.id }}:/opt/solr/server/solr/configsets/derrida
+        # use the configset to create a new core
+      - run: docker exec --user solr ${{ job.services.solr.id }} /bin/bash -c "/opt/solr/bin/solr create -c $SOLR_CORE -n derrida"
 
       # skip runserver site for pa11y
       # - run: python manage.py migrate
