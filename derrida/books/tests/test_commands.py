@@ -303,8 +303,8 @@ class TestInstanceData(TestCase):
         inst = Instance.objects.filter(
             collected_in__isnull=False).first()
         instdata = self.cmd.instance_data(inst)
-        assert instdata['book_title'] == inst.collected_in.display_title()
-        assert instdata['book_title_uri'] == inst.collected_in.get_uri()
+        assert instdata['collected_work_title'] == inst.collected_in.display_title()
+        assert instdata['collected_work_uri'] == inst.collected_in.get_uri()
         assert instdata['start_page'] == inst.start_page
         assert instdata['end_page'] == inst.end_page
         assert instdata['has_digital_edition'] == bool(inst.digital_edition)
@@ -322,7 +322,7 @@ class TestInstanceData(TestCase):
             derrida_work = DerridaWork.objects.first()
             instances = Instance.objects.filter(cited_in__isnull=False)
 
-            base_filename = os.path.join(outputdir, 'derrida-instance-data')
+            base_filename = os.path.join(outputdir, 'instances')
 
             # inspect JSON output
             with open('{}.json'.format(base_filename)) as jsonfile:

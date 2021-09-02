@@ -30,7 +30,7 @@ class Command(reference_data.Command):
         'is_extant', 'is_annotated', 'is_translation', 'has_dedication',
         'has_insertions', 'copy', 'dimensions', 'work_uri',
         'subjects', 'languages', 'journal_title',
-        'book_title', 'book_title_uri',
+        'collected_work_title', 'collected_work_uri',
         'start_page', 'end_page',
         'has_digital_edition', 'catalog_uri', 'zotero_id'
     ]
@@ -121,8 +121,8 @@ class Command(reference_data.Command):
             ('subjects', [str(subject) for subject in instance.work.subjects.all()]),
             ('languages', self.collect_all_languages(instance)),
             ('journal_title', instance.journal.name if instance.journal else ''),
-            ('book_title', instance.collected_in.display_title() if instance.collected_in else ''),
-            ('book_title_uri', instance.collected_in.get_uri() if instance.collected_in else ''),
+            ('collected_work_title', instance.collected_in.display_title() if instance.collected_in else ''),
+            ('collected_work_uri', instance.collected_in.get_uri() if instance.collected_in else ''),
             ('start_page', instance.start_page),
             ('end_page', instance.end_page),
             ('has_digital_edition', bool(instance.digital_edition)),
