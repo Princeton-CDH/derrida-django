@@ -11,6 +11,7 @@ import csv
 import json
 import os.path
 
+from django.db.models import Q
 from django.core.management.base import BaseCommand
 
 from derrida.books.models import Instance
@@ -45,7 +46,8 @@ class Command(reference_data.Command):
         if kwargs['directory']:
             base_filename = os.path.join(kwargs['directory'], base_filename)
 
-        instancedata = [self.instance_data(instance) for instance in Instance.objects.filter(cited_in__isnull=False)]
+        filtered_instances = Instance.objects.filter(Q(cited_in__isnull=False) | Q(reference__isnull=False)).distinct()
+        instancedata = [self.instance_data(instance) for instance in filtered_instances]
 
         # list of dictionaries can be output as is for JSON export
         with open('{}.json'.format(base_filename), 'w') as jsonfile:
