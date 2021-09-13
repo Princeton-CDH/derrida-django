@@ -138,10 +138,10 @@ class TestReferenceData(TestCase):
             }
         }
         flat_nested = self.cmd.flatten_dict(nested)
-        assert 'page id' in flat_nested
-        assert 'page label' in flat_nested
-        assert flat_nested['page id'] == nested['page']['id']
-        assert flat_nested['page label'] == nested['page']['label']
+        assert 'page_id' in flat_nested
+        assert 'page_label' in flat_nested
+        assert flat_nested['page_id'] == nested['page']['id']
+        assert flat_nested['page_label'] == nested['page']['label']
 
     def test_remove_empty_keys(self):
         test_list_of_dicts = [
@@ -162,12 +162,12 @@ class TestReferenceData(TestCase):
         refdata = self.cmd.reference_data(ref)
         assert refdata['id'] == ref.get_uri()
         assert refdata['page'] == ref.derridawork_page
-        assert refdata['page location'] == ref.derridawork_pageloc
+        assert refdata['page_location'] == ref.derridawork_pageloc
         assert refdata['book']['id'] == ref.instance.get_uri()
         assert refdata['book']['title'] == ref.instance.display_title()
         assert refdata['book']['page'] == ref.book_page
         assert refdata['type'] == str(ref.reference_type)
-        assert refdata['anchor text'] == ref.anchor_text
+        assert refdata['anchor_text'] == ref.anchor_text
         assert refdata['section'] == ref.get_section()
         assert refdata['chapter'] == ref.get_chapter()
         assert not refdata['interventions']
@@ -201,9 +201,9 @@ class TestReferenceData(TestCase):
                 # spot check the data included
                 assert jsondata[0]['id'] == references[0].get_uri()
                 assert jsondata[0]['page'] == references[0].derridawork_page
-                assert jsondata[0]['page location'] == references[0].derridawork_pageloc
+                assert jsondata[0]['page_location'] == references[0].derridawork_pageloc
                 assert jsondata[3]['page'] == references[3].derridawork_page
-                assert jsondata[3]['page location'] == references[3].derridawork_pageloc
+                assert jsondata[3]['page_location'] == references[3].derridawork_pageloc
 
             # inspect CSV output
             with open('{}.csv'.format(base_filename)) as csvfile:

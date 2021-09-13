@@ -956,8 +956,8 @@ class TestAnnotationData(TestCase):
         assert data['tags'] == [tag.name for tag in annotation.tags.all()]
         assert data['annotator'] == annotation.author.authorized_name
         assert data['ink'] == annotation.ink
-        assert annotation.canvas.short_id in data['page iiif']
-        assert data['annotation region'] == str(annotation.iiif_image_selection())
+        assert annotation.canvas.short_id in data['page_iiif']
+        assert data['annotation_region'] == str(annotation.iiif_image_selection())
 
         # text and quote not included
         assert 'text' not in data
@@ -969,7 +969,7 @@ class TestAnnotationData(TestCase):
         data = self.cmd.annotation_data(annotation)
         assert data['text']['content'] == annotation.text
         assert data['text']['language'] == annotation.text_language.name
-        assert data['text']['language code'] == annotation.text_language.code
+        assert data['text']['language_code'] == annotation.text_language.code
 
         # intervention with quote content and language set
         annotation = Intervention.objects \
@@ -977,7 +977,7 @@ class TestAnnotationData(TestCase):
         data = self.cmd.annotation_data(annotation)
         assert data['quote']['content'] == annotation.quote
         assert data['quote']['language'] == annotation.quote_language.name
-        assert data['quote']['language code'] == annotation.quote_language.code
+        assert data['quote']['language_code'] == annotation.quote_language.code
 
         # intervention with annotator unknown
         annotation = Intervention.objects.filter(author__isnull=True).first()

@@ -32,10 +32,10 @@ class Command(reference_data.Command):
 
     #: fields for CSV output
     csv_fields = [
-        'id', 'book id', 'book title', 'book type', 'page', 'tags', 'text content',
-        'text language', 'text language code', 'text translation',
-        'quote content', 'quote language', 'quote language code', 'annotator',
-        'annotation region', 'ink', 'page iiif',
+        'id', 'book_id', 'book_title', 'book_type', 'page', 'tags', 'text_content',
+        'text_language', 'text_language_code', 'text_translation',
+        'quote_content', 'quote_language', 'quote_language_code', 'annotator',
+        'annotation_region', 'ink', 'page_iiif',
     ]
 
     #: base filename, for CSV and JSON output
@@ -104,8 +104,8 @@ class Command(reference_data.Command):
             ('page', intervention.canvas.label if intervention.canvas else ''),
             ('tags', [tag.name for tag in intervention.tags.all()]),
             ('ink', intervention.ink),
-            ('page iiif', page_iiif),
-            ('annotation region', str(intervention.iiif_image_selection())),
+            ('page_iiif', page_iiif),
+            ('annotation_region', str(intervention.iiif_image_selection())),
         ])
 
         # only include text and quote information if we have content
@@ -115,7 +115,7 @@ class Command(reference_data.Command):
             })
             if intervention.text_language:
                 text_info['language'] = intervention.text_language.name
-                text_info['language code'] = intervention.text_language.code
+                text_info['language_code'] = intervention.text_language.code
             if intervention.text_translation:
                 text_info['translation'] = intervention.text_translation
 
@@ -127,7 +127,7 @@ class Command(reference_data.Command):
             })
             if intervention.quote_language:
                 quote_info['language'] = intervention.quote_language.name
-                quote_info['language code'] = intervention.quote_language.code
+                quote_info['language_code'] = intervention.quote_language.code
             data['quote'] = quote_info
 
         if intervention.author:
