@@ -48,15 +48,11 @@ class Command(reference_data.Command):
         if kwargs['directory']:
             base_filename = os.path.join(kwargs['directory'], base_filename)
 
-        queried_instances = Instance.objects.filter(Q(cited_in__isnull=False) | Q(reference__isnull=False)).distinct()
-        # Find all the instances that have parent instances and include those parent instances in our dataset
-        instances_with_parents = Instance.objects.filter(collected_in__isnull=False)
-        # Collect all the IDs necessary to perform a filter
-        parent_instance_ids = [instance.collected_in.id for instance in instances_with_parents]
-        filtered_instance_ids = [instance.id for instance in queried_instances]
-        collected_instance_ids = set(parent_instance_ids + filtered_instance_ids)
-        # Filter for those parents and our custom queried instances
-        filtered_instances = Instance.objects.filter(id__in=collected_instance_ids)
+        filtered_instances = Instance.objects.filter(Q(cited_in__isnull=False) | 
+                Q(reference__isnull=False) |
+                Q(collected_set__cited_in__isnull=False) |
+                Q(collected_set__reference__isnull=False)) \
+                 .distinct()
 
         instancedata = [self.instance_data(instance) for instance in filtered_instances]
 
