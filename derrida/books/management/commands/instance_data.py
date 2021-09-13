@@ -14,7 +14,7 @@ import os.path
 from django.db.models import Q
 from django.core.management.base import BaseCommand
 
-from derrida.books.models import Instance
+from derrida.books.models import Instance, CreatorType
 from derrida.books.management.commands import reference_data
 
 
@@ -27,7 +27,7 @@ class Command(reference_data.Command):
         'id', 'item_type', 'title', 'short_title',
         'alternate_title', 'work_year', 'copyright_year',
         'print_date', 
-        'authors', 'publisher', 'pub_place',
+        'authors', 'contributors', 'publisher', 'pub_place',
         'is_extant', 'is_annotated', 'is_translation', 'has_dedication',
         'has_insertions', 'copy', 'dimensions', 'work_uri',
         'subjects', 'languages', 'journal_title',
@@ -55,7 +55,6 @@ class Command(reference_data.Command):
         collected_instance_ids = set(parent_instance_ids + filtered_instance_ids)
         # Filter for those parents and our custom queried instances
         filtered_instances = Instance.objects.filter(id__in=collected_instance_ids)
-
 
         instancedata = [self.instance_data(instance) for instance in filtered_instances]
 
@@ -110,6 +109,8 @@ class Command(reference_data.Command):
     def instance_data(self, instance):
         '''Generate a dictionary of data to export for a single
          :class:`~derrida.books.models.Instance` object'''
+        
+        author_type = CreatorType.objects.get(name='author')
 
         return OrderedDict([
             ('id', instance.get_uri()),
@@ -121,6 +122,7 @@ class Command(reference_data.Command):
             ('copyright_year', instance.copyright_year),
             ('print_date', self.parse_date_certainty(instance)),
             ('authors', [str(author) for author in instance.work.authors.all()]),
+            ('contributors', [str(person) for person in instance.instancecreator_set.exclude(creator_type=author_type).all()]),
             ('publisher', instance.publisher.name if instance.publisher else ''),
             ('pub_place', [place.name for place in instance.pub_place.all()]),
             ('is_extant', instance.is_extant),
