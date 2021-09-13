@@ -15,7 +15,7 @@ from django.test import TestCase, override_settings
 from djiffy.models import Manifest
 from pytest import raises
 
-from derrida.books.models import Instance, Reference, DerridaWork, Language, WorkLanguage, InstanceLanguage, CreatorType
+from derrida.books.models import Instance, Reference, DerridaWork, Language, WorkLanguage, InstanceLanguage
 from derrida.books.management.commands import import_digitaleds, \
     reference_data, instance_data
 
@@ -274,9 +274,6 @@ class TestInstanceData(TestCase):
         #  are thus not properly tested. Either build out the fixtures or leave
         #  them untested.
 
-        CreatorType.objects.create(name='author')
-        CreatorType.objects.create(name='editor')
-
         # reference with no corresponding intervention
         inst = Instance.objects.filter(cited_in__isnull=False, 
             publisher__isnull=False, print_date__isnull=False).first()
@@ -316,9 +313,6 @@ class TestInstanceData(TestCase):
 
     def test_command_line(self):
         # test calling via command line with args
-
-        CreatorType.objects.create(name='author')
-        CreatorType.objects.create(name='editor')
 
         # generate output in a temporary directory
         with tempfile.TemporaryDirectory(prefix='derrida-insts-') as outputdir:

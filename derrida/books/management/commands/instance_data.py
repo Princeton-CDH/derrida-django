@@ -14,7 +14,7 @@ import os.path
 from django.db.models import Q
 from django.core.management.base import BaseCommand
 
-from derrida.books.models import Instance, CreatorType
+from derrida.books.models import Instance
 from derrida.books.management.commands import reference_data
 
 
@@ -105,8 +105,6 @@ class Command(reference_data.Command):
     def instance_data(self, instance):
         '''Generate a dictionary of data to export for a single
          :class:`~derrida.books.models.Instance` object'''
-        
-        author_type = CreatorType.objects.get(name='author')
 
         return OrderedDict([
             ('id', instance.get_uri()),
@@ -118,7 +116,7 @@ class Command(reference_data.Command):
             ('copyright_year', instance.copyright_year),
             ('print_date', self.parse_date_certainty(instance)),
             ('authors', [str(author) for author in instance.work.authors.all()]),
-            ('contributors', [str(creator.person) for creator in instance.instancecreator_set.exclude(creator_type=author_type).all()]),
+            ('contributors', [str(creator.person) for creator in instance.instancecreator_set.exclude(creator_type__name='author').all()]),
             ('publisher', instance.publisher.name if instance.publisher else ''),
             ('pub_place', [place.name for place in instance.pub_place.all()]),
             ('is_extant', instance.is_extant),
