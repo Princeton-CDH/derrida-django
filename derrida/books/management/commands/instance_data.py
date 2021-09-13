@@ -36,8 +36,6 @@ class Command(reference_data.Command):
         'has_digital_edition', 'catalog_uri', 'zotero_id'
     ]
 
-    author_type = CreatorType.objects.get(name='author')
-
     def add_arguments(self, parser):
         parser.add_argument(
             '-d', '--directory',
@@ -108,7 +106,7 @@ class Command(reference_data.Command):
         '''Generate a dictionary of data to export for a single
          :class:`~derrida.books.models.Instance` object'''
         
-        
+        author_type = CreatorType.objects.get(name='author')
 
         return OrderedDict([
             ('id', instance.get_uri()),
