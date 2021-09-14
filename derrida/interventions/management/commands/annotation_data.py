@@ -41,11 +41,6 @@ class Command(reference_data.Command):
     #: base filename, for CSV and JSON output
     base_filename = 'annotations'
 
-    def add_arguments(self, parser):
-        parser.add_argument(
-            '-d', '--directory',
-            help='Specify the directory where files should be generated')
-
     def handle(self, *args, **kwargs):
         if kwargs['directory']:
             self.base_filename = os.path.join(kwargs['directory'], self.base_filename)

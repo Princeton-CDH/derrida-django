@@ -33,7 +33,7 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument(
-            '-d', '--directory',
+            '-d', '--directory', default='data',
             help='Specify the directory where files should be generated')
 
     def remove_empty_keys(self, list_of_dicts):
