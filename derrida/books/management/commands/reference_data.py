@@ -36,6 +36,12 @@ class Command(BaseCommand):
             '-d', '--directory',
             help='Specify the directory where files should be generated')
 
+    def remove_empty_keys(self, list_of_dicts):
+        # Remove null keys but not False boolean values
+        return [OrderedDict([(key, val) for key, val in d.items() if val not in [None, '', []]])
+                for d in list_of_dicts]
+
+
     def handle(self, *args, **kwargs):
 
         for derrida_work in DerridaWork.objects.all():
@@ -55,8 +61,7 @@ class Command(BaseCommand):
             # list of dictionaries can be output as is for JSON export
             with open('{}.json'.format(base_filename), 'w') as jsonfile:
                 # Remove fields that are null
-                json_refdata = [{field: ref[field] for field in ref.keys() if ref[field]} for ref in refdata]
-                json.dump(json_refdata, jsonfile, indent=2)
+                json.dump(self.remove_empty_keys(refdata), jsonfile, indent=2)
 
             # generate CSV export
             with open('{}.csv'.format(base_filename), 'w') as csvfile:
