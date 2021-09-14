@@ -52,7 +52,6 @@ class Command(reference_data.Command):
 
         # aggregate intervention data to be exported for use in generating
         # CSV and JSON output
-        # TODO: What's the simplest way to select only the annotations?
         data = [self.annotation_data(intervention)
                    for intervention in Intervention.objects.all()]
 
