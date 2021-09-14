@@ -80,7 +80,7 @@ class Command(reference_data.Command):
                 'mode': 'large',
             })
             page_iiif = 'https://derridas-margins.princeton.edu' + canvas_url
-            # page_iiif = page_iiif.replace('/large/', '/iiif/full/full/0/default.jpg')
+            page_iiif = page_iiif.replace('/large/', '/iiif/full/500,/0/default.jpg')
         else:
             page_iiif = ''
 
