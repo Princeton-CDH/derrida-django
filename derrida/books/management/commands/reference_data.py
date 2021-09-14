@@ -37,7 +37,10 @@ class Command(BaseCommand):
             help='Specify the directory where files should be generated')
 
     def remove_empty_keys(self, list_of_dicts):
-        return [{field: d[field] for field in d.keys() if d[field] not in [None, '', []]} for d in list_of_dicts]
+        # Remove null keys but not False boolean values
+        return [OrderedDict([(key, val) for key, val in d.items() if val not in [None, '', []]])
+                for d in list_of_dicts]
+
 
     def handle(self, *args, **kwargs):
 

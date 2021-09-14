@@ -147,10 +147,12 @@ class TestReferenceData(TestCase):
         test_list_of_dicts = [
             {'a': '', 'list': [1, 2, 3], 'list2': []},
             {'a': 'c', 'b': '', 'okay': 'ok', 'none': None},
+            {'a': False}
         ]
         expected = [
             {'list': [1, 2, 3]},
             {'a': 'c', 'okay': 'ok'},
+            {'a': False}
         ]
         assert self.cmd.remove_empty_keys(test_list_of_dicts) == expected
 
