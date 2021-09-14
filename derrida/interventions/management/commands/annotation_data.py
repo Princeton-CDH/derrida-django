@@ -57,7 +57,7 @@ class Command(reference_data.Command):
 
         # list of dictionaries can be output as is for JSON export
         with open('{}.json'.format(self.base_filename), 'w') as jsonfile:
-            json_data = [{field: intervention[field] for field in intervention.keys() if intervention[field] not in [None, '', []]} for intervention in data]
+            json_data = self.remove_empty_keys(data)
             json.dump(json_data, jsonfile, indent=2)
 
         # generate CSV export
