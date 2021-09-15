@@ -132,7 +132,7 @@ To generate the published datasets, run the following commands::
 To ensure that the data conforms to our requirements, run the 
 `Frictionless Data <https://frictionlessdata.io/>`_ test::
 
-    goodtables validate datapackage.json
+    frictionless validate datapackage.json
 
 
 Documentation
