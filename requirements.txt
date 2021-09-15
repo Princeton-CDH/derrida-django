@@ -25,3 +25,4 @@ django-fullurl
 django-apptemplates
 roman
 progressbar2
+frictionless
