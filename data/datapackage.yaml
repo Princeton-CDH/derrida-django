@@ -10,42 +10,60 @@ resources:
     name: annotations
     path: annotations.csv
     profile: tabular-data-resource
+    description: A collection of all written annotations in Jacques Derrida's library
     schema:
       fields:
         - name: id
           type: string
+          description: Unique identifier linking to the annotation's page
+          constraints:
+            unique: true
         - name: book_id
           type: string
+          description: Link to the book where the annotation was found
         - name: book_title
           type: string
         - name: book_type
           type: string
+          # constraint: options are 'Book' and 'Book Section'
         - name: page
           type: string
+          description: The page where the annotation was found # QUESTION: What do brackets mean?
         - name: tags
           type: string
+          description: Supplemental information about the annotation (e.g. blue ink, arrow)
         - name: text_content
           type: any
+          description: Words included in the annotation
         - name: text_language
           type: any
+          description: The language used in the annotation
         - name: text_language_code
           type: any
+          description: The ISO 639-1 codes for the language used in the annotation
         - name: text_translation
           type: any
         - name: quote_content
           type: string
+          description: The book's text that was highlighted or underlined by the given annotation
         - name: quote_language
           type: string
+          description: The language of the book's text that was highlighted by the annotation
         - name: quote_language_code
           type: string
+          description: The ISO 639-1 codes for the book's text that was highlighted by the annotation
         - name: annotator
           type: string
+          description: The person who made the annotation # QUESTION: Add language about certainty? How did we know this?
         - name: annotation_region
           type: string
+          description: A link to the IIIF image of the book's page that has been cropped to show just the given annotation
         - name: ink
           type: string
+          description: The kind of mark that created the annotation (e.g. black ink, pencil)
         - name: page_iiif
           type: string
+          description: A link to the IIIF image of the book's page
     scheme: file
   - encoding: utf-8-sig
     format: csv
