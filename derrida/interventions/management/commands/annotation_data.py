@@ -15,6 +15,7 @@ from collections import OrderedDict
 import csv
 import json
 import os.path
+import re
 
 from django.urls import reverse
 
@@ -79,12 +80,25 @@ class Command(reference_data.Command):
                 'short_id': intervention.canvas.short_id, 
                 'mode': 'large',
             })
-            page_iiif = 'https://derridas-margins.princeton.edu' + canvas_url
-            page_iiif = page_iiif.replace('/large/', '/iiif/full/500,/0/default.jpg')
+            iiif_base = ('https://derridas-margins.princeton.edu' + canvas_url).replace('/large/', '/iiif/')
+            page_iiif = iiif_base + 'full/500,/0/default.jpg'
         else:
             page_iiif = ''
 
-        # annotation_region = #
+        # This assumes that any annotation would have a canvas and iiif_base has
+        #  already been set.
+        if intervention.iiif_image_selection():
+            # `canonicalize` makes a request for each item. While iterating, 
+            #  it may be worth commenting out that method.
+            iiif_query = re.sub(
+                r'https://iiif-cloud.*intermediate_file/', '', 
+                str(intervention.iiif_image_selection().canonicalize())
+            )
+            annotation_region = iiif_base + iiif_query
+        else:
+            annotation_region = ''
+
+        
 
         data = OrderedDict([
             ('id', intervention.get_uri()),
@@ -100,7 +114,7 @@ class Command(reference_data.Command):
             ('tags', [tag.name for tag in intervention.tags.all()]),
             ('ink', intervention.ink),
             ('page_iiif', page_iiif),
-            ('annotation_region', str(intervention.iiif_image_selection())),
+            ('annotation_region', annotation_region),
         ])
 
         # only include text and quote information if we have content
