@@ -19,6 +19,7 @@ import re
 
 from django.urls import reverse
 
+from derrida.common.utils import absolutize_url
 from derrida.books.management.commands import reference_data
 from derrida.interventions.models import Intervention
 
@@ -74,31 +75,29 @@ class Command(reference_data.Command):
         # NOTE: using OrderedDict to ensure JSON output follows logical
         # order in Python < 3.6, where dict order is not guaranteed
 
+      
+        page_iiif = annotation_region_url = None
+     
         if intervention.canvas:
-            canvas_url = reverse('books:canvas-image', kwargs={
-                'slug': intervention.work_instance.slug,
-                'short_id': intervention.canvas.short_id, 
-                'mode': 'large',
-            })
-            iiif_base = ('https://derridas-margins.princeton.edu' + canvas_url).replace('/large/', '/iiif/')
-            page_iiif = iiif_base + 'full/500,/0/default.jpg'
-        else:
-            page_iiif = ''
+            # get the piffle image api client for the canvas
+            img = intervention.canvas.image
+            # replace original iiif api endpoint and image id with local proxy iiif url
+            img.api_endpoint = absolutize_url(reverse('books:canvas-detail', kwargs={'slug': intervention.work_instance.slug, 'short_id': 'images'})).rstrip('/')
+            img.image_id = '%s/iiif' % intervention.canvas.short_id
+            # request 500 width image and convert to str for iiif image url
+            page_iiif = str(img.size(width=500))
+            
+            # get the annotation region
+            annotation_region = intervention.iiif_image_selection()
+            if annotation_region:
+                # `canonicalize` makes a request for each item. While iterating, 
+                #  it may be worth commenting out that method.
+                region = annotation_region.canonicalize()
+                region.api_endpoint = img.api_endpoint
+                region.image_id = img.image_id
+                annotation_region_url = str(region)
 
-        # This assumes that any annotation would have a canvas and iiif_base has
-        #  already been set.
-        if intervention.iiif_image_selection():
-            # `canonicalize` makes a request for each item. While iterating, 
-            #  it may be worth commenting out that method.
-            iiif_query = re.sub(
-                r'https://iiif-cloud.*intermediate_file/', '', 
-                str(intervention.iiif_image_selection().canonicalize())
-            )
-            annotation_region = iiif_base + iiif_query
-        else:
-            annotation_region = ''
-
-        
+            
 
         data = OrderedDict([
             ('id', intervention.get_uri()),
@@ -114,7 +113,7 @@ class Command(reference_data.Command):
             ('tags', [tag.name for tag in intervention.tags.all()]),
             ('ink', intervention.ink),
             ('page_iiif', page_iiif),
-            ('annotation_region', annotation_region),
+            ('annotation_region', annotation_region_url),
         ])
 
         # only include text and quote information if we have content
