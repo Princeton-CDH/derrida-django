@@ -12,6 +12,7 @@ resources:
     profile: tabular-data-resource
     description: A collection of all written annotations in Jacques Derrida's library
     schema:
+      primaryKey: id
       fields:
         - name: id
           type: string
@@ -80,6 +81,7 @@ resources:
     description: References to other works made in Jacques Derrida's 1967 book De la grammatologie
     profile: tabular-data-resource
     schema:
+      # primaryKey: id
       fields:
         - name: id
           type: string
@@ -147,6 +149,7 @@ resources:
     path: instances.csv
     profile: tabular-data-resource
     schema:
+      primaryKey: id
       fields:
         - name: id
           type: string
