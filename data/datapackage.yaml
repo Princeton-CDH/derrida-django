@@ -1,5 +1,5 @@
 # --------
-# metadata: annotations.csv de-la-grammatologie_references.csv instances.csv
+# metadata: annotations.csv de-la-grammatologie_references.csv instances.csv insertions.csv
 # --------
 
 profile: data-package
@@ -292,4 +292,28 @@ resources:
           type: string
           description: The work's Zotero ID
     scheme: file
-
+  - encoding: utf-8-sig
+    format: csv
+    hashing: md5
+    name: insertions
+    path: insertions.csv
+    profile: tabular-data-resource
+    schema:
+      fields:
+        - name: id
+          type: string
+        - name: book_id
+          type: string
+        - name: book_title
+          type: string
+        - name: book_type
+          type: string
+        - name: page
+          type: string
+        - name: num_images
+          type: integer
+        - name: image_labels
+          type: string
+        - name: image_iiif
+          type: string
+    scheme: file
