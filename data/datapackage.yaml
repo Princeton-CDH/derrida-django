@@ -13,6 +13,12 @@ resources:
     description: A collection of all written annotations in Jacques Derrida's library
     schema:
       primaryKey: id
+      # TODO: Raises error. Fix filtering issue.
+      # foreignKeys:
+      #   - fields: book_id
+      #     reference: 
+      #       resource: instances
+      #       fields: id
       fields:
         - name: id
           type: string
@@ -81,7 +87,13 @@ resources:
     description: References to other works made in Jacques Derrida's 1967 book De la grammatologie
     profile: tabular-data-resource
     schema:
+      # TODO: Raises error because reference IDs are not unique.
       # primaryKey: id
+      foreignKeys:
+        - fields: book_id
+          reference: 
+            resource: instances
+            fields: id
       fields:
         - name: id
           type: string
@@ -150,6 +162,15 @@ resources:
     profile: tabular-data-resource
     schema:
       primaryKey: id
+      foreignKeys:
+        # Frictionless Data doesn't seem to run tests on self-referencing foreign keys.
+        #  Whether all of collected_work_uri exists in the id column was checked manually.
+        #  When introducing an error into the dataset, Frictionless Data could not detect it.
+        #  https://specs.frictionlessdata.io/table-schema/#foreign-keys
+        - fields: collected_work_uri
+          reference:
+            resource: ""
+            fields: id
       fields:
         - name: id
           type: string
