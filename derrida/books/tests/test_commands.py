@@ -296,7 +296,6 @@ class TestInstanceData(TestCase):
         assert instdata['has_dedication'] == inst.has_dedication
         assert instdata['has_insertions'] == inst.has_insertions
         assert instdata['copy'] == inst.copy
-        assert instdata['work_uri'] == inst.work.uri
         assert instdata['subjects'] == [str(subject) for subject in inst.work.subjects.all()]
         assert 'languages' in instdata
         assert 'journal_title' in instdata
