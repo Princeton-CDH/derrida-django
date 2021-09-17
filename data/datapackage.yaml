@@ -84,8 +84,6 @@ resources:
     description: References to other works made in Jacques Derrida's 1967 book De la grammatologie
     profile: tabular-data-resource
     schema:
-      # TODO: Raises error because reference IDs are not unique.
-      # primaryKey: id
       foreignKeys:
         - fields: book_id
           reference: 
@@ -94,7 +92,7 @@ resources:
       fields:
         - name: id
           type: string
-          description: A unique identifier linking to the reference's detail page
+          description: An identifier linking to the reference's detail page. These are not unique
           constraints:
             required: true
         - name: page
