@@ -190,8 +190,7 @@ class TestReferenceData(TestCase):
             derrida_work = DerridaWork.objects.first()
             references = Reference.objects.filter(derridawork__id=derrida_work.id)
 
-            base_filename = os.path.join(outputdir,
-                                         '%s_references' % derrida_work.slug)
+            base_filename = os.path.join(outputdir, 'references')
 
             # inspect JSON output
             with open('{}.json'.format(base_filename)) as jsonfile:

@@ -1,5 +1,5 @@
 # --------
-# metadata: annotations.csv de-la-grammatologie_references.csv instances.csv insertions.csv
+# metadata: annotations.csv references.csv instances.csv insertions.csv
 # --------
 
 profile: data-package
@@ -79,8 +79,8 @@ resources:
   - encoding: utf-8-sig
     format: csv
     hashing: md5
-    name: de-la-grammatologie_references
-    path: de-la-grammatologie_references.csv
+    name: references
+    path: references.csv
     description: References to other works made in Jacques Derrida's 1967 book De la grammatologie
     profile: tabular-data-resource
     schema:
