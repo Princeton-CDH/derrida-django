@@ -13,12 +13,11 @@ resources:
     description: A collection of all written annotations in Jacques Derrida's library
     schema:
       primaryKey: id
-      # TODO: Raises error. Fix filtering issue.
-      # foreignKeys:
-      #   - fields: book_id
-      #     reference: 
-      #       resource: library
-      #       fields: id
+      foreignKeys:
+        - fields: book_id
+          reference: 
+            resource: library
+            fields: id
       fields:
         - name: id
           type: string
@@ -92,7 +91,7 @@ resources:
       fields:
         - name: id
           type: string
-          description: An identifier linking to the reference's detail page. These are not unique
+          description: An identifier linking to the reference's detail page. Note that these are not unique.
           constraints:
             required: true
         - name: page
@@ -287,12 +286,11 @@ resources:
     profile: tabular-data-resource
     schema:
       primaryKey: id
-      # TODO: Raises error. Fix filter.
-      # foreignKeys:
-      #   - fields: book_id
-      #     reference: 
-      #       resource: library
-      #       fields: id
+      foreignKeys:
+        - fields: book_id
+          reference: 
+            resource: library
+            fields: id
       fields:
         - name: id
           type: string

@@ -44,7 +44,11 @@ class Command(reference_data.Command):
         filtered_instances = Instance.objects.filter(Q(cited_in__isnull=False) | 
                 Q(reference__isnull=False) |
                 Q(collected_set__cited_in__isnull=False) |
-                Q(collected_set__reference__isnull=False)) \
+                Q(collected_set__reference__isnull=False) |
+                # HACK: Derrida team added annotations and insertion data to
+                #  these three instances.
+                # This is fine, right? Totally fine. Nothing to see here.
+                Q(pk__in=[243, 247, 177])) \
                  .distinct()
 
         instancedata = [self.instance_data(instance) for instance in filtered_instances]
