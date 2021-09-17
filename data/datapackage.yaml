@@ -308,6 +308,7 @@ resources:
             unique: true
         - name: book_id
           type: string
+          format: uri
           description: Link to the book where the insertion was found
           constraints:
             required: true
