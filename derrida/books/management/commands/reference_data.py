@@ -27,13 +27,13 @@ class Command(BaseCommand):
 
     #: fields for CSV output
     csv_fields = [
-        'id', 'page', 'page location', 'type', 'book title', 'book id',
-        'book page', 'book type', 'anchor text', 'interventions', 'section', 'chapter',
+        'id', 'page', 'page_location', 'type', 'book_title', 'book_id',
+        'book_page', 'book_type', 'anchor_text', 'interventions', 'section', 'chapter',
     ]
 
     def add_arguments(self, parser):
         parser.add_argument(
-            '-d', '--directory',
+            '-d', '--directory', default='data',
             help='Specify the directory where files should be generated')
 
     def remove_empty_keys(self, list_of_dicts):
@@ -81,7 +81,7 @@ class Command(BaseCommand):
         return OrderedDict([
             ('id', reference.get_uri()),
             ('page', reference.derridawork_page),
-            ('page location', reference.derridawork_pageloc),
+            ('page_location', reference.derridawork_pageloc),
             ('book',  OrderedDict([
                 ('id', reference.instance.get_uri()),
                 ('title', reference.instance.display_title()),
@@ -89,7 +89,7 @@ class Command(BaseCommand):
                 ('type', reference.book.item_type),
             ])),
             ('type', str(reference.reference_type)),
-            ('anchor text', reference.anchor_text),
+            ('anchor_text', reference.anchor_text),
             # use intervention URI as identifier
             ('interventions', [
                 intervention.get_uri()
@@ -110,7 +110,7 @@ class Command(BaseCommand):
             # for a nested subdictionary, combine key and nested key
             if isinstance(val, dict):
                 for subkey, subval in val.items():
-                    flat_data[' '.join([key, subkey])] = subval
+                    flat_data['_'.join([key, subkey])] = subval
             # convert list to a delimited string
             elif isinstance(val, list):
                 flat_data[key] = ';'.join(val)

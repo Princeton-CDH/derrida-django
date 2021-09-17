@@ -36,11 +36,6 @@ class Command(reference_data.Command):
         'has_digital_edition', 'catalog_uri', 'zotero_id'
     ]
 
-    def add_arguments(self, parser):
-        parser.add_argument(
-            '-d', '--directory',
-            help='Specify the directory where files should be generated')
-
     def handle(self, *args, **kwargs):
         base_filename = 'instances'
         if kwargs['directory']:

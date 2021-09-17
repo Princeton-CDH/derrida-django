@@ -113,3 +113,6 @@ sitemedia/scss/.sass-cache
 sitemedia/fonts
 !sitemedia/fonts/meltdown*
 node_modules
+
+# Data
+data/*
