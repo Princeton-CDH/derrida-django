@@ -20,7 +20,7 @@ from itertools import groupby
 from django.db.models import ObjectDoesNotExist
 from djiffy.models import Canvas
 
-from derrida.books.management.commands import reference_data
+from derrida.interventions.management.commands import annotation_data
 from derrida.interventions.models import Intervention
 
 
@@ -31,35 +31,25 @@ from derrida.interventions.models import Intervention
 RE_INSERTION_LABEL = re.compile(r'(?P<label>(?P<page>.*(?! with))( with)?Insertions? [A-Z])(?P<insertion_page>.*$)')
 
 
-class Command(reference_data.Command):
+class Command(annotation_data.Command):
     '''Export intervention insertion data from the database as CSV and JSON'''
     help = __doc__
 
-    # NOTE: extending reference_data manage command to inherit
-    # flatten_data method; there is more overlap and these scripts
-    # could probably be generalized further for re-use
+    # NOTE: extending annotation_data manage command to inherit
+    # flatten_data method & localize_iiif_image
 
     #: fields for CSV output
     csv_fields = [
-        # match annotation fields where possible
-        'id', 'intervention_type',
+        # match annotation fields where possible (but not a lot of overlap)
+        'id',
         'book_id', 'book_title', 'book_type', 'page',
-        #, 'tags', 'text content',
-        #'text language', 'text language code', 'text translation',
-        #'quote content', 'quote language', 'quote language code', 'annotator'
         'num_images', 'image_labels', 'image_iiif'
     ]
 
     #: base filename, for CSV and JSON output
     base_filename = 'insertions'
 
-    def add_arguments(self, parser):
-        parser.add_argument(
-            '-d', '--directory',
-            help='Specify the directory where files should be generated')
-
     def handle(self, *args, **kwargs):
-
         if kwargs['directory']:
             self.base_filename = os.path.join(kwargs['directory'], self.base_filename)
 
@@ -126,7 +116,6 @@ class Command(reference_data.Command):
 
         return OrderedDict([
             ('id', label),   # provisional
-            ('intervention_type', 'insertion'),
             ('book', OrderedDict([
                 ('id', book.get_uri()),
                 ('title', book.display_title()),
@@ -138,8 +127,8 @@ class Command(reference_data.Command):
             # (i.e., recto/verso or roman numerals for multipage items)
             ('image_labels', [RE_INSERTION_LABEL.match(c.label).group('insertion_page').strip()
                               for c in canvases]),
-            # ('image_labels', [c.label for c in canvases]),
-            # TODO: use proxied iiif image url
-            # FIXME: iiif image urls currently not resolving
-            ('image_iiif', [str(c.image) for c in canvases])
+            ('image_iiif', [
+                # use local version of iiif image; limit width to 500
+                str(self.localize_iiif_image(c, book).size(width=500)) for c in canvases
+            ])
         ])

@@ -68,6 +68,19 @@ class Command(reference_data.Command):
             for intervention in data:
                 csvwriter.writerow(self.flatten_dict(intervention))
 
+    def localize_iiif_image(self, canvas, work_instance):
+        # given a djiffy canvas and associated work,
+        # # use the piffle image api client for the canvas image and
+        # replace original iiif api endpoint and image id with local proxy iiif url
+
+        img = canvas.image
+        img.api_endpoint = absolutize_url(
+            reverse('books:canvas-detail',
+                     kwargs={'slug': work_instance.slug,
+                             'short_id': 'images'})).rstrip('/')
+        img.image_id = '%s/iiif' % canvas.short_id
+        return img
+
     def annotation_data(self, intervention):
         '''Generate a dictionary of data to export for a single
         :class:`~derrida.books.models.Reference` object'''
@@ -75,29 +88,23 @@ class Command(reference_data.Command):
         # NOTE: using OrderedDict to ensure JSON output follows logical
         # order in Python < 3.6, where dict order is not guaranteed
 
-      
         page_iiif = annotation_region_url = None
-     
+
         if intervention.canvas:
-            # get the piffle image api client for the canvas
-            img = intervention.canvas.image
-            # replace original iiif api endpoint and image id with local proxy iiif url
-            img.api_endpoint = absolutize_url(reverse('books:canvas-detail', kwargs={'slug': intervention.work_instance.slug, 'short_id': 'images'})).rstrip('/')
-            img.image_id = '%s/iiif' % intervention.canvas.short_id
+            # get localized piffle image api client for this canvas
+            img = self.localize_iiif_image(intervention.canvas, intervention.work_instance)
             # request 500 width image and convert to str for iiif image url
             page_iiif = str(img.size(width=500))
-            
+
             # get the annotation region
             annotation_region = intervention.iiif_image_selection()
             if annotation_region:
-                # `canonicalize` makes a request for each item. While iterating, 
+                # `canonicalize` makes a request for each item. While iterating,
                 #  it may be worth commenting out that method.
                 region = annotation_region.canonicalize()
                 region.api_endpoint = img.api_endpoint
                 region.image_id = img.image_id
                 annotation_region_url = str(region)
-
-            
 
         data = OrderedDict([
             ('id', intervention.get_uri()),

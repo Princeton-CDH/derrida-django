@@ -937,6 +937,7 @@ class TestInterventionSearchIndex(TestCase):
         assert inter_index.prepare_annotation_author(note) == \
             note.author.firstname_last
 
+
 @patch('piffle.iiif.ImageRegion.canonicalize')
 class TestAnnotationData(TestCase):
     fixtures = ['test_interventions', 'interventions_with_text']
@@ -956,8 +957,14 @@ class TestAnnotationData(TestCase):
         assert data['tags'] == [tag.name for tag in annotation.tags.all()]
         assert data['annotator'] == annotation.author.authorized_name
         assert data['ink'] == annotation.ink
+        # iiif image should be present and should use local url
         assert annotation.canvas.short_id in data['page_iiif']
-        assert 'annotation_region' in data
+        # should not use image server base url from the fixture
+        assert "https://imgserver/loris/" not in data['page_iiif']
+        assert "full/500,/0/default" in data['page_iiif']
+        # annotation region should include percent
+        # (not canonicalized because canonicalization disabled for test)
+        assert "/pct:74.13,37.7,6.47,14.9/full/0" in data['annotation_region']
 
         # text and quote not included
         assert 'text' not in data
