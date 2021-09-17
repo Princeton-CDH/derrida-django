@@ -299,6 +299,13 @@ resources:
     path: insertions.csv
     profile: tabular-data-resource
     schema:
+      primaryKey: id
+      # TODO: Raises error. Fix filter.
+      # foreignKeys:
+      #   - fields: book_id
+      #     reference: 
+      #       resource: instances
+      #       fields: id
       fields:
         - name: id
           type: string
