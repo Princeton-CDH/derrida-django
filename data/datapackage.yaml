@@ -72,9 +72,6 @@ resources:
           description: A link to the IIIF image of the book's page that has been cropped to show just the given annotation
           constraints:
             unique: true
-        - name: ink
-          type: string
-          description: The kind of mark that created the annotation (e.g. black ink, pencil)
         - name: page_iiif
           type: string
           description: A link to the IIIF image of the book's page
