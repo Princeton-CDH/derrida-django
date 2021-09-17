@@ -16,11 +16,13 @@ resources:
         - name: id
           type: string
           description: Unique identifier linking to the annotation's page
+          format: uri
           constraints:
             required: true
             unique: true
         - name: book_id
           type: string
+          format: uri
           description: Link to the book where the annotation was found
         - name: book_title
           type: string
@@ -107,6 +109,7 @@ resources:
             required: true
         - name: book_id
           type: string
+          format: uri
           description: Link to the book where the reference was found
           constraints:
             required: true
@@ -147,6 +150,7 @@ resources:
       fields:
         - name: id
           type: string
+          format: uri
           description: Unique link to the book's detail page
           constraints:
             required: true
@@ -242,7 +246,8 @@ resources:
           type: any
           description: The title of the work in which the given item is collected
         - name: collected_work_uri
-          type: any
+          type: string
+          format: uri
           description: The URI of the work in which the given item is collected
         - name: start_page
           type: any
@@ -257,6 +262,7 @@ resources:
             required: true
         - name: catalog_uri
           type: string
+          format: uri
           description: A link to the instance in Princeton University Library's finding aids catalog
         - name: zotero_id
           type: string
