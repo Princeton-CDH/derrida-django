@@ -46,7 +46,7 @@ urlpatterns = [
             url(r'^gallery/images/(?P<short_id>[a-z0-9-]+|default)/(?P<mode>smthumb|thumbnail|large|info)(?P<x>@2x)?/$',
                 views.CanvasImage.as_view(), name='canvas-image'),
             url(r'^gallery/images/(?P<short_id>[a-z0-9-]+)/(?P<mode>iiif)(?P<url>.*)$',
-                views.CanvasImage.as_view()),
+                views.CanvasImage.as_view(), name='canvas-iiif'),
 
             # default thumbnail for a book
             url(r'^(?P<mode>smthumb|thumbnail)(?P<x>@2x)?/$',

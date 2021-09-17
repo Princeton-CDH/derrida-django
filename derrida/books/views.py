@@ -1,6 +1,7 @@
 import datetime
 import json
 import logging
+import re
 from collections import OrderedDict
 
 from dal import autocomplete
@@ -8,7 +9,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
 from django.core.cache import cache
 from django.db.models import Max, Min
-from django.http import HttpResponseRedirect, HttpResponse, Http404
+from django.http import HttpResponseRedirect, HttpResponse, Http404, HttpResponsePermanentRedirect
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.utils.decorators import method_decorator
@@ -686,11 +687,30 @@ class ProxyView(View):
     # ProxyView, modeled on Django's RedirectView
     # adapted from the Readux codebase (readux.books.views)
 
+    def _redirect_info(self, request):
+        # instead of serving info.json at multiple urls,
+        # redirect to a standard url of /iiif/info.json
+
+        # because our IIIF proxy url pattern is so open-ended, it allows
+        # multiple slashes, which messes up the following logic.
+        if '//' in request.path:
+            # redirect to url with multiple slashes replaced by a single /
+            return HttpResponsePermanentRedirect(re.sub(r'//+', '/', request.path))
+        if request.path.endswith('/iiif/') or request.path.endswith('/iiif'):
+            return HttpResponsePermanentRedirect('%s/info.json' % request.path.rstrip('/'))
+        if request.path.endswith('info.json/'):
+            return HttpResponsePermanentRedirect(request.path.rstrip('/'))
+
     def get(self, request, *args, **kwargs):
         '''
         Set headers for image requests to :class:`ProxyView`. Ensures
         HTTP cache headers are set.
         '''
+        # check if we need to redirect
+        redirect = self._redirect_info(request)
+        if redirect:
+            return redirect
+
         url = self.get_proxy_url(*args, **kwargs)
         # use headers to allow browsers to cache downloaded copies
         headers = {}
@@ -711,12 +731,12 @@ class ProxyView(View):
                 local_response[header] = value
 
         # special case, for deep zoom json info response
-        if kwargs['mode'] == 'info' or (kwargs['mode'] == 'iiif' and kwargs['url'] in ['/', '/info.json', '']):
+        if kwargs['mode'] == 'info' or kwargs.get('url', '').endswith('info.json'):
             data = remote_response.json(object_pairs_hook=OrderedDict)
             # need to adjust the id to be relative to current url
             # patch in our proxy iiif interface at this url,
             # rather than exposing the true (restricted) endpoint in the json
-            data['@id'] = absolutize_url(request.path.replace('/info/', '/iiif').replace('info.json', ''),
+            data['@id'] = absolutize_url('%s/' % request.path.replace('/info/', '/iiif').replace('info.json', '').rstrip('/'),
                 request)
 
             local_response.content = json.dumps(data)
@@ -735,10 +755,15 @@ class ProxyView(View):
         '''
         Proxy HTTP headers for image.
         '''
+        # first check if we need to redirect
+        redirect = self._redirect_info(request)
+        if redirect:
+            return redirect
+
         url = self.get_proxy_url(*args, **kwargs)
         remote_response = requests.head(url)
         response = HttpResponse()
-        for header, value in remote_response.headers.iteritems():
+        for header, value in remote_response.headers.items():
             if header not in ['Connection', 'Server', 'Keep-Alive',
                              'Access-Control-Allow-Origin', 'Link']:
                 response[header] = value

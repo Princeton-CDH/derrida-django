@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import datetime
 import json
+from re import I
 import pytest
 from unittest.mock import call, Mock, patch
 
@@ -10,7 +11,7 @@ from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
 from django.core.cache import cache
 from django.core.management import call_command
-from django.db.models import Min, Max
+from django.db.models import Min, Max, base
 from django.http import Http404
 from django.test import TestCase, override_settings
 from django.urls import reverse, resolve
@@ -975,7 +976,7 @@ class TestCanvasImageView(TestCase):
 
         canvasimgview.kwargs = {'slug': item.slug, 'short_id': cover.short_id}
         imgurl = canvasimgview.get_proxy_url(mode='smthumb')
-        
+
         imgurl = canvasimgview.get_proxy_url(mode='info')
         assert str(imgurl) == str(cover.image.info())
 
@@ -1018,6 +1019,50 @@ class TestCanvasImageView(TestCase):
 
     # NOTE: could test proxyview logic in preserving headers, rewriting
     # iiif id to local url, etc
+
+class ProxyView(TestCase):
+
+    def test_iiif_redirects(self):
+        # test redirecting to canonical info.json view for all variants
+
+        # base options for generating variant urls
+        url_opts = {'slug': 'book', 'short_id': 'abc', 'mode': 'iiif', 'url': ''}
+
+        # generate url for info url everything should redirect to
+        info_opts = url_opts.copy()
+        info_opts['url'] = '/info.json'
+        image_info_url = reverse('books:canvas-iiif', kwargs=info_opts)
+        assert image_info_url.endswith('images/abc/iiif/info.json')
+
+        # request image/iiif with no trailing slash
+        response = self.client.get(reverse('books:canvas-iiif', kwargs=url_opts))
+        assert response.status_code == 301
+        assert response["Location"] == image_info_url
+
+        # request image/iiif with trailing slash
+        url_opts['url'] = '/'
+        response = self.client.get(reverse('books:canvas-iiif', kwargs=url_opts))
+        assert response.status_code == 301
+        assert response["Location"] == image_info_url
+
+        # request image/iiif/info.json with trailing slash
+        url_opts['url'] = '/info.json/'
+        response = self.client.get(reverse('books:canvas-iiif', kwargs=url_opts))
+        assert response.status_code == 301
+        assert response["Location"] == image_info_url
+
+        # multiple slashes in the url — should redirect to equivalent url with single slashes
+        url_opts['url'] = '///info.json'
+        response = self.client.get(reverse('books:canvas-iiif', kwargs=url_opts))
+        assert response.status_code == 301
+        assert response["Location"] == image_info_url
+
+        # same thing but trailing slash; redirects with trailing slash but not extra slashes
+        url_opts['url'] = '///info.json/'
+        response = self.client.get(reverse('books:canvas-iiif', kwargs=url_opts))
+        assert response.status_code == 301
+        assert response["Location"] == '%s/' % image_info_url
+
 
 
 def test_range_widget():
