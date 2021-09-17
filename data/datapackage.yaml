@@ -302,18 +302,26 @@ resources:
       fields:
         - name: id
           type: string
+          description: A unique identifier for the given insertion
         - name: book_id
           type: string
+          description: Link to the book where the insertion was found
         - name: book_title
           type: string
+          description: Title of the book where the insertion was found
         - name: book_type
           type: string
+          description: Whether the insertion was found in a book or journal article
         - name: page
           type: string
+          description: Page on which the insertion was found
         - name: num_images
           type: integer
+          description: The number of images that make up the insertion
         - name: image_labels
           type: string
+          description: Description of the images that make up the insertion
         - name: image_iiif
           type: string
+          description: A semicolon-delimited list of IIIF links to the insertion images
     scheme: file
