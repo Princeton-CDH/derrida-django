@@ -27,8 +27,7 @@ from derrida.interventions.models import Intervention
 # regex to extract insertion label common to all images
 # for a single insertion from the canvas label
 # grouping for full label, page range/label in book, insertion page label
-# FIXME: negative lookahead for with in page number is not working properly
-RE_INSERTION_LABEL = re.compile(r'(?P<label>(?P<page>.*(?! with))( with)?Insertions? [A-Z])(?P<insertion_page>.*$)')
+RE_INSERTION_LABEL = re.compile(r'(?P<label>(?P<page>.*)Insertions? [A-Z])(?P<insertion_page>.*$)')
 
 
 class Command(annotation_data.Command):
@@ -121,7 +120,9 @@ class Command(annotation_data.Command):
                 ('title', book.display_title()),
                 ('type', book.item_type)
             ])),
-            ('page', page.strip()),
+            # some page labels include "with";
+            # not easy to ignore out via regex, so just remove here
+            ('page', page.replace(" with", "").strip()),
             ('num_images', len(canvases)),
             # to avoid repetition, only include unique portion of the label
             # (i.e., recto/verso or roman numerals for multipage items)

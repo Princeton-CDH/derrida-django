@@ -1,0 +1,168 @@
+[
+{
+    "model": "places.place",
+    "pk": 1,
+    "fields": {
+        "name": "Princeton, NJ",
+        "notes": "",
+        "geonames_id": "http://sws.geonames.org/5102922/",
+        "latitude": 40.34872,
+        "longitude": -74.65905
+    }
+},
+{
+    "model": "books.subject",
+    "pk": 4,
+    "fields": {
+        "name": "Philosophy",
+        "notes": "",
+        "uri": null
+    }
+},
+{
+    "model": "books.subject",
+    "pk": 2,
+    "fields": {
+        "name": "Literature and Literary Criticism",
+        "notes": "",
+        "uri": null
+    }
+},
+{
+    "model": "people.person",
+    "pk": 73,
+    "fields": {
+        "notes": "",
+        "start_year": 1533,
+        "end_year": 1592,
+        "authorized_name": "Montaigne, Michel de",
+        "viaf_id": "https://viaf.org/viaf/95153547/",
+        "sort_name": "",
+        "family_group": ""
+    }
+},
+{
+    "model": "books.derridawork",
+    "pk": 1,
+    "fields": {
+        "notes": "",
+        "short_title": "De la grammatologie",
+        "full_citation": "Placeholder citation",
+        "is_primary": false,
+        "slug": "de-la-grammatologie",
+        "zotero_id": "UBIDA78N"
+    }
+},
+{
+    "model": "books.owninginstitution",
+    "pk": 1,
+    "fields": {
+        "name": "Princeton University Library",
+        "notes": "",
+        "short_name": "PUL",
+        "contact_info": "http://library.princeton.edu/help/contact-us",
+        "place": 1
+    }
+},
+{
+    "model": "books.language",
+    "pk": 1,
+    "fields": {
+        "name": "French",
+        "notes": "",
+        "uri": "",
+        "code": "fr"
+    }
+},
+{
+    "model": "djiffy.manifest",
+    "pk": 1,
+    "fields": {
+        "label": "Montaigne. Essais.",
+        "short_id": "d0b94043",
+        "uri": "https://plummy/resources/d0b94043/manifest",
+        "metadata": "{\"Date Created\":[\"1950\"],\"Extent\":[\"1 folder\"],\"Title\":[\"Montaigne. Essais.\"],\"Creator\":[\"Montaigne\"],\"Local Identifier\":[\"pz890vk14g\"],\"Publisher\":[\"Derrida, Jacques\"],\"Container\":[\"Box B-000125, Folder 2\"],\"Member Of Collections\":[\"The Library of Jacques Derrida, Studio Series\"]}",
+        "created": "2017-08-01",
+        "last_modified": "2020-10-06",
+        "extra_data": "{\"https://plummy/catalog/d0b94043.jsonld\":{\"container\":[\"Box B-000125, Folder 2\"],\"system_updated_at\":\"2020-10-05T23:24:05Z\",\"local_identifier\":[\"pz890vk14g\"],\"created\":[\"1950-1950\"],\"depositor\":[\"rmunoz\"],\"date_created\":[\"1950\"],\"link_to_finding_aid\":\"https://findingaids.princeton.edu/collections/RBD1.1/c7822\",\"extent\":[\"1 folder\"],\"system_created_at\":\"2017-12-01T06:18:59Z\",\"creator\":[\"Montaigne\"],\"@id\":\"https://plummy/catalog/d0b94043\",\"edm_rights\":{\"@type\":\"dcterms:RightsStatement\",\"@id\":\"http://rightsstatements.org/vocab/NKC/1.0/\",\"pref_label\":\"No Known Copyright\"},\"publisher\":[\"Derrida, Jacques\"],\"title\":[{\"@value\":\"Montaigne. Essais.\",\"@language\":\"eng\"}],\"memberOf\":[{\"title\":\"The Library of Jacques Derrida, Studio Series\",\"@type\":\"pcdm:Collection\",\"@id\":\"https://plummy/catalog/7081b751\"}],\"@context\":\"https://bibdata.princeton.edu/context.json\"},\"https://findingaids.princeton.edu/collections/RBD1.1/c7822.xml?scope=record\":{},\"logo\":\"https://figgy.princeton.edu/assets/pul_logo_icon-7b5f9384dfa5ca04f4851c6ee9e44e2d6953e55f893472a3e205e1591d3b2ca6.png\",\"license\":\"http://rightsstatements.org/vocab/NKC/1.0/\"}"
+    }
+},
+{
+    "model": "books.work",
+    "pk": 81,
+    "fields": {
+        "notes": "",
+        "primary_title": "Essais",
+        "short_title": "Essais",
+        "year": 1580,
+        "uri": "",
+        "authors": [
+            73
+        ]
+    }
+},
+{
+    "model": "books.instance",
+    "pk": 81,
+    "fields": {
+        "notes": "dg248bQ82pN - if the edition is the Pl\u00e9iade edition from 1950 - note that Derrida misquotes this citation; and that it is in fact an abbreviation of a real Montaigne phrase from Essais, bk. II, essai XVII (pp. 740-41 in the pleiade edition); see Littr\u00e9, Dictionnaire, for possible source;",
+        "work": 81,
+        "alternate_title": "",
+        "publisher": null,
+        "zotero_id": "8JIFV46Q",
+        "slug": "montaigne-essais-1580",
+        "is_extant": true,
+        "is_annotated": true,
+        "is_translation": false,
+        "dimensions": "",
+        "copyright_year": null,
+        "journal": null,
+        "print_date": null,
+        "print_date_day_known": false,
+        "print_date_month_known": false,
+        "print_date_year_known": false,
+        "uri": "http://findingaids.princeton.edu/collections/RBD1.1/c7822",
+        "has_dedication": false,
+        "has_insertions": true,
+        "start_page": null,
+        "end_page": null,
+        "copy": "",
+        "collected_in": null,
+        "digital_edition": 1,
+        "suppress_all_images": false,
+        "pub_place": [],
+        "cited_in": [
+            1
+        ],
+        "suppressed_images": []
+    }
+},
+{
+    "model": "djiffy.canvas",
+    "pk": 252,
+    "fields": {
+        "label": "pp. 244-245 Insertion A recto",
+        "short_id": "pp-244-245-insertion-a-recto",
+        "uri": "https://plummy/resources/d0b94043/manifest/canvas/f2a7cad93",
+        "iiif_image_id": "https://iiif/f2a7cad9-intermediate_file",
+        "manifest": 1,
+        "thumbnail": false,
+        "order": 251,
+        "extra_data": "{\"rendering\":[{\"format\":\"text/plain\",\"@id\":\"https://plummy/file_sets/f2a7cad93/text\",\"label\":\"Download page text\"},{\"format\":\"image/tiff\",\"@id\":\"https://plummy/downloads/f2a7cad9s\",\"label\":\"Download the original file\"}]}"
+    }
+},
+{
+    "model": "djiffy.canvas",
+    "pk": 251,
+    "fields": {
+        "label": "pp. 244-245 Insertion A verso",
+        "short_id": "pp-244-245-insertion-a-verso",
+        "uri": "https://plummy/resources/720ead7ce13",
+        "iiif_image_id": "https://iiif/720ead7ce13-intermediate_file",
+        "manifest": 1,
+        "thumbnail": false,
+        "order": 250,
+        "extra_data": "{\"rendering\":[{\"format\":\"text/plain\",\"@id\":\"https://plummy/file_sets/720ead7ce13/text\",\"label\":\"Download page text\"},{\"format\":\"image/tiff\",\"@id\":\"https://plummy/downloads/49fe2583/file/b4b229a501\",\"label\":\"Download the original file\"}]}"
+    }
+}
+]

@@ -26,7 +26,7 @@ from derrida.people.models import Person
 from derrida.interventions.models import Tag, INTERVENTION_TYPES, \
     Intervention, get_default_intervener
 from derrida.interventions.search_indexes import InterventionIndex
-from derrida.interventions.management.commands import annotation_data
+from derrida.interventions.management.commands import annotation_data, insertion_data
 
 
 
@@ -1000,7 +1000,7 @@ class TestAnnotationData(TestCase):
             call_command('annotation_data', directory=outputdir, stdout=stdout)
 
             annotations = Intervention.objects.all()
-            base_filename = os.path.join(outputdir, self.cmd.base_filename)
+            base_filename = os.path.join(outputdir, cmd.base_filename)
 
             # inspect JSON output
             with open('{}.json'.format(base_filename)) as jsonfile:
@@ -1026,3 +1026,58 @@ class TestAnnotationData(TestCase):
                 # spot check the data
                 assert annotations[0].get_uri() in rows[1]
                 assert annotations[0].canvas.label in rows[1]
+
+
+class TestInsertionData(TestCase):
+    fixtures = ['test_insertions']
+
+    def test_handle(self):
+        cmd = insertion_data.Command()
+
+        # generate output in a temporary directory
+        with tempfile.TemporaryDirectory(prefix='derrida-annotation-') as outputdir:
+            stdout = StringIO()
+            call_command('insertion_data', directory=outputdir, stdout=stdout)
+
+            # fixture has two canvas image insertions
+            insertions = Canvas.objects.filter(label__contains='Insertion')
+            base_filename = os.path.join(outputdir, cmd.base_filename)
+            # inspect JSON output
+            with open('{}.json'.format(base_filename)) as jsonfile:
+                jsondata = json.load(jsonfile)
+                # should be one entry for test insertion data
+                assert len(jsondata) == 1
+                # check the data generated
+                result = jsondata[0]
+                # label includes book, author, and insertion label
+                assert result['id'] == 'Montaigne. Essais. pp. 244-245 Insertion A'
+                # page range pulled from insertion image label
+                assert result['page'] == 'pp. 244-245'
+                assert result['book']['type'] == 'Book'
+                assert result['book']['title'] == 'Essais'
+                work_instance = insertions[0].manifest.instance
+                assert result['book']['id'] == work_instance.get_uri()
+                # individual image labels pulled from canvas label
+                assert result['image_labels'] == ["verso", "recto"]
+                assert result['image_iiif'][0] == \
+                        str(cmd.localize_iiif_image(insertions[0], work_instance).size(width=500))
+                assert result['image_iiif'][1] == \
+                    str(cmd.localize_iiif_image(insertions[1], work_instance).size(width=500))
+
+            # inspect CSV output
+            with open('{}.csv'.format(base_filename)) as csvfile:
+                # first byte should be UTF-8 byte order mark
+                assert csvfile.read(1) == codecs.BOM_UTF8.decode()
+                # then read as CSV
+                csvreader = csv.reader(csvfile)
+
+                rows = [row for row in csvreader]
+                # row count should be number of insertion groups + header
+                assert len(rows) == 2
+                assert rows[0] == cmd.csv_fields
+                # spot check the data
+                assert 'Montaigne. Essais. pp. 244-245 Insertion A' in rows[1]
+                assert "verso;recto" in rows[1]
+                # last item in the row should be image iiif urls
+                assert str(cmd.localize_iiif_image(insertions[0], work_instance).size(width=500))  \
+                    in rows[1][-1]
