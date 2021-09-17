@@ -99,7 +99,7 @@ resources:
           description: How Derrida references the work (e.g. via a footnote, a quotation, etc.)
           constraints:
             required: true
-          # options: Footnote, Epigraph, Citation, Quotation
+            pattern: "Footnote|Epigraph|Citation|Quotation"
         - name: book_title
           type: string
           description: The title of the book referenced
@@ -118,7 +118,7 @@ resources:
           description: Whether or not the reference is to a book or journal article
           constraints:
             required: true
-          # options: Book, Journal Article
+            pattern: Book|Journal Article
         - name: anchor_text
           type: string
           description: The text of the quotation or the footnote that makes up the reference
@@ -129,13 +129,13 @@ resources:
         - name: section
           type: string
           description: Section of De la grammatologie where the reference is located
-          # options: Part 1, Part 2
+          constraints:
+            pattern: Part 1|Part 2
           constraints:
             required: true
         - name: chapter
           type: string
           description: Chapter of De la grammatologie where the reference is located
-          # options: Exergue, Chapter 1, 2, 3, 4
     scheme: file
   - encoding: utf-8-sig
     format: csv
@@ -154,7 +154,8 @@ resources:
         - name: item_type
           type: string
           description: The type of work (either a book, journal article, or book section)
-          # Options: 'Book', 'Journal Article', 'Book Section'
+          constraints:
+            pattern: Book|Journal Article|Book Section
           constraints:
             required: true
         - name: title
@@ -217,9 +218,10 @@ resources:
           constraints:
             required: true
         - name: copy
-          type: any
+          type: string
           description: '' # ?
-          # Options: A, B
+          constraints:
+            pattern: A|B
         - name: dimensions
           type: any
           description: Dimensions of the instance in Derrida's library
