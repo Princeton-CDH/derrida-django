@@ -103,18 +103,18 @@ resources:
           # options: Book, Journal Article
         - name: anchor_text
           type: string
-          description: The text of the quotation or the footnote that makes up the reference.
+          description: The text of the quotation or the footnote that makes up the reference
         - name: interventions
           type: any
           description: A URI to the linked annotation (if Derrida had a book where this reference was annotated.)
           # ?: Is this accurate
         - name: section
           type: string
-          description: Section of De la grammatologie where the reference is located.
+          description: Section of De la grammatologie where the reference is located
           # options: Part 1, Part 2
         - name: chapter
           type: string
-          description: Chapter of De la grammatologie where the reference is located.
+          description: Chapter of De la grammatologie where the reference is located
           # options: Exergue, Chapter 1, 2, 3, 4
     scheme: file
   - encoding: utf-8-sig
@@ -127,63 +127,96 @@ resources:
       fields:
         - name: id
           type: string
+          description: Unique link to the book's detail page
         - name: item_type
           type: string
+          description: The type of work (either a book, journal article, or book section)
+          # Options: 'Book', 'Journal Article', 'Book Section'
         - name: title
           type: string
+          description: Title of the given work
         - name: short_title
           type: string
+          description: #? short titles aren't necessarily shorter?!
         - name: alternate_title
           type: any
+          description: # I get the sense this has a particular meaning
         - name: work_year
           type: integer
+          description: Year in which the work was published
         - name: copyright_year
           type: integer
+          description: Year in which the work was copyrighted
         - name: print_date
           type: any
+          description: Print date of the work
         - name: authors
           type: string
+          description: Authors of the work
         - name: contributors
           type: any
+          description: Known contributors to the work (e.g translators or editors)
         - name: publisher
           type: string
+          description: Publisher of the work
         - name: pub_place
           type: string
+          description: City in which the work was published
         - name: is_extant
           type: boolean
+          description: Work exists in Derrida's library # ?
         - name: is_annotated
           type: boolean
+          description: The instance was annotated
         - name: is_translation
           type: boolean
+          description: The work is a translation
         - name: has_dedication
           type: boolean
+          description: # ? 
         - name: has_insertions
           type: boolean
+          description: The instance contains insertions
         - name: copy
           type: any
+          description: # ?
+          # Options: A, B
         - name: dimensions
           type: any
+          description: Dimensions of the instance in Derrida's library
         - name: work_uri
           type: any
+          # DROP THIS FIELD
         - name: subjects
           type: string
+          description: The subjects covered in the work
+          # ? Was this according to some formal or external system?
         - name: languages
           type: string
+          description: The languages covered in the work
         - name: journal_title
           type: any
+          description: The name of the journal in which the journal article was published
         - name: collected_work_title
           type: any
+          description: The title of the work in which the given item is collected
         - name: collected_work_uri
           type: any
+          description: The URI of the work in which the given item is collected
         - name: start_page
           type: any
+          description: Start page of the work, often within a collected work # ?
         - name: end_page
           type: any
+          description: End page of the work, often within a collected work # ?
         - name: has_digital_edition
           type: boolean
+          description: #?
         - name: catalog_uri
           type: string
+          description: A link to the instance in Princeton University Library's finding aids catalog
         - name: zotero_id
           type: string
+          description: The work's Zotero ID
     scheme: file
 
