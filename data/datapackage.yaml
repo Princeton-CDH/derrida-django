@@ -17,6 +17,7 @@ resources:
           type: string
           description: Unique identifier linking to the annotation's page
           constraints:
+            required: true
             unique: true
         - name: book_id
           type: string
@@ -25,11 +26,9 @@ resources:
           type: string
         - name: book_type
           type: string
-          # constraints:
-            # pattern: "(Book|Book Section)"
-            # required: false
-          # constraint: options are 'Book' and 'Book Section'
-          # description: How would we want to word this?
+          description: Whether the work is a full book or a section of a book. 
+          constraints:
+            pattern: "Book|Book Section"
         - name: page
           type: string
           description: The page where the annotation was found # QUESTION: What do brackets mean?
@@ -81,28 +80,42 @@ resources:
         - name: id
           type: string
           description: A unique identifier linking to the reference's detail page
+          constraints:
+            required: true
         - name: page
           type: integer
           description: The page in De la grammatologie where the reference was cited
+          constraints:
+            required: true
         - name: page_location
           type: string
           # description: What is this? single letters are the paragraph?
+          constraints:
+            required: true
         - name: type
           type: string
           description: How Derrida references the work (e.g. via a footnote, a quotation, etc.)
+          constraints:
+            required: true
           # options: Footnote, Epigraph, Citation, Quotation
         - name: book_title
           type: string
           description: The title of the book referenced
+          constraints:
+            required: true
         - name: book_id
           type: string
           description: Link to the book where the reference was found
+          constraints:
+            required: true
         - name: book_page
           type: string
           description: Page of the book in Derrida's citation
         - name: book_type
           type: string
           description: Whether or not the reference is to a book or journal article
+          constraints:
+            required: true
           # options: Book, Journal Article
         - name: anchor_text
           type: string
@@ -115,6 +128,8 @@ resources:
           type: string
           description: Section of De la grammatologie where the reference is located
           # options: Part 1, Part 2
+          constraints:
+            required: true
         - name: chapter
           type: string
           description: Chapter of De la grammatologie where the reference is located
@@ -131,16 +146,24 @@ resources:
         - name: id
           type: string
           description: Unique link to the book's detail page
+          constraints:
+            required: true
         - name: item_type
           type: string
           description: The type of work (either a book, journal article, or book section)
           # Options: 'Book', 'Journal Article', 'Book Section'
+          constraints:
+            required: true
         - name: title
           type: string
           description: Title of the given work
+          constraints:
+            required: true
         - name: short_title
           type: string
           description: '' #? short titles aren't necessarily shorter?!
+          constraints:
+            required: true
         - name: alternate_title
           type: any
           description: '' # I get the sense this has a particular meaning
@@ -168,18 +191,28 @@ resources:
         - name: is_extant
           type: boolean
           description: Work exists in Derrida's library # ?
+          constraints:
+            required: true
         - name: is_annotated
           type: boolean
           description: The instance was annotated
+          constraints:
+            required: true
         - name: is_translation
           type: boolean
           description: The work is a translation
+          constraints:
+            required: true
         - name: has_dedication
           type: boolean
           description: '' # ? 
+          constraints:
+            required: true
         - name: has_insertions
           type: boolean
           description: The instance contains insertions
+          constraints:
+            required: true
         - name: copy
           type: any
           description: '' # ?
@@ -215,6 +248,8 @@ resources:
         - name: has_digital_edition
           type: boolean
           description: '' #?
+          constraints:
+            required: true
         - name: catalog_uri
           type: string
           description: A link to the instance in Princeton University Library's finding aids catalog
