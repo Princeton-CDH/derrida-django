@@ -32,6 +32,7 @@ resources:
           description: Link to the book where the annotation was found
         - name: book_title
           type: string
+          description: Title of the book where the annotation was found
         - name: book_type
           type: string
           description: Whether the work is a full book or a section of a book. 
@@ -54,6 +55,7 @@ resources:
           description: The ISO 639-1 codes for the language used in the annotation
         - name: text_translation
           type: any
+          description: 'Translation of the annotation text'
         - name: quote_content
           type: string
           description: The book's text that was highlighted or underlined by the given annotation
@@ -101,7 +103,7 @@ resources:
             required: true
         - name: page_location
           type: string
-          # description: What is this? single letters are the paragraph?
+          description: '' # What is this? single letters are the paragraph?
           constraints:
             required: true
         - name: type
@@ -153,6 +155,7 @@ resources:
     hashing: md5
     name: library
     path: library.csv
+    description: Books from Derrida's personal library
     profile: tabular-data-resource
     schema:
       primaryKey: id
@@ -284,6 +287,7 @@ resources:
     name: insertions
     path: insertions.csv
     profile: tabular-data-resource
+    description: Physical insertions placed inside books in Derrida's library
     schema:
       primaryKey: id
       foreignKeys:
