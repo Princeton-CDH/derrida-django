@@ -1,6 +1,7 @@
 import datetime
 import json
 import logging
+from collections import OrderedDict
 
 from dal import autocomplete
 from django.contrib import messages
@@ -709,12 +710,13 @@ class ProxyView(View):
                 # need to be made relative to current url
                 local_response[header] = value
 
-        # special case, for deep zoom (hack)
-        if kwargs['mode'] == 'info':
-            data = remote_response.json()
+        # special case, for deep zoom json info response
+        if kwargs['mode'] == 'info' or (kwargs['mode'] == 'iiif' and kwargs['url'] in ['/', '/info.json', '']):
+            data = remote_response.json(object_pairs_hook=OrderedDict)
             # need to adjust the id to be relative to current url
-            # this is a hack, patching in a proxy iiif interface at this url
-            data['@id'] = absolutize_url(request.path.replace('/info/', '/iiif'),
+            # patch in our proxy iiif interface at this url,
+            # rather than exposing the true (restricted) endpoint in the json
+            data['@id'] = absolutize_url(request.path.replace('/info/', '/iiif').replace('info.json', ''),
                 request)
 
             local_response.content = json.dumps(data)

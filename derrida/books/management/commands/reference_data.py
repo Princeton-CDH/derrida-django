@@ -27,14 +27,20 @@ class Command(BaseCommand):
 
     #: fields for CSV output
     csv_fields = [
-        'id', 'page', 'page location', 'type', 'book title', 'book id',
-        'book page', 'book type', 'anchor text', 'interventions', 'section', 'chapter',
+        'id', 'page', 'page_location', 'type', 'book_title', 'book_id',
+        'book_page', 'book_type', 'anchor_text', 'interventions', 'section', 'chapter',
     ]
 
     def add_arguments(self, parser):
         parser.add_argument(
-            '-d', '--directory',
+            '-d', '--directory', default='data',
             help='Specify the directory where files should be generated')
+
+    def remove_empty_keys(self, list_of_dicts):
+        # Remove null keys but not False boolean values
+        return [OrderedDict([(key, val) for key, val in d.items() if val not in [None, '', []]])
+                for d in list_of_dicts]
+
 
     def handle(self, *args, **kwargs):
 
@@ -55,8 +61,7 @@ class Command(BaseCommand):
             # list of dictionaries can be output as is for JSON export
             with open('{}.json'.format(base_filename), 'w') as jsonfile:
                 # Remove fields that are null
-                json_refdata = [{field: ref[field] for field in ref.keys() if ref[field]} for ref in refdata]
-                json.dump(json_refdata, jsonfile, indent=2)
+                json.dump(self.remove_empty_keys(refdata), jsonfile, indent=2)
 
             # generate CSV export
             with open('{}.csv'.format(base_filename), 'w') as csvfile:
@@ -76,7 +81,7 @@ class Command(BaseCommand):
         return OrderedDict([
             ('id', reference.get_uri()),
             ('page', reference.derridawork_page),
-            ('page location', reference.derridawork_pageloc),
+            ('page_location', reference.derridawork_pageloc),
             ('book',  OrderedDict([
                 ('id', reference.instance.get_uri()),
                 ('title', reference.instance.display_title()),
@@ -84,7 +89,7 @@ class Command(BaseCommand):
                 ('type', reference.book.item_type),
             ])),
             ('type', str(reference.reference_type)),
-            ('anchor text', reference.anchor_text),
+            ('anchor_text', reference.anchor_text),
             # use intervention URI as identifier
             ('interventions', [
                 intervention.get_uri()

@@ -14,10 +14,11 @@ COMPRESS_ENABLED = False
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'test',
+        'NAME': 'derrida',
         'USER': 'root',
-        'HOST': 'localhost',
-        'PORT': '',
+        'PASSWORD': 'derrida',
+        'HOST': '127.0.0.1',
+        'PORT': '3306',
     },
 
 }
@@ -26,15 +27,12 @@ DATABASES = {
 HAYSTACK_CONNECTIONS = {
     'default': {
         'ENGINE': 'derrida.common.solr_backend.RangeSolrEngine',
-        'URL': 'http://127.0.0.1:8983/solr/test-derrida',
+        'URL': 'http://127.0.0.1:8983/solr/derrida',
         'ADMIN_URL': 'http://127.0.0.1:8983/solr/admin/cores',
     }
 }
 
 # for unit tests, that swap test connection in for default
 HAYSTACK_TEST_CONNECTIONS = HAYSTACK_CONNECTIONS
-
-
-
 
 # secret key added as a travis build step

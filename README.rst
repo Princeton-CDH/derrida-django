@@ -10,9 +10,9 @@ a `DH project sponsored by CDH <https://cdh.princeton.edu/projects/derridas-marg
    :target: https://zenodo.org/badge/latestdoi/83320273
    :alt: DOI: 10.5281/zenodo.1299972
 
-.. image:: https://travis-ci.org/Princeton-CDH/derrida-django.svg?branch=main
-   :target: https://travis-ci.org/Princeton-CDH/derrida-django
-   :alt: Build status
+.. image:: https://github.com/Princeton-CDH/derrida-django/actions/workflows/unittests.yaml/badge.svg
+    :target: https://github.com/Princeton-CDH/derrida-django/actions/workflows/unittests.yaml
+    :alt: Unit Test status
 
 .. image:: https://codecov.io/gh/Princeton-CDH/derrida-django/branch/main/graph/badge.svg
    :target: https://codecov.io/gh/Princeton-CDH/derrida-django
@@ -118,6 +118,21 @@ The accessibility tests are configured to read options from the ``.pa11yci.json`
 file and look for a sitemap at ``localhost:8000/sitemap.xml`` to use to crawl the
 site. Additional URLs to test can be added to the `urls` property of the
 ``.pa11yci.json`` file.
+
+Data
+----
+
+To generate the published datasets, run the following commands::
+
+    python manage.py annotation_data
+    python manage.py instance_data
+    python manage.py insertion_data
+    python manage.py reference_data
+
+To ensure that the data conforms to our requirements, run the 
+`Frictionless Data <https://frictionlessdata.io/>`_ test::
+
+    goodtables validate datapackage.json
 
 
 Documentation
