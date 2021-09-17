@@ -960,7 +960,7 @@ class TestAnnotationData(TestCase):
         assert annotation.canvas.short_id in data['page_iiif']
         # should not use image server base url from the fixture
         assert "https://imgserver/loris/" not in data['page_iiif']
-        assert "full/500,/0/default" in data['page_iiif']
+        assert "full/full/0/default" in data['page_iiif']
         # annotation region should include percent
         # (not canonicalized because canonicalization disabled for test)
         assert "/pct:74.13,37.7,6.47,14.9/full/0" in data['annotation_region']
