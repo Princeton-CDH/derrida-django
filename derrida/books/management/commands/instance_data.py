@@ -24,7 +24,7 @@ class Command(reference_data.Command):
 
     #: fields for CSV output
     csv_fields = [
-        'id', 'item_type', 'title', 'short_title',
+        'id', 'item_type', 'title',
         'alternate_title', 'work_year', 'copyright_year',
         'print_date', 
         'authors', 'contributors', 'publisher', 'pub_place',
@@ -105,7 +105,6 @@ class Command(reference_data.Command):
             ('id', instance.get_uri()),
             ('item_type', instance.item_type),
             ('title', instance.work.primary_title),
-            ('short_title', instance.work.short_title),
             ('alternate_title', instance.alternate_title),
             ('work_year', instance.work.year),
             ('copyright_year', instance.copyright_year),

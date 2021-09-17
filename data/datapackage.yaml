@@ -188,14 +188,9 @@ resources:
           description: Title of the given work
           constraints:
             required: true
-        - name: short_title
-          type: string
-          description: '' #? short titles aren't necessarily shorter?!
-          constraints:
-            required: true
         - name: alternate_title
           type: any
-          description: '' # I get the sense this has a particular meaning
+          description: '' # This means something specific, right?
         - name: work_year
           type: integer
           description: Year in which the work was published

@@ -282,7 +282,6 @@ class TestInstanceData(TestCase):
         assert instdata['id'] == inst.get_uri()
         assert instdata['item_type'] == inst.item_type
         assert instdata['title'] == inst.work.primary_title
-        assert instdata['short_title'] == inst.work.short_title
         assert instdata['alternate_title'] == inst.alternate_title
         assert instdata['work_year'] == inst.work.year
         assert instdata['copyright_year'] == inst.copyright_year
