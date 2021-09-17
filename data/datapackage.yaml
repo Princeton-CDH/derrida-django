@@ -25,6 +25,9 @@ resources:
           type: string
         - name: book_type
           type: string
+          # constraints:
+            # pattern: "(Book|Book Section)"
+            # required: false
           # constraint: options are 'Book' and 'Book Section'
           # description: How would we want to word this?
         - name: page
@@ -137,10 +140,10 @@ resources:
           description: Title of the given work
         - name: short_title
           type: string
-          description: #? short titles aren't necessarily shorter?!
+          description: '' #? short titles aren't necessarily shorter?!
         - name: alternate_title
           type: any
-          description: # I get the sense this has a particular meaning
+          description: '' # I get the sense this has a particular meaning
         - name: work_year
           type: integer
           description: Year in which the work was published
@@ -173,13 +176,13 @@ resources:
           description: The work is a translation
         - name: has_dedication
           type: boolean
-          description: # ? 
+          description: '' # ? 
         - name: has_insertions
           type: boolean
           description: The instance contains insertions
         - name: copy
           type: any
-          description: # ?
+          description: '' # ?
           # Options: A, B
         - name: dimensions
           type: any
@@ -211,7 +214,7 @@ resources:
           description: End page of the work, often within a collected work # ?
         - name: has_digital_edition
           type: boolean
-          description: #?
+          description: '' #?
         - name: catalog_uri
           type: string
           description: A link to the instance in Princeton University Library's finding aids catalog
