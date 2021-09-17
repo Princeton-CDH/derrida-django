@@ -61,6 +61,8 @@ resources:
         - name: annotation_region
           type: string
           description: A link to the IIIF image of the book's page that has been cropped to show just the given annotation
+          constraints:
+            unique: true
         - name: ink
           type: string
           description: The kind of mark that created the annotation (e.g. black ink, pencil)
@@ -148,6 +150,7 @@ resources:
           description: Unique link to the book's detail page
           constraints:
             required: true
+            unique: true
         - name: item_type
           type: string
           description: The type of work (either a book, journal article, or book section)
