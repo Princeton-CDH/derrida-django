@@ -1000,7 +1000,7 @@ class TestAnnotationData(TestCase):
             call_command('annotation_data', directory=outputdir, stdout=stdout)
 
             annotations = Intervention.objects.all()
-            base_filename = os.path.join(outputdir, cmd.base_filename)
+            base_filename = os.path.join(outputdir, self.cmd.base_filename)
 
             # inspect JSON output
             with open('{}.json'.format(base_filename)) as jsonfile:
