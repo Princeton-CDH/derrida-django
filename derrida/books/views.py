@@ -731,7 +731,7 @@ class ProxyView(View):
                 local_response[header] = value
 
         # special case, for deep zoom json info response
-        if kwargs['mode'] == 'info' or kwargs['url'].endswith('info.json'):
+        if kwargs['mode'] == 'info' or kwargs.get('url', '').endswith('info.json'):
             data = remote_response.json(object_pairs_hook=OrderedDict)
             # need to adjust the id to be relative to current url
             # patch in our proxy iiif interface at this url,
