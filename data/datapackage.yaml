@@ -305,6 +305,7 @@ resources:
           description: A unique identifier for the given insertion
           constraints:
             required: true
+            unique: true
         - name: book_id
           type: string
           description: Link to the book where the insertion was found
@@ -336,4 +337,5 @@ resources:
           description: A semicolon-delimited list of IIIF links to the insertion images
           constraints:
             required: true
+            unique: true
     scheme: file
