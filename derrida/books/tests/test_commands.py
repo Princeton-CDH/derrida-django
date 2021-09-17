@@ -323,7 +323,7 @@ class TestInstanceData(TestCase):
             derrida_work = DerridaWork.objects.first()
             instances = Instance.objects.filter(cited_in__isnull=False)
 
-            base_filename = os.path.join(outputdir, 'instances')
+            base_filename = os.path.join(outputdir, 'library')
 
             # inspect JSON output
             with open('{}.json'.format(base_filename)) as jsonfile:

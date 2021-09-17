@@ -37,7 +37,7 @@ class Command(reference_data.Command):
     ]
 
     def handle(self, *args, **kwargs):
-        base_filename = 'instances'
+        base_filename = 'library'
         if kwargs['directory']:
             base_filename = os.path.join(kwargs['directory'], base_filename)
 

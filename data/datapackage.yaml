@@ -1,5 +1,5 @@
 # --------
-# metadata: annotations.csv references.csv instances.csv insertions.csv
+# metadata: annotations.csv references.csv library.csv insertions.csv
 # --------
 
 profile: data-package
@@ -17,7 +17,7 @@ resources:
       # foreignKeys:
       #   - fields: book_id
       #     reference: 
-      #       resource: instances
+      #       resource: library
       #       fields: id
       fields:
         - name: id
@@ -89,7 +89,7 @@ resources:
       foreignKeys:
         - fields: book_id
           reference: 
-            resource: instances
+            resource: library
             fields: id
       fields:
         - name: id
@@ -154,8 +154,8 @@ resources:
   - encoding: utf-8-sig
     format: csv
     hashing: md5
-    name: instances
-    path: instances.csv
+    name: library
+    path: library.csv
     profile: tabular-data-resource
     schema:
       primaryKey: id
@@ -301,7 +301,7 @@ resources:
       # foreignKeys:
       #   - fields: book_id
       #     reference: 
-      #       resource: instances
+      #       resource: library
       #       fields: id
       fields:
         - name: id
