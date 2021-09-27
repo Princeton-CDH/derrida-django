@@ -238,7 +238,7 @@ resources:
             required: true
         - name: copy
           type: string
-          description: '' # ?
+          description: Label to distinguish multiple copies of the same edition
           constraints:
             pattern: A|B
         - name: dimensions
@@ -247,7 +247,6 @@ resources:
         - name: subjects
           type: string
           description: The subjects covered in the work
-          # ? Was this according to some formal or external system?
         - name: languages
           type: string
           description: The languages used in the work
