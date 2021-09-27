@@ -70,7 +70,7 @@ resources:
           description: The person who made the annotation # QUESTION: Add language about certainty? How did we know this?
         - name: annotation_region
           type: string
-          description: A link to the IIIF image of the book's page that has been cropped to show just the given annotation
+          description: IIIF image region for the portion of the book page that contains the annotation
           constraints:
             unique: true
         - name: page_iiif
