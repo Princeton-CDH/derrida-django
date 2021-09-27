@@ -57,7 +57,7 @@ class Command(annotation_data.Command):
 
         # canvas label indicates if a canvas is part of an insertion
         insertion_canvases = Canvas.objects.filter(label__contains='Insertion') \
-            .order_by('manifest__instance__pk', 'label')
+            .order_by('manifest__instance__pk', 'order')
 
         insertion_images = defaultdict(list)
         for canvas in insertion_canvases:
