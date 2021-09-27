@@ -67,7 +67,7 @@ resources:
           description: The ISO 639-1 codes for the book's text that was highlighted by the annotation
         - name: annotator
           type: string
-          description: The person who made the annotation # QUESTION: Add language about certainty? How did we know this?
+          description: The person who made the annotation
         - name: annotation_region
           type: string
           description: IIIF image region for the portion of the book page that contains the annotation
