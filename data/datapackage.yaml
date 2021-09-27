@@ -218,7 +218,7 @@ resources:
             required: true
         - name: is_annotated
           type: boolean
-          description: The instance was annotated
+          description: This copy is annotated
           constraints:
             required: true
         - name: is_translation
@@ -228,7 +228,7 @@ resources:
             required: true
         - name: has_dedication
           type: boolean
-          description: '' # ? 
+          description: This copy has a dedication inscribed
           constraints:
             required: true
         - name: has_insertions
