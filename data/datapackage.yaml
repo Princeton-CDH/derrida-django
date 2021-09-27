@@ -75,7 +75,7 @@ resources:
             unique: true
         - name: page_iiif
           type: string
-          description: A link to the IIIF image of the book's page
+          description: IIIF image for the book page that includes the annotation
     scheme: file
   - encoding: utf-8-sig
     format: csv
@@ -108,7 +108,7 @@ resources:
             required: true
         - name: type
           type: string
-          description: How Derrida references the work (e.g. via a footnote, a quotation, etc.)
+          description: Type of reference (e.g. footnote, a quotation, etc.)
           constraints:
             required: true
             pattern: "Footnote|Epigraph|Citation|Quotation"
@@ -190,7 +190,7 @@ resources:
             required: true
         - name: alternate_title
           type: any
-          description: '' # This means something specific, right?
+          description: Alternate title, if different from the work title (e.g. for translations)
         - name: work_year
           type: integer
           description: Year in which the work was published
@@ -199,7 +199,7 @@ resources:
           description: Year in which the work was copyrighted
         - name: print_date
           type: any
-          description: Print date of the work
+          description: Printing date for this specific edition 
         - name: authors
           type: string
           description: Authors of the work
@@ -251,13 +251,13 @@ resources:
           # ? Was this according to some formal or external system?
         - name: languages
           type: string
-          description: The languages covered in the work
+          description: The languages used in the work
         - name: journal_title
           type: any
           description: The name of the journal in which the journal article was published
         - name: collected_work_title
           type: any
-          description: The title of the work in which the given item is collected
+          description: The title of the work in which the given item is collected (book sections only)
         - name: collected_work_uri
           type: string
           format: uri
