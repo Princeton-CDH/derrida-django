@@ -196,7 +196,6 @@ resources:
           description: Year in which the work was published
         - name: copyright_year
           type: integer
-          description: Year in which the work was copyrighted
         - name: print_date
           type: any
           description: Printing date for this specific edition 
