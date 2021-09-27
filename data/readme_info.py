@@ -30,7 +30,7 @@ if __name__ == '__main__':
         exit(0)
 
     with open(sys.argv[1]) as packageyaml:
-        datapackage = yaml.load(packageyaml)
+        datapackage = yaml.safe_load(packageyaml)
 
     for resource_dict in datapackage['resources']:
         csvfile = resource_dict['path']
