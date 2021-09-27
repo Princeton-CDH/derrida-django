@@ -103,7 +103,7 @@ resources:
             required: true
         - name: page_location
           type: string
-          description: '' # What is this? single letters are the paragraph?
+          description: 'Alpha identifiers for the references in the order they occur on the page'
           constraints:
             required: true
         - name: type
