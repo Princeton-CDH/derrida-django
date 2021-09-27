@@ -1,12 +1,12 @@
 # Dataset Documentation
 
-Details for each field can be found in the [datapackage.yaml](datapackage.yaml)
+Details for each field can be found in the `datapackage.yaml`
 
 ## Annotations
 
 A collection of all written annotations in Jacques Derrida's library
 
-* Files: [annotations.csv](annotations.csv), [annotations.json](annotations.json)
+* Files: `annotations.csv`, `annotations.json`
 * Number of fields: 16
 * Number of rows: 1,420
 
@@ -32,7 +32,7 @@ A collection of all written annotations in Jacques Derrida's library
 
 References to other works made in Jacques Derrida's 1967 book *De la grammatologie*
 
-* Files: [references.csv](references.csv), [references.json](references.json)
+* Files: `references.csv`, `references.json`
 * Number of fields: 12
 * Number of rows: 1,052
 
@@ -54,7 +54,7 @@ References to other works made in Jacques Derrida's 1967 book *De la grammatolog
 
 Books from Derrida's personal library
 
-* Files: [library.csv](library.csv), [library.json](library.json)
+* Files: `library.csv`, `library.json`
 * Number of fields: 28
 * Number of rows: 222
 
@@ -92,7 +92,7 @@ Books from Derrida's personal library
 
 Physical insertions placed inside books in Derrida's library
 
-* Files: [library.csv](library.csv), [library.json](library.json)
+* Files: `library.csv`, `library.json`
 * Number of fields: 8
 * Number of rows: 251
 
