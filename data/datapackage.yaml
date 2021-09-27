@@ -268,7 +268,7 @@ resources:
           description: End page of the work, often within a collected work # ?
         - name: has_digital_edition
           type: boolean
-          description: '' #?
+          description: Whether the Princeton University Library digital edition linked in the database and available on the site
           constraints:
             required: true
         - name: catalog_uri
