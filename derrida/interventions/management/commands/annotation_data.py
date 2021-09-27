@@ -94,7 +94,7 @@ class Command(reference_data.Command):
             # get localized piffle image api client for this canvas
             img = self.localize_iiif_image(intervention.canvas, intervention.work_instance)
             # request 500 width image and convert to str for iiif image url
-            page_iiif = str(img)
+            page_iiif = str(img.size(width=500))
 
             # get the annotation region
             annotation_region = intervention.iiif_image_selection()
