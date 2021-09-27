@@ -129,11 +129,13 @@ To generate the published datasets, run the following commands::
     python manage.py insertion_data
     python manage.py reference_data
 
-To ensure that the data conforms to our requirements, run the 
+To ensure that the data conforms to our requirements, install and run the 
 `Frictionless Data <https://frictionlessdata.io/>`_ test::
 
+    pip install frictionless
     frictionless validate data/datapackage.json
 
+(This package is not available in Python 3.5)
 
 Documentation
 -------------
