@@ -1,3 +1,4 @@
+---
 # --------
 # metadata: annotations.csv references.csv library.csv insertions.csv
 # --------
@@ -15,7 +16,7 @@ resources:
       primaryKey: id
       foreignKeys:
         - fields: book_id
-          reference: 
+          reference:
             resource: library
             fields: id
       fields:
@@ -35,7 +36,7 @@ resources:
           description: Title of the book where the annotation was found
         - name: book_type
           type: string
-          description: Whether the work is a full book or a section of a book. 
+          description: Whether the work is a full book or a section of a book.
           constraints:
             pattern: "Book|Book Section"
         - name: page
@@ -55,7 +56,7 @@ resources:
           description: The ISO 639-1 codes for the language used in the annotation
         - name: text_translation
           type: any
-          description: 'Translation of the annotation text'
+          description: "Translation of the annotation text"
         - name: quote_content
           type: string
           description: The book's text that was highlighted or underlined by the given annotation
@@ -87,7 +88,7 @@ resources:
     schema:
       foreignKeys:
         - fields: book_id
-          reference: 
+          reference:
             resource: library
             fields: id
       fields:
@@ -103,7 +104,7 @@ resources:
             required: true
         - name: page_location
           type: string
-          description: 'Alpha identifiers for the references in the order they occur on the page'
+          description: "Alpha identifiers for the references in the order they occur on the page"
           constraints:
             required: true
         - name: type
@@ -144,7 +145,6 @@ resources:
           description: Section of De la grammatologie where the reference is located
           constraints:
             pattern: Part 1|Part 2
-          constraints:
             required: true
         - name: chapter
           type: string
@@ -181,7 +181,6 @@ resources:
           description: The type of work (either a book, journal article, or book section)
           constraints:
             pattern: Book|Journal Article|Book Section
-          constraints:
             required: true
         - name: title
           type: string
@@ -198,7 +197,7 @@ resources:
           type: integer
         - name: print_date
           type: any
-          description: Printing date for this specific edition 
+          description: Printing date for this specific edition
         - name: authors
           type: string
           description: Authors of the work
@@ -290,7 +289,7 @@ resources:
       primaryKey: id
       foreignKeys:
         - fields: book_id
-          reference: 
+          reference:
             resource: library
             fields: id
       fields:
