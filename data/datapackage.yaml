@@ -261,10 +261,10 @@ resources:
           description: The URI of the work in which the given item is collected
         - name: start_page
           type: any
-          description: Start page of the work, often within a collected work # ?
+          description: Start page of the work, if applicable (e.g. book sections and journal articles)
         - name: end_page
           type: any
-          description: End page of the work, often within a collected work # ?
+          description: End page of the work, if applicable (e.g. book sections and journal articles)
         - name: has_digital_edition
           type: boolean
           description: Whether the Princeton University Library digital edition linked in the database and available on the site
