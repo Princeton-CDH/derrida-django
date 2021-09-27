@@ -212,7 +212,7 @@ resources:
           description: City in which the work was published
         - name: is_extant
           type: boolean
-          description: Work exists in Derrida's library # ?
+          description: Work exists in Derrida's library
           constraints:
             required: true
         - name: is_annotated
