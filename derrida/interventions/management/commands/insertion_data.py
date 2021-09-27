@@ -56,7 +56,8 @@ class Command(annotation_data.Command):
         # CSV and JSON output
 
         # canvas label indicates if a canvas is part of an insertion
-        insertion_canvases = Canvas.objects.filter(label__contains='Insertion')
+        insertion_canvases = Canvas.objects.filter(label__contains='Insertion') \
+            .order_by('manifest__instance__pk', 'label')
 
         insertion_images = defaultdict(list)
         for canvas in insertion_canvases:
