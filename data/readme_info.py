@@ -23,6 +23,7 @@ def readme_info(df, dp_resource):
     print('3. Field List:')
     for col in df.columns:
         print('%s : %s' % (col, field_info[col].get('description', '')))
+    print('\n\n')
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:
@@ -34,7 +35,8 @@ if __name__ == '__main__':
 
     for resource_dict in datapackage['resources']:
         csvfile = resource_dict['path']
-        print('Inspecting %s...\n\n' % csvfile)
+        print(resource_dict['name'].upper())
+        print(resource_dict['description'] + '\n')
 
         df = pd.read_csv(csvfile)
         readme_info(df, resource_dict)
