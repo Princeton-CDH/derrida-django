@@ -3,6 +3,13 @@
 Deploy and Upgrade notes
 ========================
 
+1.3
+---
+
+* Some mislabeled pages have been corrected in PUL's Figgy; the updated manifests should be re-imported before generating data exports::
+
+  python manage.py import_digitaleds PUL --update
+
 1.2
 ---
 

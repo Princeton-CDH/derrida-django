@@ -1050,7 +1050,8 @@ class TestInsertionData(TestCase):
                 # check the data generated
                 result = jsondata[0]
                 # label includes book, author, and insertion label
-                assert result['id'] == 'Montaigne. Essais. pp. 244-245 Insertion A'
+                assert result['id'] == '%s/%s' % (insertions[0].manifest.short_id, insertions[0].short_id)
+                assert result['label'] == 'Montaigne. Essais. pp. 244-245 Insertion A'
                 # page range pulled from insertion image label
                 assert result['page'] == 'pp. 244-245'
                 assert result['book']['type'] == 'Book'
