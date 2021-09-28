@@ -17,12 +17,13 @@ def readme_info(df, dp_resource):
     print('2. Number of rows: {:,}\n'.format(len(df)))
     schema_fields = dp_resource['schema']['fields']
 
-    assert len(schema_fields) == len(df.columns)
+    assert len(schema_fields) == len(df.columns), [col for col in df.columns if not any([col == field['name'] for field in schema_fields])]
     field_info = {field['name']: field for field in schema_fields}
 
     print('3. Field List:')
     for col in df.columns:
-        print('%s : %s' % (col, field_info[col]['description']))
+        print('%s : %s' % (col, field_info[col].get('description', '')))
+    print('\n\n')
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:
@@ -34,7 +35,8 @@ if __name__ == '__main__':
 
     for resource_dict in datapackage['resources']:
         csvfile = resource_dict['path']
-        print('Inspecting %s...\n\n' % csvfile)
+        print(resource_dict['name'].upper())
+        print(resource_dict['description'] + '\n')
 
         df = pd.read_csv(csvfile)
         readme_info(df, resource_dict)
