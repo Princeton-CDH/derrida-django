@@ -299,6 +299,8 @@ resources:
           constraints:
             required: true
             unique: true
+        - name: label
+          type: string
         - name: book_id
           type: string
           format: uri
