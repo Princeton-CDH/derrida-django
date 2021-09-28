@@ -956,7 +956,6 @@ class TestAnnotationData(TestCase):
         assert data['page'] == annotation.canvas.label
         assert data['tags'] == [tag.name for tag in annotation.tags.all()]
         assert data['annotator'] == annotation.author.authorized_name
-        assert data['ink'] == annotation.ink
         # iiif image should be present and should use local url
         assert annotation.canvas.short_id in data['page_iiif']
         # should not use image server base url from the fixture

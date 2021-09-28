@@ -45,7 +45,7 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
 
         for derrida_work in DerridaWork.objects.all():
-            base_filename = '%s_references' % derrida_work.slug
+            base_filename = 'references'
             if kwargs['directory']:
                 base_filename = os.path.join(kwargs['directory'], base_filename)
 

@@ -24,12 +24,12 @@ class Command(reference_data.Command):
 
     #: fields for CSV output
     csv_fields = [
-        'id', 'item_type', 'title', 'short_title',
+        'id', 'item_type', 'title',
         'alternate_title', 'work_year', 'copyright_year',
         'print_date', 
         'authors', 'contributors', 'publisher', 'pub_place',
         'is_extant', 'is_annotated', 'is_translation', 'has_dedication',
-        'has_insertions', 'copy', 'dimensions', 'work_uri',
+        'has_insertions', 'copy', 'dimensions',
         'subjects', 'languages', 'journal_title',
         'collected_work_title', 'collected_work_uri',
         'start_page', 'end_page',
@@ -37,14 +37,17 @@ class Command(reference_data.Command):
     ]
 
     def handle(self, *args, **kwargs):
-        base_filename = 'instances'
+        base_filename = 'library'
         if kwargs['directory']:
             base_filename = os.path.join(kwargs['directory'], base_filename)
 
         filtered_instances = Instance.objects.filter(Q(cited_in__isnull=False) | 
                 Q(reference__isnull=False) |
                 Q(collected_set__cited_in__isnull=False) |
-                Q(collected_set__reference__isnull=False)) \
+                Q(collected_set__reference__isnull=False) |
+                # NOTE: two additional instances don't meet other criteria but should be included in the export
+                # For expedience, explicitly include them by id
+                Q(pk__in=[247, 177])) \
                  .distinct()
 
         instancedata = [self.instance_data(instance) for instance in filtered_instances]
@@ -105,7 +108,6 @@ class Command(reference_data.Command):
             ('id', instance.get_uri()),
             ('item_type', instance.item_type),
             ('title', instance.work.primary_title),
-            ('short_title', instance.work.short_title),
             ('alternate_title', instance.alternate_title),
             ('work_year', instance.work.year),
             ('copyright_year', instance.copyright_year),
@@ -120,7 +122,6 @@ class Command(reference_data.Command):
             ('has_dedication', instance.has_dedication),
             ('has_insertions', instance.has_insertions),
             ('copy', instance.copy),
-            ('work_uri', instance.work.uri),
             ('subjects', [str(subject) for subject in instance.work.subjects.all()]),
             ('languages', self.collect_all_languages(instance)),
             ('journal_title', instance.journal.name if instance.journal else ''),

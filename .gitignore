@@ -115,4 +115,8 @@ sitemedia/fonts
 node_modules
 
 # Data
-data/*
+data/annotations.*
+data/interventions.*
+data/library.*
+data/references.*
+data/insertions.*

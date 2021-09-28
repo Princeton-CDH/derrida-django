@@ -190,8 +190,7 @@ class TestReferenceData(TestCase):
             derrida_work = DerridaWork.objects.first()
             references = Reference.objects.filter(derridawork__id=derrida_work.id)
 
-            base_filename = os.path.join(outputdir,
-                                         '%s_references' % derrida_work.slug)
+            base_filename = os.path.join(outputdir, 'references')
 
             # inspect JSON output
             with open('{}.json'.format(base_filename)) as jsonfile:
@@ -283,7 +282,6 @@ class TestInstanceData(TestCase):
         assert instdata['id'] == inst.get_uri()
         assert instdata['item_type'] == inst.item_type
         assert instdata['title'] == inst.work.primary_title
-        assert instdata['short_title'] == inst.work.short_title
         assert instdata['alternate_title'] == inst.alternate_title
         assert instdata['work_year'] == inst.work.year
         assert instdata['copyright_year'] == inst.copyright_year
@@ -297,7 +295,6 @@ class TestInstanceData(TestCase):
         assert instdata['has_dedication'] == inst.has_dedication
         assert instdata['has_insertions'] == inst.has_insertions
         assert instdata['copy'] == inst.copy
-        assert instdata['work_uri'] == inst.work.uri
         assert instdata['subjects'] == [str(subject) for subject in inst.work.subjects.all()]
         assert 'languages' in instdata
         assert 'journal_title' in instdata
@@ -324,7 +321,7 @@ class TestInstanceData(TestCase):
             derrida_work = DerridaWork.objects.first()
             instances = Instance.objects.filter(cited_in__isnull=False)
 
-            base_filename = os.path.join(outputdir, 'instances')
+            base_filename = os.path.join(outputdir, 'library')
 
             # inspect JSON output
             with open('{}.json'.format(base_filename)) as jsonfile:

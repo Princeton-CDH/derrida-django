@@ -37,7 +37,7 @@ class Command(reference_data.Command):
         'id', 'book_id', 'book_title', 'book_type', 'page', 'tags', 'text_content',
         'text_language', 'text_language_code', 'text_translation',
         'quote_content', 'quote_language', 'quote_language_code', 'annotator',
-        'annotation_region', 'ink', 'page_iiif',
+        'annotation_region', 'page_iiif',
     ]
 
     #: base filename, for CSV and JSON output
@@ -118,7 +118,6 @@ class Command(reference_data.Command):
             # canvas object *should* have a label, but possible it does not
             ('page', intervention.canvas.label if intervention.canvas else ''),
             ('tags', [tag.name for tag in intervention.tags.all()]),
-            ('ink', intervention.ink),
             ('page_iiif', page_iiif),
             ('annotation_region', annotation_region_url),
         ])
