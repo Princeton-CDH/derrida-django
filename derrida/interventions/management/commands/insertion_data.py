@@ -56,7 +56,10 @@ class Command(annotation_data.Command):
         # CSV and JSON output
 
         # canvas label indicates if a canvas is part of an insertion
+        # NOTE: there are insertions in Derrida's copy of dlG, but they
+        # are out of scope for this data exports
         insertion_canvases = Canvas.objects.filter(label__contains='Insertion') \
+            .exclude(manifest__instance__slug='derrida-de-la-grammatologie-1967') \
             .order_by('manifest__instance__pk', 'order')
 
         insertion_images = defaultdict(list)
