@@ -40,7 +40,7 @@ class Command(annotation_data.Command):
     #: fields for CSV output
     csv_fields = [
         # match annotation fields where possible (but not a lot of overlap)
-        'id',
+        'id', 'label',
         'book_id', 'book_title', 'book_type', 'page',
         'num_images', 'image_labels', 'image_iiif'
     ]
@@ -115,7 +115,8 @@ class Command(annotation_data.Command):
         page = RE_INSERTION_LABEL.match(first_canvas.label).group('page')
 
         return OrderedDict([
-            ('id', label),   # provisional
+            ('id', '%s/%s' % (first_canvas.manifest.short_id, first_canvas.short_id)),
+            ('label', label),
             ('book', OrderedDict([
                 ('id', book.get_uri()),
                 ('title', book.display_title()),
