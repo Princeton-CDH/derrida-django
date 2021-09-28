@@ -276,7 +276,7 @@ resources:
           description: A link to the instance in Princeton University Library's finding aids catalog
         - name: zotero_id
           type: string
-          description: The work's Zotero ID
+          description: Zotero ID for this item in the version 1 (2018) data export
     scheme: file
   - encoding: utf-8-sig
     format: csv
