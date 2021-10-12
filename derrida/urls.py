@@ -66,7 +66,10 @@ urlpatterns = [
         name='annotation-api-prefix'),
 
     # content pages managed by mezzanine
-    url("^", include(mezzanine.urls))
+    url("^", include(mezzanine.urls)),
+
+    # direct 500 access for testing and web scraping
+    url("_500", lambda _: 1 / 0),
 ]
 
 
