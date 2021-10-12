@@ -68,8 +68,8 @@ urlpatterns = [
     # content pages managed by mezzanine
     url("^", include(mezzanine.urls)),
 
-    # direct 500 access for web scraping
-    url("500.html", TemplateView.as_view(template_name='errors/500.html')),
+    # direct 500 access for testing and web scraping
+    url("_500", lambda _: 1 / 0),
 ]
 
 
