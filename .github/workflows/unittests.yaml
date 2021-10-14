@@ -1,0 +1,88 @@
+name: unit tests
+
+on:
+  push: # run on every push or PR to any branch
+  pull_request:
+
+env:
+  SOLR_CORE: derrida
+
+jobs:
+  python-unit:
+    name: python unit tests
+    runs-on: ubuntu-latest
+
+    services:
+      db:
+        image: mariadb
+        env:
+          MYSQL_DATABASE: derrida
+          MYSQL_ROOT_PASSWORD: derrida
+        ports:
+          - 3306:3306
+      solr:
+        image: solr:6.6
+        ports:
+          - 8983:8983
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          # Run on python 3.6 since 3.5 is no longer supported
+          python-version: 3.6
+
+      # Perform installations
+      - name: Install dependencies
+        run: |
+          pip install -r ci/ci-requirements.lock
+          pip install codecov
+          sudo apt-get install ruby-sass
+
+      # Setup local settings
+      - name: Configure test settings as local settings
+        run: |
+          cp ci/testsettings.py derrida/local_settings.py
+          python -c "import uuid; print('SECRET_KEY = \'%s\'' % uuid.uuid4())" >> derrida/local_settings.py
+
+      # configure solr core per haystack directions
+      # create a new core with basic configs
+      # copy core config to local machine and remove from docker vm
+      # use haystack to customize the config, copy it back, and reload the core
+      - name: Setup solr core
+        run: |
+          docker exec ${{ job.services.solr.id }} /bin/bash -c "/opt/solr/bin/solr create -c $SOLR_CORE -n basic_config"
+          docker cp ${{ job.services.solr.id }}:/opt/solr/server/solr/derrida/conf /tmp/derrida-conf
+          python manage.py build_solr_schema --configure-directory=/tmp/derrida-conf
+          docker exec ${{ job.services.solr.id }} /bin/bash -c "rm -rf /opt/solr/server/solr/derrida/conf"
+          docker cp /tmp/derrida-conf ${{ job.services.solr.id }}:/opt/solr/server/solr/derrida/conf
+          python manage.py build_solr_schema --configure-directory=/tmp/derrida-conf  --reload-core $SOLR_CORE
+
+      # Perform test
+      - name: Run pytest
+        run: pytest --cov=derrida --cov-report=xml
+
+      - name: Upload test coverage to Codecov
+        uses: codecov/codecov-action@v1
+
+      # Set the color of the slack message used in the next step based on the
+      # status of the build: "warning" for failure and "good" for success
+      - name: Set Slack message color based on build status
+        if: ${{ always() }}
+        env:
+          JOB_STATUS: ${{ job.status }}
+        run: echo "SLACK_COLOR=$(if [ "$JOB_STATUS" == "success" ]; then echo "good"; elif [ "$JOB_STATUS" == "failure" ]; then echo "danger"; else echo "warning"; fi)" >> $GITHUB_ENV
+
+      # Send a message to slack to report the build status. The webhook is stored
+      # at the organization level and available to all repositories. Only run on
+      # scheduled builds & pushes, since PRs automatically report to Slack.
+      - name: Report status to Slack
+        uses: rtCamp/action-slack-notify@master
+        if: ${{ always() && (github.event_name == 'schedule' || github.event_name == 'push') }}
+        continue-on-error: true
+        env:
+          SLACK_COLOR: ${{ env.SLACK_COLOR }}
+          SLACK_WEBHOOK: ${{ secrets.ACTIONS_SLACK_WEBHOOK }}
+          SLACK_TITLE: "Workflow `${{ github.workflow }}`: ${{ job.status }}"
+          SLACK_MESSAGE: "Run <https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|#${{ github.run_number }}> on <https://github.com/${{ github.repository }}/|${{ github.repository }}@${{ github.ref }}>"
+          SLACK_FOOTER: "<https://github.com/${{ github.repository }}/commit/${{ github.sha }}|View commit>"
+          MSG_MINIMAL: true # use compact slack message format

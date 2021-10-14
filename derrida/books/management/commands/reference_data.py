@@ -18,7 +18,7 @@ import os.path
 
 from django.core.management.base import BaseCommand
 
-from derrida.books.models import DerridaWork
+from derrida.books.models import DerridaWork, DerridaWorkSection
 
 
 class Command(BaseCommand):
@@ -27,19 +27,25 @@ class Command(BaseCommand):
 
     #: fields for CSV output
     csv_fields = [
-        'id', 'page', 'page location', 'type', 'book title', 'book id',
-        'book page', 'book type', 'anchor text', 'interventions'
+        'id', 'page', 'page_location', 'type', 'book_title', 'book_id',
+        'book_page', 'book_type', 'anchor_text', 'interventions', 'section', 'chapter',
     ]
 
     def add_arguments(self, parser):
         parser.add_argument(
-            '-d', '--directory',
+            '-d', '--directory', default='data',
             help='Specify the directory where files should be generated')
+
+    def remove_empty_keys(self, list_of_dicts):
+        # Remove null keys but not False boolean values
+        return [OrderedDict([(key, val) for key, val in d.items() if val not in [None, '', []]])
+                for d in list_of_dicts]
+
 
     def handle(self, *args, **kwargs):
 
         for derrida_work in DerridaWork.objects.all():
-            base_filename = '%s_references' % derrida_work.slug
+            base_filename = 'references'
             if kwargs['directory']:
                 base_filename = os.path.join(kwargs['directory'], base_filename)
 
@@ -48,12 +54,14 @@ class Command(BaseCommand):
 
             # aggregate reference data to be exported for use in generating
             # CSV and JSON output
+
             refdata = [self.reference_data(ref)
                        for ref in derrida_work.reference_set.all()]
 
             # list of dictionaries can be output as is for JSON export
             with open('{}.json'.format(base_filename), 'w') as jsonfile:
-                json.dump(refdata, jsonfile, indent=2)
+                # Remove fields that are null
+                json.dump(self.remove_empty_keys(refdata), jsonfile, indent=2)
 
             # generate CSV export
             with open('{}.csv'.format(base_filename), 'w') as csvfile:
@@ -69,10 +77,11 @@ class Command(BaseCommand):
     def reference_data(self, reference):
         '''Generate a dictionary of data to export for a single
          :class:`~derrida.books.models.Reference` object'''
+
         return OrderedDict([
             ('id', reference.get_uri()),
             ('page', reference.derridawork_page),
-            ('page location', reference.derridawork_pageloc),
+            ('page_location', reference.derridawork_pageloc),
             ('book',  OrderedDict([
                 ('id', reference.instance.get_uri()),
                 ('title', reference.instance.display_title()),
@@ -80,12 +89,15 @@ class Command(BaseCommand):
                 ('type', reference.book.item_type),
             ])),
             ('type', str(reference.reference_type)),
-            ('anchor text', reference.anchor_text),
+            ('anchor_text', reference.anchor_text),
             # use intervention URI as identifier
             ('interventions', [
                 intervention.get_uri()
                 for intervention in reference.interventions.all()
-            ])
+            ]),
+            # For convenience, assuming that we're only working with De la grammatologie
+            ('section', reference.get_section()),
+            ('chapter', reference.get_chapter()),
         ])
 
     def flatten_dict(self, data):
@@ -98,7 +110,7 @@ class Command(BaseCommand):
             # for a nested subdictionary, combine key and nested key
             if isinstance(val, dict):
                 for subkey, subval in val.items():
-                    flat_data[' '.join([key, subkey])] = subval
+                    flat_data['_'.join([key, subkey])] = subval
             # convert list to a delimited string
             elif isinstance(val, list):
                 flat_data[key] = ';'.join(val)

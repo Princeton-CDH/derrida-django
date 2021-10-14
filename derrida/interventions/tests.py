@@ -26,7 +26,7 @@ from derrida.people.models import Person
 from derrida.interventions.models import Tag, INTERVENTION_TYPES, \
     Intervention, get_default_intervener
 from derrida.interventions.search_indexes import InterventionIndex
-from derrida.interventions.management.commands import intervention_data
+from derrida.interventions.management.commands import annotation_data, insertion_data
 
 
 
@@ -938,23 +938,33 @@ class TestInterventionSearchIndex(TestCase):
             note.author.firstname_last
 
 
-class TestInterventionsData(TestCase):
+@patch('piffle.iiif.ImageRegion.canonicalize')
+class TestAnnotationData(TestCase):
     fixtures = ['test_interventions', 'interventions_with_text']
 
     def setUp(self):
-        self.cmd = intervention_data.Command()
+        self.cmd = annotation_data.Command()
         self.cmd.stdout = StringIO()
 
-    def test_intervention_data(self):
+    def test_annotation_data(self, cannonicalize_patch):
         # intervention with no text or quote
         annotation = Intervention.objects.filter(text='', quote='').first()
-        data = self.cmd.intervention_data(annotation)
+        data = self.cmd.annotation_data(annotation)
         assert data['id'] == annotation.get_uri()
         assert data['book']['id'] == annotation.work_instance.get_uri()
         assert data['book']['title'] == annotation.work_instance.display_title()
         assert data['page'] == annotation.canvas.label
         assert data['tags'] == [tag.name for tag in annotation.tags.all()]
         assert data['annotator'] == annotation.author.authorized_name
+        # iiif image should be present and should use local url
+        assert annotation.canvas.short_id in data['page_iiif']
+        # should not use image server base url from the fixture
+        assert "https://imgserver/loris/" not in data['page_iiif']
+        assert "full/500,/0/default" in data['page_iiif']
+        # annotation region should include percent
+        # (not canonicalized because canonicalization disabled for test)
+        assert "/pct:74.13,37.7,6.47,14.9/full/0" in data['annotation_region']
+
         # text and quote not included
         assert 'text' not in data
         assert 'quote' not in data
@@ -962,31 +972,31 @@ class TestInterventionsData(TestCase):
         # intervention with text content and text language
         annotation = Intervention.objects.exclude(text='') \
             .filter(text_language__isnull=False).first()
-        data = self.cmd.intervention_data(annotation)
+        data = self.cmd.annotation_data(annotation)
         assert data['text']['content'] == annotation.text
         assert data['text']['language'] == annotation.text_language.name
-        assert data['text']['language code'] == annotation.text_language.code
+        assert data['text']['language_code'] == annotation.text_language.code
 
         # intervention with quote content and language set
         annotation = Intervention.objects \
             .exclude(quote='', quote_language__isnull=True).first()
-        data = self.cmd.intervention_data(annotation)
+        data = self.cmd.annotation_data(annotation)
         assert data['quote']['content'] == annotation.quote
         assert data['quote']['language'] == annotation.quote_language.name
-        assert data['quote']['language code'] == annotation.quote_language.code
+        assert data['quote']['language_code'] == annotation.quote_language.code
 
         # intervention with annotator unknown
         annotation = Intervention.objects.filter(author__isnull=True).first()
-        data = self.cmd.intervention_data(annotation)
+        data = self.cmd.annotation_data(annotation)
         assert 'annotator' not in data
 
-    def test_command_line(self):
+    def test_command_line(self, cannonicalize_patch):
         # test calling via command line with args
 
         # generate output in a temporary directory
-        with tempfile.TemporaryDirectory(prefix='derrida-interventions-') as outputdir:
+        with tempfile.TemporaryDirectory(prefix='derrida-annotation-') as outputdir:
             stdout = StringIO()
-            call_command('intervention_data', directory=outputdir, stdout=stdout)
+            call_command('annotation_data', directory=outputdir, stdout=stdout)
 
             annotations = Intervention.objects.all()
             base_filename = os.path.join(outputdir, self.cmd.base_filename)
@@ -1015,3 +1025,59 @@ class TestInterventionsData(TestCase):
                 # spot check the data
                 assert annotations[0].get_uri() in rows[1]
                 assert annotations[0].canvas.label in rows[1]
+
+
+class TestInsertionData(TestCase):
+    fixtures = ['test_insertions']
+
+    def test_handle(self):
+        cmd = insertion_data.Command()
+
+        # generate output in a temporary directory
+        with tempfile.TemporaryDirectory(prefix='derrida-annotation-') as outputdir:
+            stdout = StringIO()
+            call_command('insertion_data', directory=outputdir, stdout=stdout)
+
+            # fixture has two canvas image insertions
+            insertions = Canvas.objects.filter(label__contains='Insertion')
+            base_filename = os.path.join(outputdir, cmd.base_filename)
+            # inspect JSON output
+            with open('{}.json'.format(base_filename)) as jsonfile:
+                jsondata = json.load(jsonfile)
+                # should be one entry for test insertion data
+                assert len(jsondata) == 1
+                # check the data generated
+                result = jsondata[0]
+                # label includes book, author, and insertion label
+                assert result['id'] == '%s/%s' % (insertions[0].manifest.short_id, insertions[0].short_id)
+                assert result['label'] == 'Montaigne. Essais. pp. 244-245 Insertion A'
+                # page range pulled from insertion image label
+                assert result['page'] == 'pp. 244-245'
+                assert result['book']['type'] == 'Book'
+                assert result['book']['title'] == 'Essais'
+                work_instance = insertions[0].manifest.instance
+                assert result['book']['id'] == work_instance.get_uri()
+                # individual image labels pulled from canvas label
+                assert result['image_labels'] == ["verso", "recto"]
+                assert result['image_iiif'][0] == \
+                        str(cmd.localize_iiif_image(insertions[0], work_instance).size(width=500))
+                assert result['image_iiif'][1] == \
+                    str(cmd.localize_iiif_image(insertions[1], work_instance).size(width=500))
+
+            # inspect CSV output
+            with open('{}.csv'.format(base_filename)) as csvfile:
+                # first byte should be UTF-8 byte order mark
+                assert csvfile.read(1) == codecs.BOM_UTF8.decode()
+                # then read as CSV
+                csvreader = csv.reader(csvfile)
+
+                rows = [row for row in csvreader]
+                # row count should be number of insertion groups + header
+                assert len(rows) == 2
+                assert rows[0] == cmd.csv_fields
+                # spot check the data
+                assert 'Montaigne. Essais. pp. 244-245 Insertion A' in rows[1]
+                assert "verso;recto" in rows[1]
+                # last item in the row should be image iiif urls
+                assert str(cmd.localize_iiif_image(insertions[0], work_instance).size(width=500))  \
+                    in rows[1][-1]

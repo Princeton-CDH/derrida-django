@@ -1,0 +1,337 @@
+---
+# --------
+# metadata: annotations.csv references.csv library.csv insertions.csv
+# --------
+
+profile: data-package
+resources:
+  - encoding: utf-8-sig
+    format: csv
+    hashing: md5
+    name: annotations
+    path: annotations.csv
+    profile: tabular-data-resource
+    description: A collection of all written annotations in Jacques Derrida's library
+    schema:
+      primaryKey: id
+      foreignKeys:
+        - fields: book_id
+          reference:
+            resource: library
+            fields: id
+      fields:
+        - name: id
+          type: string
+          description: Unique identifier linking to the annotation's page
+          format: uri
+          constraints:
+            required: true
+            unique: true
+        - name: book_id
+          type: string
+          format: uri
+          description: Link to the book where the annotation was found
+        - name: book_title
+          type: string
+          description: Title of the book where the annotation was found
+        - name: book_type
+          type: string
+          description: Whether the work is a full book or a section of a book.
+          constraints:
+            pattern: "Book|Book Section"
+        - name: page
+          type: string
+          description: The page where the annotation was found # QUESTION: What do brackets mean?
+        - name: tags
+          type: string
+          description: Supplemental information about the annotation (e.g. blue ink, arrow)
+        - name: text_content
+          type: any
+          description: Words included in the annotation
+        - name: text_language
+          type: any
+          description: The language used in the annotation
+        - name: text_language_code
+          type: any
+          description: The ISO 639-1 codes for the language used in the annotation
+        - name: text_translation
+          type: any
+          description: "Translation of the annotation text"
+        - name: quote_content
+          type: string
+          description: The book's text that was highlighted or underlined by the given annotation
+        - name: quote_language
+          type: string
+          description: The language of the book's text that was highlighted by the annotation
+        - name: quote_language_code
+          type: string
+          description: The ISO 639-1 codes for the book's text that was highlighted by the annotation
+        - name: annotator
+          type: string
+          description: The person who made the annotation
+        - name: annotation_region
+          type: string
+          description: IIIF image region for the portion of the book page that contains the annotation
+          constraints:
+            unique: true
+        - name: page_iiif
+          type: string
+          description: IIIF image for the book page that includes the annotation
+    scheme: file
+  - encoding: utf-8-sig
+    format: csv
+    hashing: md5
+    name: references
+    path: references.csv
+    description: References to other works made in Jacques Derrida's 1967 book De la grammatologie
+    profile: tabular-data-resource
+    schema:
+      foreignKeys:
+        - fields: book_id
+          reference:
+            resource: library
+            fields: id
+      fields:
+        - name: id
+          type: string
+          description: An identifier linking to the reference's detail page. Note that these are not unique.
+          constraints:
+            required: true
+        - name: page
+          type: integer
+          description: The page in De la grammatologie where the reference was cited
+          constraints:
+            required: true
+        - name: page_location
+          type: string
+          description: "Alpha identifiers for the references in the order they occur on the page"
+          constraints:
+            required: true
+        - name: type
+          type: string
+          description: Type of reference (e.g. footnote, a quotation, etc.)
+          constraints:
+            required: true
+            pattern: "Footnote|Epigraph|Citation|Quotation"
+        - name: book_title
+          type: string
+          description: The title of the book referenced
+          constraints:
+            required: true
+        - name: book_id
+          type: string
+          format: uri
+          description: Link to the book where the reference was found
+          constraints:
+            required: true
+        - name: book_page
+          type: string
+          description: Page of the book in Derrida's citation
+        - name: book_type
+          type: string
+          description: Whether or not the reference is to a book or journal article
+          constraints:
+            required: true
+            pattern: Book|Journal Article
+        - name: anchor_text
+          type: string
+          description: The text of the quotation or the footnote that makes up the reference
+        - name: interventions
+          type: any
+          description: A URI to the linked annotation (if Derrida had a book where this reference was annotated.)
+          # ?: Is this accurate
+        - name: section
+          type: string
+          description: Section of De la grammatologie where the reference is located
+          constraints:
+            pattern: Part 1|Part 2
+            required: true
+        - name: chapter
+          type: string
+          description: Chapter of De la grammatologie where the reference is located
+    scheme: file
+  - encoding: utf-8-sig
+    format: csv
+    hashing: md5
+    name: library
+    path: library.csv
+    description: Books from Derrida's personal library
+    profile: tabular-data-resource
+    schema:
+      primaryKey: id
+      foreignKeys:
+        # Frictionless Data doesn't seem to run tests on self-referencing foreign keys.
+        #  Whether all of collected_work_uri exists in the id column was checked manually.
+        #  When introducing an error into the dataset, Frictionless Data could not detect it.
+        #  https://specs.frictionlessdata.io/table-schema/#foreign-keys
+        - fields: collected_work_uri
+          reference:
+            resource: ""
+            fields: id
+      fields:
+        - name: id
+          type: string
+          format: uri
+          description: Unique link to the book's detail page
+          constraints:
+            required: true
+            unique: true
+        - name: item_type
+          type: string
+          description: The type of work (either a book, journal article, or book section)
+          constraints:
+            pattern: Book|Journal Article|Book Section
+            required: true
+        - name: title
+          type: string
+          description: Title of the given work
+          constraints:
+            required: true
+        - name: alternate_title
+          type: any
+          description: Alternate title, if different from the work title (e.g. for translations)
+        - name: work_year
+          type: integer
+          description: Year in which the work was published
+        - name: copyright_year
+          type: integer
+        - name: print_date
+          type: any
+          description: Printing date for this specific edition
+        - name: authors
+          type: string
+          description: Authors of the work
+        - name: contributors
+          type: any
+          description: Known contributors to the work (e.g translators or editors)
+        - name: publisher
+          type: string
+          description: Publisher of the work
+        - name: pub_place
+          type: string
+          description: City in which the work was published
+        - name: is_extant
+          type: boolean
+          description: Work exists in Derrida's library
+          constraints:
+            required: true
+        - name: is_annotated
+          type: boolean
+          description: This copy is annotated
+          constraints:
+            required: true
+        - name: is_translation
+          type: boolean
+          description: The work is a translation
+          constraints:
+            required: true
+        - name: has_dedication
+          type: boolean
+          description: This copy has a dedication inscribed
+          constraints:
+            required: true
+        - name: has_insertions
+          type: boolean
+          description: The instance contains insertions
+          constraints:
+            required: true
+        - name: copy
+          type: string
+          description: Label to distinguish multiple copies of the same edition
+          constraints:
+            pattern: A|B
+        - name: dimensions
+          type: any
+          description: Dimensions of the instance in Derrida's library
+        - name: subjects
+          type: string
+          description: The subjects covered in the work
+        - name: languages
+          type: string
+          description: The languages used in the work
+        - name: journal_title
+          type: any
+          description: The name of the journal in which the journal article was published
+        - name: collected_work_title
+          type: any
+          description: The title of the work in which the given item is collected (book sections only)
+        - name: collected_work_uri
+          type: string
+          format: uri
+          description: The URI of the work in which the given item is collected
+        - name: start_page
+          type: any
+          description: Start page of the work, if applicable (e.g. book sections and journal articles)
+        - name: end_page
+          type: any
+          description: End page of the work, if applicable (e.g. book sections and journal articles)
+        - name: has_digital_edition
+          type: boolean
+          description: Whether the Princeton University Library digital edition linked in the database and available on the site
+          constraints:
+            required: true
+        - name: catalog_uri
+          type: string
+          format: uri
+          description: A link to the instance in Princeton University Library's finding aids catalog
+        - name: zotero_id
+          type: string
+          description: Zotero ID for this item in the version 1 (2018) data export
+    scheme: file
+  - encoding: utf-8-sig
+    format: csv
+    hashing: md5
+    name: insertions
+    path: insertions.csv
+    profile: tabular-data-resource
+    description: Physical insertions placed inside books in Derrida's library
+    schema:
+      primaryKey: id
+      foreignKeys:
+        - fields: book_id
+          reference:
+            resource: library
+            fields: id
+      fields:
+        - name: id
+          type: string
+          description: A unique identifier for the given insertion
+          constraints:
+            required: true
+            unique: true
+        - name: label
+          type: string
+        - name: book_id
+          type: string
+          format: uri
+          description: Link to the book where the insertion was found
+          constraints:
+            required: true
+        - name: book_title
+          type: string
+          description: Title of the book where the insertion was found
+          constraints:
+            required: true
+        - name: book_type
+          type: string
+          description: Whether the insertion was found in a book or journal article
+        - name: page
+          type: string
+          description: Page on which the insertion was found
+          constraints:
+            required: true
+        - name: num_images
+          type: integer
+          description: The number of images that make up the insertion
+          constraints:
+            required: true
+        - name: image_labels
+          type: string
+          description: Description of the images that make up the insertion
+        - name: image_iiif
+          type: string
+          description: A semicolon-delimited list of IIIF links to the insertion images
+          constraints:
+            required: true
+            unique: true
+    scheme: file

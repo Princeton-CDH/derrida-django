@@ -204,6 +204,54 @@ class TestReference(TestCase):
         ref.instance = vie_part
         # book should return the collected work
         assert ref.book == self.la_vie
+    
+    def test_get_section(self):
+        ref = Reference.objects.create(
+            instance=self.la_vie,
+            derridawork=self.dg,
+            derridawork_page=110,
+            derridawork_pageloc='a',
+            book_page='10s',
+            reference_type=self.quotation
+        )
+        assert ref.get_section() == 'Part 1'
+
+    def test_chapter(self):
+        ref = Reference.objects.create(
+            instance=self.la_vie,
+            derridawork=self.dg,
+            derridawork_page=110,
+            derridawork_pageloc='a',
+            book_page='10s',
+            reference_type=self.quotation
+        )
+
+        # Create sections to search through
+        DerridaWorkSection.objects.create(
+            name='Part 1',
+            order=1,
+            derridawork=self.dg,
+            start_page=None,
+            end_page=None
+        )
+
+        DerridaWorkSection.objects.create(
+            name='Chapter 1',
+            order=2,
+            derridawork=self.dg,
+            start_page=1,
+            end_page=107
+        )
+
+        DerridaWorkSection.objects.create(
+            name='Chapter 3',
+            order=2,
+            derridawork=self.dg,
+            start_page=108,
+            end_page=120
+        )
+
+        assert ref.get_chapter() == 'Chapter 3'
 
 
 class TestReferenceQuerySet(TestCase):

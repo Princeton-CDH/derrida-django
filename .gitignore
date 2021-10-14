@@ -112,3 +112,11 @@ sitemedia/scss/.sass-cache
 # Proprietary fonts
 sitemedia/fonts
 !sitemedia/fonts/meltdown*
+node_modules
+
+# Data
+data/annotations.*
+data/interventions.*
+data/library.*
+data/references.*
+data/insertions.*
