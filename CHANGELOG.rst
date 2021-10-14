@@ -3,6 +3,14 @@
 CHANGELOG
 =========
 
+1.3.0
+-----
+
+* Create CLI commands for v1.1 dataset
+* Implement GH Actions testing
+* Create 500 trigger
+
+
 1.2.5
 -----
 
