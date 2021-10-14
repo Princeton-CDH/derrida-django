@@ -47,7 +47,7 @@ class Command(reference_data.Command):
                 Q(collected_set__reference__isnull=False) |
                 # NOTE: two additional instances don't meet other criteria but should be included in the export
                 # For expedience, explicitly include them by id
-                Q(pk__in=[247, 177])) \
+                Q(pk__in=[247, 243, 177])) \
                  .distinct()
 
         instancedata = [self.instance_data(instance) for instance in filtered_instances]
