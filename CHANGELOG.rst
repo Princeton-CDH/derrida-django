@@ -3,6 +3,12 @@
 CHANGELOG
 =========
 
+1.3.1
+-----
+
+* Hotfix: Include De la Grammatologie in the export of insertions and books.
+
+
 1.3.0
 -----
 
