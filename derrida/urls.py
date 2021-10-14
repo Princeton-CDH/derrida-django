@@ -27,6 +27,9 @@ sitemaps = {
 
 
 urlpatterns = [
+    # direct 500 access for testing and web scraping
+    url(r"^_500/", lambda _: 1 / 0),
+
     url(r'^robots\.txt$', TemplateView.as_view(template_name='robots.txt',
         content_type='text/plain')),
     url(r'^favicon\.ico$', RedirectView.as_view(url='/static/favicon.ico',
@@ -67,9 +70,6 @@ urlpatterns = [
 
     # content pages managed by mezzanine
     url("^", include(mezzanine.urls)),
-
-    # direct 500 access for testing and web scraping
-    url("_500", lambda _: 1 / 0),
 ]
 
 
