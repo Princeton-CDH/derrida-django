@@ -29,7 +29,7 @@ class Command(reference_data.Command):
         'print_date', 
         'authors', 'contributors', 'publisher', 'pub_place',
         'is_extant', 'is_annotated', 'is_translation', 'has_dedication',
-        'has_insertions', 'copy', 'dimensions',
+        'has_insertions', 'copy',
         'subjects', 'languages', 'journal_title',
         'collected_work_title', 'collected_work_uri',
         'start_page', 'end_page',
