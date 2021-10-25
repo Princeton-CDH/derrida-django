@@ -3,6 +3,11 @@
 CHANGELOG
 =========
 
+1.3.2
+-----
+
+* Hotfix: Remove extra field "dimensions" from library.csv.
+
 1.3.1
 -----
 
