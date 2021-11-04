@@ -6,9 +6,10 @@ derrida-django
 Django web application for `Derrida's Margins <https://derridas-margins.princeton.edu/>`_
 a `DH project sponsored by CDH <https://cdh.princeton.edu/projects/derridas-margins/>`_.
 
-.. image:: https://zenodo.org/badge/83320273.svg
-   :target: https://zenodo.org/badge/latestdoi/83320273
-   :alt: DOI: 10.5281/zenodo.1299972
+
+.. image:: https://zenodo.org/badge/DOI/10.5281/zenodo.5602038.svg
+   :target: https://doi.org/10.5281/zenodo.5602038 
+   :alt: doi:10.5281/zenodo.5602038
 
 .. image:: https://github.com/Princeton-CDH/derrida-django/actions/workflows/unittests.yaml/badge.svg
     :target: https://github.com/Princeton-CDH/derrida-django/actions/workflows/unittests.yaml
@@ -18,13 +19,6 @@ a `DH project sponsored by CDH <https://cdh.princeton.edu/projects/derridas-marg
    :target: https://codecov.io/gh/Princeton-CDH/derrida-django
    :alt: Code coverage
 
-.. image:: https://api.codeclimate.com/v1/badges/1cb1a007da663863e326/maintainability
-   :target: https://codeclimate.com/github/Princeton-CDH/derrida-django/maintainability
-   :alt: Maintainability
-
-.. image:: https://requires.io/github/Princeton-CDH/derrida-django/requirements.svg?branch=main
-   :target: https://requires.io/github/Princeton-CDH/derrida-django/requirements/?branch=main
-   :alt: Requirements Status
 
 `Current release documentation <https://princeton-cdh.github.io/derrida-django/>`_.
 
