@@ -15,17 +15,17 @@ authors:
 - given-names: Benjamin
   family-names: Hicks
   name-particle: W.
-  affiliation: '@Princeton-CDH'
+  affiliation: Princeton University
   orcid: https://orcid.org/0000-0002-9973-560X
 - given-names: Kevin
   family-names: Glover
 - given-names: Nick
   family-names: Budak
-  affiliation: '@Princeton-CDH'
+  affiliation: Princeton University
   orcid: https://orcid.org/0000-0002-4542-0899
 - given-names: Xinyi
   family-names: Li
-  affiliation: '@Princeton-CDH'
+  affiliation: Princeton University
 - given-names: Jean
   family-names: Bauer
   affiliation: Princeton University
