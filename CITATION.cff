@@ -1,10 +1,10 @@
 # YAML 1.2
 # Metadata for citation of this software according to the CFF format (https://citation-file-format.github.io/)
-cff-version: 1.0.3
+cff-version: 1.0.4
 message: If you use this software, please cite it as below.
 # FIXME title as repository name might not be the best name, please make human readable
-title: 'Princeton-CDH/derrida-django: v1.1'
-doi: 10.5281/zenodo.1299972
+title: 'Princeton-CDH/derrida-django: v1.3'
+doi: 10.5281/zenodo.5602038
 # FIXME splitting of full names is error prone, please check if given/family name are correct
 authors:
 - given-names: Rebecca
@@ -30,7 +30,11 @@ authors:
   family-names: Bauer
   affiliation: Princeton University
   orcid: https://orcid.org/0000-0002-4026-740X
-version: '1.2'
+- given-names: Kevin
+  family-names: McElwee
+  affiliation: '@Princeton-CDH'
+  orcid: https://orcid.org/0000-0003-2577-8102
+version: '1.3'
 date-released: 2018-06-28
 repository-code: https://github.com/Princeton-CDH/derrida-django
 license: Apache-2.0
