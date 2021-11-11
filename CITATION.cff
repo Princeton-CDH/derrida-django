@@ -1,6 +1,6 @@
 # YAML 1.2
 # Metadata for citation of this software according to the CFF format (https://citation-file-format.github.io/)
-cff-version: 1.0.4
+cff-version: 1.0.5
 message: If you use this software, please cite it as below.
 # FIXME title as repository name might not be the best name, please make human readable
 title: 'Princeton-CDH/derrida-django: v1.3'
@@ -10,29 +10,25 @@ authors:
 - given-names: Rebecca
   family-names: Koeser
   name-particle: Sutton
-  affiliation: '@Princeton-CDH'
+  affiliation: Princeton University
   orcid: https://orcid.org/0000-0002-8762-8057
 - given-names: Benjamin
   family-names: Hicks
   name-particle: W.
-  affiliation: Princeton University
   orcid: https://orcid.org/0000-0002-9973-560X
 - given-names: Kevin
   family-names: Glover
 - given-names: Nick
   family-names: Budak
-  affiliation: Princeton University
   orcid: https://orcid.org/0000-0002-4542-0899
 - given-names: Xinyi
   family-names: Li
-  affiliation: Princeton University
 - given-names: Jean
   family-names: Bauer
-  affiliation: Princeton University
   orcid: https://orcid.org/0000-0002-4026-740X
 - given-names: Kevin
   family-names: McElwee
-  affiliation: '@Princeton-CDH'
+  affiliation: Princeton University
   orcid: https://orcid.org/0000-0003-2577-8102
 version: '1.3'
 date-released: 2018-06-28
