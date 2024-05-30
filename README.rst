@@ -1,6 +1,17 @@
 derrida-django
 ==============
 
+This work is no longer active and has been archived.
+
+A web archive of the project is available at `https://github.com/Princeton-CDH/derridas-margins-archive <https://github.com/Princeton-CDH/derridas-margins-archive>`_.
+
+The web archive is also available through Princeton Data Commons, along with a
+CSV file of all URLs found by crawling the site.
+
+> Chenoweth, Katie, Koeser, Rebecca Sutton, & Alexander, Baron-Raiffe. (2024). Derrida's Margins web archive [Dataset]. Princeton University. `doi:10.34770/yw3y-ze12 <https://doi.org/10.34770/yw3y-ze12>`_
+
+----
+
 .. sphinx-start-marker-do-not-remove
 
 Django web application for `Derrida's Margins <https://derridas-margins.princeton.edu/>`_
@@ -122,6 +133,7 @@ To generate the published datasets, run the following commands::
     python manage.py instance_data
     python manage.py insertion_data
     python manage.py reference_data
+
 
 To ensure that the data conforms to our requirements, install and run the 
 `Frictionless Data <https://frictionlessdata.io/>`_ test::
